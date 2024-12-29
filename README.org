@@ -1,0 +1,55 @@
+#+TITLE: The starting point
+
+#+BEGIN_QUOTE
+You must construct additional pylons!  -- Angry Protoss Executor, from StarCraft
+#+END_QUOTE
+
+This repository helps me get into some previously recorded working state.
+Working states consist of knowledge, goal and current direction. Therefore this
+repository not only consists of "How"s (code), but also "Why"s (notes,
+handbooks) and references (reading materials).
+
+* Waypoints
+
+[[bootstrap]] contains code and instructions on how to reproduce the working environment.
+
+[[museum]] contains things that belongs to the past.
+
+[[journals]] is where I record thought process of "working" itself.
+
+Highlights of newly acquired knowledges are kept in [[today-i-learnt]]. They should
+be further sorted into topics that I am interested in, and then filed into
+[[today-i-learnt/{year}]] for archiving purpose. They do not go into [[museum]] because I
+think they should be fun to reread.
+
+* Why?
+
+By making it easier for me to record and reproduce working states, I gain many
+benefits.
+
+First and foremost, it helps relieving the fear of losing them. I've been using
+a single computer for personal work and entertainment, and even though I do
+backup the data occassionally, I didn't have a way to backup my process of
+working with the system and the data. Time and time again I rediscovered things
+that I once knew, and valuable documents that I marked for later; and things I
+recorded are sometimes confusing, because I couldn't understand the reason any
+more. The thing I fear the most is that I forget how to do backup and restore
+the backups, which is already happening.
+
+Secondly, it helps me focus. When working on one topic, I often drift away into
+other interesting ones. The discoveries are good, but the fear of forgetting the
+discoveries causes anxiety, and forces me to allocate precious working memory
+for these off-topic stuff, breaking my thought process.
+
+Thirdly, it helps me to make connections. By laying all the materials together,
+I can find and compare things more easily. I can also use knowledge learnt from
+my job in personal works, and vice versa.
+
+All of these would help me make progress, which in turns sooths me. I want to
+achieve sense of ease by doing things at ease.
+
+* How?
+
+The key is "explanation": why things work this way, why do I have this goal, and
+how did I reach here. A good explanation would make another person resonnate
+with me after logical thinking, if we agree on the preconditions.
