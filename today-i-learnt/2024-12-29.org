@@ -1,0 +1,15 @@
+* Linux 软件分发
+
+Gentoo 已经有很成熟的 binary package 了，是从 [[https://www.gentoo.org/news/2023/12/29/Gentoo-binary.html][2023 年]] 开始，有文档记录：
+[[https://wiki.gentoo.org/wiki/Gentoo_Binary_Host_Quickstart]]。即便如此，似乎
+Gentoo 社区对 reproduciable build 也没有太大兴趣。总感觉 Gentoo 的 ebuild 可以在
+guix 上复用，但是它们的差异估计很大，哪怕真的有办法，也需要嫁接很多基础的部分。
+
+Archlinux 有一个在外部发行版上运行的方案 [[https://github.com/fsquillace/junest][junest]]，基于 user namespace。它有独立的
+mount namespace，但是其他 namespace 都是共享的，而且自带了 $HOME mount。感觉可以
+用它在公司电脑上安装部分小软件，尤其是比较独立的（如 emacs），但是可能内外部软件
+之间互相没法调用。nix / guix 应该也有类似的问题。
+
+之前有人提到了一些 nix / guix 在更新时对依赖树剪枝的方法
+[[https://flokli.de/posts/2021-12-10-nix-casync-intro/]]，顺着它看到了类似 casync 的
+一个存储设计 [[https://eris.codeberg.page/spec/]]。
