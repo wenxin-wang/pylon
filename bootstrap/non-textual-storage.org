@@ -1,0 +1,91 @@
+#+TITLE: 非文本文件存储
+
+[[~/pylon]] 中的很多文件都不是纯文本文件，或者未来会有些大文件不打算按文本文件处理。这
+部分文件也通常不需要真的对外公开，只是“即便公开也没什么问题”。
+
+为了简化同步过程，且回避 github 存储限制，这类文件使用 ~git-annex~ 存储。这样做
+的好处是文件的元数据（文件目录结构，文件实际存储位置）也能记录在 git repo 里。
+
+坏处是 ~git-annex~ 并不是我所熟悉的工具，而且确实存在意外的行为和要求（例如默认
+文件是不可修改的）。但是考虑到 [[~/pylon]] 中的文本文件是 git 管理的，剩余文件不用 git
+管理的话，需要管理两种类型文件的软件能知道互相的界线，感觉挺麻烦的。
+
+* 工作流程
+
+** 初始化本地
+
+见 https://git-annex.branchable.com/walkthrough/#index1h2
+
+#+begin_src bash
+git annex init 'some description'
+#+end_src
+
+如果远端是 github，这时候可能报错，提示远端没有安装 ~git-annex~ 或者 ~git-annex-shell~ 。
+这样一般没问题，打开 ~.git/config~ 能看到对应的 remote 被增加了 ~annex-ignore = true~ ，
+甚至非常符合需求。
+
+** 初始化 ssh 远端
+
+见 https://git-annex.branchable.com/walkthrough/#index11h2
+
+直接增加一个 remote 即可
+
+#+begin_src bash
+  git remote add some_remote
+  # 直接 annex describe 会提示要执行 git annex sync，同时 sync 当前分支 和 annex
+  # branch，挺符合需求
+  git annex sync
+  git annex describe some_remote 'Some remote'
+#+end_src
+
+** 增加文件
+
+#+begin_src bash
+  git annex add library
+#+end_src
+
+*** 允许修改文件
+
+见 https://git-annex.branchable.com/tips/unlocked_files/#using%20less%20disk%20space
+
+~git-annex~ 为了减少磁盘空间使用，选择了在 ~.git/annex~ 存放文件实体，在 git
+workspace 只存放 symlink。为了避免实体文件在 workspace 内被直接修改，它必须将这
+些文件设置为只读。这样对于应用程序很不友好（word，zotero）因为它们需要能够修改文
+件。
+
+~git-annex~ 提供 unlocked 文件绕开这些问题，在 workspace 额外存一份可修改的文件
+实体，代价是空间占用变成两倍。但是它对于 xfs/brtfs 等支持 copy-on-write 的文件系
+统有优化，复制文件实际改为了创建 reflink，不修改就不占用空间。因为我用了 xfs，所
+以并不担心空间浪费。
+
+#+begin_src bash
+  git annex unlock library
+#+end_src
+
+可以看到 unlock 前后文件系统的实际空间消耗没有变大。
+
+#+begin_quote
+$ df -h
+文件系统        大小  已用  可用 已用% 挂载点
+dev             3.7G     0  3.7G    0% /dev
+run             3.7G  1.7M  3.7G    1% /run
+/dev/nvme0n1p1  954G  171G  784G   18% /
+tmpfs           3.7G     0  3.7G    0% /dev/shm
+tmpfs           3.7G  4.0K  3.7G    1% /tmp
+tmpfs           755M  116K  755M    1% /run/user/1000
+tmpfs           1.0M     0  1.0M    0% /run/credentials/systemd-journald.service
+tmpfs           1.0M     0  1.0M    0% /run/credentials/systemd-resolved.service
+#+end_quote
+
+#+begin_quote
+$ df -h
+文件系统        大小  已用  可用 已用% 挂载点
+dev             3.7G     0  3.7G    0% /dev
+run             3.7G  1.7M  3.7G    1% /run
+/dev/nvme0n1p1  954G  171G  784G   18% /
+tmpfs           3.7G     0  3.7G    0% /dev/shm
+tmpfs           3.7G  4.0K  3.7G    1% /tmp
+tmpfs           755M  116K  755M    1% /run/user/1000
+tmpfs           1.0M     0  1.0M    0% /run/credentials/systemd-journald.service
+tmpfs           1.0M     0  1.0M    0% /run/credentials/systemd-resolved.service
+#+end_quote

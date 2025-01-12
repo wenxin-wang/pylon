@@ -1,0 +1,6 @@
+* ZFS 清理空间
+
+syslog 没有配置 rotate，占太多地方了，删了 /var/log/syslog 文件，但是 df 显示还是没空间。
+
+搜了一圈在 https://github.com/openzfs/zfs/issues/1548#issuecomment-20028407 看到说
+文件可能在 open 所以不释放空间。 ~systemctl restart rsyslog~ 果然就好了。
