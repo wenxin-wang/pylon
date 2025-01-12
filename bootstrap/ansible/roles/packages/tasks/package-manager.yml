@@ -1,0 +1,60 @@
+---
+- name: setup `apt` package manager
+  when: ansible_facts['distribution'] == 'Debian'
+  block:
+    - name: do not download translations
+      become: true
+      copy:
+        content: 'Acquire::Languages "none";'
+        dest: /etc/apt/apt.conf.d/99translations
+
+    - name: Update apt cache if the last one is more than 1 day ago
+      become: true
+      ansible.builtin.apt:
+        update_cache: yes
+        cache_valid_time: 86400
+
+- name: setup `pacman` package manager
+  when: ansible_facts['distribution'] == 'Archlinux'
+  block:
+  - name: Update pacman cache
+    become: true
+    community.general.pacman:
+      update_cache: yes
+
+  - name: Gather the package facts
+    ansible.builtin.package_facts:
+      manager: pacman
+
+  - name: install devel packages for aur manager
+    become: true
+    ansible.builtin.package:
+      name:
+        - git
+        - base-devel
+        - go
+      state: present
+
+  - name: Install yay for AUR
+    when: "'yay' not in ansible_facts.packages"
+    block:
+      - name: Create temporary build directory for yay
+        ansible.builtin.tempfile:
+          state: directory
+          suffix: yay_build
+        register: yay_build_tmp_dir
+      - name: checkout yay repo
+        ansible.builtin.git:
+          repo: 'https://aur.archlinux.org/yay.git'
+          dest: '{{ yay_build_tmp_dir.path }}/yay'
+          depth: 1
+      - name: build yay
+        ansible.builtin.command:
+          cmd: makepkg -si --noconfirm
+          chdir: '{{ yay_build_tmp_dir.path }}/yay'
+    always:
+      - name: Clean up temporary build directory for yay
+        check_mode: no
+        ansible.builtin.file:
+          path: '{{ yay_build_tmp_dir.path }}'
+          state: absent

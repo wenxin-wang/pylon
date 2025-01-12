@@ -1,0 +1,12 @@
+#+TITLE: Inventory
+
+各台设备的专属配置。
+
+从 ansible 借鉴的概念，目前仅用于 ansible，但是也可以用于存放一些其它设备专属的文件。
+
+大部分 Inventory 都应该在 [[~/.notches]] 中，例如 [[~/.notches/home-inventory]]。
+
+* 内容
+
+- 设备列表、域名等元信息
+- 选项内容、配置文件等具体数据

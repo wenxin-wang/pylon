@@ -1,0 +1,10 @@
+---
+- hosts: all
+  tasks:
+    - import_role:
+        name: packages
+        tasks_from: package-manager
+
+    - import_role:
+        name: packages
+        tasks_from: basic

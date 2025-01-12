@@ -1,0 +1,30 @@
+#+TITLE: 环境初始化
+
+* 前提
+
+** 待配置设备
+
+已经有可以启动的操作系统，且正确配置 DNS、IP 地址和路由，使得本机能够以 inventory 内部指定的域名通过 ssh 登录。
+
+** 本地设备
+
+已经下载安装好 inventory，见 [[../inventory.org]] 。
+
+* Playbooks
+
+playbook 按目的划分，例如基础包管理器配置，出口接入配置，开发环境配置。
+一台设备的配置可能需要按步骤运行多个 playbook，此时应尽量编写一个调用这些 playbook 的上层 playbook 并为它起一个贴切的名字。
+
+** 系统初始化
+
+[[./01-base.yml]] 基础中的基础，只包含必要的包管理器配置和系统配置，基本不包含网络配置和设备个性化配置。
+
+#+begin_src bash
+ansible-playbook -i ~/.notches/home-inventory/hosts -c local -l $HOSTNAME -K 01-base.yml
+#+end_src
+
+[[./01-derivation.yml]] 基本包含了所有的设备个性化配置。
+
+#+begin_src bash
+ansible-playbook -i ~/.notches/home-inventory/hosts -c local -l $HOSTNAME -K 01-derivation.yml
+#+end_src

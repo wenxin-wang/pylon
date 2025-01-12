@@ -1,0 +1,12 @@
+---
+- name: install basic packages
+  become: true
+  ansible.builtin.package:
+    name:
+      # Basic utilities that most system needs.
+      - less
+      - vim
+      # For pylon itself.
+      - git
+      - git-annex
+    state: present
