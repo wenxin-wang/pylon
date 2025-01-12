@@ -1,0 +1,129 @@
+
+	Hacker News new | past | comments | ask | show | jobs | submit 	login
+	
+	
+tmountain on Nov 29, 2009 | parent | favorite | on: Erlang for Skeptics
+
+The rationale behind immutable (a.k.a. unchangeable) variables is rooted in Erlang being designed as a concurrent functional programming language from the bottom up. Whenever you have multiple operations manipulating a single value, you're immediately responsible for synchronizing access to that value and ensuring it always exists in a consistent state.
+
+Rather than deal with the complexities of synchronization, some languages opt to make all their data immutable and encourage the programmer to write code in a functional style. The fact that the f() function seems unintuitive is because that's not how code is written in Erlang. f() is merely a convenience function for unbinding a value from the Erlang shell, and it is not used in the real world. Rather, you setup initial bindings and then use recursive functions to yield new values as needed.
+
+This requires a shift in your thinking about programming, but it offers huge advantages when working within a concurrent model. For more info on the dangers of mutable state in concurrent systems, I suggest the following article:
+
+http://www.artima.com/articles/hickey_on_time.html
+
+
+	
+	
+silentbicycle on Nov 30, 2009 [-]
+
+While I fully agree that the immutability-by-default mindset helps with concurrency, having single-assignment variables within the local scope of functions (what zephj is complaining about) is strictly due to Erlang being originally implemented in Prolog. Strictly speaking, letting you destructively modify local variables in Erlang wouldn't have any impact on concurrency.
+
+In Prolog, it's because there's only unification, not assignment. Semantically, it's as if "X always had that value, it just wasn't known until now" - you can pass around unbound values and retroactively bind them for all places of use, but you can't ever change them. (Difference lists are probably the best example of this in action.)
+
+	
+	
+tmountain on Nov 30, 2009 [-]
+
+Ok, I didn't make the distinction regarding local function scope. Clojure distinguishes these types of values as "transients", and yes, they definitely provide value in regard to both convenience and performance.
+
+	
+	
+KevinMS on Nov 29, 2009 [-]
+
+I've done some programming in Erlang and I found the immutable variables to be a total pain in the ass that gave no benefit. Your code ends up littered with var=1 var2=var+1 type idioms.
+
+Also, the immutable variable have nothing to do with concurrency. Since threads cant touch each others data, and they can only talk to each other through messages, immutability only applies to a local scope, where its really no big deal.
+
+Last time I checked somebody was making a scripting language built on top of the erlang runtime and he says that immutable variables are nonsense.
+
+	
+	
+iamaleksey on Nov 29, 2009 [-]
+
+If your code ends up littered with Var2 = Var1 + 1 type "idioms", then you are probably doing it wrong. I hardly ever write code like that (or see other's Erlang code like that). It's by no means an idiom.
+
+	
+	
+KevinMS on Nov 29, 2009 [-]
+
+From programming erlang by Joe Armstrong:
+
+At this point you might be wondering how it’s possible to program with- out variables. How can you express something like X = X + 1 in Erlang? The answer is easy. Invent a new variable whose name hasn’t been used before (say X1), and write X1 = X + 1.
+
+ X=#todo{}. X1 = #todo{status=urgent, text="Fix errata in book"}. X2 = X1#todo{status=done}.  
+
+From Armstrongs thesis
+
+ X = 5; X1 = X + 10;  
+
+I found those just by searching on "X1". There are more X1 examples in the erlang otp sources. Who knows what else is in there.
+
+	
+	
+iamaleksey on Nov 29, 2009 [-]
+
+I'm not saying this never happens.
+
+It does, but you'll rarely see this pattern in any real Erlang code base. And when you see it, it will not be "littered". It's an exception, not an idiom.
+
+And those samples from Joe's book and thesis are just snippets with no context. BTW, O'Reilly's "Erlang Programming" doesn't even provide such an example.
+
+Edit: One example when I do use this pattern is constructing proplists for some function calls.
+
+	
+	
+silentbicycle on Nov 30, 2009 [-]
+
+Erlang's style was very strongly influenced by Prolog, and in Prolog code, it's quite common to see e.g. "X1 = X + 1", but having X2, X3, etc. as well is rare - there's usually not a succession of modified versions of a variable in the same function (clause), because it's a sign that you could break things up better. The same is true in Erlang - code with several such variables is written with a strong Java accent (or whatever), not in idiomatic Erlang.
+
+	
+	
+artsrc on Nov 29, 2009 [-]
+
+You can say the same thing another way. If your code is littered with V2 = V1 + 1 "idioms", then you are coding in a way not well supported by Erlang.
+
+Or, rebinding variables is generally not the clearest way to express the intent of your calculation. Abstractions like fold are more pure descriptions of the desired calculation.
+
+I do agree with the consensus that the clojure recur, expresses something about intent that is missing from Erlang.
+
+I enjoy functional depictions of algorithms, but there are many programmers who are currently more comfortable with imperative code.
+
+	
+	
+cloudhead on Nov 29, 2009 [-]
+
+Your code will only end up with all those variables if you program in an imperative style — why are you creating unnecessary state?
+
+	
+	
+rvirding on Nov 29, 2009 [-]
+
+The only time it is sensible to do this with variable names is when they are some form of logical progression, for example when threading a state variable through the code which may be modified.
+
+ f(..., State0) -> {A,State1} = foo(..., State0), {B,State2} = bar(..., State1), {C,State3} = baz(..., State2), Res = fubar(A, B, C, ...), {Res,State3}.  
+
+Otherwise you just create confusion.
+
+	
+	
+davidw on Nov 29, 2009 [-]
+
+iamaleksey is right that you should stop and think about what you're doing if you have a lot of that kind of Erlang code.
+
+The guy you're looking for is Tony Arcieri, and his language is Reia. And here's the FAQ about assignments:
+
+http://wiki.reia-lang.org/wiki/FAQ#Destructive_assignment.3F...
+
+	
+	
+tlrobinson on Nov 30, 2009 [-]
+
+Isn't it also somewhat important for pattern matching?
+
+
+
+
+Guidelines | FAQ | Support | API | Security | Lists | Bookmarklet | Legal | Apply to YC | Contact
+
+Search:

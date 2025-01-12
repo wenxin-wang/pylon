@@ -1,0 +1,5613 @@
+Linear Algebra Done Wrong
+Sergei Treil
+Department of Mathematics, Brown University
+
+Copyright c Sergei Treil, 2004, 2009, 2011, 2014, 2017
+This book is licensed under a Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License, see https://creativecommons.org/licenses/by-nc-nd/3.0/
+Additional details: You can use this book free of charge for noncommercial purposes, in particular for studying and/or teaching. You can print paper copies of the book or its parts using either personal printer or professional printing services. Instructors teaching a class (or their institutions) can provide students with printed copies of the book and charge the fee to cover the cost of printing; however the students should have an option to use the free electronic version.
+
+Preface
+The title of the book sounds a bit mysterious. Why should anyone read this book if it presents the subject in a wrong way? What is particularly done “wrong” in the book?
+Before answering these questions, let me ﬁrst describe the target audience of this text. This book appeared as lecture notes for the course “Honors Linear Algebra”. It supposed to be a ﬁrst linear algebra course for mathematically advanced students. It is intended for a student who, while not yet very familiar with abstract reasoning, is willing to study more rigorous mathematics than what is presented in a “cookbook style” calculus type course. Besides being a ﬁrst course in linear algebra it is also supposed to be a ﬁrst course introducing a student to rigorous proof, formal deﬁnitions—in short, to the style of modern theoretical (abstract) mathematics. The target audience explains the very speciﬁc blend of elementary ideas and concrete examples, which are usually presented in introductory linear algebra texts with more abstract deﬁnitions and constructions typical for advanced books.
+Another speciﬁc of the book is that it is not written by or for an algebraist. So, I tried to emphasize the topics that are important for analysis, geometry, probability, etc., and did not include some traditional topics. For example, I am only considering vector spaces over the ﬁelds of real or complex numbers. Linear spaces over other ﬁelds are not considered at all, since I feel time required to introduce and explain abstract ﬁelds would be better spent on some more classical topics, which will be required in other disciplines. And later, when the students study general ﬁelds in an abstract algebra course they will understand that many of the constructions studied in this book will also work for general ﬁelds.
+iii
+
+iv
+
+Preface
+
+Also, I treat only ﬁnite-dimensional spaces in this book and a basis always means a ﬁnite basis. The reason is that it is impossible to say something non-trivial about inﬁnite-dimensional spaces without introducing convergence, norms, completeness etc., i.e. the basics of functional analysis. And this is deﬁnitely a subject for a separate course (text). So, I do not consider inﬁnite Hamel bases here: they are not needed in most applications to analysis and geometry, and I feel they belong in an abstract algebra course.
+Notes for the instructor. There are several details that distinguish this text from standard advanced linear algebra textbooks. First concerns the deﬁnitions of bases, linearly independent, and generating sets. In the book I ﬁrst deﬁne a basis as a system with the property that any vector admits a unique representation as a linear combination. And then linear independence and generating system properties appear naturally as halves of the basis property, one being uniqueness and the other being existence of the representation.
+The reason for this approach is that I feel the concept of a basis is a much more important notion than linear independence: in most applications we really do not care about linear independence, we need a system to be a basis. For example, when solving a homogeneous system, we are not just looking for linearly independent solutions, but for the correct number of linearly independent solutions, i.e. for a basis in the solution space.
+And it is easy to explain to students, why bases are important: they allow us to introduce coordinates, and work with Rn (or Cn) instead of working with an abstract vector space. Furthermore, we need coordinates to perform computations using computers, and computers are well adapted to working with matrices. Also, I really do not know a simple motivation for the notion of linear independence.
+Another detail is that I introduce linear transformations before teaching how to solve linear systems. A disadvantage is that we did not prove until Chapter 2 that only a square matrix can be invertible as well as some other important facts. However, having already deﬁned linear transformation allows more systematic presentation of row reduction. Also, I spend a lot of time (two sections) motivating matrix multiplication. I hope that I explained well why such a strange looking rule of multiplication is, in fact, a very natural one, and we really do not have any choice here.
+Many important facts about bases, linear transformations, etc., like the fact that any two bases in a vector space have the same number of vectors, are proved in Chapter 2 by counting pivots in the row reduction. While most of these facts have “coordinate free” proofs, formally not involving Gaussian
+
+Preface
+
+v
+
+elimination, a careful analysis of the proofs reveals that the Gaussian elimination and counting of the pivots do not disappear, they are just hidden in most of the proofs. So, instead of presenting very elegant (but not easy for a beginner to understand) “coordinate-free” proofs, which are typically presented in advanced linear algebra books, we use “row reduction” proofs, more common for the “calculus type” texts. The advantage here is that it is easy to see the common idea behind all the proofs, and such proofs are easier to understand and to remember for a reader who is not very mathematically sophisticated.
+I also present in Section 8 of Chapter 2 a simple and easy to remember formalism for the change of basis formula.
+Chapter 3 deals with determinants. I spent a lot of time presenting a motivation for the determinant, and only much later give formal deﬁnitions. Determinants are introduced as a way to compute volumes. It is shown that if we allow signed volumes, to make the determinant linear in each column (and at that point students should be well aware that the linearity helps a lot, and that allowing negative volumes is a very small price to pay for it), and assume some very natural properties, then we do not have any choice and arrive to the classical deﬁnition of the determinant. I would like to emphasize that initially I do not postulate antisymmetry of the determinant; I deduce it from other very natural properties of volume.
+Note, that while formally in Chapters 1–3 I was dealing mainly with real spaces, everything there holds for complex spaces, and moreover, even for the spaces over arbitrary ﬁelds.
+Chapter 4 is an introduction to spectral theory, and that is where the complex space Cn naturally appears. It was formally deﬁned in the beginning of the book, and the deﬁnition of a complex vector space was also given there, but before Chapter 4 the main object was the real space Rn. Now the appearance of complex eigenvalues shows that for spectral theory the most natural space is the complex space Cn, even if we are initially dealing with real matrices (operators in real spaces). The main accent here is on the diagonalization, and the notion of a basis of eigesnspaces is also introduced.
+Chapter 5 dealing with inner product spaces comes after spectral theory, because I wanted to do both the complex and the real cases simultaneously, and spectral theory provides a strong motivation for complex spaces. Other then the motivation, Chapters 4 and 5 do not depend on each other, and an instructor may do Chapter 5 ﬁrst.
+Although I present the Jordan canonical form in Chapter 9, I usually do not have time to cover it during a one-semester course. I prefer to spend more time on topics discussed in Chapters 6 and 7 such as diagonalization
+
+vi
+
+Preface
+
+of normal and self-adjoint operators, polar and singular values decomposition, the structure of orthogonal matrices and orientation, and the theory of quadratic forms.
+I feel that these topics are more important for applications, then the Jordan canonical form, despite the deﬁnite beauty of the latter. However, I added Chapter 9 so the instructor may skip some of the topics in Chapters 6 and 7 and present the Jordan Decomposition Theorem instead.
+I also included (new for 2009) Chapter 8, dealing with dual spaces and tensors. I feel that the material there, especially sections about tensors, is a bit too advanced for a ﬁrst year linear algebra course, but some topics (for example, change of coordinates in the dual space) can be easily included in the syllabus. And it can be used as an introduction to tensors in a more advanced course. Note, that the results presented in this chapter are true for an arbitrary ﬁeld.
+I had tried to present the material in the book rather informally, preferring intuitive geometric reasoning to formal algebraic manipulations, so to a purist the book may seem not suﬃciently rigorous. Throughout the book I usually (when it does not lead to the confusion) identify a linear transformation and its matrix. This allows for a simpler notation, and I feel that overemphasizing the diﬀerence between a transformation and its matrix may confuse an inexperienced student. Only when the diﬀerence is crucial, for example when analyzing how the matrix of a transformation changes under the change of the basis, I use a special notation to distinguish between a transformation and its matrix.
+
+Contents
+
+Preface
+
+iii
+
+Chapter 1. Basic Notions
+
+1
+
+§1. Vector spaces
+
+1
+
+§2. Linear combinations, bases.
+
+6
+
+§3. Linear Transformations. Matrix–vector multiplication
+
+12
+
+§4. Linear transformations as a vector space
+
+17
+
+§5. Composition of linear transformations and matrix multiplication. 19
+
+§6. Invertible transformations and matrices. Isomorphisms
+
+24
+
+§7. Subspaces.
+
+30
+
+§8. Application to computer graphics.
+
+31
+
+Chapter 2. Systems of linear equations
+
+39
+
+§1. Diﬀerent faces of linear systems.
+
+39
+
+§2. Solution of a linear system. Echelon and reduced echelon forms 40
+
+§3. Analyzing the pivots.
+
+46
+
+§4. Finding A−1 by row reduction.
+
+52
+
+§5. Dimension. Finite-dimensional spaces.
+
+54
+
+§6. General solution of a linear system.
+
+56
+
+§7. Fundamental subspaces of a matrix. Rank.
+
+59
+
+§8. Representation of a linear transformation in arbitrary bases.
+
+Change of coordinates formula.
+
+69
+
+Chapter 3. Determinants
+
+75
+
+vii
+
+viii
+
+Contents
+
+§1. Introduction.
+
+75
+
+§2. What properties determinant should have.
+
+76
+
+§3. Constructing the determinant.
+
+78
+
+§4. Formal deﬁnition. Existence and uniqueness of the determinant. 86
+
+§5. Cofactor expansion.
+
+90
+
+§6. Minors and rank.
+
+96
+
+§7. Review exercises for Chapter 3.
+
+96
+
+Chapter 4. Introduction to spectral theory (eigenvalues and
+
+eigenvectors)
+
+99
+
+§1. Main deﬁnitions
+
+100
+
+§2. Diagonalization.
+
+105
+
+Chapter 5. Inner product spaces
+
+117
+
+§1. Inner product in Rn and Cn. Inner product spaces.
+
+117
+
+§2. Orthogonality. Orthogonal and orthonormal bases.
+
+125
+
+§3. Orthogonal projection and Gram-Schmidt orthogonalization 129
+
+§4. Least square solution. Formula for the orthogonal projection 136
+
+§5. Adjoint of a linear transformation. Fundamental subspaces
+
+revisited.
+
+142
+
+§6. Isometries and unitary operators. Unitary and orthogonal
+
+matrices.
+
+146
+
+§7. Rigid motions in Rn
+
+151
+
+§8. Complexiﬁcation and decomplexiﬁcation
+
+154
+
+Chapter 6. Structure of operators in inner product spaces.
+
+163
+
+§1. Upper triangular (Schur) representation of an operator.
+
+163
+
+§2. Spectral theorem for self-adjoint and normal operators.
+
+165
+
+§3. Polar and singular value decompositions.
+
+171
+
+§4. Applications of the singular value decomposition.
+
+179
+
+§5. Structure of orthogonal matrices
+
+187
+
+§6. Orientation
+
+193
+
+Chapter 7. Bilinear and quadratic forms
+
+197
+
+§1. Main deﬁnition
+
+197
+
+§2. Diagonalization of quadratic forms
+
+200
+
+§3. Silvester’s Law of Inertia
+
+206
+
+§4. Positive deﬁnite forms. Minimax characterization of eigenvalues
+
+and the Silvester’s criterion of positivity
+
+208
+
+Contents
+
+ix
+
+§5. Positive deﬁnite forms and inner products
+
+214
+
+Chapter 8. Dual spaces and tensors
+
+217
+
+§1. Dual spaces
+
+217
+
+§2. Dual of an inner product space
+
+224
+
+§3. Adjoint (dual) transformations and transpose. Fundamental
+
+subspace revisited (once more)
+
+227
+
+§4. What is the diﬀerence between a space and its dual?
+
+232
+
+§5. Multilinear functions. Tensors
+
+239
+
+§6. Change of coordinates formula for tensors.
+
+247
+
+Chapter 9. Advanced spectral theory
+
+253
+
+§1. Cayley–Hamilton Theorem
+
+253
+
+§2. Spectral Mapping Theorem
+
+257
+
+§3. Generalized eigenspaces. Geometric meaning of algebraic
+
+multiplicity
+
+259
+
+§4. Structure of nilpotent operators
+
+266
+
+§5. Jordan decomposition theorem
+
+272
+
+Index
+
+275
+
+Basic Notions
+
+Chapter 1
+
+1. Vector spaces
+
+A vector space V is a collection of objects, called vectors (denoted in this book by lowercase bold letters, like v), along with two operations, addition of vectors and multiplication by a number (scalar) 1 , such that the following 8 properties (the so-called axioms of a vector space) hold:
+The ﬁrst 4 properties deal with the addition:
+
+1. Commutativity: v + w = w + v for all v, w ∈ V ;
+2. Associativity: (u + v) + w = u + (v + w) for all u, v, w ∈ V ;
+3. Zero vector: there exists a special vector, denoted by 0 such that v + 0 = v for all v ∈ V ;
+4. Additive inverse: For every vector v ∈ V there exists a vector w ∈ V such that v + w = 0. Such additive inverse is usually denoted as −v; The next two properties concern multiplication:
+5. Multiplicative identity: 1v = v for all v ∈ V ;
+
+A question arises, “How one can memorize the above properties?” And the answer is that one does not need to, see below!
+
+1We need some visual distinction between vectors and other objects, so in this book we use bold lowercase letters for vectors and regular lowercase letters for numbers (scalars). In some (more advanced) books Latin letters are reserved for vectors, while Greek letters are used for scalars; in even more advanced texts any letter can be used for anything and the reader must understand from the context what each symbol means. I think it is helpful, especially for a beginner to have some visual distinction between diﬀerent objects, so a bold lowercase letters will always denote a vector. And on a blackboard an arrow (like in v) is used to identify a vector.
+1
+
+2
+
+1. Basic Notions
+
+6. Multiplicative associativity: (αβ)v = α(βv) for all v ∈ V and all scalars α, β; And ﬁnally, two distributive properties, which connect multiplication and addition:
+7. α(u + v) = αu + αv for all u, v ∈ V and all scalars α;
+8. (α + β)v = αv + βv for all v ∈ V and all scalars α, β.
+Remark. The above properties seem hard to memorize, but it is not necessary. They are simply the familiar rules of algebraic manipulations with numbers, that you know from high school. The only new twist here is that you have to understand what operations you can apply to what objects. You can add vectors, and you can multiply a vector by a number (scalar). Of course, you can do with number all possible manipulations that you have learned before. But, you cannot multiply two vectors, or add a number to a vector.
+Remark. It is easy to prove that zero vector 0 is unique, and that given v ∈ V its additive inverse −v is also unique.
+It is also not hard to show using properties 5, 6 and 8 that 0 = 0v for any v ∈ V , and that −v = (−1)v. Note, that to do this one still needs to use other properties of a vector space in the proofs, in particular properties 3 and 4.
+
+If you do not know what a ﬁeld is, do not worry, since in this book we consider only the case of real and complex spaces.
+
+If the scalars are the usual real numbers, we call the space V a real vector space. If the scalars are the complex numbers, i.e. if we can multiply vectors by complex numbers, we call the space V a complex vector space.
+Note, that any complex vector space is a real vector space as well (if we can multiply by complex numbers, we can multiply by real numbers), but not the other way around.
+It is also possible to consider a situation when the scalars are elements of an arbitrary ﬁeld F. In this case we say that V is a vector space over the ﬁeld F. Although many of the constructions in the book (in particular, everything in Chapters 1–3) work for general ﬁelds, in this text we are considering only real and complex vector spaces.
+If we do not specify the set of scalars, or use a letter F for it, then the results are true for both real and complex spaces. If we need to distinguish real and complex cases, we will explicitly say which case we are considering.
+Note, that in the deﬁnition of a vector space over an arbitrary ﬁeld, we require the set of scalars to be a ﬁeld, so we can always divide (without a remainder) by a non-zero scalar. Thus, it is possible to consider vector space over rationals, but not over the integers.
+
+1. Vector spaces
+
+3
+
+1.1. Examples.
+
+Example. The space Rn consists of all columns of size n,
+
+ v1 
+
+ v=
+
+
+
+v2 ...
+
+   
+
+vn
+
+whose entries are real numbers. Addition and multiplication are deﬁned entrywise, i.e.
+
+ v1   αv1 
+
+ α
+
+
+
+v2 ...
+
+ = 
+
+
+αv2 ...
+
+ , 
+
+
+vn
+
+αvn
+
+ v1   w1   v1 + w1 
+
+   
+
+v2 ...
+
+ + 
+
+
+w2 ...
+
+ = 
+
+
+v2 + w2 ...
+
+   
+
+vn
+
+wn
+
+vn + wn
+
+Example. The space Cn also consists of columns of size n, only the entries
+now are complex numbers. Addition and multiplication are deﬁned exactly as in the case of Rn, the only diﬀerence is that we can now multiply vectors by complex numbers, i.e. Cn is a complex vector space.
+
+Many results in this text are true for both Rn and Cn. In such cases we will use notation Fn.
+Example. The space Mm×n (also denoted as Mm,n) of m × n matrices: the addition and multiplication by scalars are deﬁned entrywise. If we allow only real entries (and so only multiplication only by reals), then we have a real vector space; if we allow complex entries and multiplication by complex numbers, we then have a complex vector space.
+Formally, we have to distinguish between between real and complex cases, i.e. write something like MmR,n or MmC,n. However, in most situations there is no diﬀerence between real and complex case, and there is no need to specify which case we are considering. If there is a diﬀerence we say explicitly which case we are considering.
+
+Remark. As we mentioned above, the axioms of a vector space are just the familiar rules of algebraic manipulations with (real or complex) numbers, so if we put scalars (numbers) for the vectors, all axioms will be satisﬁed. Thus, the set R of real numbers is a real vector space, and the set C of complex numbers is a complex vector space.
+More importantly, since in the above examples all vector operations (addition and multiplication by a scalar) are performed entrywise, for these examples the axioms of a vector space are automatically satisﬁed because they are satisﬁed for scalars (can you see why?). So, we do not have to
+
+4
+
+1. Basic Notions
+
+check the axioms, we get the fact that the above examples are indeed vector spaces for free!
+The same can be applied to the next example, the coeﬃcients of the polynomials play the role of entries there.
+Example. The space Pn of polynomials of degree at most n, consists of all polynomials p of form
+p(t) = a0 + a1t + a2t2 + . . . + antn,
+where t is the independent variable. Note, that some, or even all, coeﬃcients ak can be 0.
+In the case of real coeﬃcients ak we have a real vector space, complex coeﬃcient give us a complex vector space. Again, we will specify whether we treating real or complex case only when it is essential; otherwise everything applies to both cases.
+
+Question: What are zero vectors in each of the above examples?
+
+1.2. Matrix notation. An m × n matrix is a rectangular array with m rows and n columns. Elements of the array are called entries of the matrix.
+
+It is often convenient to denote matrix entries by indexed letters: the ﬁrst index denotes the number of the row, where the entry is, and the second one is the number of the column. For example
+
+(1.1)
+
+ a1,1 a1,2 . . . a1,n 
+
+A
+
+=
+
+(aj,k )mj =, 1,
+
+n k=1
+
+=
+
+  
+
+
+
+a2,1 ...
+
+a2,2 ...
+
+. . . a2,n 
+
+...
+
+  
+
+am,1 am,2 . . . am,n
+
+is a general way to write an m × n matrix.
+
+Very often for a matrix A the entry in row number j and column number k is denoted by Aj,k or (A)j,k, and sometimes as in example (1.1) above the same letter but in lowercase is used for the matrix entries.
+Given a matrix A, its transpose (or transposed matrix) AT , is deﬁned by transforming the rows of A into the columns. For example
+
+123 456
+
+T 1 4 =  2 5 . 36
+
+So, the columns of AT are the rows of A and vice versa, the rows of AT are the columns of A.
+The formal deﬁnition is as follows: (AT )j,k = (A)k,j meaning that the entry of AT in the row number j and column number k equals the entry of A in the row number k and row number j.
+
+1. Vector spaces
+
+5
+
+The transpose of a matrix has a very nice interpretation in terms of linear transformations, namely it gives the so-called adjoint transformation. We will study this in detail later, but for now transposition will be just a useful formal operation.
+One of the ﬁrst uses of the transpose is that we can write a column vector x ∈ Fn (recall that F is R or C) as x = (x1, x2, . . . , xn)T . If we put the column vertically, it will use signiﬁcantly more space.
+Exercises.
+1.1. Let x = (1, 2, 3)T , y = (y1, y2, y3)T , z = (4, 2, 1)T . Compute 2x, 3y, x + 2y − 3z.
+1.2. Which of the following sets (with natural addition and multiplication by a scalar) are vector spaces. Justify your answer.
+a) The set of all continuous functions on the interval [0, 1]; b) The set of all non-negative functions on the interval [0, 1]; c) The set of all polynomials of degree exactly n; d) The set of all symmetric n × n matrices, i.e. the set of matrices A =
+{aj,k}nj,k=1 such that AT = A.
+1.3. True or false:
+a) Every vector space contains a zero vector; b) A vector space can have more than one zero vector; c) An m × n matrix has m rows and n columns; d) If f and g are polynomials of degree n, then f + g is also a polynomial of
+degree n; e) If f and g are polynomials of degree at most n, then f + g is also a
+polynomial of degree at most n
+1.4. Prove that a zero vector 0 of a vector space V is unique.
+1.5. What matrix is the zero vector of the space M2×3?
+1.6. Prove that the additive inverse, deﬁned in Axiom 4 of a vector space is unique.
+1.7. Prove that 0v = 0 for any vector v ∈ V .
+1.8. Prove that for any vector v its additive inverse −v is given by (−1)v.
+
+6
+
+1. Basic Notions
+
+2. Linear combinations, bases.
+
+Let V be a vector space, and let v1, v2, . . . , vp ∈ V be a collection of vectors. A linear combination of vectors v1, v2, . . . , vp is a sum of form
+p
+α1v1 + α2v2 + . . . + αpvp = αkvk.
+k=1
+Deﬁnition 2.1. A system of vectors v1, v2, . . . vn ∈ V is called a basis (for the vector space V ) if any vector v ∈ V admits a unique representation as a linear combination
+n
+v = α1v1 + α2v2 + . . . + αnvn = αkvk.
+k=1
+The coeﬃcients α1, α2, . . . , αn are called coordinates of the vector v (in the basis, or with respect to the basis v1, v2, . . . , vn).
+Another way to say that v1, v2, . . . , vn is a basis is to say that for any possible choice of the right side v, the equation x1v1 +x2v2 +. . .+xmvn = v (with unknowns xk) has a unique solution.
+
+Before discussing any properties of bases2, let us give a few examples, showing that such objects exist, and that it makes sense to study them.
+
+Example 2.2. In the ﬁrst example the space V is Fn, where F is either R
+
+or C. Consider vectors
+
+1
+
+0
+
+0
+
+0
+
+0
+
+e1
+
+=
+
+    
+
+0 ...
+
+ ,  
+
+
+1
+
+e2
+
+ =
+ 
+
+
+0 ...
+
+ ,  
+
+
+0
+
+e3
+
+=
+
+    
+
+1 ...
+
+ ,...,  
+
+
+0
+
+en
+
+ =
+ 
+
+
+0 ...
+
+ ,  
+
+
+0
+
+0
+
+0
+
+1
+
+(the vector ek has all entries 0 except the entry number k, which is 1). The system of vectors e1, e2, . . . , en is a basis in Fn. Indeed, any vector
+
+ x1 
+
+ v=
+
+
+
+x2 ...
+
+
+
+ 
+
+∈
+
+Fn
+
+
+
+xn
+
+can be represented as the linear combination
+
+n
+v = x1e1 + x2e2 + . . . xnen = xkek
+k=1
+
+2the plural for the “basis” is bases, the same as the plural for “base”
+
+2. Linear combinations, bases.
+
+7
+
+and this representation is unique. The system e1, e2, . . . , en ∈ Fn is called the standard basis in Fn
+
+Example 2.3. In this example the space is the space Pn of the polynomials of degree at most n. Consider vectors (polynomials) e0, e1, e2, . . . , en ∈ Pn deﬁned by
+e0 := 1, e1 := t, e2 := t2, e3 := t3, . . . , en := tn.
+Clearly, any polynomial p, p(t) = a0 + a1t + a2t2 + . . . + antn admits a unique representation
+p = a0e0 + a1e1 + . . . + anen.
+So the system e0, e1, e2, . . . , en ∈ Pn is a basis in Pn. We will call it the standard basis in Pn.
+
+Remark 2.4. If a vector space V has a basis v1, v2, . . . , vn, then any vector
+
+v is uniquely deﬁned by its coeﬃcients in the decomposition v =
+
+n k=1
+
+αk vk
+
+.
+
+So, if we stack the coeﬃcients αk in a column, we can operate with them
+
+as if they were column vectors, i.e. as with elements of Fn (again here F is
+
+either R or C, but everything also works for an abstract ﬁeld F).
+
+Namely, if v =
+
+n k=1
+
+αk
+
+vk
+
+and
+
+w
+
+=
+
+n k=1
+
+βk vk ,
+
+then
+
+n
+
+n
+
+n
+
+v + w = αkvk + βkvk = (αk + βk)vk,
+
+k=1
+
+k=1
+
+k=1
+
+i.e. to get the column of coordinates of the sum one just need to add the columns of coordinates of the summands. Similarly, to get the coordinates of αv we need simply to multiply the column of coordinates of v by α.
+
+This is a very important remark, that will be used throughout the book. It allows us to translate any statement about the standard column space Fn to a vector space V with a basis v1, v2, . . . , vn
+
+2.1. Generating and linearly independent systems. The deﬁnition of a basis says that any vector admits a unique representation as a linear combination. This statement is in fact two statements, namely that the representation exists and that it is unique. Let us analyze these two statements separately.
+If we only consider the existence we get the following notion
+Deﬁnition 2.5. A system of vectors v1, v2, . . . , vp ∈ V is called a generating system (also a spanning system, or a complete system) in V if any vector v ∈ V admits representation as a linear combination
+p
+v = α1v1 + α2v2 + . . . + αpvp = αkvk.
+k=1
+The only diﬀerence from the deﬁnition of a basis is that we do not assume that the representation above is unique.
+
+8
+
+1. Basic Notions
+
+The words generating, spanning and complete here are synonyms. I personally prefer the term complete, because of my operator theory background. Generating and spanning are more often used in linear algebra textbooks.
+Clearly, any basis is a generating (complete) system. Also, if we have a basis, say v1, v2, . . . , vn, and we add to it several vectors, say vn+1, . . . , vp, then the new system will be a generating (complete) system. Indeed, we can represent any vector as a linear combination of the vectors v1, v2, . . . , vn, and just ignore the new ones (by putting corresponding coeﬃcients αk = 0).
+Now, let us turn our attention to the uniqueness. We do not want to worry about existence, so let us consider the zero vector 0, which always admits a representation as a linear combination.
+
+Deﬁnition. A linear combination α1v1 + α2v2 + . . . + αpvp is called trivial if αk = 0 ∀k.
+
+A trivial linear combination is always (for all choices of vectors v1, v2, . . . , vp) equal to 0, and that is probably the reason for the name.
+
+Deﬁnition. A system of vectors v1, v2, . . . , vp ∈ V is called linearly inde-
+
+pendent if only the trivial linear combination (
+
+p k=1
+
+αk vk
+
+with
+
+αk
+
+=
+
+0
+
+∀k)
+
+of vectors v1, v2, . . . , vp equals 0.
+
+In other words, the system v1, v2, . . . , vp is linearly independent iﬀ the equation x1v1 + x2v2 + . . . + xpvp = 0 (with unknowns xk) has only trivial solution x1 = x2 = . . . = xp = 0.
+
+If a system is not linearly independent, it is called linearly dependent. By negating the deﬁnition of linear independence, we get the following
+
+Deﬁnition. A system of vectors v1, v2, . . . , vp is called linearly dependent
+
+if 0 can be represented as a nontrivial linear combination, 0 =
+
+p k=1
+
+αk vk
+
+.
+
+Non-trivial here means that at least one of the coeﬃcient αk is non-zero.
+
+This can be (and usually is) written as
+
+p k=1
+
+|αk|
+
+=
+
+0.
+
+So, restating the deﬁnition we can say, that a system is linearly depen-
+
+dent if and only if there exist scalars α1, α2, . . . , αp, that
+p
+
+p k=1
+
+|αk
+
+|
+
+=
+
+0
+
+such
+
+αkvk = 0.
+k=1
+
+An alternative deﬁnition (in terms of equations) is that a system v1, v2, . . . , vp is linearly dependent iﬀ the equation
+
+x1v1 + x2v2 + . . . + xpvp = 0
+
+(with unknowns xk) has a non-trivial solution. Non-trivial, once again
+
+means that at least one of xk is diﬀerent from 0, and it can be written
+
+as
+
+p k=1
+
+|xk|
+
+=
+
+0.
+
+2. Linear combinations, bases.
+
+9
+
+The following proposition gives an alternative description of linearly dependent systems.
+
+Proposition 2.6. A system of vectors v1, v2, . . . , vp ∈ V is linearly dependent if and only if one of the vectors vk can be represented as a linear combination of the other vectors,
+
+(2.1)
+
+p
+vk = βjvj.
+j=1 j=k
+
+Proof. Suppose the system v1, v2, . . . , vp is linearly dependent. Then there
+
+exist scalars αk,
+
+p k=1
+
+|αk|
+
+=
+
+0
+
+such
+
+that
+
+α1v1 + α2v2 + . . . + αpvp = 0.
+
+Let k be the index such that αk = 0. Then, moving all terms except αkvk to the right side we get
+p
+αkvk = − αjvj.
+j=1 j=k
+Dividing both sides by αk we get (2.1) with βj = −αj/αk.
+On the other hand, if (2.1) holds, 0 can be represented as a non-trivial linear combination
+p
+vk − βjvj = 0.
+j=1 j=k
+
+Obviously, any basis is a linearly independent system. Indeed, if a system v1, v2, . . . , vn is a basis, 0 admits a unique representation
+n
+0 = α1v1 + α2v2 + . . . + αnvn = αkvk.
+k=1
+Since the trivial linear combination always gives 0, the trivial linear combination must be the only one giving 0.
+So, as we already discussed, if a system is a basis it is a complete (generating) and linearly independent system. The following proposition shows that the converse implication is also true.
+
+Proposition 2.7. A system of vectors v1, v2, . . . , vn ∈ V is a basis if and only if it is linearly independent and complete (generating).
+
+In many textbooks a basis is deﬁned as a complete and linearly independent system. By Proposition 2.7 this deﬁnition is equivalent to ours.
+
+10
+
+1. Basic Notions
+
+Proof. We already know that a basis is always linearly independent and complete, so in one direction the proposition is already proved.
+
+Let us prove the other direction. Suppose a system v1, v2, . . . , vn is linearly independent and complete. Take an arbitrary vector v ∈ V . Since the system v1, v2, . . . , vn is linearly complete (generating), v can be represented as
+n
+v = α1v1 + α2v2 + . . . + αnvn = αkvk.
+k=1
+We only need to show that this representation is unique.
+
+Suppose v admits another representation
+
+n
+
+v = αkvk.
+
+k=1
+
+Then
+n
+
+n
+
+n
+
+(αk − αk)vk = αkvk − αkvk = v − v = 0.
+
+k=1
+
+k=1
+
+k=1
+
+Since the system is linearly independent, αk − αk = 0 ∀k, and thus the
+
+representation v = α1v1 + α2v2 + . . . + αnvn is unique.
+
+Remark. In many textbooks a basis is deﬁned as a complete and linearly independent system (by Proposition 2.7 this deﬁnition is equivalent to ours). Although this deﬁnition is more common than one presented in this text, I prefer the latter. It emphasizes the main property of a basis, namely that any vector admits a unique representation as a linear combination.
+
+Proposition 2.8. Any (ﬁnite) generating system contains a basis.
+
+Proof. Suppose v1, v2, . . . , vp ∈ V is a generating (complete) set. If it is linearly independent, it is a basis, and we are done.
+Suppose it is not linearly independent, i.e. it is linearly dependent. Then there exists a vector vk which can be represented as a linear combination of the vectors vj, j = k.
+Since vk can be represented as a linear combination of vectors vj, j = k, any linear combination of vectors v1, v2, . . . , vp can be represented as a linear combination of the same vectors without vk (i.e. the vectors vj, 1 ≤ j ≤ p, j = k). So, if we delete the vector vk, the new system will still be a complete one.
+If the new system is linearly independent, we are done. If not, we repeat the procedure.
+Repeating this procedure ﬁnitely many times we arrive to a linearly independent and complete system, because otherwise we delete all vectors and end up with an empty set.
+
+2. Linear combinations, bases.
+
+11
+
+So, any ﬁnite complete (generating) set contains a complete linearly independent subset, i.e. a basis.
+
+Exercises.
+
+2.1. Find a basis in the space of 3 × 2 matrices M3×2.
+
+2.2. True or false:
+
+a) Any set containing a zero vector is linearly dependent b) A basis must contain 0; c) subsets of linearly dependent sets are linearly dependent; d) subsets of linearly independent sets are linearly independent; e) If α1v1 + α2v2 + . . . + αnvn = 0 then all scalars αk are zero;
+2.3. Recall, that a matrix is called symmetric if AT = A. Write down a basis in the space of symmetric 2 × 2 matrices (there are many possible answers). How many elements are in the basis?
+
+2.4. Write down a basis for the space of
+
+a) 3 × 3 symmetric matrices; b) n × n symmetric matrices; c) n × n antisymmetric (AT = −A) matrices;
+
+2.5. Let a system of vectors v1, v2, . . . , vr be linearly independent but not gen-
+
+erating. Show that it is possible to ﬁnd a vector vr+1 such that the system
+
+v1, v2, . . . , vr, vr+1 is linearly independent. Hint: Take for vr+1 any vector that
+
+cannot be represented as a linear combination
+
+r k=1
+
+αk vk
+
+and
+
+show
+
+that
+
+the
+
+system
+
+v1, v2, . . . , vr, vr+1 is linearly independent.
+
+2.6. Is it possible that vectors v1, v2, v3 are linearly dependent, but the vectors w1 = v1 + v2, w2 = v2 + v3 and w3 = v3 + v1 are linearly independent ?
+
+12
+
+1. Basic Notions
+
+3. Linear Transformations. Matrix–vector multiplication
+
+The words “transformation”, “transform”, “mapping”, “map”, “operator”, “function” all denote the same object.
+
+A transformation T from a set X to a set Y is a rule that for each argument (input) x ∈ X assigns a value (output) y = T (x) ∈ Y .
+The set X is called the domain of T , and the set Y is called the target space or codomain of T .
+We write T : X → Y to say that T is a transformation with the domain X and the target space Y .
+
+Deﬁnition. Let V , W be vector spaces (over the same ﬁeld F). A transformation T : V → W is called linear if
+1. T (u + v) = T (u) + T (v) ∀u, v ∈ V ; 2. T (αv) = αT (v) for all v ∈ V and for all scalars α ∈ F.
+
+Properties 1 and 2 together are equivalent to the following one: T (αu + βv) = αT (u) + βT (v) for all u, v ∈ V and for all scalars α, β.
+
+3.1. Examples. You dealt with linear transformation before, may be without even suspecting it, as the examples below show.
+Example. Diﬀerentiation: Let V = Pn (the set of polynomials of degree at most n), W = Pn−1, and let T : Pn → Pn−1 be the diﬀerentiation operator,
+T (p) := p ∀p ∈ Pn.
+Since (f + g) = f + g and (αf ) = αf , this is a linear transformation.
+
+Example. Rotation: in this example V = W = R2 (the usual coordinate plane), and a transformation Tγ : R2 → R2 takes a vector in R2 and rotates it counterclockwise by γ radians. Since Tγ rotates the plane as a whole, it rotates as a whole the parallelogram used to deﬁne a sum of two vectors
+(parallelogram law). Therefore the property 1 of linear transformation holds.
+It is also easy to see that the property 2 is also true.
+
+Example. Reﬂection: in this example again V = W = R2, and the transformation T : R2 → R2 is the reﬂection in the ﬁrst coordinate axis, see the ﬁg. It can also be shown geometrically, that this transformation is linear, but we will use another way to show that.
+Namely, it is easy to write a formula for T ,
+
+T
+
+x1 x2
+
+=
+
+x1 −x2
+
+and from this formula it is easy to check that the transformation is linear.
+
+3. Linear Transformations. Matrix–vector multiplication
+
+13
+
+Figure 1. Rotation
+
+Example. Let us investigate linear transformations T : R → R. Any such transformation is given by the formula
+
+T (x) = ax where a = T (1).
+
+Indeed,
+
+T (x) = T (x × 1) = xT (1) = xa = ax.
+
+So, any linear transformation of R is just a multiplication by a constant.
+
+3.2. Linear transformations Fn → Fm. Matrix–column multiplication. It turns out that a linear transformation T : Fn → Fm also can be represented as a multiplication, not by a scalar, but by a matrix.
+Let us see how. Let T : Fn → Fm be a linear transformation. What information do we need to compute T (x) for all vectors x ∈ Fn? My claim is that it is suﬃcient to know how T acts on the standard basis e1, e2, . . . , en of Fn. Namely, it is suﬃcient to know n vectors in Fm (i.e. the vectors of size m),
+a1 = T (e1), a2 := T (e2), . . . , an := T (en).
+
+14
+
+1. Basic Notions
+
+Indeed, let
+
+ x1 
+
+ x2 
+
+x=  
+
+...
+
+.  
+
+xn
+
+Then x = x1e1 + x2e2 + . . . + xnen =
+
+n k=1
+
+xk
+
+ek
+
+and
+
+n
+
+n
+
+n
+
+n
+
+T (x) = T ( xkek) = T (xkek) = xkT (ek) = xkak.
+
+k=1
+
+k=1
+
+k=1
+
+k=1
+
+So, if we join the vectors (columns) a1, a2, . . . , an together in a matrix A = [a1, a2, . . . , an] (ak being the kth column of A, k = 1, 2, . . . , n), this matrix contains all the information about T .
+
+Let us show how one should deﬁne the product of a matrix and a vector (column) to represent the transformation T as a product, T (x) = Ax. Let
+
+ a1,1 a1,2 . . . a1,n 
+
+ A=
+
+
+
+a2,1 ...
+
+a2,2 ...
+
+...
+
+a2,n ...
+
+ . 
+
+
+am,1 am,2 . . . am,n
+
+Recall, that the column number k of A is the vector ak, i.e.
+
+ a1,k 
+
+
+
+ak
+
+=
+
+ 
+
+
+
+a2,k ...
+
+ . 
+
+
+am,k
+
+Then if we want Ax = T (x) we get
+
+ a1,1 
+
+ a1,2 
+
+ a1,n 
+
+n
+
+ a2,1 
+
+ a2,2 
+
+ a2,n 
+
+Ax =
+
+xk ak
+
+=
+
+x1
+
+ 
+
+k=1
+
+
+
+...
+
+ 
+
++
+
+x2
+
+ 
+
+
+
+...
+
+ 
+
++
+
+.
+
+.
+
+.
+
++
+
+xn
+
+ 
+
+
+
+
+
+...
+
+.  
+
+am,1
+
+am,2
+
+am,n
+
+So, the matrix–vector multiplication should be performed by the following column by coordinate rule:
+
+multiply each column of the matrix by the corresponding coordinate of the vector.
+
+Example.
+
+123 321
+
+1  2 =1
+3
+
+1 3
+
++2
+
+2 2
+
++3
+
+3 1
+
+=
+
+14 10
+
+.
+
+3. Linear Transformations. Matrix–vector multiplication
+
+15
+
+The “column by coordinate” rule is very well adapted for parallel computing. It will be also very important in diﬀerent theoretical constructions later.
+However, when doing computations manually, it is more convenient to compute the result one entry at a time. This can be expressed as the following row by column rule:
+
+To get the entry number k of the result, one need to multiply row
+
+number k of the matrix by the vector, that is, if Ax = y, then
+
+yk =
+
+n j=1
+
+ak,j xj ,
+
+k
+
+=
+
+1,
+
+2,
+
+.
+
+.
+
+. m;
+
+here xj and yk are coordinates of the vectors x and y respectively, and aj,k are the entries of the matrix A.
+
+Example.
+
+123 456
+
+1  2 =
+3
+
+1·1+2·2+3·3 4·1+5·2+6·3
+
+=
+
+14 32
+
+3.3. Linear transformations and generating sets. As we discussed above, linear transformation T (acting from Fn to Fm) is completely deﬁned by its values on the standard basis in Fn.
+The fact that we consider the standard basis is not essential, one can consider any basis, even any generating (spanning) set. Namely,
+A linear transformation T : V → W is completely deﬁned by its values on a generating set (in particular by its values on a basis).
+So, if v1, v2, . . . , vn is a generating set (in particular, if it is a basis) in V , and T and T1 are linear transformations T, T1 : V → W such that
+T vk = T1vk, k = 1, 2, . . . , n
+then T = T1. The proof of this statement is trivial and left as an exercise.
+
+3.4. Conclusions.
+• To get the matrix of a linear transformation T : Fn → Fm one needs to join the vectors ak = T ek (where e1, e2, . . . , en is the standard basis in Fn) into a matrix: kth column of the matrix is ak, k = 1, 2, . . . , n.
+• If the matrix A of the linear transformation T is known, then T (x) can be found by the matrix–vector multiplication, T (x) = Ax. To perform matrix–vector multiplication one can use either “column by coordinate” or “row by column” rule.
+
+16
+
+1. Basic Notions
+
+The notation T v is often used instead of T (v).
+
+The latter seems more appropriate for manual computations. The former is well adapted for parallel computers, and will be used in diﬀerent theoretical constructions.
+For a linear transformation T : Fn → Fm, its matrix is usually denoted as [T ]. However, very often people do not distinguish between a linear transformation and its matrix, and use the same symbol for both. When it does not lead to confusion, we will also use the same symbol for a transformation and its matrix.
+Since a linear transformation is essentially a multiplication, the notation T v is often used instead of T (v). We will also use this notation. Note that the usual order of algebraic operations apply, i.e. T v + u means T (v) + u, not T (v + u).
+
+In the matrix vector multiplication using the “row by column” rule be sure that you have the same number of entries in the row and in the column. The entries in the row and in the column should end simultaneously: if not, the multiplication is not deﬁned.
+
+Remark. In the matrix–vector multiplication Ax the number of columns of the matrix A matrix must coincide with the size of the vector x, i.e. a vector in Fn can only be multiplied by an m × n matrix.
+It makes sense, since an m × n matrix deﬁnes a linear transformation Fn → Fm, so vector x must belong to Fn.
+The easiest way to remember this is to remember that if performing multiplication you run out of some elements faster, then the multiplication is not deﬁned. For example, if using the “row by column” rule you run out of row entries, but still have some unused entries in the vector, the multiplication is not deﬁned. It is also not deﬁned if you run out of vector’s entries, but still have unused entries in the row.
+Remark. One does not have to restrict himself to the case of Fn with standard basis: everything described in this section works for transformation between arbitrary vector spaces as long as there is a basis in the domain and in the target space. Of course, if one changes a basis, the matrix of the linear transformation will be diﬀerent. This will be discussed later in Section 8.
+
+Exercises.
+
+3.1. Multiply:
+
+a)
+
+1 4
+
+1 b)  0
+2
+
+1
+
+c)
+
+  
+
+0 0
+
+0
+
+23 56
+2 1 0
+20 12 01 00
+
+1  3 ;
+2
+
+1 3
+
+;
+
+0  1 
+
+0 2
+
+  
+
+2 3
+
+; 
+
+1
+
+4
+
+4. Linear transformations as a vector space
+
+17
+
+ 1 2 0  1 
+
+d)
+
+  
+
+0 0
+
+1 0
+
+2 1
+
+  
+
+2 3
+
+. 
+
+000
+
+4
+
+3.2. Let a linear transformation in R2 be the reﬂection in the line x1 = x2. Find its matrix.
+
+3.3. For each linear transformation below ﬁnd it matrix
+
+a) T : R2 → R3 deﬁned by T (x, y)T = (x + 2y, 2x − 5y, 7y)T ;
+b) T : R4 → R3 deﬁned by T (x1, x2, x3, x4)T = (x1 +x2 +x3 +x4, x2 −x4, x1 + 3x2 + 6x4)T ;
+c) T : Pn → Pn, T f (t) = f (t) (ﬁnd the matrix with respect to the standard basis 1, t, t2, . . . , tn);
+d) T : Pn → Pn, T f (t) = 2f (t) + 3f (t) − 4f (t) (again with respect to the standard basis 1, t, t2, . . . , tn).
+
+3.4. Find 3 × 3 matrices representing the transformations of R3 which:
+
+a) project every vector onto x-y plane; b) reﬂect every vector through x-y plane; c) rotate the x-y plane through 30◦, leaving z-axis alone.
+
+3.5. Let A be a linear transformation. If z is the center of the straight interval [x, y], show that Az is the center of the interval [Ax, Ay]. Hint: What does it mean that z is the center of the interval [x, y]?
+
+3.6. The set C of complex numbers can be canonically identiﬁed with the space R2 by treating each z = x + iy ∈ C as a column (x, y)T ∈ R2.
+
+a) Treating C as a complex vector space, show that the multiplication by α = a + ib ∈ C is a linear transformation in C. What is its matrix?
+b) Treating C as the real vector space R2 show that the multiplication by α = a + ib deﬁnes a linear transformation there. What is its matrix?
+c) Deﬁne T (x + iy) = 2x − y + i(x − 3y). Show that this transformation is not a linear transformation in the complex vectors space C, but if we treat C as the real vector space R2 then it is a linear transformation there (i.e. that T is a real linear but not a complex linear transformation). Find the matrix of the real linear transformation T .
+
+3.7. Show that any linear transformation in C (treated as a complex vector space) is a multiplication by α ∈ C.
+
+4. Linear transformations as a vector space
+What operations can we perform with linear transformations? We can always multiply a linear transformation for a scalar, i.e. if we have a linear
+
+18
+
+1. Basic Notions
+
+transformation T : V → W and a scalar α we can deﬁne a new transformation αT by
+(αT )v = α(T v) ∀v ∈ V.
+It is easy to check that αT is also a linear transformation:
+
+(αT )(α1v1 + α2v2) = α(T (α1v1 + α2v2)) by the deﬁnition of αT = α(α1T v1 + α2T v2) by the linearity of T = α1αT v1 + α2αT v2 = α1(αT )v1 + α2(αT )v2
+
+If T1 and T2 are linear transformations with the same domain and target space (T1 : V → W and T2 : V → W , or in short T1, T2 : V → W ), then we can add these transformations, i.e. deﬁne a new transformation
+T = (T1 + T2) : V → W by
+
+(T1 + T2)v = T1v + T2v ∀v ∈ V.
+
+It is easy to check that the transformation T1 + T2 is a linear one, one just needs to repeat the above reasoning for the linearity of αT .
+
+So, if we ﬁx vector spaces V and W and consider the collection of all linear transformations from V to W (let us denote it by L(V, W )), we can deﬁne 2 operations on L(V, W ): multiplication by a scalar and addition. It can be easily shown that these operations satisfy the axioms of a vector space, deﬁned in Section 1.
+
+This should come as no surprise for the reader, since axioms of a vector space essentially mean that operation on vectors follow standard rules of algebra. And the operations on linear transformations are deﬁned as to satisfy these rules!
+
+As an illustration, let us write down a formal proof of the ﬁrst distribu-
+tive law (axiom 7) of a vector space. We want to show that α(T1 + T2) = αT1 + αT2. For any v ∈ V
+
+α(T1 + T2)v = α((T1 + T2)v) by the deﬁnition of multiplication
+
+= α(T1v + T2v)
+
+by the deﬁnition of the sum
+
+= αT1v + αT2v
+
+by Axiom 7 for W
+
+= (αT1 + αT2)v
+
+by the deﬁnition of the sum
+
+So indeed α(T1 + T2) = αT1 + αT2.
+
+Remark. Linear operations (addition and multiplication by a scalar) on linear transformations T : Fn → Fm correspond to the respective operations on their matrices. Since we know that the set of m × n matrices is a vector space, this immediately implies that L(Fn, Fm) is a vector space.
+We presented the abstract proof above, ﬁrst of all because it work for general spaces, for example, for spaces without a basis, where we cannot
+
+5. Composition of linear transformations and matrix multiplication. 19
+work with coordinates. Secondly, the reasonings similar to the abstract one presented here, are used in many places, so the reader will beneﬁt from understanding it.
+And as the reader gains some mathematical sophistication, he/she will see that this abstract reasoning is indeed a very simple one, that can be performed almost automatically.
+5. Composition of linear transformations and matrix multiplication.
+5.1. Deﬁnition of the matrix multiplication. Knowing matrix–vector multiplication, one can easily guess what is the natural way to deﬁne the product AB of two matrices: Let us multiply by A each column of B (matrixvector multiplication) and join the resulting column-vectors into a matrix. Formally,
+if b1, b2, . . . , br are the columns of B, then Ab1, Ab2, . . . , Abr are the columns of the matrix AB. Recalling the row by column rule for the matrix–vector multiplication we get the following row by column rule for the matrices
+the entry (AB)j,k (the entry in the row j and column k) of the product AB is deﬁned by
+(AB)j,k = (row #j of A) · (column #k of B)
+Formally it can be rewritten as
+(AB)j,k = aj,lbl,k,
+l
+if aj,k and bj,k are entries of the matrices A and B respectively. I intentionally did not speak about sizes of the matrices A and B, but
+if we recall the row by column rule for the matrix–vector multiplication, we can see that in order for the multiplication to be deﬁned, the size of a row of A should be equal to the size of a column of B.
+In other words the product AB is deﬁned if and only if A is an m × n and B is n × r matrix.
+5.2. Motivation: composition of linear transformations. One can ask yourself here: Why are we using such a complicated rule of multiplication? Why don’t we just multiply matrices entrywise?
+And the answer is, that the multiplication, as it is deﬁned above, arises naturally from the composition of linear transformations.
+
+20
+
+1. Basic Notions
+
+We will usually identify a linear transformation and its matrix, but in the next few paragraphs we will distinguish them
+Note: order of transformations!
+
+Suppose we have two linear transformations, T1 : Fn → Fm and T2 : Fr → Fn. Deﬁne the composition T = T1 ◦ T2 of the transformations T1, T2 as
+T (x) = T1(T2(x)) ∀x ∈ Fr. Note that T2(x) ∈ Fn. Since T1 : Fn → Fm, the expression T1(T2(x)) is well deﬁned and the result belongs to Fm. So, T : Fr → Fm.
+It is easy to show that T is a linear transformation (exercise), so it is deﬁned by an m × r matrix. How one can ﬁnd this matrix, knowing the matrices of T1 and T2?
+Let A be the matrix of T1 and B be the matrix of T2. As we discussed in the previous section, the columns of T are vectors T (e1), T (e2), . . . , T (er), where e1, e2, . . . , er is the standard basis in Fr. For k = 1, 2, . . . , r we have
+T (ek) = T1(T2(ek)) = T1(Bek) = T1(bk) = Abk
+(operators T2 and T1 are simply the multiplication by B and A respectively).
+So, the columns of the matrix of T are Ab1, Ab2, . . . , Abr, and that is exactly how the matrix AB was deﬁned!
+Let us return to identifying again a linear transformation with its matrix. Since the matrix multiplication agrees with the composition, we can (and will) write T1T2 instead of T1 ◦ T2 and T1T2x instead of T1(T2(x)).
+Note that in the composition T1T2 the transformation T2 is applied ﬁrst! The way to remember this is to see that in T1T2x the transformation T2 meets x ﬁst.
+Remark. There is another way of checking the dimensions of matrices in a product, diﬀerent form the row by column rule: for a composition T1T2 to be deﬁned it is necessary that T2x belongs to the domain of T1. If T2 acts from some space, say Fr to Fn, then T1 must act from Fn to some space, say Fm. So, in order for T1T2 to be deﬁned the matrices of T1 and T2 should be of sizes m × n and n × r respectively—the same condition as obtained from the row by column rule.
+Example. Let T : R2 → R2 be the reﬂection in the line x1 = 3x2. It is a linear transformation, so let us ﬁnd its matrix. To ﬁnd the matrix, we need to compute T e1 and T e2. However, the direct computation of T e1 and T e2 involves signiﬁcantly more trigonometry than a sane person is willing to remember.
+An easier way to ﬁnd the matrix of T is to represent it as a composition of simple linear transformation. Namely, let γ be the angle between the x1 axis and the line x1 = 3x2, and let T0 be the reﬂection in the x1-axis. Then to get the reﬂection T we can ﬁrst rotate the plane by the angle −γ, moving the line x1 = 3x2 to the x1-axis, then reﬂect everything in the x1
+
+5. Composition of linear transformations and matrix multiplication. 21
+
+axis, and then rotate the plane by γ, taking everything back. Formally it can be written as
+
+T = Rγ T0R−γ
+
+(note the order of terms!), where Rγ is the rotation by γ. The matrix of T0 is easy to compute,
+
+T0 =
+
+10 0 −1
+
+,
+
+the rotation matrices are known
+
+Rγ =
+
+cos γ − sin γ sin γ cos γ,
+
+,
+
+R−γ =
+
+cos(−γ) − sin(−γ) sin(−γ) cos(−γ),
+
+=
+
+cos γ sin γ − sin γ cos γ,
+
+To compute sin γ and cos γ take a vector in the line x1 = 3x2, say a vector (3, 1)T . Then
+
+and similarly
+
+cos γ
+
+=
+
+ﬁrst
+
+coordinate length
+
+=
+
+√3 32 + 12
+
+=
+
+√3 10
+
+sin γ
+
+=
+
+second coordinate length
+
+=
+
+√1 32 +
+
+12
+
+=
+
+√1 10
+
+Gathering everything together we get
+
+T
+
+=
+
+Rγ T0R−γ
+
+=
+
+√1 10
+
+3 −1 13
+
+=
+
+1 10
+
+3 −1 13
+
+10 0 −1
+10 0 −1
+
+√1 10
+
+31 −1 3
+
+31 −1 3
+
+It remains only to perform matrix multiplication here to get the ﬁnal result.
+
+5.3. Properties of matrix multiplication. Matrix multiplication enjoys a lot of properties, familiar to us from high school algebra:
+1. Associativity: A(BC) = (AB)C, provided that either left or right side is well deﬁned; we therefore can (and will) simply write ABC in this case.
+2. Distributivity: A(B + C) = AB + AC, (A + B)C = AC + BC, provided either left or right side of each equation is well deﬁned.
+3. One can take scalar multiplies out: A(αB) = (αA)B = α(AB) = αAB.
+
+22
+
+1. Basic Notions
+
+These properties are easy to prove. One should prove the corresponding properties for linear transformations, and they almost trivially follow from the deﬁnitions. The properties of linear transformations then imply the properties for the matrix multiplication.
+The new twist here is that the commutativity fails:
+matrix multiplication is non-commutative, i.e. generally for matrices AB = BA.
+One can see easily it would be unreasonable to expect the commutativity of matrix multiplication. Indeed, let A and B be matrices of sizes m × n and n × r respectively. Then the product AB is well deﬁned, but if m = r, BA is not deﬁned.
+Even when both products are well deﬁned, for example, when A and B are n×n (square) matrices, the multiplication is still non-commutative. If we just pick the matrices A and B at random, the chances are that AB = BA: we have to be very lucky to get AB = BA.
+
+5.4. Transposed matrices and multiplication. Given a matrix A, its transpose (or transposed matrix) AT is deﬁned by transforming the rows of
+A into the columns. For example
+
+123 456
+
+T 1 4 =  2 5 . 36
+
+So, the columns of AT are the rows of A and vice versa, the rows of AT are the columns of A.
+The formal deﬁnition is as follows: (AT )j,k = (A)k,j meaning that the entry of AT in the row number j and column number k equals the entry of A in the row number k and row number j.
+The transpose of a matrix has a very nice interpretation in terms of linear transformations, namely it gives the so-called adjoint transformation. We will study this in detail later, but for now transposition will be just a useful formal operation.
+One of the ﬁrst uses of the transpose is that we can write a column vector x ∈ Fn as x = (x1, x2, . . . , xn)T . If we put the column vertically, it will use signiﬁcantly more space.
+A simple analysis of the row by columns rule shows that
+
+(AB)T = BT AT ,
+
+i.e. when you take the transpose of the product, you change the order of the terms.
+
+5. Composition of linear transformations and matrix multiplication. 23
+
+5.5. Trace and matrix multiplication. For a square (n × n) matrix A = (aj,k) its trace (denoted by trace A) is the sum of the diagonal entries
+n
+trace A = ak,k.
+k=1
+Theorem 5.1. Let A and B be matrices of size m×n and n×m respectively (so the both products AB and BA are well deﬁned). Then
+trace(AB) = trace(BA)
+
+We leave the proof of this theorem as an exercise, see Problem 5.6 below. There are essentially two ways of proving this theorem. One is to compute the diagonal entries of AB and of BA and compare their sums. This method requires some proﬁciency in manipulating sums in notation.
+If you are not comfortable with algebraic manipulations, there is another way. We can consider two linear transformations, T and T1, acting from Mn×m to F = F1 deﬁned by
+T (X) = trace(AX), T1(X) = trace(XA)
+To prove the theorem it is suﬃcient to show that T = T1; the equality for X = B gives the theorem.
+Since a linear transformation is completely deﬁned by its values on a generating system, we need just to check the equality on some simple matrices, for example on matrices Xj,k, which has all entries 0 except the entry 1 in the intersection of jth column and kth row.
+
+Exercises.
+
+5.1. Let
+
+A=
+
+12 31
+
+, B=
+
+10 2 3 1 −2
+
+, C=
+
+1 −2 3 −2 1 −1
+
+ −2  , D= 2 
+1
+
+a) Mark all the products that are deﬁned, and give the dimensions of the result: AB, BA, ABC, ABD, BC, BCT , BT C, DC, DT CT .
+b) Compute AB, A(3B + C), BT A, A(BD), (AB)D.
+
+5.2. Let Tγ be the matrix of rotation by γ in R2. Check by matrix multiplication that Tγ T−γ = T−γ Tγ = I
+
+5.3. Multiply two rotation matrices Tα and Tβ (it is a rare case when the multiplication is commutative, i.e. TαTβ = TβTα, so the order is not essential). Deduce formulas for sin(α + β) and cos(α + β) from here.
+
+5.4. Find the matrix of the orthogonal projection in R2 onto the line x1 = −2x2. Hint: What is the matrix of the projection onto the coordinate axis x1?
+5.5. Find linear transformations A, B : R2 → R2 such that AB = 0 but BA = 0.
+
+24
+
+1. Basic Notions
+
+5.6. Prove Theorem 5.1, i.e. prove that trace(AB) = trace(BA).
+5.7. Construct a non-zero matrix A such that A2 = 0.
+5.8. Find the matrix of the reﬂection through the line y = −2x/3. Perform all the multiplications.
+
+6. Invertible transformations and matrices. Isomorphisms
+
+Often, the symbol E is used in Linear Algebra textbooks for the identity matrix. I prefer I, since it is used in operator theory.
+
+6.1. Identity transformation and identity matrix. Among all linear transformations, there is a special one, the identity transformation (operator) I, Ix = x, ∀x.
+
+To be precise, there are inﬁnitely many identity transformations: for any vector space V , there is the identity transformation I = IV : V → V , IV x = x, ∀x ∈ V . However, when it is does not lead to the confusion we will use the same symbol I for all identity operators (transformations). We will use the notation IV only we want to emphasize in what space the transformation is acting.
+Clearly, if I : Fn → Fn is the identity transformation in Fn, its matrix is the n × n matrix
+
+ 1 0 ... 0 
+
+ 0 1 ... 0 
+
+I
+
+=
+
+In
+
+=
+
+ 
+
+
+
+...
+
+...
+
+...
+
+...
+
+  
+
+0 0 ... 1
+
+(1 on the main diagonal and 0 everywhere else). When we want to emphasize the size of the matrix, we use the notation In; otherwise we just use I.
+Clearly, for an arbitrary linear transformation A, the equalities
+
+AI = A, IA = A
+
+hold (whenever the product is deﬁned).
+
+6.2. Invertible transformations.
+Deﬁnition. Let A : V → W be a linear transformation. We say that the transformation A is left invertible if there exist a linear transformation B : W → V such that
+BA = I (I = IV here). The transformation A is called right invertible if there exists a linear transformation C : W → V such that
+AC = I (here I = IW ).
+
+6. Invertible transformations and matrices. Isomorphisms
+
+25
+
+The transformations B and C are called left and right inverses of A. Note, that we did not assume the uniqueness of B or C here, and generally left and right inverses are not unique.
+
+Deﬁnition. A linear transformation A : V → W is called invertible if it is both right and left invertible.
+
+Theorem 6.1. If a linear transformation A : V → W is invertible, then its left and right inverses B and C are unique and coincide.
+
+Corollary. A transformation A : V → W is invertible if and only if there exists a unique linear transformation (denoted A−1), A−1 : W → V such
+
+that
+
+A−1A = IV ,
+
+AA−1 = IW .
+
+The transformation A−1 is called the inverse of A.
+
+Very often this property is used as the deﬁnition of an invertible transformation
+
+Proof of Theorem 6.1. Let BA = I and AC = I. Then
+
+BAC = B(AC) = BI = B.
+
+On the other hand
+
+BAC = (BA)C = IC = C,
+
+and therefore B = C.
+
+Suppose for some transformation B1 we have B1A = I. Repeating the above reasoning with B1 instead of B we get B1 = C. Therefore the left inverse B is unique. The uniqueness of C is proved similarly.
+
+Deﬁnition. A matrix is called invertible (resp. left invertible, right invertible) if the corresponding linear transformation is invertible (resp. left invertible, right invertible).
+
+Theorem 6.1 asserts that a matrix A is invertible if there exists a unique matrix A−1 such that A−1A = I, AA−1 = I. The matrix A−1 is called
+(surprise) the inverse of A.
+
+Examples.
+
+1. The identity transformation (matrix) is invertible, I−1 = I;
+
+2. The rotation Rγ
+
+Rγ =
+
+cos γ − sin γ sin γ cos γ
+
+is invertible, and the inverse is given by (Rγ)−1 = R−γ. This equality is clear from the geometric description of Rγ, and it also can be checked by the matrix multiplication;
+
+26
+
+1. Basic Notions
+
+3. The column (1, 1)T is left invertible but not right invertible. One of the possible left inverses in the row (1/2, 1/2). To show that this matrix is not right invertible, we just notice that there are more than one left inverse. Exercise: describe all left inverses of this matrix.
+
+4. The row (1, 1) is right invertible, but not left invertible. The column (1/2, 1/2)T is a possible right inverse.
+
+An invertible matrix must be square (to be proved later)
+
+Remark 6.2. An invertible matrix must be square (n × n). Moreover, if a square matrix A has either left or right inverse, it is invertible. So, it is suﬃcient to check only one of the identities AA−1 = I, A−1A = I.
+This fact will be proved later. Until we prove this fact, we will not use it. I presented it here only to stop students from trying wrong directions.
+
+6.2.1. Properties of the inverse transformation.
+
+Inverse of a product: (AB)−1 = B−1A−1. Note the change of order
+
+Theorem 6.3 (Inverse of the product). If linear transformations A and B
+
+are invertible (and such that the product AB is deﬁned), then the product
+
+AB is invertible and
+
+(AB)−1 = B−1A−1
+
+(note the change of the order!)
+
+Proof. Direct computation shows: (AB)(B−1A−1) = A(BB−1)A−1 = AIA−1 = AA−1 = I
+and similarly (B−1A−1)(AB) = B−1(A−1A)B = B−1IB = B−1B = I
+
+Remark 6.4. The invertibility of the product AB does not imply the invertibility of the factors A and B (can you think of an example?). However, if one of the factors (either A or B) and the product AB are invertible, then the second factor is also invertible.
+
+We leave the proof of this fact as an exercise.
+
+Theorem 6.5 (Inverse of AT ). If a matrix A is invertible, then AT is also
+
+invertible and
+
+(AT )−1 = (A−1)T
+
+Proof. Using (AB)T = BT AT we get (A−1)T AT = (AA−1)T = IT = I,
+
+and similarly
+
+AT (A−1)T = (A−1A)T = IT = I.
+
+6. Invertible transformations and matrices. Isomorphisms
+
+27
+
+And ﬁnally, if A is invertible, then A−1 is also invertible, (A−1)−1 = A.
+So, let us summarize the main properties of the inverse:
+1. If A is invertible, then A−1 is also invertible, (A−1)−1 = A;
+2. If A and B are invertible and the product AB is deﬁned, then AB is invertible and (AB)−1 = B−1A−1.
+3. If A is invertible, then AT is also invertible and (AT )−1 = (A−1)T .
+
+6.3. Isomorphism. Isomorphic spaces. An invertible linear transformation A : V → W is called an isomorphism. We did not introduce anything new here, it is just another name for the object we already studied.
+Two vector spaces V and W are called isomorphic (denoted V ∼= W ) if there is an isomorphism A : V → W .
+Isomorphic spaces can be considered as diﬀerent representation of the same space, meaning that all properties and constructions involving vector space operations are preserved under isomorphism.
+The theorem below illustrates this statement.
+Theorem 6.6. Let A : V → W be an isomorphism, and let v1, v2, . . . , vn be a basis in V . Then the system Av1, Av2, . . . , Avn is a basis in W .
+We leave the proof of the theorem as an exercise.
+Remark. In the above theorem one can replace “basis” by “linearly independent”, or “generating”, or “linearly dependent”—all these properties are preserved under isomorphisms.
+Remark. If A is an isomorphism, then so is A−1. Therefore in the above theorem we can state that v1, v2, . . . , vn is a basis if and only if Av1, Av2, . . . , Avn is a basis.
+The converse to the Theorem 6.6 is also true
+Theorem 6.7. Let A : V → W be a linear map,and let v1, v2, . . . , vn and w1, w2, . . . , wn be bases in V and W respectively. If Avk = wk, k = 1, 2, . . . , n, then A is an isomorphism.
+Proof. Deﬁne the inverse transformation A−1 by A−1wk = vk, k = 1, 2, . . . , n (as we know, a linear transformation is deﬁned by its values on a basis).
+
+Examples.
+
+1. Let A : Fn+1 → PFn (PFn is the set of polynomials
+
+n k=0
+
+ak tk ,
+
+αk
+
+∈
+
+F
+
+of degree at most n) is deﬁned by
+
+Ae1 = 1, Ae2 = t, . . . , Aen = tn−1, Aen+1 = tn
+
+28
+
+1. Basic Notions
+
+Any real vector space with a basis is isomorphic to Rn (for some n). Similarly, any complex vector space with a basis is isomorphic to Cn.
+
+By Theorem 6.7 A is an isomorphism, so PFn ∼= Fn+1. 2. Let V be a vector space (over F) with a basis v1, v2, . . . , vn. Deﬁne
+transformation A : Fn → V by
+Aek = vk, k = 1, 2, . . . , n,
+where e1, e2, . . . , en is the standard basis in Fn. Again by Theorem 6.7 A is an isomorphism, so V ∼= Fn. 3. The space M2F×3 of 2 × 3 matrices with entries in F is isomorphic to R6; 4. More generally, MmF ×n ∼= Fm·n
+
+6.4. Invertibility and equations.
+
+Doesn’t this remind Theorem 6.8. Let A : X → Y be a linear transformation. Then A is
+
+you of a basis?
+
+invertible if and only if for any right side b ∈ Y the equation
+
+Ax = b
+
+has a unique solution x ∈ X.
+
+Proof. Suppose A is invertible. Then x = A−1b solves the equation Ax = b. To show that the solution is unique, suppose that for some other vector x1 ∈ X
+Ax1 = b Multiplying this identity by A−1 from the left we get
+A−1Ax1 = A−1b,
+and therefore x1 = A−1b = x. Note that both identities, AA−1 = I and A−1A = I were used here.
+Let us now suppose that the equation Ax = b has a unique solution x for any b ∈ Y . Let us use symbol y instead of b. We know that given y ∈ Y the equation
+Ax = y
+has a unique solution x ∈ X. Let us call this solution B(y).
+Note that B(y) is deﬁned for all y ∈ Y , so we deﬁned a transformation B : Y → X.
+Let us check that B is a linear transformation. We need to show that B(αy1 +βy2) = αB(y1)+βB(y2). Let xk := B(yk), k = 1, 2, i.e. Axk = yk, k = 1, 2. Then
+
+A(αx1 + βx2) = αAx1 + βAx2 = αy1 + βy2,
+
+which means
+
+B(αy1 + βy2) = αB(y1) + βB(y2).
+
+6. Invertible transformations and matrices. Isomorphisms
+
+29
+
+And ﬁnally, let us show that B is indeed the inverse of A. Take x ∈ X and let y = Ax, so by the deﬁnition of B we have x = By. Then for all x∈X
+BAx = By = x,
+so BA = I. Similarly, for arbitrary y ∈ Y let x = By, so y = Ax. Then for all y ∈ Y
+ABy = Ax = y
+so AB = I.
+
+Recalling the deﬁnition of a basis we get the following corollary of Theorems 6.6 and 6.7.
+
+Corollary 6.9. An m × n matrix is invertible if and only if its columns form a basis in Fm.
+
+Exercises.
+6.1. Prove, that if A : V → W is an isomorphism (i.e. an invertible linear transformation) and v1, v2, . . . , vn is a basis in V , then Av1, Av2, . . . , Avn is a basis in W.
+6.2. Find all right inverses to the 1 × 2 matrix (row) A = (1, 1). Conclude from here that the row A is not left invertible.
+6.3. Find all left inverses of the column (1, 2, 3)T
+6.4. Is the column (1, 2, 3)T right invertible? Justify
+6.5. Find two matrices A and B that AB is invertible, but A and B are not. Hint: square matrices A and B would not work. Remark: It is easy to construct such A and B in the case when AB is a 1 × 1 matrix (a scalar). But can you get 2 × 2 matrix AB? 3 × 3? n × n?
+6.6. Suppose the product AB is invertible. Show that A is right invertible and B is left invertible. Hint: you can just write formulas for right and left inverses.
+
+6.7. Let A and AB be invertible (assuming that the product AB is well deﬁned). Prove that B is invertible.
+
+6.8. Let A be n × n matrix. Prove that if A2 = 0 then A is not invertible
+
+6.9. Suppose AB = 0 for some non-zero matrix B. Can A be invertible? Justify.
+
+6.10. Write matrices of the linear transformations T1 and T2 in F5, deﬁned as follows: T1 interchanges the coordinates x2 and x4 of the vector x, and T2 just adds to the coordinate x2 a times the coordinate x4, and does not change other coordinates, i.e.
+
+ x1   x1 
+
+ x2   x4 
+
+T1
+
+ 
+
+x3
+
+ 
+
+=
+
+ 
+
+x3
+
+ 
+
+,
+
+ 
+
+x4
+
+ 
+
+ 
+
+x2
+
+ 
+
+x5
+
+x5
+
+ x1   x1 
+
+ x2   x2 + ax4 
+
+T2
+
+ 
+
+x3
+
+ 
+
+=
+
+ 
+
+x3
+
+ 
+
+;
+
+ 
+
+x4
+
+ 
+
+ 
+
+x4
+
+ 
+
+x5
+
+x5
+
+30
+
+1. Basic Notions
+
+here a is some ﬁxed number. Show that T1 and T2 are invertible transformations, and write the matrices of
+the inverses. Hint: it may be simpler, if you ﬁrst describe the inverse transformation, and then ﬁnd its matrix, rather than trying to guess (or compute) the inverses of the matrices T1, T2.
+6.11. Find the matrix of the rotation in R3 through the angle α around the vector (1, 2, 3)T . We assume that the rotation is counterclockwise if we sit at the tip of the vector and looking at the origin.
+You can present the answer as a product of several matrices: you don’t have to perform the multiplication.
+6.12. Give examples of matrices (say 2 × 2) such that:
+a) A + B is not invertible although both A and B are invertible; b) A + B is invertible although both A and B are not invertible; c) All of A, B and A + B are invertible
+6.13. Let A be an invertible symmetric (AT = A) matrix. Is the inverse of A symmetric? Justify.
+7. Subspaces.
+A subspace of a vector space V is a non-empty subset V0 ⊂ V of V which is closed under the vector addition and multiplication by scalars, i.e.
+1. If v ∈ V0 then αv ∈ V0 for all scalars α; 2. For any u, v ∈ V0 the sum u + v ∈ V0;
+Again, the conditions 1 and 2 can be replaced by the following one:
+αu + βv ∈ V0 for all u, v ∈ V0, and for all scalars α, β.
+Note, that a subspace V0 ⊂ V with the operations (vector addition and multiplication by scalars) inherited from V , is a vector space. Indeed, since V is non-empty, it contain at least 1 vector v and since 0 = 0v, the above condition 1. imples that the zero vector 0 is in V . Also, for any v ∈ V its additive inverse −v in given by −v = (−1)v, so again by property 1. −v ∈ V . The rest of the axiom of the vector space are satisﬁed because all operations are inherited from the vector space V . The only thing that could possibly go wrong, is that the result of some operation does not belong to V0. But the deﬁnition of a subspace prohibits this!
+Now let us consider some examples:
+1. Trivial subspaces of a space V , namely V itself and {0} (the subspace consisting only of zero vector). Note, that the empty set ∅ is not a vector space, since it does not contain a zero vector, so it is not a subspace.
+
+8. Application to computer graphics.
+
+31
+
+With each linear transformation A : V → W we can associate the following two subspaces:
+2. The null space, or kernel of A, which is denoted as Null A or Ker A and consists of all vectors v ∈ V such that Av = 0
+3. The range Ran A is deﬁned as the set of all vectors w ∈ W which can be represented as w = Av for some v ∈ V .
+If A is a matrix, i.e. A : Fm → Fn, then recalling column by coordinate rule of the matrix–vector multiplication, we can see that any vector w ∈ Ran A can be represented as a linear combination of columns of the matrix A. That explains why the term column space (and notation Col A) is often used for the range of the matrix. So, for a matrix A, the notation Col A is often used instead of Ran A.
+And now the last example.
+4. Given a system of vectors v1, v2, . . . , vr ∈ V its linear span (sometimes called simply span) L{v1, v2, . . . , vr} is the collection of all vectors v ∈ V that can be represented as a linear combination v = α1v1 + α2v2 + . . . + αrvr of vectors v1, v2, . . . , vr. The notation span{v1, v2, . . . , vr} is also used instead of L{v1, v2, . . . , vr}
+It is easy to check that in all of these examples we indeed have subspaces. We leave this an an exercise for the reader. Some of the statements will be proved later in the text.
+Exercises.
+7.1. Let X and Y be subspaces of a vector space V . Prove that X ∩Y is a subspace of V .
+7.2. Let V be a vector space. For X, Y ⊂ V the sum X + Y is the collection of all vectors v which can be represented as v = x + y, x ∈ X, y ∈ Y . Show that if X and Y are subspaces of V , then X + Y is also a subspace.
+7.3. Let X be a subspace of a vector space V , and let v ∈ V , v ∈/ X. Prove that if x ∈ X then x + v ∈/ X.
+7.4. Let X and Y be subspaces of a vector space V . Using the previous exercise, show that X ∪ Y is a subspace if and only if X ⊂ Y or Y ⊂ X.
+7.5. What is the smallest subspace of the space of 4 × 4 matrices which contains all upper triangular matrices (aj,k = 0 for all j > k), and all symmetric matrices (A = AT )? What is the largest subspace contained in both of those subspaces?
+8. Application to computer graphics.
+In this section we give some ideas of how linear algebra is used in computer graphics. We will not go into the details, but just explain some ideas.
+
+32
+
+1. Basic Notions
+
+In particular we explain why manipulation with 3 dimensional images are reduced to multiplications of 4 × 4 matrices.
+8.1. 2-dimensional manipulation. The x-y plane (more precisely, a rectangle there) is a good model of a computer monitor. Any object on a monitor is represented as a collection of pixels, each pixel is assigned a speciﬁc color. Position of each pixel is determined by the column and row, which play role of x and y coordinates on the plane. So a rectangle on a plane with x-y coordinates is a good model for a computer screen: and a graphical object is just a collection of points.
+Remark. There are two types of graphical objects: bitmap objects, where every pixel of an object is described, and vector object, where we describe only critical points, and graphic engine connects them to reconstruct the object. A (digital) photo is a good example of a bitmap object: every pixel of it is described. Bitmap object can contain a lot of points, so manipulations with bitmaps require a lot of computing power. Anybody who has edited digital photos in a bitmap manipulation program, like Adobe Photoshop, knows that one needs quite a powerful computer, and even with modern and powerful computers manipulations can take some time.
+That is the reason that most of the objects, appearing on a computer screen are vector ones: the computer only needs to memorize critical points. For example, to describe a polygon, one needs only to give the coordinates of its vertices, and which vertex is connected with which. Of course, not all objects on a computer screen can be represented as polygons, some, like letters, have curved smooth boundaries. But there are standard methods allowing one to draw smooth curves through a collection of points, for example Bezier splines, used in PostScript and Adobe PDF (and in many other formats).
+Anyhow, this is the subject of a completely diﬀerent book, and we will not discuss it here. For us a graphical object will be a collection of points (either wireframe model, or bitmap) and we would like to show how one can perform some manipulations with such objects.
+The simplest transformation is a translation (shift), where each point (vector) v is translated by a, i.e. the vector v is replaced by v + a (notation v → v + a is used for this). Vector addition is very well adapted to computers, so the translation is easy to implement.
+Note, that the translation is not a linear transformation (if a = 0): while it preserves the straight lines, it does not preserve 0.
+All other transformation used in computer graphics are linear. The ﬁrst one that comes to mind is rotation. The rotation by γ around the origin 0
+
+8. Application to computer graphics.
+
+33
+
+is given by the multiplication by the rotation matrix Rγ we discussed above,
+
+Rγ =
+
+cos γ − sin γ sin γ cos γ
+
+.
+
+If we want to rotate around a point a, we ﬁrst need to translate the picture by −a, moving the point a to 0, then rotate around 0 (multiply by Rγ) and then translate everything back by a.
+
+Another very useful transformation is scaling, given by a matrix
+
+a0 0b
+
+,
+
+a, b ≥ 0. If a = b it is uniform scaling which enlarges (reduces) an object, preserving its shape. If a = b then x and y coordinates scale diﬀerently; the object becomes “taller” or “wider”.
+
+Another often used transformation is reﬂection: for example the matrix
+
+10 0 −1
+
+,
+
+deﬁnes the reﬂection through x-axis.
+We will show later in the book, that any linear transformation in R2 can be represented either as a composition of scaling rotations and reﬂections. However it is sometimes convenient to consider some diﬀerent transformations, like the shear transformation, given by the matrix
+
+1 tan ϕ 01
+
+.
+
+This transformation makes all objects slanted, the horizontal lines remain horizontal, but vertical lines go to the slanted lines at the angle ϕ to the horizontal ones.
+
+8.2. 3-dimensional graphics. Three-dimensional graphics is more complicated. First we need to be able to manipulate 3-dimensional objects, and then we need to represent it on 2-dimensional plane (monitor).
+
+The manipulations with 3-dimensional objects is pretty straightforward, we have the same basic transformations: translation, reﬂection through a plane, scaling, rotation. Matrices of these transformations are very similar to the matrices of their 2 × 2 counterparts. For example the matrices
+
+1 0 0   0 1 0 ,
+0 0 −1
+
+a 0 0  0 b 0 ,
+00c
+
+ cos γ − sin γ 0 
+
+ sin γ cos γ 0 
+
+0
+
+01
+
+represent respectively reﬂection through x-y plane, scaling, and rotation around z-axis.
+
+34
+
+1. Basic Notions
+
+Note, that the above rotation is essentially 2-dimensional transformation, it does not change z coordinate. Similarly, one can write matrices for the other 2 elementary rotations around x and around y axes. It will be shown later that a rotation around an arbitrary axis can be represented as a composition of elementary rotations.
+So, we know how to manipulate 3-dimensional objects. Let us now discuss how to represent such objects on a 2-dimensional plane. The simplest way is to project it to a plane, say to the x-y plane. To perform such projection one just needs to replace z coordinate by 0, the matrix of this projection is
+1 0 0  0 1 0 .
+000
+
+Such method is often used in technical illustrations. Rotating an object and projecting it is equivalent to looking at it from diﬀerent points. However, this method does not give a very realistic picture, because it does not take into account the perspective, the fact that the objects that are further away look smaller.
+To get a more realistic picture one needs to use the so-called perspective projection. To deﬁne a perspective projection one needs to pick a point (the center of projection or the focal point) and a plane to project onto. Then each point in R3 is projected into a point on the plane such that the point, its image and the center of the projection lie on the same line, see Fig. 2.
+This is exactly how a camera works, and it is a reasonable ﬁrst approximation of how our eyes work.
+Let us get a formula for the projection. Assume that the focal point is (0, 0, d)T and that we are projecting onto x-y plane, see Fig. 3 a). Consider a point v = (x, y, z)T , and let v∗ = (x∗, y∗, 0)T be its projection. Analyzing similar triangles see Fig. 3 b), we get that
+
+x∗ d
+
+=
+
+d
+
+x −
+
+z
+
+,
+
+so
+
+x∗
+
+=
+
+xd d−z
+
+=
+
+1
+
+x − z/d
+
+,
+
+and similarly
+
+y∗
+
+=
+
+1
+
+y − z/d
+
+.
+
+Note, that this formula also works if z > d and if z < 0: you can draw the corresponding similar triangles to check it.
+
+8. Application to computer graphics.
+
+35
+
+y
+
+x
+F z
+
+Figure 2. Perspective projection onto x-y plane: F is the center (focal point) of the projection
+
+y (x∗, y∗, 0)
+
+x∗ x
+
+(x, y, z)
+
+z
+
+x
+
+d−z
+
+(0, 0, d)
+
+a)
+
+b)
+
+z
+
+Figure 3. Finding coordinates x∗, y∗ of the perspective projection of the point (x, y, z)T .
+
+Thus the perspective projection maps a point (x, y, z)T to the point
+
+x 1−z/d
+
+,
+
+y 1−z/d
+
+,
+
+0
+
+T
+.
+
+This transformation is deﬁnitely not linear (because of z in the denomi-
+
+nator). However it is still possible to represent it as a linear transformation.
+
+To do this let us introduce the so-called homogeneous coordinates.
+
+36
+
+1. Basic Notions
+
+In the homogeneous coordinates, every point in R3 is represented by 4
+coordinates, the last, 4th coordinate playing role of the scaling coeﬃcient. Thus, to get usual 3-dimensional coordinates of the vector v = (x, y, z)T from its homogeneous coordinates (x1, x2, x3, x4)T one needs to divide all entries by the last coordinate x4 and take the ﬁrst 3 coordinates 3 (if x4 = 0 this recipe does not work, so we assume that the case x4 = 0 corresponds to the point at inﬁnity).
+Thus in homogeneous coordinates the vector v∗ can be represented as (x, y, 0, 1 − z/d)T , so in homogeneous coordinates the perspective projection
+is a linear transformation:
+
+ x   1 0 0 0  x 
+
+  
+
+y 0
+
+ 
+
+=
+
+
+
+  
+
+0 0
+
+1 0
+
+0 0
+
+0 0
+
+  
+
+y z
+
+ 
+
+.
+
+
+
+1 − z/d
+
+0 0 −1/d 1
+
+1
+
+Note that in the homogeneous coordinates the translation is also a linear transformation:
+
+ x + a1   1 0 0 a1   x 
+
+  
+
+y + a2 z + a3
+
+ 
+
+=
+
+ 
+
+
+
+0 0
+
+1 0
+
+0 1
+
+a2 a3
+
+  
+
+y z
+
+ 
+
+.
+
+
+
+1
+
+000 1
+
+1
+
+But what happen if the center of projection is not a point (0, 0, d)T but some arbitrary point (d1, d2, d3)T . Then we ﬁrst need to apply the translation by −(d1, d2, 0)T to move the center to (0, 0, d3)T while preserving the x-y plane, apply the projection, and then move everything back translating it by (d1, d2, 0)T . Similarly, if the plane we project to is not x-y plane, we move it to the x-y plane by using rotations and translations, and so on.
+All these operations are just multiplications by 4 × 4 matrices. That explains why modern graphic cards have 4 × 4 matrix operations embedded in the processor.
+
+Of course, here we only touched the mathematics behind 3-dimensional graphics, there is much more. For example, how to determine which parts of the object are visible and which are hidden, how to make realistic lighting, shades, etc.
+
+3If we multiply homogeneous coordinates of a point in R2 by a non-zero scalar, we do not change the point. In other words, in homogeneous coordinates a point in R3 is represented by a line through 0 in R4.
+
+8. Application to computer graphics.
+
+37
+
+Exercises.
+
+8.1. What vector in R3 has homogeneous coordinates (10, 20, 30, 5)?
+
+8.2. Show that a rotation through γ can be represented as a composition of two
+
+shear-and-scale transformations
+
+T1 =
+
+10 sin γ cos γ
+
+,
+
+T2 =
+
+sec γ − tan γ
+
+0
+
+1
+
+.
+
+In what order the transformations should be taken?
+
+8.3. Multiplication of a 2-vector by an arbitrary 2 × 2 matrix usually requires 4 multiplications.
+Suppose a 2 × 1000 matrix D contains coordinates of 1000 points in R2. How many multiplications are required to transform these points using 2 arbitrary 2 × 2 matrices A and B. Compare 2 possibilities, A(BD) and (AB)D.
+
+8.4. Write 4 × 4 matrix performing perspective projection to x-y plane with center (d1, d2, d3)T .
+8.5. A transformation T in R3 is a rotation about the line y = x+3 in the x-y plane through an angle γ. Write a 4 × 4 matrix corresponding to this transformation.
+You can leave the result as a product of matrices.
+
+Chapter 2
+Systems of linear equations
+
+1. Diﬀerent faces of linear systems.
+
+There exist several points of view on what a system of linear equations, or in short a linear system is. The ﬁrst, na¨ıve one is, that it is simply a collection of m linear equations with n unknowns x1, x2, . . . , xn,
+
+ 
+
+a1,1x1
+
++
+
+a1,2x2
+
++ ... +
+
+a1,nxn
+
+=
+
+b1
+
+ 
+
+a2,1x1
+
++
+
+a2,2x2
+
++ ... +
+
+a2,nxn
+
+=
+
+b2
+
+...
+
+
+
+ 
+
+am,1x1
+
++
+
+am,2x2
+
++
+
+...
+
++
+
+am,nxn
+
+=
+
+bm
+
+.
+
+To solve the system is to ﬁnd all n-tuples of numbers x1, x2, . . . , xn which satisfy all m equations simultaneously.
+
+If we denote x := (x1, x2, . . . , xn)T ∈ Fn, b = (b1, b2, . . . , bm)T ∈ Fm, and
+
+ a1,1 a1,2 . . . a1,n 
+
+ A=
+
+
+
+a2,1 ...
+
+a2,2 ...
+
+...
+
+a2,n ...
+
+ , 
+
+
+am,1 am,2 . . . am,n
+
+then the above linear system can be written in the matrix form (as a matrixvector equation)
+
+Ax = b.
+
+To solve the above equation is to ﬁnd all vectors x ∈ Fn satisfying Ax = b.
+
+39
+
+40
+
+2. Systems of linear equations
+
+And ﬁnally, recalling the “column by coordinate” rule of the matrixvector multiplication, we can write the system as a vector equation
+
+x1a1 + x2a2 + . . . + xnan = b,
+
+where ak is the kth column of the matrix A, ak = (a1,k, a2,k, . . . , am,k)T , k = 1, 2, . . . , n.
+
+Note, these three examples are essentially just diﬀerent representations of the same mathematical object.
+
+Before explaining how to solve a linear system, let us notice that it does
+
+not matter what we call the unknowns, xk, yk or something else. So, all
+
+the information necessary to solve the system is contained in the matrix A,
+
+which is called the coeﬃcient matrix of the system and in the vector (right
+
+side) b. Hence, all the information we need is contained in the following
+
+matrix
+
+ a1,1 a1,2 . . . a1,n b1 
+
+ a2,1 a2,2 . . . a2,n b2 
+
+  
+
+...
+
+...
+
+...
+
+...
+
+  
+
+am,1 am,2 . . . am,n bm
+
+which is obtained by attaching the column b to the matrix A. This matrix is called the augmented matrix of the system. We will usually put the vertical line separating A and b to distinguish between the augmented matrix and the coeﬃcient matrix.
+
+2. Solution of a linear system. Echelon and reduced echelon forms
+Linear system are solved by the Gauss–Jordan elimination (which is sometimes called row reduction). By performing operations on rows of the augmented matrix of the system (i.e. on the equations), we reduce it to a simple form, the so-called echelon form. When the system is in the echelon form, one can easily write the solution.
+2.1. Row operations. There are three types of row operations we use:
+1. Row exchange: interchange two rows of the matrix; 2. Scaling: multiply a row by a non-zero scalar a; 3. Row replacement: replace a row # k by its sum with a constant
+multiple of a row # j; all other rows remain intact;
+It is clear that the operations 1 and 2 do not change the set of solutions of the system; they essentially do not change the system.
+
+2. Solution of a linear system. Echelon and reduced echelon forms
+
+41
+
+As for the operation 3, one can easily see that it does not lose solutions. Namely, let a “new” system be obtained from an “old” one by a row operation of type 3. Then any solution of the “old” system is a solution of the “new” one.
+To see that we do not gain anything extra, i.e. that any solution of the “new” system is also a solution of the “old” one, we just notice that row operation of type 3 are reversible, i.e. the “old’ system also can be obtained from the “new” one by applying a row operation of type 3 (can you say which one?)
+2.1.1. Row operations and multiplication by elementary matrices. There is another, more “advanced” explanation why the above row operations are legal. Namely, every row operation is equivalent to the multiplication of the matrix from the left by one of the special elementary matrices.
+Namely, the multiplication by the matrix
+
+j
+
+k
+
+ 1
+
+...
+
+...
+
+
+
+  
+
+...
+
+...
+
+  
+
+1 ...
+
+0 ...
+
+  
+
+...
+
+  
+
+j
+
+ 
+
+...
+
+...
+
+...
+
+0
+
+...
+
+...
+
+...
+
+1
+
+ 
+
+  
+
+... 1
+
+...
+
+  
+
+  
+
+...
+
+...
+
+...
+
+  
+
+ 
+
+...
+
+1 ...
+
+ 
+
+
+
+
+
+k
+
+ 
+
+...
+
+...
+
+...
+
+1
+
+...
+
+...
+
+...
+
+0
+
+ 
+
+
+
+  
+
+0
+
+1 ...
+
+   
+
+1
+
+just interchanges the rows number j and number k. Multiplication by the matrix
+
+ 1
+
+...
+
+
+
+  
+
+...
+
+...
+
+0  
+
+ 
+
+10
+
+ 
+
+k
+
+ 
+
+...
+
+...
+
+0
+
+a
+
+0
+
+ 
+
+
+0 
+ 
+
+0
+
+1
+
+...
+
+
+
+
+
+0
+
+ 
+
+01
+
+42
+
+2. Systems of linear equations
+
+A way to describe (or to remember) these elementary matrices: they are obtained from I by applying the corresponding row operation to it
+
+multiplies the row number k by a. Finally, multiplication by the matrix
+
+ 1
+
+...
+
+...
+
+
+
+  
+
+. . . ...
+
+0 ...
+
+  
+
+j
+
+ 
+
+...
+
+...
+
+1
+
+...
+
+0
+
+ 
+
+  
+
+... . . . ...
+
+  
+
+k
+
+ 
+
+...
+
+...
+
+a
+
+...
+
+1
+
+ 
+
+
+0 
+
+
+...
+
+ 
+
+
+
+1
+
+adds to the row #k row #j multiplied by a, and leaves all other rows intact.
+To see, that the multiplication by these matrices works as advertised, one can just see how the multiplications act on vectors (columns).
+Note that all these matrices are invertible (compare with reversibility of row operations). The inverse of the ﬁrst matrix is the matrix itself. To get the inverse of the second one, one just replaces a by 1/a. And ﬁnally, the inverse of the third matrix is obtained by replacing a by −a. To see that the inverses are indeed obtained this way, one again can simply check how they act on columns.
+So, performing a row operation on the augmented matrix of the system Ax = b is equivalent to the multiplication of the system (from the left) by a special invertible matrix E. Left multiplying the equality Ax = b by E we get that any solution of the equation
+
+Ax = b
+
+is also a solution of
+
+EAx = Eb.
+
+Multiplying this equation (from the left) by E−1 we get that any of its solutions is a solution of the equation
+
+E−1EAx = E−1Eb,
+
+which is the original equation Ax = b. So, a row operation does not change the solution set of a system.
+
+2.2. Row reduction. The main step of row reduction consists of three sub-steps:
+1. Find the leftmost non-zero column of the matrix;
+2. Make sure, by applying row operations of type 1 (row exchange), if necessary, that the ﬁrst (the upper) entry of this column is non-zero. This entry will be called the pivot entry or simply the pivot;
+
+2. Solution of a linear system. Echelon and reduced echelon forms
+
+43
+
+3. “Kill” (i.e. make them 0) all non-zero entries below the pivot by adding (subtracting) an appropriate multiple of the ﬁrst row from the rows number 2, 3, . . . , m.
+
+We apply the main step to a matrix, then we leave the ﬁrst row alone and apply the main step to rows 2, . . . , m, then to rows 3, . . . , m, etc.
+
+The point to remember is that after we subtract a multiple of a row from all rows below it (step 3), we leave it alone and do not change it in any way, not even interchange it with another row.
+
+After applying the main step ﬁnitely many times (at most m), we get what is called the echelon form of the matrix.
+
+2.2.1. An example of row reduction. Let us consider the following linear
+
+system:
+
+ 
+
+x1 + 2x2
+
++ 3x3
+
+=
+
+1
+
+3x1 + 2x2 + x3 = 7
+
+ 2x1 + x2 + 2x3 = 1
+
+The augmented matrix of the system is
+
+1 2 3 1 3 2 1 7
+2121
+
+Subtracting 3·Row#1 from the second row, and subtracting 2·Row#1 from the third one we get:
+
+1 2 3 1  3 2 1 7  −3R1
+2 1 2 1 −2R1
+
+1 2 3 1 ∼  0 −4 −8 4 
+0 −3 −4 −1
+
+Multiplying the second row by −1/4 we get
+
+1 2 3 1  0 1 2 −1 
+0 −3 −4 −1
+
+Adding 3·Row#2 to the third row we obtain
+
+1 2 3 1  0 1 2 −1 −3R2
+0 −3 −4 −1
+
+1 2 3 1 ∼  0 1 2 −1 
+0 0 2 −4
+
+Now we can use the so called back substitution to solve the system. Namely, from the last row (equation) we get x3 = −2. Then from the second equation we get
+x2 = −1 − 2x3 = −1 − 2(−2) = 3,
+and ﬁnally, from the ﬁrst row (equation)
+
+x1 = 1 − 2x2 − 3x3 = 1 − 6 + 6 = 1.
+
+44
+
+2. Systems of linear equations
+
+Pivots: leading (leftmost non-zero entries) in a row.
+
+So, the solution is or in vector form
+
+ 
+
+x1
+
+=
+
+1
+
+x2 = 3,
+
+ x3 = −2,
+
+ 1 x= 3 
+−2
+
+or x = (1, 3, −2)T . We can check the solution by multiplying Ax, where A is the coeﬃcient matrix.
+Instead of using back substitution, we can do row reduction from bottom to top, killing all the entries above the main diagonal of the coeﬃcient matrix: we start by multiplying the last row by 1/2, and the rest is pretty self-explanatory:
+
+ 1 2 3 1 −3R3  1 2 0 7 −2R2
+
+ 0 1 2 −1 −2R3 ∼  0 1 0 3 
+
+0 0 1 −2
+
+0 0 1 −2
+
+1 0 0 1 ∼ 0 1 0 3 
+0 0 1 −2
+
+and we just read the solution x = (1, 3, −2)T oﬀ the augmented matrix.
+We leave it as an exercise to the reader to formulate the algorithm for the backward phase of the row reduction.
+
+2.3. Echelon form. A matrix is in echelon form if it satisﬁes the following two conditions:
+1. All zero rows (i.e. the rows with all entries equal 0), if any, are below all non-zero entries.
+For a non-zero row, let us call the leftmost non-zero entry the leading entry. Then the second property of the echelon form can be formulated as follows:
+2. For any non-zero row its leading entry is strictly to the right of the leading entry in the previous row.
+The leading entry in each row in echelon form is also called pivot entry, or simply pivot, because these entries are exactly the pivots we used in the row reduction.
+A particular case of the echelon form is the so-called triangular form. We got this form in our example above. In this form the coeﬃcient matrix is square (n × n), all its entries on the main diagonal are non-zero, and all the
+
+2. Solution of a linear system. Echelon and reduced echelon forms
+
+45
+
+entries below the main diagonal are zero. The right side, i.e. the rightmost column of the augmented matrix can be arbitrary.
+After the backward phase of the row reduction, we get what the socalled reduced echelon form of the matrix: coeﬃcient matrix equal I, as in the above example, is a particular case of the reduced echelon form.
+The general deﬁnition is as follows: we say that a matrix is in the reduced echelon form, if it is in the echelon form and
+3. All pivot entries are equal 1;
+4. All entries above the pivots are 0. Note, that all entries below the pivots are also 0 because of the echelon form.
+To get reduced echelon form from echelon form, we work from the bottom to the top and from the right to the left, using row replacement to kill all entries above the pivots.
+An example of the reduced echelon form is the system with the coeﬃcient matrix equal I. In this case, one just reads the solution from the reduced echelon form. In general case, one can also easily read the solution from the reduced echelon form. For example, let the reduced echelon form of the system (augmented matrix) be
+
+ 1 2 0 0 0 1  0 0 1 5 0 2 ;
+000013
+
+here we boxed the pivots. The idea is to move the variables, corresponding to the columns without pivot (the so-called free variables) to the right side. Then we can just write the solution.
+
+ 
+
+x1
+
+=
+
+1 − 2x2
+
+   
+
+x2
+
+is
+
+free
+
+x3 = 2 − 5x4
+
+  
+
+x4
+
+is
+
+free
+
+ 
+
+x5
+
+=
+
+3
+
+or in the vector form
+
+ 1 − 2x2   1   −2   0 
+
+ x2   0   1   0 
+
+x
+
+=
+
+ 
+
+2 − 5x4
+
+ 
+
+=
+
+ 
+
+2
+
+ 
+
++
+
+x2
+
+ 
+
+0
+
+ 
+
++
+
+x4
+
+ 
+
+−5
+
+ 
+
+,
+
+ 
+
+x4
+
+ 
+
+ 
+
+0
+
+ 
+
+ 
+
+0
+
+ 
+
+ 
+
+1
+
+ 
+
+3
+
+3
+
+0
+
+0
+
+x2, x4 ∈ F.
+
+One can also ﬁnd the solution from the echelon form by using back substitution: the idea is to work from bottom to top, moving all free variables to the right side.
+
+46
+
+2. Systems of linear equations
+
+Exercises.
+
+2.1. Write the systems of equations below in matrix form and as vector equations:
+
+ 
+
+x1
+
++
+
+2x2
+
+−
+
+x3 = −1
+
+a) 2x1 + 2x2 + x3 = 1
+
+ 3x1 + 5x2 − 2x3 = −1
+
+ 
+
+x1
+
+−
+
+2x2
+
+−
+
+x3 = 1
+
+b)
+
+ 
+
+
+2x1 3x1
+
+− −
+
+3x2 5x2
+
++
+
+x3 = 6 =7
+
+ 
+
+x1
+
++ 5x3 = 9
+
+ 
+
+x1
+
++
+
+2x2
+
++ 2x4 = 6
+
+c)
+
+ 
+
+
+3x1 2x1
+
++ +
+
+5x2 4x2
+
+− +
+
+x3 + x3 +
+
+6x4 = 17 2x4 = 12
+
+ 
+
+2x1
+
+− 7x3 + 11x4 = 7
+
+ 
+
+x1 − 4x2 −
+
+x3 +
+
+x4 =
+
+3
+
+d) 2x1 − 8x2 + x3 − 4x4 = 9
+
+ −x1 + 4x2 − 2x3 + 5x4 = −6
+
+ 
+
+x1
+
++
+
+2x2
+
+−
+
+x3
+
++
+
+3x4
+
+=
+
+2
+
+e) 2x1 + 4x2 − x3 + 6x4 = 5
+
+
+
+x2
+
++ 2x4 = 3
+
+ 
+
+2x1
+
+−
+
+2x2
+
+−
+
+x3 + 6x4 −2x5 = 1
+
+f)
+
+x1 − x2 + x3 + 2x4 −x5 = 2
+
+ 4x1 − 4x2 + 5x3 + 7x4 −x5 = 6
+
+ 
+
+3x1
+
+−
+
+x2 + x3 −
+
+x4 + 2x5 =
+
+5
+
+g)
+
+ 
+
+
+x1 5x1
+
+− −
+
+x2 2x2
+
+− +
+
+x3 x3
+
+− −
+
+2x4 3x4
+
+− +
+
+x5 3x5
+
+= =
+
+2 10
+
+ 
+
+2x1
+
+−
+
+x2
+
+− 2x4 + x5 = 5
+
+Solve the systems. Write the answers in the vector form.
+
+2.2. Find all solutions of the vector equation
+
+x1v1 + x2v2 + x3v3 = 0,
+where v1 = (1, 1, 0)T , v2 = (0, 1, 1)T and v3 = (1, 0, 1)T . What conclusion can you make about linear independence (dependence) of the system of vectors v1, v2, v3?
+
+3. Analyzing the pivots.
+All questions about existence of a solution and it uniqueness can be answered by analyzing pivots in the echelon (reduced echelon) form of the augmented matrix of the system. First of all, let us investigate the question of when is the equation Ax = b inconsistent, i.e. when it does not have a solution. The answer follows immediately, if one just thinks about it:
+
+3. Analyzing the pivots.
+
+47
+
+a system is inconsistent (does not have a solution) if and only if there is a pivot in the last column of an echelon form of the augmented matrix, i.e. iﬀ an echelon form of the augmented matrix has a row 0 0 . . . 0 b , b = 0 in it.
+Indeed, such a row correspond to the equation 0x1 + 0x2 + . . . + 0xn = b = 0 that does not have a solution. If we don’t have such a row, we just make the reduced echelon form and then read the solution oﬀ it.
+Now, three more statements. Note, they all deal with the coeﬃcient matrix, and not with the augmented matrix of the system.
+1. A solution (if it exists) is unique iﬀ there are no free variables, that is if and only if the echelon form of the coeﬃcient matrix has a pivot in every column;
+2. Equation Ax = b is consistent for all right sides b if and only if the echelon form of the coeﬃcient matrix has a pivot in every row.
+3. Equation Ax = b has a unique solution for any right side b if and only if echelon form of the coeﬃcient matrix A has a pivot in every column and every row.
+The ﬁrst statement is trivial, because free variables are responsible for all non-uniqueness. I should only emphasize that this statement does not say anything about the existence.
+The second statement is a tiny bit more complicated. If we have a pivot in every row of the coeﬃcient matrix, we cannot have the pivot in the last column of the augmented matrix, so the system is always consistent, no matter what the right side b is.
+Let us show that if we have a zero row in the echelon form of the coeﬃcient matrix A, then we can pick a right side b such that the system Ax = b is not consistent. Let Ae echelon form of the coeﬃcient matrix A. Then
+Ae = EA,
+where E is the product of elementary matrices, corresponding to the row operations, E = EN . . . E2E1. If Ae has a zero row, then the last row is also zero. Therefore, if we put be = (0, . . . , 0, 1)T (all entries are 0, except the last one), then the equation
+Aex = be does not have a solution. Multiplying this equation by E−1 from the left, and recalling that E−1Ae = A, we get that the equation
+Ax = E−1be
+does not have a solution.
+Finally, statement 3 immediately follows from statements 1 and 2.
+
+48
+
+2. Systems of linear equations
+
+From the above analysis of pivots we get several very important corollaries. The main observation we use is
+In echelon form, any row and any column have no more than 1 pivot in it (it can have 0 pivots)
+3.1. Corollaries about linear independence and bases. Dimension. Questions as to when a system of vectors in Fn is a basis, a linearly independent or a spanning system, can be easily answered by the row reduction.
+Proposition 3.1. Let us have a system of vectors v1, v2, . . . , vm ∈ Fn, and let A = [v1, v2, . . . , vm] be an n × m matrix with columns v1, v2, . . . , vm. Then
+1. The system v1, v2, . . . , vm is linearly independent iﬀ echelon form of A has a pivot in every column;
+2. The system v1, v2, . . . , vm is complete in Fn (spanning, generating) iﬀ echelon form of A has a pivot in every row;
+3. The system v1, v2, . . . , vm is a basis in Fn iﬀ echelon form of A has a pivot in every column and in every row.
+Proof. The system v1, v2, . . . , vm ∈ Fn is linearly independent if and only if the equation
+x1v1 + x2v2 + . . . + xmvm = 0
+has the unique (trivial) solution x1 = x2 = . . . = xm = 0, or equivalently, the equation Ax = 0 has unique solution x = 0. By statement 1 above, it happens if and only if there is a pivot in every column of the matrix.
+Similarly, the system v1, v2, . . . , vm ∈ Fn is complete in Fn if and only if the equation
+x1v1 + x2v2 + . . . + xmvm = b has a solution for any right side b ∈ Fn. By statement 2 above, it happens if and only if there is a pivot in every row in echelon form of the matrix.
+And ﬁnally, the system v1, v2, . . . , vm ∈ Fn is a basis in Fn if and only if the equation
+x1v1 + x2v2 + . . . + xmvm = b has unique solution for any right side b ∈ Fn. By statement 3 this happens if and only if there is a pivot in every column and in every row of echelon form of A.
+Proposition 3.2. Any linearly independent system of vectors in Fn cannot have more than n vectors in it.
+
+3. Analyzing the pivots.
+
+49
+
+Proof. Let a system v1, v2, . . . , vm ∈ Fn be linearly independent, and let A = [v1, v2, . . . , vm] be the n × m matrix with columns v1, v2, . . . , vm. By Proposition 3.1 echelon form of A must have a pivot in every column, which is impossible if m > n (number of pivots cannot be more than number of rows).
+Proposition 3.3. Any two bases in a vector space V have the same number of vectors in them.
+Proof. Let v1, v2, . . . , vn and w1, w2, . . . , wm be two diﬀerent bases in V . Without loss of generality we can assume that n ≤ m. Consider an isomorphism A : Fn → V deﬁned by
+Aek = vk, k = 1, 2, . . . n,
+where e1, e2, . . . , en is the standard basis in Rn. Since A−1 is also an isomorphism, the system A−1w1, A−1w2, . . . , A−1wm
+is a basis (see Theorem 6.6 in Chapter 1). So it is linearly independent, and by Proposition 3.2, m ≤ n. Together with the assumption n ≤ m this implies that m = n.
+The statement below is a particular case of the above proposition.
+Proposition 3.4. Any basis in Fn must have exactly n vectors in it.
+Proof. This fact follows immediately from the previous proposition, but there is also a direct proof. Let v1, v2, . . . , vm be a basis in Fn and let A be the n × m matrix with columns v1, v2, . . . , vm. The fact that the system is a basis, means that the equation
+Ax = b
+has a unique solution for any (all possible) right side b. The existence means that there is a pivot in every row (of a reduced echelon form of the matrix), hence the number of pivots is exactly n. The uniqueness mean that there is pivot in every column of the coeﬃcient matrix (its echelon form), so
+m = number of columns = number of pivots = n
+
+Proposition 3.5. Any spanning (generating) set in Fn must have at least n vectors.
+Proof. Let v1, v2, . . . , vm be a complete system in Fn, and let A be n × m matrix with columns v1, v2, . . . , vm. Statement 2 of Proposition 3.1 implies
+
+50
+
+2. Systems of linear equations
+
+that echelon form of A has a pivot in every row. Since number of pivots cannot exceed the number of columns, n ≤ m.
+3.2. Corollaries about invertible matrices.
+Proposition 3.6. A matrix A is invertible if and only if its echelon form has pivot in every column and every row.
+Proof. As it was discussed in the beginning of the section, the equation Ax = b has a unique solution for any right side b if and only if the echelon form of A has pivot in every row and every column. But, we know, see Theorem 6.8 in Chapter 1, that the matrix (linear transformation) A is invertible if and only if the equation Ax = b has a unique solution for any possible right side b.
+There is also an alternative proof. We know that a matrix is invertible if and only if its columns form a basis in (see Corollary 6.9 in Section 6.4, Chapter 1). Proposition 3.4 above states that it happens if and only if there is a pivot in every row and every column.
+The above proposition immediately implies the following
+Corollary 3.7. An invertible matrix must be square (n × n).
+Proposition 3.8. If a square (n×n) matrix is left invertible, or if it is right invertible, then it is invertible. In other words, to check the invertibility of a square matrix A it is suﬃcient to check only one of the conditions AA−1 = I, A−1A = I.
+Note, that this proposition applies only to square matrices!
+Proof. We know that matrix A is invertible if and only if the equation Ax = b has a unique solution for any right side b. This happens if and only if the echelon form of the matrix A has pivots in every row and in every column.
+If a matrix A is left invertible, the equation Ax = 0 has unique solution x = 0. Indeed, if B is a left inverse of A (i.e. BA = I), and x satisﬁes
+Ax = 0,
+then multiplying this identity by B from the left we get x = 0, so the solution is unique. Therefore, the echelon form of A has pivots in every column (no free variables). If the matrix A is square (n × n), the echelon form also has pivots in every row (n pivots, and a row can have no more than 1 pivot), so the matrix is invertible.
+
+3. Analyzing the pivots.
+
+51
+
+If a matrix A is right invertible, and C is its right inverse (AC = I), then for x = Cb, b ∈ Fn
+Ax = ACb = Ib = b.
+Therefore, for any right side b the equation Ax = b has a solution x = Cb. Thus, echelon form of A has a pivot in every row. If A is square, it also has a pivot in every column, so A is invertible.
+
+Exercises.
+
+3.1. For what value of b the system
+
+1 2 2 1
+
+ 2 4 6 x =  4 
+
+123
+
+b
+
+has a solution. Find the general solution of the system for this value of b.
+
+3.2. Determine, if the vectors
+
+1
+
+  
+
+1 0
+
+ 
+
+,
+
+
+
+0
+
+1
+
+  
+
+0 1
+
+ 
+
+,
+
+
+
+0
+
+0
+
+  
+
+0 1
+
+ 
+
+,
+
+
+
+1
+
+0
+
+1
+
+ 
+
+0
+
+ 
+
+1
+
+are linearly independent or not.
+Do these four vectors span R4? (In other words, is it a generating system?) What about C4?
+
+3.3. Determine, which of the following systems of vectors are bases in R3:
+a) (1, 2, −1)T , (1, 0, 2)T , (2, 1, 1)T ; b) (−1, 3, 2)T , (−3, 1, 3)T , (2, 10, 2)T ; c) (67, 13, −47)T , (π, −7.84, 0)T , (3, 0, 0)T .
+
+Which of the systems are bases in C3?
+
+3.4. Do the polynomials x3 + 2x, x2 + x + 1, x3 + 5 generate (span) P3? Justify your answer.
+
+3.5. Can 5 vectors in F4 be linearly independent? Justify your answer.
+
+3.6. Prove or disprove: If the columns of a square (n × n) matrix A are linearly independent, so are the columns of A2 = AA.
+
+3.7. Prove or disprove: If the columns of a square (n × n) matrix A are linearly independent, so are the rows of A3 = AAA.
+
+3.8. Show that if the equation Ax = 0 has unique solution (i.e. if echelon form of A has pivot in every column), then A is left invertible. Hint: elementary matrices may help. Note: It was shown in the text that if A is left invertible, then the equation Ax = 0 has unique solution. But here you are asked to prove the converse of this statement, which was not proved.
+
+52
+
+2. Systems of linear equations
+
+Remark: This can be a very hard problem, for it requires deep understanding of the subject. However, when you understand what to do, the problem becomes almost trivial.
+3.9. Is the reduced echelon form of a matrix unique? Justify your conclusion. Namely, suppose that by performing some row operations (not necessarily fol-
+lowing any algorithm) we end up with a reduced echelon matrix. Do we always end up with the same matrix, or can we get diﬀerent ones? Note that we are only allowed to perform row operations, the “column operations”’ are forbidden. Hint: What happens if you start with an invertible matrix? Also, are the pivots always in the same columns, or can it be diﬀerent depending on what row operations you perform? If you can tell what the pivot columns are without reverting to row operations, then the positions of pivot columns do not depend on them.
+4. Finding A−1 by row reduction.
+As it was discussed above, an invertible matrix must be square, and its echelon form must have pivots in every row and every column. Therefore reduced echelon form of an invertible matrix is the identity matrix I. Therefore,
+Any invertible matrix is row equivalent (i.e. can be reduced by row operations) to the identity matrix.
+Now let us state a simple algorithm of ﬁnding the inverse of an n × n matrix:
+1. Form an augmented n×2n matrix (A | I) by writing the n×n identity matrix right of A;
+2. Performing row operations on the augmented matrix transform A to the identity matrix I;
+3. The matrix I that we added will be automatically transformed to A−1;
+4. If it is impossible to transform A to the identity by row operations, A is not invertible.
+There are several possible explanations of the above algorithm. The ﬁrst, a na¨ıve one, is as follows: we know that (for an invertible A) the vector A−1b is the solution of the equation Ax = b. So to ﬁnd the column number k of A−1 we need to ﬁnd the solution of Ax = ek, where e1, e2, . . . , en is the standard basis in Rn. The above algorithm just solves the equations
+Ax = ek, k = 1, 2, . . . , n
+simultaneously! Let us also present another, more “advanced” explanation. As we dis-
+cussed above, every row operation can be realized as a left multiplication
+
+4. Finding A−1 by row reduction.
+
+53
+
+by an elementary matrix. Let E1, E2, . . . , EN be the elementary matrices corresponding to the row operation we performed, and let E = EN · · · E2E1 be their product.1 We know that the row operations transform A to identity, i.e. EA = I, so E = A−1. But the same row operations transform the augmented matrix (A | I) to (EA | E) = (I | A−1).
+This “advanced” explanation using elementary matrices implies an important proposition that will be often used later.
+Theorem 4.1. Any invertible matrix can be represented as a product of elementary matrices.
+Proof. As we discussed in the previous paragraph, A−1 = EN · · · E2E1, so A = (A−1)−1 = E1−1E2−1 · · · EN−1.
+
+An Example. Suppose we want to ﬁnd the inverse of the matrix
+
+ 1 4 −2   −2 −7 7  .
+3 11 −6
+
+Augmenting the identity matrix to it and performing row reduction we get
+
+ 1 4 −2 1 0 0 
+
+ 1 4 −2 1 0 0 
+
+ −2 −7 7 0 1 0 +2R1 ∼  0 1 3 2 1 0 
+
+∼
+
+3 11 −6 0 0 1 −3R1
+
+0 −1 0 −3 0 1 +R2
+
+ 1 4 −2 1 0 0 ×3  3 12 −6 3 0 0 +2R3
+
+ 0 1 3 2 1 0  ∼  0 1 3 2 1 0  −R3 ∼
+
+0 0 3 −1 1 1
+
+0 0 3 −1 1 1
+
+Here in the last row operation we multiplied the ﬁrst row by 3 to avoid fractions in the backward phase of row reduction. Continuing with the row reduction we get
+
+ 3 12 0 1 2 2 −12R2  3 0 0 −35 2 14 
+
+ 0 1 0 3 0 −1 
+
+∼  0 1 0 3 0 −1 
+
+0 0 3 −1 1 1
+
+0 0 3 −1 1 1
+
+Dividing the ﬁrst and the last row by 3 we get the inverse matrix
+
+ −35/3 2/3 14/3 
+
+3
+
+0 −1 
+
+−1/3 1/3 1/3
+
+1Although it does not matter here, but please notice, that if the row operation E1 was performed ﬁrst, E1 must be the rightmost term in the product
+
+54
+
+2. Systems of linear equations
+
+Exercises.
+4.1. Find the inverse of the matrices 1 2 1  3 7 3 , 234
+Show all steps
+
+ 1 −1 2   1 1 −2  .
+114
+
+5. Dimension. Finite-dimensional spaces.
+Deﬁnition. The dimension dim V of a vector space V is the number of vectors in a basis.
+For a vector space consisting only of zero vector 0 we put dim V = 0. If V does not have a (ﬁnite) basis, we put dim V = ∞.
+If dim V is ﬁnite, we call the space V ﬁnite-dimensional ; otherwise we call it inﬁnite-dimensional.
+Proposition 3.3 asserts that the dimension is well deﬁned, i.e. that it does not depend on the choice of a basis.
+Proposition 2.8 from Chapter 1 states that any ﬁnite spanning system in a vector space V contains a basis. This immediately implies the following
+Proposition 5.1. A vector space V is ﬁnite-dimensional if and only if it has a ﬁnite spanning system.
+Suppose, that we have a system of vectors in a ﬁnite-dimensional vector space, and we want to check if it is a basis (or if it is linearly independent, or if it is complete)? Probably the simplest way is to use an isomorphism A : V → Rn, n = dim E to move the problem to Rn, where all such questions can be answered by row reduction (studying pivots).
+Note, that if dim V = n, then there always exists an isomorphism A : V → Rn. Indeed, if dim V = n then there exists a basis v1, v2, . . . , vn ∈ V , and one can deﬁne an isomorphism A : V → Rn by
+Avk = ek, k = 1, 2, . . . , n.
+As an example, let us give the following two corollaries of the above Propositions 3.2, 3.5:
+Proposition 5.2. Any linearly independent system in a ﬁnite-dimensional vector space V cannot have more than dim V vectors in it.
+Proof. Let v1, v2, . . . , vm ∈ V be a linearly independent system, and let A : V → Rn be an isomorphism. Then Av1, Av2, . . . , Avm is a linearly independent system in Rn, and by Proposition 3.2 m ≤ n.
+
+5. Dimension. Finite-dimensional spaces.
+
+55
+
+Proposition 5.3. Any generating system in a ﬁnite-dimensional vector space V must have at least dim V vectors in it.
+Proof. Let v1, v2, . . . , vm ∈ V be a complete system in V , and let A : V → Rn be an isomorphism. Then Av1, Av2, . . . , Avm is a complete system in Rn, and by Proposition 3.5 m ≥ n.
+5.1. Completing a linearly independent system to a basis. The following statement will play an important role later.
+Proposition 5.4 (Completion to a basis). A linearly independent system of vectors in a ﬁnite-dimensional space can be completed to a basis, i.e. if v1, v2, . . . , vr are linearly independent vectors in a ﬁnite-dimensional vector space V then one can ﬁnd vectors vr+1, vr+2 . . . , vn such that the system of vectors v1, v2, . . . , vn is a basis in V .
+Proof. Let n = dim V .Take any vector not belonging to span{v1, v2, . . . , vr} and call it vr+1 (one can always do that because the system v1, v2, . . . , vr is not generating). By Exercise 2.5 from Chapter 1 the system v1, . . . , vr, vr+1 is linearly independent (notice that in this case r < n by Proposition 5.2). Repeat the procedure with the new system to get vector vr+2, and so on.
+We will stop the process when we get a generating system. Note, that the process cannot continue inﬁnitely, because a linearly independent system of vectors in V cannot have more than n = dim V vectors.
+5.2. Subspaces of ﬁnite dimensional spaces.
+Theorem 5.5. Let V be a subspace of a vector space W , dim W < ∞. Then V is ﬁnite dimensional and dim V ≤ dim W .
+Moreover, if dim V = dim W then V = W (we are still assuming that V is a subspace of W here).
+Remark. This theorem looks like a complete banality, like an easy corollary of Proposition 5.2. But we can apply Proposition 5.2 only if we already have a basis in V . And we only have a basis in W , and we cannot say how many vectors in this basis belong to V ; in fact, it is easy to construct an example where none of the vectors in the basis of W belongs to V .
+Proof of Theorem 5.5. If V = {0} then the theorem is trivial, so let us assume otherwise.
+We want to ﬁnd a basis in V . Take a non-zero vector v1 ∈ V . If V = span{v1}, we got our basis (consisting of the one vector v1).
+If not, we continue by induction. Suppose we constructed r linearly independent vectors v1, . . . , vr ∈ V . If V = span{vk : 1 ≤ k ≤ r},
+
+56
+
+2. Systems of linear equations
+
+then we have found a basis in V . If not, there exists a vector vr+1 ∈ V , vr+1 ∈/ span{vk : 1 ≤ k ≤ r}. By Exercise 2.5 from Chapter 1 the system v1, . . . , vr, vr+1 is linearly independent.
+Exercises.
+5.1. True or false:
+a) Every vector space that is generated by a ﬁnite set has a basis; b) Every vector space has a (ﬁnite) basis; c) A vector space cannot have more than one basis; d) If a vector space has a ﬁnite basis, then the number of vectors in every
+basis is the same. e) The dimension of Pn is n; f) The dimension on Mm×n is m + n; g) If vectors v1, v2, . . . , vn generate (span) the vector space V , then every
+vector in V can be written as a linear combination of vector v1, v2, . . . , vn in only one way; h) Every subspace of a ﬁnite-dimensional space is ﬁnite-dimensional; i) If V is a vector space having dimension n, then V has exactly one subspace of dimension 0 and exactly one subspace of dimension n.
+5.2. Prove that if V is a vector space having dimension n, then a system of vectors v1, v2, . . . , vn in V is linearly independent if and only if it spans V .
+5.3. Prove that a linearly independent system of vectors v1, v2, . . . , vn in a vector space V is a basis if and only if n = dim V .
+5.4. (An old problem revisited: now this problem should be easy) Is it possible that vectors v1, v2, v3 are linearly dependent, but the vectors w1 = v1+v2, w2 = v2+v3 and w3 = v3 + v1 are linearly independent? Hint: What dimension can the subspace span(v1, v2, v3) have?
+5.5. Let vectors u, v, w be a basis in V . Show that u + v + w, v + w, w is also a basis in V .
+5.6. Consider in the space R5 vectors v1 = (2, −1, 1, 5, −3)T , v2 = (3, −2, 0, 0, 0)T , v3 = (1, 1, 50, −921, 0)T .
+a) Prove that these vectors are linearly independent. b) Complete this system of vectors to a basis.
+If you do part b) ﬁrst you can do everything without any computations.
+6. General solution of a linear system.
+In this short section we discuss the structure of the general solution (i.e. of the solution set) of a linear system.
+
+6. General solution of a linear system.
+
+57
+
+We call a system Ax = b homogeneous if the right side b = 0, i.e. a homogeneous system is a system of form Ax = 0.
+With each system Ax = b
+we can associate a homogeneous system just by putting b = 0.
+Theorem 6.1 (General solution of a linear equation). Let a vector x1 satisfy the equation Ax = b, and let H be the set of all solutions of the associated homogeneous system
+Ax = 0.
+Then the set {x = x1 + xh : xh ∈ H}
+is the set of all solutions of the equation Ax = b.
+
+In other words, this theorem can be stated as
+
+General solution of Ax = b
+
+=
+
+A particular solution of Ax = b
+
++
+
+General solution of Ax = 0
+
+.
+
+Proof. Fix a vector x1 satisfying Ax1 = b. Let a vector xh satisfy Axh = 0. Then for x = x1 + xh we have
+Ax = A(x1 + xh) = Ax1 + Axh = b + 0 = b,
+so any x of form x = x1 + xh, xh ∈ H
+is a solution of Ax = b. Now let x satisfy Ax = b. Then for xh := x − x1 we get
+Axh = A(x − x1) = Ax − Ax1 = b − b = 0,
+so xh ∈ H. Therefore any solution x of Ax = b can be represented as x = x1 + xh with some xh ∈ H.
+
+The power of this theorem is in its generality. It applies to all linear equations, we do not have to assume here that vector spaces are ﬁnitedimensional. You will meet this theorem in diﬀerential equations, integral equations, partial diﬀerential equations, etc. Besides showing the structure of the solution set, this theorem allows one to separate investigation of uniqueness from the study of existence. Namely, to study uniqueness, we only need to analyze uniqueness of the homogeneous equation Ax = 0, which always has a solution.
+
+58
+
+2. Systems of linear equations
+
+There is an immediate application in this course: this theorem allows us to check a solution of a system Ax = b. For example, consider a system
+
+ 2 3 1 4 −9   17 
+
+1
+
+ 
+
+1
+
+1 1
+
+1 1
+
+1 2
+
+−3 −5
+
+ 
+
+x
+
+=
+
+ 
+
+
+
+6 8
+
+ 
+
+.
+
+
+
+2 2 2 3 −8
+
+14
+
+Performing row reduction one can ﬁnd the solution of this system
+
+(6.1)
+
+ 3   −2   2 
+
+ 1   1   −1 
+
+x
+
+=
+
+ 
+
+0
+
+ 
+
++
+
+x3
+
+ 
+
+1
+
+ 
+
++
+
+x5
+
+ 
+
+0
+
+ 
+
+,
+
+ 
+
+2
+
+ 
+
+ 
+
+0
+
+ 
+
+ 
+
+2
+
+ 
+
+0
+
+0
+
+1
+
+x3, x5 ∈ F.
+
+The parameters x3, x5 can be denoted here by any other letters, t and s, for example; we are keeping notation x3 and x5 here only to remind us that the parameters came from the corresponding free variables.
+Now, let us suppose, that we are just given this solution, and we want to check whether or not it is correct. Of course, we can repeat the row operations, but this is too time consuming. Moreover, if the solution was obtained by some non-standard method, it can look diﬀerently from what we get from the row reduction. For example, the formula
+
+(6.2)
+
+ 3   −2   0 
+
+1  1  0
+
+x
+
+=
+
+ 
+
+0
+
+ 
+
++
+
+s
+
+ 
+
+1
+
+ 
+
++
+
+t
+
+ 
+
+1
+
+ 
+
+,
+
+ 
+
+2
+
+ 
+
+ 
+
+0
+
+ 
+
+ 
+
+2
+
+ 
+
+0
+
+0
+
+1
+
+s, t ∈ F
+
+gives the same set as (6.1) (can you say why?); here we just replaced the last vector in (6.1) by its sum with the second one. So, this formula is diﬀerent from the solution we got from the row reduction, but it is nevertheless correct.
+The simplest way to check that (6.1) and (6.2) give us correct solutions, is to check that the ﬁrst vector (3, 1, 0, 2, 0)T satisﬁes the equation Ax = b, and that the other two (the ones with the parameters x3 and x5 or s and t in front of them) should satisfy the associated homogeneous equation Ax = 0.
+If this checks out, we will be assured that any vector x deﬁned by (6.1) or (6.2) is indeed a solution.
+Note, that this method of checking the solution does not guarantee that (6.1) (or (6.2)) gives us all the solutions. For example, if we just somehow miss out the term with x3, the above method of checking will still work ﬁne.
+
+7. Fundamental subspaces of a matrix. Rank.
+
+59
+
+So, how can we guarantee, that we did not miss any free variable, and there should not be extra term in (6.1)?
+What comes to mind, is to count the pivots again. In this example, if one does row operations, the number of pivots is 3. So indeed, there should be 2 free variables, and it looks like we did not miss anything in (6.1).
+To be able to prove this, we will need new notions of fundamental subspaces and of rank of a matrix. I should also mention that in this particular example, one does not have to perform all row operations to check that there are only 2 free variables, and that formulas (6.1) and (6.2) both give correct general solutions.
+
+Exercises.
+
+6.1. True or false
+
+a) Any system of linear equations has at least one solution;
+b) Any system of linear equations has at most one solution;
+c) Any homogeneous system of linear equations has at least one solution;
+d) Any system of n linear equations in n unknowns has at least one solution;
+e) Any system of n linear equations in n unknowns has at most one solution;
+f) If the homogeneous system corresponding to a given system of a linear equations has a solution, then the given system has a solution;
+g) If the coeﬃcient matrix of a homogeneous system of n linear equations in n unknowns is invertible, then the system has no non-zero solution;
+h) The solution set of any system of m equations in n unknowns is a subspace in Rn;
+i) The solution set of any homogeneous system of m equations in n unknowns is a subspace in Rn.
+
+6.2. Find a 2 × 3 system (2 equations with 3 unknowns) such that its general
+
+solution has a form
+
+1 1
+
+ 1  + s  2  , s ∈ R.
+
+0
+
+1
+
+7. Fundamental subspaces of a matrix. Rank.
+As we discussed above in Section 7 of Chapter 1, with any linear transformation A : V → W we can associate two subspaces, namely, its kernel, or null space
+Ker A = Null A := {v ∈ V : Av = 0} ⊂ V, and its range
+Ran A = {w ∈ W : w = Av for some v ∈ V } ⊂ W.
+
+60
+
+2. Systems of linear equations
+
+In other words, the kernel Ker A is the solution set of the homogeneous equation Ax = 0, and the range Ran A is exactly the set of all right sides b ∈ W for which the equation Ax = b has a solution.
+If A is an m × n matrix, i.e. a mapping from Fn to Fm, then it follows from the “column by coordinate” rule of the matrix multiplication that any vector w ∈ Ran A can be represented as a linear combination of columns of A. This explains the name column space (notation Col A), which is often used instead of Ran A.
+If A is a matrix, then in addition to Ran A and Ker A one can also consider the range and kernel for the transposed matrix AT . Often the term row space is used for Ran AT and the term left null space is used for Ker AT (but usually no special notation is introduced).
+The four subspaces Ran A, Ker A, Ran AT , Ker AT are called the fundamental subspaces of the matrix A. In this section we will study important relations between the dimensions of the four fundamental subspaces.
+We will need the following deﬁnition, which is one of the fundamental notions of Linear Algebra
+Deﬁnition. Given a linear transformation (matrix) A its rank, rank A, is the dimension of the range of A
+rank A := dim Ran A.
+
+7.1. Computing fundamental subspaces and rank. To compute the fundamental subspaces and rank of a matrix, one needs to do echelon reduction. Namely, let A be the matrix, and Ae be its echelon form
+1. The pivot columns of the original matrix A (i.e. the columns where after row operations we will have pivots in the echelon form) give us a basis (one of many possible) in Ran A.
+2. The pivot rows of the echelon from Ae give us a basis in the row space. Of course, it is possible just to transpose the matrix, and then do row operations. But if we already have the echelon form of A, say by computing Ran A, then we get Ran AT for free.
+3. To ﬁnd a basis in the null space Ker A one needs to solve the homogeneous equation Ax = 0: the details will be seen from the example below.
+
+Example. Consider a matrix
+
+1 1 2 2 1
+
+2 2 1
+
+ 
+
+3
+
+3
+
+3
+
+1 3
+
+1 2
+
+ 
+
+.
+
+
+
+1 1 −1 −1 0
+
+7. Fundamental subspaces of a matrix. Rank.
+
+61
+
+Performing row operations we get the echelon form
+
+1 1 2 2 1
+
+ 0 0 −3 −3 −1 
+
+ 
+
+0
+
+0
+
+0
+
+0
+
+0
+
+ 
+
+00 0 0 0
+
+(the pivots are boxed here). So, the columns 1 and 3 of the original matrix, i.e. the columns
+
+1
+
+  
+
+2 3
+
+ 
+
+,
+
+
+
+1
+
+ 2
+
+ 1
+
+ 
+
+3
+
+ 
+
+−1
+
+give us a basis in Ran A. We also get a basis for the row space Ran AT for free: the ﬁrst and second row of the echelon form of A, i.e. the vectors
+
+1
+
+1
+
+ 
+
+2
+
+ 
+
+,
+
+ 
+
+2
+
+ 
+
+1
+
+ 0
+
+ 0
+
+ 
+
+−3
+
+ 
+
+ 
+
+−3
+
+ 
+
+−1
+
+(we put the vectors vertically here. The question of whether to put vectors here vertically as columns, or horizontally as rows is is really a matter of convention. Our reason for putting them vertically is that although we call Ran AT the row space we deﬁne it as a column space of AT )
+To compute the basis in the null space Ker A we need to solve the equation Ax = 0. Compute the reduced echelon form of A, which in this example is
+
+ 1 1 0 0 1/3 
+
+0
+
+ 
+
+0
+
+0 0
+
+1 0
+
+1 0
+
+1/3 0
+
+ 
+
+.
+
+
+
+0000 0
+
+Note, that when solving the homogeneous equation Ax = 0, it is not necessary to write the whole augmented matrix, it is suﬃcient to work with the coeﬃcient matrix. Indeed, in this case the last column of the augmented matrix is the column of zeroes, which does not change under row operations. So, we can just keep this column in mind, without actually writing it. Keeping this last zero column in mind, we can read the solution oﬀ the
+
+62
+
+2. Systems of linear equations
+
+reduced echelon form above:
+
+ 
+
+x1
+
+=
+
+−x2 −
+
+1 3
+
+x5,
+
+   
+
+x2
+
+is
+
+free,
+
+x3
+
+=
+
+−x4
+
+−
+
+1 3
+
+x5
+
+  
+
+x4
+
+is
+
+free,
+
+ 
+
+x5
+
+is
+
+free,
+
+or, in the vector form
+
+
+
+−x2 −
+
+1 3
+
+x5
+
+
+
+ −1 
+
+0
+
+ −1/3 
+
+
+
+x2
+
+
+
+1
+
+0
+
+0
+
+(7.1)
+
+x=
+
+   
+
+−x4 − x4
+
+1 3
+
+x5
+
+   
+
+=
+
+x2
+
+ 
+
+
+
+
+
+0 0
+
+ 
+
++
+
+x4
+
+ 
+
+−1
+
+ 
+
++
+
+x5
+
+ 
+
+−1/3
+
+ 
+
+ 
+
+ 
+
+1
+
+ 
+
+ 
+
+0
+
+ 
+
+x5
+
+0
+
+0
+
+1
+
+The vectors at each free variable, i.e. in our case the vectors
+
+ −1 
+
+1
+
+ 
+
+0
+
+ 
+
+,
+
+ 
+
+0
+
+ 
+
+0
+
+0
+
+0
+
+ 
+
+−1
+
+ 
+
+,
+
+ 
+
+1
+
+ 
+
+0
+
+ −1/3 
+
+0
+
+ 
+
+−1/3
+
+ 
+
+ 
+
+0
+
+ 
+
+1
+
+form a basis in Ker A.
+Unfortunately, there is no shortcut for ﬁnding a basis in Ker AT , one must solve the equation AT x = 0. The knowledge of the echelon form of A does not help here.
+
+7.2. Explanation of the computing bases in the fundamental subspaces. So, why do the above methods indeed give us bases in the fundamental subspaces?
+7.2.1. The null space Ker A. The case of the null space Ker A is probably the simplest one: since we solved the equation Ax = 0, i.e. found all the solutions, then any vector in Ker A is a linear combination of the vectors we obtained. Thus, the vectors we obtained form a spanning system in Ker A. To see that the system is linearly independent, let us multiply each vector by the corresponding free variable and add everything, see (7.1). Then for each free variable xk, the entry number k of the resulting vector is exactly xk, see (7.1) again, so the only way this vector (the linear combination) can be 0 is when all free variables are 0.
+7.2.2. The column space Ran A. Let us now explain why the method for ﬁnding a basis in the column space Ran A works. First of all, notice that the pivot columns of the reduced echelon form Are of A form a basis in Ran Are (not in the column space of the original matrix, but of its reduced
+
+7. Fundamental subspaces of a matrix. Rank.
+
+63
+
+echelon form!). Since row operations are just left multiplications by invertible matrices, they do not change linear independence. Therefore, the pivot columns of the original matrix A are linearly independent.
+Let us now show that the pivot columns of A span the column space of A. Let v1, v2, . . . , vr be the pivot columns of A, and let v be an arbitrary column of A. We want to show that v can be represented as a linear combination of the pivot columns v1, v2, . . . , vr,
+v = α1v1 + α2v2 + . . . + αrvr.
+The reduced echelon form Are is obtained from A by the left multiplication
+Are = EA,
+where E is a product of elementary matrices, so E is an invertible matrix. The vectors Ev1, Ev2, . . . , Evr are the pivot columns of Are, and the column v of A is transformed to the column Ev of Are. Since the pivot columns of Are form a basis in Ran Are, vector Ev can be represented as a linear combination
+Ev = α1Ev1 + α2Ev2 + . . . + αrEvr. Multiplying this equality by E−1 from the left we get the representation
+v = α1v1 + α2v2 + . . . + αrvr,
+so indeed the pivot columns of A span Ran A. 7.2.3. The row space Ran AT . It is easy to see that the pivot rows of the echelon form Ae of A are linearly independent. Indeed, let w1, w2, . . . , wr be the transposed (since we agreed always to put vectors vertically) pivot rows of Ae. Suppose
+α1w1 + α2w2 + . . . + αrwr = 0.
+Consider the ﬁrst non-zero entry of w1. Since for all other vectors w2, w3, . . . , wr the corresponding entries equal 0 (by the deﬁnition of echelon form), we can conclude that α1 = 0. So we can just ignore the ﬁrst term in the sum.
+Consider now the ﬁrst non-zero entry of w2. The corresponding entries of the vectors w3, . . . , wr are 0, so α2 = 0. Repeating this procedure, we get that αk = 0 ∀k = 1, 2, . . . , r.
+To see that vectors w1, w2, . . . , wr span the row space, one can notice that row operations do not change the row space. This can be obtained directly from analyzing row operations, but we present here a more formal way to demonstrate this fact.
+For a transformation A and a set X let us denote by A(X) the set of all elements y which can represented as y = A(x), x ∈ X,
+A(X) := {y = A(x) : x ∈ X} .
+
+64
+
+2. Systems of linear equations
+
+If A is an m × n matrix, and Ae is its echelon form, Ae is obtained from A be left multiplication
+Ae = EA, where E is an m × m invertible matrix (the product of the corresponding elementary matrices). Then
+Ran ATe = Ran(AT ET ) = AT (Ran ET ) = AT (Rm) = Ran AT , so indeed Ran AT = Ran ATe .
+7.3. The Rank Theorem. Dimensions of fundamental subspaces. There are many applications in which one needs to ﬁnd a basis in column space or in the null space of a matrix. For example, as it was shown above, solving a homogeneous equation Ax = 0 amounts to ﬁnding a basis in the null space Ker A. Finding a basis in the column space means simply extracting a basis from a spanning set, by removing unnecessary vectors (columns).
+However, the most important application of the above methods of computing bases of fundamental subspaces is the relations between their dimensions.
+Theorem 7.1 (The Rank Theorem). For a matrix A
+rank A = rank AT .
+This theorem is often stated as follows:
+The column rank of a matrix coincides with its row rank.
+The proof of this theorem is trivial, since dimensions of both Ran A and Ran AT are equal to the number of pivots in the echelon form of A.
+The following theorem is gives us important relations between dimensions of the fundamental spaces. It is often also called the Rank Theorem
+Theorem 7.2. Let A be an m × n matrix, i.e. a linear transformation from Fn to Fm. Then
+1. dim Ker A + dim Ran A = dim Ker A + rank A = n (dimension of the domain of A);
+2. dim Ker AT + dim Ran AT = dim Ker AT + rank AT = dim Ker AT + rank A = m (dimension of the target space of A);
+Proof. The proof, modulo the above algorithms of ﬁnding bases in the fundamental subspaces, is almost trivial. The ﬁrst statement is simply the fact that the number of free variables (dim Ker A) plus the number of basic variables (i.e. the number of pivots, i.e. rank A) adds up to the number of columns (i.e. to n).
+
+7. Fundamental subspaces of a matrix. Rank.
+
+65
+
+The second statement, if one takes into account that rank A = rank AT is simply the ﬁrst statement applied to AT .
+
+As an application of the above theorem, let us recall the example from Section 6. There we considered a system
+
+ 2 3 1 4 −9   17 
+
+1
+
+ 
+
+1
+
+1 1
+
+1 1
+
+1 2
+
+−3 −5
+
+ 
+
+x
+
+=
+
+ 
+
+
+
+6 8
+
+ 
+
+,
+
+
+
+2 2 2 3 −8
+
+14
+
+and we claimed that its general solution given by
+
+ 3   −2   2 
+
+ 1   1   −1 
+
+x
+
+=
+
+ 
+
+0
+
+ 
+
++
+
+x3
+
+ 
+
+1
+
+ 
+
++
+
+x5
+
+ 
+
+0
+
+ 
+
+,
+
+ 
+
+2
+
+ 
+
+ 
+
+0
+
+ 
+
+ 
+
+2
+
+ 
+
+0
+
+0
+
+1
+
+x3, x5 ∈ F,
+
+or by
+
+ 3   −2   0 
+
+1  1  0
+
+x
+
+=
+
+ 
+
+0
+
+ 
+
++
+
+s
+
+ 
+
+1
+
+ 
+
++
+
+t
+
+ 
+
+1
+
+ 
+
+,
+
+ 
+
+2
+
+ 
+
+ 
+
+0
+
+ 
+
+ 
+
+2
+
+ 
+
+0
+
+0
+
+1
+
+s, t ∈ F.
+
+We checked in Section 6 that a vector x given by either formula is indeed
+
+a solution of the equation. But, how can we guarantee that any of the formulas describe all solutions?
+
+First of all, we know that in either formula, the last 2 vectors (the ones multiplied by the parameters) belong to Ker A. It is easy to see that in either case both vectors are linearly independent (two vectors are linearly dependent if and only if one is a multiple of the other).
+
+Now, let us count dimensions: interchanging the ﬁrst and the second rows and performing ﬁrst round of row operations
+
+ 1 1 1 1 −3 
+
+ 1 1 1 1 −3 
+
+−2R1 2 3 1 4 −9 
+
+−R1
+
+ 
+
+1
+
+1
+
+1
+
+2
+
+−5
+
+ 
+
+∼
+
+ 0 1 −1 2 −3 
+
+ 
+
+0
+
+0
+
+0
+
+1
+
+−2
+
+ 
+
+−2R1 2 2 2 3 −8
+
+0 0 0 1 −2
+
+we see that there are three pivots already, so rank A ≥ 3. (Actually, we already can see that the rank is 3, but it is enough just to have the estimate here). By Theorem 7.2, rank A + dim Ker A = 5, hence dim Ker A ≤ 2, and therefore there cannot be more than 2 linearly independent vectors in Ker A. Therefore, last 2 vectors in either formula form a basis in Ker A, so either formula give all solutions of the equation.
+
+66
+
+2. Systems of linear equations
+
+An important corollary of the rank theorem, is the following theorem connecting existence and uniqueness for linear equations.
+Theorem 7.3. Let A be an m × n matrix. Then the equation
+Ax = b
+has a solution for every b ∈ Rm if and only if the dual equation
+AT x = 0
+has a unique (only the trivial) solution. (Note, that in the second equation we have AT , not A).
+Proof. The proof follows immediately from Theorem 7.2 by counting the dimensions. We leave the details as an exercise to the reader.
+There is a very nice geometric interpretation of the second rank theorem (Theorem 7.2). Namely, statement 1 of the theorem says, that if a transformation A : Fn → Fm has trivial kernel (Ker A = {0}), then the dimensions of the domain Fn and of the range Ran A coincide. If the kernel is non-trivial, then the transformation “kills” dim Ker A dimensions, so dim Ran A = n − dim Ker A.
+7.4. Completion of a linearly independent system to a basis. As Proposition 5.4 from Section 5 above asserts, any linearly independent system can be completed to a basis, i.e. given inearly independent vectors v1, v2, . . . , vr in a ﬁnite-dimensional vector space V , one can ﬁnd vectors vr+1, vr+2 . . . , vn such that the system of vectors v1, v2, . . . , vn is a basis in V.
+Theoretically, the proof of this proposition give us an algorithm of ﬁnding the vectors vr+1, vr+2 . . . , vn, but this algorithm does not look too practical.
+Ideas of this section give us a more practical way to perform the completion to a basis.
+First of all, notice that if an m × n matrix is in an echelon form, then its non-zero rows (which are clearly linearly independent) can be easily completed to a basis in the whole space Fn; one just needs to add some rows in appropriate places, so the resulting matrix is still in the echelon form and has pivots in every column.
+Then, the non-zero rows of the new matrix form a basis, and we can order it any way we want, because property of being basis does not depend on the ordering.
+Suppose now that we have linearly independent vectors v1, v2, . . . , vr, vk ∈ Fn. Consider the matrix A with rows v1T , v2T , . . . , vrT and perform row operations to get the echelon form Ae. As we discussed above, the rows of
+
+7. Fundamental subspaces of a matrix. Rank.
+
+67
+
+Ae can be easily completed to a basis in Rn. And it turns out that the same vectors that complete rows of Ae to a basis complete to a basis the original vectors v1, v2, . . . , vr.
+To see that, let vectors vr+1, . . . , vn complete the rows of Ae to a basis in Fn. Then, if we add to a matrix Ae rows vrT+1, . . . , vnT , we get an invertible matrix. Let call this matrix Ae, and let A be the matrix obtained from A by adding rows vrT+1, . . . , vnT . The matrix Ae can be obtained from A by row operations, so
+Ae = EA,
+where E is the product of the corresponding elementary matrices. Then A = E−1 and A is invertible as a product of invertible matrices.
+But that means that the rows of A form a basis in Fn, which is exactly what we need.
+
+Remark. The method of completion to a basis described above may be not the simplest one, but one of its principal advantages is that it works for vector spaces over an arbitrary ﬁeld.
+
+Exercises.
+
+7.1. True or false:
+
+a) The rank of a matrix is equal to the number of its non-zero columns; b) The m × n zero matrix is the only m × n matrix having rank 0; c) Elementary row operations preserve rank; d) Elementary column operations do not necessarily preserve rank; e) The rank of a matrix is equal to the maximum number of linearly inde-
+pendent columns in the matrix; f) The rank of a matrix is equal to the maximum number of linearly inde-
+pendent rows in the matrix; g) The rank of an n × n matrix is at most n; h) An n × n matrix having rank n is invertible.
+
+7.2. A 54 × 37 matrix has rank 31. What are dimensions of all 4 fundamental subspaces?
+
+7.3. Compute rank and ﬁnd bases of all four fundamental subspaces for the matrices
+
+1 1 0  0 1 1 ,
+110
+
+1 2 3 1 1
+
+1
+
+ 
+
+0
+
+4 2
+
+0 −3
+
+1 0
+
+2 1
+
+ 
+
+.
+
+
+
+10 0 00
+
+7.4. Prove that if A : X → Y and V is a subspace of X then dim AV ≤ rank A. (AV here means the subspace V transformed by the transformation A, i.e. any vector in AV can be represented as Av, v ∈ V ). Deduce from here that rank(AB) ≤ rank A.
+
+68
+
+2. Systems of linear equations
+
+Remark: Here one can use the fact that if V ⊂ W then dim V ≤ dim W . Do you understand why is it true?
+
+7.5. Prove that if A : X → Y and V is a subspace of X then dim AV ≤ dim V . Deduce from here that rank(AB) ≤ rank B.
+
+7.6. Prove that if the product AB of two n × n matrices is invertible, then both A and B are invertible. Even if you know about determinants, do not use them, we did not cover them yet. Hint: use previous 2 problems.
+
+7.7. Prove that if Ax = 0 has unique solution, then the equation AT x = b has a solution for every right side b. Hint: count pivots
+
+7.8. Write a matrix with the required property, or explain why no such matrix exists
+
+a) Column space contains (1, 0, 0)T , (0, 0, 1)T , row space contains (1, 1)T , (1, 2)T ;
+b) Column space is spanned by (1, 1, 1)T , nullspace is spanned by (1, 2, 3)T ;
+c) Column space is R4, row space is R3.
+
+Hint: Check ﬁrst if the dimensions add up.
+
+7.9. If A has the same four fundamental subspaces as B, does A = B?
+
+7.10. Complete the rows of a matrix
+
+ e3 3 4 0 −π 6 −2 
+
+ 0 0 2 −1 πe 1 1 
+
+ 
+
+0
+
+0
+
+0
+
+0
+
+3 −3
+
+2
+
+ 
+
+000 0 0 0 1
+
+to a basis in R7.
+
+7.11. For a matrix
+
+ 1 2 −1 2 3 
+
+ 2 2 1 5 5
+
+ 
+
+3
+
+6 −3
+
+0
+
+24
+
+ 
+
+−1 −4 4 −7 11
+
+ﬁnd bases in its column and row spaces.
+
+7.12. For the matrix in the previous problem, complete the basis in the row space to a basis in R5
+
+7.13. For the matrix
+
+A=
+
+1i i −1
+
+compute Ran A and Ker A. What can you say about relation between these sub-
+
+spaces?
+
+7.14. Is it possible that for a real matrix A that Ran A = Ker AT ? Is it possible for a complex A?
+
+7.15. Complete the vectors (1, 2, −1, 2, 3)T , (2, 2, 1, 5, 5)T , (−1, −4, 4, 7, −11)T to a basis in R5.
+
+8. Change of coordinates
+
+69
+
+8. Representation of a linear transformation in arbitrary bases. Change of coordinates formula.
+The material we have learned about linear transformations and their matrices can be easily extended to transformations in abstract vector spaces with ﬁnite bases. In this section we will distinguish between a linear transformation T and its matrix, the reason being that we consider diﬀerent bases, so a linear transformation can have diﬀerent matrix representation.
+
+8.1. Coordinate vector. Let V be a vector space with a basis B := {b1, b2, . . . , bn}. Any vector v ∈ V admits a unique representation as a linear combination
+n
+v = x1b1 + x2b2 + . . . + xnbn = xkbk.
+k=1
+
+The numbers x1, x2, . . . , xn are called the coordinates of the vector v in the basis B. It is convenient to join these coordinates into the so-called coordinate vector of v relative to the basis B, which is the column vector
+
+ x1 
+
+[v]B
+
+ := 
+
+
+
+x2 ...
+
+
+
+ 
+
+∈
+
+Fn.
+
+
+
+xn
+
+Note that the mapping
+v → [v]B is an isomorphism between V and Fn. It transforms the basis b1, b2, . . . , bn to the standard basis e1, e2, . . . , en in Fn.
+
+8.2. Matrix of a linear transformation. Let T : V → W be a linear transformation, and let A = {a1, a2, . . . , an}, B := {b1, b2, . . . , bm} be bases in V and W respectively.
+
+A matrix of the transformation T in (or with respect to) the bases A and B is an m × n matrix, denoted by [T ]BA, which relates the coordinate vectors [T v]B and [v]A,
+
+[T v]B = [T ]BA[v]A;
+
+notice the balance of symbols A and B here: this is the reason we put the ﬁrst basis A into the second position.
+
+The matrix [T ]BA is easy to ﬁnd: its kth column is just the coordinate
+
+tvieocntofrro[mT aFk]nB
+
+(compare to Fm).
+
+this
+
+with
+
+ﬁnding
+
+the
+
+matrix
+
+of
+
+a
+
+linear
+
+transforma-
+
+70
+
+2. Systems of linear equations
+
+As in the case of standard bases, composition of linear transformations is equivalent to multiplication of their matrices: one only has to be a bit more careful about bases. Namely, let T1 : X → Y and T2 : Y → Z be linear transformation, and let A, B and C be bases in X, Y and Z respectively. Then for the composition T = T2T1,
+
+T : X → Z, T x := T2(T1(x))
+
+we have
+
+(8.1)
+
+[T ]CA = [T2T1]CA = [T2]CB [T1]BA
+
+(notice again the balance of indices here).
+
+The proof here goes exactly as in the case of Fn spaces with standard
+bases, so we do not repeat it here. Another possibility is to transfer everything to the spaces Fn via the coordinate isomorphisms v → [v]B . Then one does not need any proof, everything follows from the results about matrix
+
+multiplication.
+
+8.3. Change of coordinate matrix. Let us have two bases A = {a1, a2, . . . , an} and B = {b1, b2, . . . , bn} in a vector space V . Consider the identity transformation I = IV and its matrix [I]BA in these bases. By the deﬁnition
+[v]B = [I]BA[v]A, ∀v ∈ V, i.e. for any vector v ∈ V the matrix [I]BA transforms its coordinates in the basis A into coordinates in the basis B. The matrix [I]BA is often called the change of coordinates (from the basis A to the basis B) matrix.
+The matrix [I]BA is easy to compute: according to the general rule of ﬁnding the matrix of a linear transformation, its kth column is the coordinate representation [ak]B of kth element of the basis A
+Note that [I]AB = ([I]BA )−1,
+(follows immediately from the multiplication of matrices rule (8.1)), so any change of coordinate matrix is always invertible.
+8.3.1. An example: change of coordinates from the standard basis. Let our space V be Fn, and let us have a basis B = {b1, b2, . . . , bn} there. We also have the standard basis S = {e1, e2, . . . , en} there. The change of coordinates matrix [I]SB is easy to compute:
+[I]SB = [b1, b2, . . . , bn] =: B,
+i.e. it is just the matrix B whose kth column is the vector (column) vk. And in the other direction
+[I]BS = ([I]SB )−1 = B−1.
+
+8. Change of coordinates
+
+71
+
+For example, consider a basis
+
+B=
+
+1 2
+
+,
+
+2 1
+
+in F2, and let S denote the standard basis there. Then
+
+[I]SB =
+
+12 21
+
+=: B
+
+and
+
+[I ]BS
+
+=
+
+[I ]−S B1
+
+=
+
+B−1
+
+=
+
+1 3
+
+−1 2 2 −1
+
+(we know how to compute inverses, and it is also easy to check that the above matrix is indeed the inverse of B)
+8.3.2. An example: going through the standard basis. In the space of polynomials of degree at most 1 we have bases
+
+A = {1, 1 + x}, and B = {1 + 2x, 1 − 2x},
+
+and we want to ﬁnd the change of coordinate matrix [I]BA. Of course, we can always take vectors from the basis A and try to de-
+compose them in the basis B; it involves solving linear systems, and we know how to do that.
+However, I think the following way is simpler. In P1 we also have the standard basis S = {1, x}, and for this basis
+
+[I]SA =
+
+11 01
+
+=: A,
+
+and taking the inverses
+
+[I]AS = A−1 =
+
+1 −1 01
+
+,
+
+[I]SB =
+
+11 2 −2
+
+=: B,
+
+[I ]BS
+
+=
+
+B−1
+
+=
+
+1 4
+
+21 2 −1
+
+.
+
+Then
+
+[I ]BA
+
+=
+
+[I]BS [I]SA
+
+=
+
+B−1A
+
+=
+
+1 4
+
+21 2 −1
+
+and
+
+[I]AB = [I]AS [I]SB = A−1B =
+
+1 −1 01
+
+11 01
+11 2 −2
+
+Notice the balance of indices here.
+
+72
+
+2. Systems of linear equations
+
+Notice the balance of indices.
+
+8.4. Matrix of a transformation and change of coordinates. Let T : V → W be a linear transformation, and let A, A be two bases in V and let B, B be two bases in W . Suppose we know the matrix [T ]BA, and we would like to ﬁnd the matrix representation with respect to new bases A, B, i.e. the matrix [T ] . The rule is very simple:
+BA
+to get the matrix in the “new” bases one has to surround the matrix in the “old” bases by change of coordinates matrices.
+
+I did not mention here what change of coordinate matrix should go where, because we don’t have any choice if we follow the balance of indices rule. Namely, matrix representation of a linear transformation changes according to the formula
+
+[T ]
+BA
+
+=
+
+[I
+
+]
+BB
+
+[T
+
+]BA
+
+[I
+
+]
+AA
+
+The proof can be done just by analyzing what each of the matrices does.
+
+[T ]A is often used instead of [T ]AA . It is shorter, but two index notation is better adapted to the balance of indices rule.
+
+8.5. Case of one basis: similar matrices. Let V be a vector space and let A = {a1, a2, . . . , an} be a basis in V . Consider a linear transformation T : V → V and let [T ]AA be its matrix in this basis (we use the same basis for “inputs” and “outputs”)
+The case when we use the same basis for “inputs” and “outputs” is very important (because in this case we can multiply a matrix by itself), so let us study this case a bit more carefully. Notice, that very often in this case the shorter notation [T ]A is used instead of [T ]AA. However, the two index notation [T ]AA is better adapted to the balance of indices rule, so I recommend using it (or at least always keep it in mind) when doing change of coordinates.
+Let B = {b1, b2, . . . , bn} be another basis in V . By the change of coordinate rule above
+
+[T ]BB = [I]BA [T ]AA [I]AB Recalling that
+[I]BA = [I]−A1B and denoting Q := [I]AB , we can rewrite the above formula as
+[T ]BB = Q−1[T ]AA Q. This gives a motivation for the following deﬁnition
+
+Deﬁnition 8.1. We say that a matrix A is similar to a matrix B if there exists an invertible matrix Q such that A = Q−1BQ.
+
+8. Change of coordinates
+
+73
+
+Since an invertible matrix must be square, it follows from counting dimensions, that similar matrices A and B have to be square and of the same size. If A is similar to B, i.e. if A = Q−1BQ, then
+B = QAQ−1 = (Q−1)−1A(Q−1)
+(since Q−1 is invertible), therefore B is similar to A. So, we can just say that A and B are similar.
+The above reasoning shows, that it does not matter where to put Q and where Q−1: one can use the formula A = QBQ−1 in the deﬁnition of similarity.
+The above discussion shows, that one can treat similar matrices as different matrix representation of the same linear operator (transformation).
+
+Exercises.
+
+8.1. True or false
+
+a) Every change of coordinate matrix is square; b) Every change of coordinate matrix is invertible; c) The matrices A and B are called similar if B = QT AQ for some matrix Q; d) The matrices A and B are called similar if B = Q−1AQ for some matrix
+Q; e) Similar matrices do not need to be square.
+
+8.2. Consider the system of vectors (1, 2, 1, 1)T , (0, 1, 3, 1)T , (0, 3, 2, 0)T , (0, 1, 0, 0)T .
+
+a) Prove that it is a basis in F4. Try to do minimal amount of computations.
+
+b) Find the change of coordinate matrix that changes the coordinates in this basis to the standard coordinates in F4 (i.e. to the coordinates in the stan-
+dard basis e1, . . . , e4).
+
+8.3. Find the change of coordinates matrix that changes the coordinates in the basis 1, 1 + t in P1 to the coordinates in the basis 1 − t, 2t.
+
+8.4. Let T be the linear operator in F2 deﬁned (in the standard coordinates) by
+
+T
+
+x y
+
+=
+
+3x + y x − 2y
+
+Find the matrix of T in the standard basis and in the basis (1, 1)T , (1, 2)T .
+
+8.5. Prove, that if A and B are similar matrices then trace A = trace B. Hint: recall how trace(XY ) and trace(Y X) are related.
+
+8.6. Are the matrices
+
+13 22
+
+and
+
+02 42
+
+similar? Justify.
+
+Determinants
+
+Chapter 3
+
+1. Introduction.
+The reader probably already met determinants in calculus or algebra, at least the determinants of 2 × 2 and 3 × 3 matrices. For a 2 × 2 matrix
+ab cd
+the determinant is simply ad − bc; the determinant of a 3 × 3 matrix can be found by the “Star of David” rule.
+In this chapter we would like to introduce determinants for n × n matrices. I don’t want just to give a formal deﬁnition. First I want to give some motivation, and then derive some properties the determinant should have. Then if we want to have these properties, we do not have any choice, and arrive to several equivalent deﬁnitions of the determinant.
+It is more convenient to start not with the determinant of a matrix, but with determinant of a system of vectors. There is no real diﬀerence here, since we always can join vectors together (say as columns) to form a matrix.
+Let us have n vectors v1, v2, . . . , vn in Rn (notice that the number of vectors coincides with dimension), and we want to ﬁnd the n-dimensional volume of the parallelepiped determined by these vectors.
+The parallelepiped determined by the vectors v1, v2, . . . , vn can be deﬁned as the collection of all vectors v ∈ Rn that can be represented as
+v = t1v1 + t2v2 + . . . + tnvn, 0 ≤ tk ≤ 1 ∀k = 1, 2, . . . , n.
+It can be easily visualized when n = 2 (parallelogram) and n = 3 (parallelepiped). So, what is the n-dimensional volume?
+75
+
+76
+
+3. Determinants
+
+If n = 2 it is area; if n = 3 it is indeed the volume. In dimension 1 is it just the length.
+Finally, let us introduce some notation. For a system of vectors (columns) v1, v2, . . . , vn we will denote its determinant (that we are going to construct) as D(v1, v2, . . . , vn). If we join these vectors in a matrix A (column number k of A is vk), then we will use the notation det A,
+
+det A = D(v1, v2, . . . , vn)
+
+Also, for a matrix
+
+ a1,1 a1,2 . . . a1,n 
+
+ A=
+
+
+
+a2,1 ...
+
+a2,2 ...
+
+...
+
+a2,n 
+
+...
+
+  
+
+an,1 an,2 . . . an,n
+
+its determinant is often is denoted by
+
+a1,1 a1,2 . . . a1,n
+
+a2,1 a2,2 . . . a2,n
+
+...
+
+...
+
+... .
+
+an,1 an,2 . . . an,n
+
+2. What properties determinant should have.
+We know, that for dimensions 2 and 3 “volume” of a parallelepiped is determined by the base times height rule: if we pick one vector, then height is the distance from this vector to the subspace spanned by the remaining vectors, and the base is the (n − 1)-dimensional volume of the parallelepiped determined by the remaining vectors.
+Now let us generalize this idea to higher dimensions. For a moment we do not care about how exactly to determine height and base. We will show, that if we assume that the base and the height satisfy some natural properties, then we do not have any choice, and the volume (determinant) is uniquely deﬁned.
+2.1. Linearity in each argument. First of all, if we multiply vector v1 by a positive number a, then the height (i.e. the distance to the linear span L(v2, . . . , vn)) is multiplied by a. If we admit negative heights (and negative volumes), then this property holds for all scalars a, and so the determinant D(v1, v2, . . . , vn) of the system v1, v2, . . . , vn should satisfy
+D(αv1, v2, . . . , vn) = αD(v1, v2, . . . , vn).
+
+2. What properties determinant should have.
+
+77
+
+Of course, there is nothing special about vector v1, so for any index k
+
+(2.1)
+
+D(v1, . . . , αvk, . . . , vn) = αD(v1, . . . , vk, . . . , vn)
+
+k
+
+k
+
+To get the next property, let us notice that if we add 2 vectors, then the “height” of the result should be equal the sum of the “heights” of summands, i.e. that
+
+(2.2) D(v1, . . . , uk + vk, . . . , vn) =
+
+k
+
+D(v1, . . . , uk, . . . , vn) + D(v1, . . . , vk, . . . , vn)
+
+k
+
+k
+
+In other words, the above two properties say that the determinant of n
+
+vectors is linear in each argument (vector), meaning that if we ﬁx n − 1
+
+vectors and interpret the remaining vector as a variable (argument), we get
+
+a linear function.
+
+Remark. We already know that linearity is a very nice property, that helps in many situations. So, admitting negative heights (and therefore negative volumes) is a very small price to pay to get linearity, since we can always put on the absolute value afterwards.
+In fact, by admitting negative heights, we did not sacriﬁce anything! To the contrary, we even gained something, because the sign of the determinant contains some information about the system of vectors (orientation).
+
+2.2. Preservation under “column replacement”. The next property also seems natural. Namely, if we take a vector, say vj, and add to it a multiple of another vector vk, the “height” does not change, so
+
+(2.3) D(v1, . . . , vj + αvk, . . . , vk, . . . , vn)
+k
+j
+
+= D(v1, . . . , vj, . . . , vk, . . . , vn)
+
+j
+
+k
+
+In other words, if we apply the column operation of the third type, the determinant does not change.
+
+Remark. Although it is not essential here, let us notice that the second part of linearity (property (2.2)) is not independent: it can be deduced from properties (2.1) and (2.3).
+We leave the proof as an exercise for the reader.
+
+2.3. Antisymmetry. The next property the determinant should have, is that if we interchange 2 vectors, the determinant changes sign:
+
+(2.4) D(v1, . . . , vk, . . . , vj, . . . , vn) = −D(v1, . . . , vj, . . . , vk, . . . , vn).
+
+j
+
+k
+
+j
+
+k
+
+Functions of several variables that change sign when one interchanges any two arguments are called antisymmetric.
+
+78
+
+3. Determinants
+
+At ﬁrst sight this property does not look natural, but it can be deduced from the previous ones. Namely, applying property (2.3) three times, and then using (2.1) we get
+
+D(v1, . . . , vj, . . . , vk, . . . , vn) =
+
+j
+
+k
+
+= D(v1, . . . , vj, . . . , vk − vj, . . . , vn)
+j k
+
+= D(v1, . . . , vj + (vk − vj), . . . , vk − vj, . . . , vn)
+
+j
+
+k
+
+= D(v1, . . . , vk, . . . , vk − vj, . . . , vn)
+j k
+
+= D(v1, . . . , vk, . . . , (vk − vj) − vk, . . . , vn)
+j k
+
+= D(v1, . . . , vk, . . . , −vj, . . . , vn)
+
+j
+
+k
+
+= −D(v1, . . . , vk, . . . , vj, . . . , vn).
+
+j
+
+k
+
+2.4. Normalization. The last property is the easiest one. For the standard basis e1, e2, . . . , en in Rn the corresponding parallelepiped is the ndimensional unit cube, so
+
+(2.5)
+
+D(e1, e2, . . . , en) = 1.
+
+In matrix notation this can be written as
+
+det(I) = 1
+
+3. Constructing the determinant.
+The plan of the game is now as follows: using the properties that as we decided in Section 2 the determinant should have, we derive other properties of the determinant, some of them highly non-trivial. We will show how to use these properties to compute the determinant using our old friend—row reduction.
+Later, in Section 4, we will show that the determinant, i.e. a function with the desired properties exists and unique. After all we have to be sure that the object we are computing and studying exists.
+While our initial geometric motivation for determinant and its properties came from considering vectors in the real vector space Rn, so they relate only to matrices with real entries, all the constructions below use only algebraic operations (addition, multiplication, division) and are applicable to matrices with complex entries, and even with entries in an arbitrary ﬁeld.
+
+3. Constructing the determinant.
+
+79
+
+So in what follows we are constructing determinant not just for real matrices, but for complex matrices as well (and also for matrices with entries in an arbitrary ﬁeld). The nice geometric motivation for the properties works only in the real case, but after we decided on the properties of the determinant (see properties 1–3 below) everything works in the general case.
+
+3.1. Basic properties. We will use the following basic properties of the determinant:
+1. Determinant is linear in each column, i.e. in vector notation for every index k
+
+D(v1, . . . , αuk + βvk, . . . , vn) =
+
+k
+
+αD(v1, . . . , uk, . . . , vn) + βD(v1, . . . , vk, . . . , vn)
+
+k
+
+k
+
+for all scalars α, β.
+
+2. Determinant is antisymmetric, i.e. if one interchanges two columns, the determinant changes sign.
+
+3. Normalization property: det I = 1.
+
+All these properties were discussed above in Section 2. The ﬁrst property is just the (2.1) and (2.2) combined. The second one is (2.4), and the last one is the normalization property (2.5). Note, that we did not use property (2.3): it can be deduced from the above three. These three properties completely deﬁne determinant!
+
+3.2. Properties of determinant deduced from the basic properties.
+Proposition 3.1. For a square matrix A the following statements hold:
+1. If A has a zero column, then det A = 0. 2. If A has two equal columns, then det A = 0; 3. If one column of A is a multiple of another, then det A = 0; 4. If columns of A are linearly dependent, i.e. if the matrix is not in-
+vertible, then det A = 0.
+
+Proof. Statement 1 follows immediately from linearity. If we multiply the zero column by zero, we do not change the matrix and its determinant. But by the property 1 above, we should get 0.
+The fact that determinant is antisymmetric, implies statement 2. Indeed, if we interchange two equal columns, we change nothing, so the determinant remains the same. On the other hand, interchanging two columns
+
+80
+
+3. Determinants
+
+changes sign of determinant, so
+
+det A = − det A,
+
+which is possible only if det A = 0.
+Statement 3 is immediate corollary of statement 2 and linearity.
+To prove the last statement, let us ﬁrst suppose that the ﬁrst vector v1 is a linear combination of the other vectors,
+n
+v1 = α2v2 + α3v3 + . . . + αnvn = αkvk.
+k=2
+Then by linearity we have (in vector notation)
+
+D(v1, v2, . . . , vn) = D
+
+n
+αkvk , v2, v3, . . . , vn
+k=2 n
+= αkD(vk, v2, v3, . . . , vn)
+k=2
+
+and each determinant in the sum is zero because of two equal columns.
+
+Let us now consider general case, i.e. let us assume that the system v1, v2, . . . , vn is linearly dependent. Then one of the vectors, say vk can be represented as a linear combination of the others. Interchanging this vector with v1 we arrive to the situation we just treated, so
+
+D(v1, . . . , vk, . . . , vn) = −D(vk, . . . , v1, . . . , vn) = −0 = 0,
+
+k
+
+k
+
+so the determinant in this case is also 0.
+
+The next proposition generalizes property (2.3). As we already have said above, this property can be deduced from the three “basic” properties of the determinant, we are using in this section.
+
+Note, that adding to a column a multiple of itself is prohibited here. We can only add multiples of the other columns.
+
+Proposition 3.2. The determinant does not change if we add to a column a linear combination of the other columns (leaving the other columns intact). In particular, the determinant is preserved under “column replacement” (column operation of third type).
+Proof. Fix a vector vk, and let u be a linear combination of the other vectors,
+u = αjvj.
+j=k
+Then by linearity
+
+D(v1, . . . , vk + u, . . . , vn) = D(v1, . . . , vk, . . . , vn) + D(v1, . . . , u, . . . , vn),
+
+k
+
+k
+
+k
+
+3. Constructing the determinant.
+
+81
+
+and by Proposition 3.1 the last term is zero.
+
+3.3. Determinants of diagonal and triangular matrices. Now we are
+ready to compute determinant for some important special classes of matrices.
+The ﬁrst class is the so-called diagonal matrices. Let us recall that a square matrix A = {aj,k}nj,j=1 is called diagonal if all entries oﬀ the main diagonal are zero, i.e. if aj,k = 0 for all j = k. We will often use the notation diag{a1, a2, . . . , an} for the diagonal matrix
+
+ a1 0 . . . 0 
+
+ 0 a2 . . . 0 
+
+  
+
+...
+
+...
+
+...
+
+.
+
+0
+
+ 
+
+0 0 . . . an
+
+Since a diagonal matrix diag{a1, a2, . . . , an} can be obtained from the identity matrix I by multiplying column number k by ak,
+Determinant of a diagonal matrix equal the product of the diagonal entries,
+det(diag{a1, a2, . . . , an}) = a1a2 . . . an.
+
+The next important class is the class of so-called triangular matrices. A square matrix A = {aj,k}nj,j=1 is called upper triangular if all entries below the main diagonal are 0, i.e. if aj,k = 0 for all k < j. A square matrix is called lower triangular if all entries above the main are 0, i.e if aj,k = 0 for all j < k. We call a matrix triangular, if it is either lower or upper triangular matrix.
+It is easy to see that
+Determinant of a triangular matrix equals to the product of the diagonal entries,
+det A = a1,1a2,2 . . . an,n.
+
+Indeed, if a triangular matrix has zero on the main diagonal, it is not invertible (this can easily be checked by column operations) and therefore both sides equal zero. If all diagonal entries are non-zero, then using column replacement (column operations of third type) one can transform the matrix into a diagonal one with the same diagonal entries: For upper triangular matrix one should ﬁrst subtract appropriate multiples of the ﬁrst column from the columns number 2, 3, . . . , n, “killing” all entries in the ﬁrst row, then subtract appropriate multiples of the second column from columns number 3, . . . , n, and so on.
+
+82
+
+3. Determinants
+
+To treat the case of lower triangular matrices one has to do “column reduction” from the left to the right, i.e. ﬁrst subtract appropriate multiples of the last column from columns number n − 1, . . . , 2, 1, and so on.
+3.4. Computing the determinant. Now we know how to compute determinants, using their properties: one just needs to do column reduction (i.e. row reduction for AT ) keeping track of column operations changing the determinant. Fortunately, the most often used operation—row replacement, i.e. operation of third type does not change the determinant. So we only need to keep track of interchanging of columns and of multiplication of column by a scalar.
+If an echelon form of AT does not have pivots in every column (and row), then A is not invertible, so det A = 0. If A is invertible, we arrive at a triangular matrix, and det A is the product of diagonal entries times the correction from column interchanges and multiplications.
+The above algorithm implies that det A can be zero only if a matrix A is not invertible. Combining this with the last statement of Proposition 3.1 we get
+Proposition 3.3. det A = 0 if and only if A is not invertible. An equivalent statement: det A = 0 if and only if A is invertible.
+Note, that although we now know how to compute determinants, the determinant is still not deﬁned. One can ask: why don’t we deﬁne it as the result we get from the above algorithm? The problem is that formally this result is not well deﬁned: that means we did not prove that diﬀerent sequences of column operations yield the same answer.
+3.5. Determinants of a transpose and of a product. Determinants of elementary matrices. In this section we prove two important theorems.
+Theorem 3.4 (Determinant of a transpose). For a square matrix A, det A = det(AT ).
+This theorem implies that for all statement about columns we discussed above, the corresponding statements about rows are also true. In particular, determinants behave under row operations the same way they behave under column operations. So, we can use row operations to compute determinants.
+Theorem 3.5 (Determinant of a product). For n × n matrices A and B
+det(AB) = (det A)(det B)
+In other words
+Determinant of a product equals product of determinants.
+
+3. Constructing the determinant.
+
+83
+
+To prove both theorems we need the following lemma.
+Lemma 3.6. For a square matrix A and an elementary matrix E (of the same size)
+det(AE) = (det A)(det E)
+Proof. The proof can be done just by direct checking: determinants of special matrices are easy to compute; right multiplication by an elementary matrix is a column operation, and eﬀect of column operations on the determinant is well known.
+This can look like a lucky coincidence, that the determinants of elementary matrices agree with the corresponding column operations, but it is not a coincidence at all.
+Namely, for a column operation the corresponding elementary matrix can be obtained from the identity matrix I by this column operation. So, its determinant is 1 (determinant of I) times the eﬀect of the column operation.
+And that is all! It may be hard to realize at ﬁrst, but the above paragraph is a complete and rigorous proof of the lemma!
+Applying N times Lemma 3.6 we get the following corollary.
+Corollary 3.7. For any matrix A and any sequence of elementary matrices E1, E2, . . . , EN (all matrices are n × n)
+det(AE1E2 . . . EN ) = (det A)(det E1)(det E2) . . . (det EN )
+Lemma 3.8. Any invertible matrix is a product of elementary matrices.
+Proof. We know that any invertible matrix is row equivalent to the identity matrix, which is its reduced echelon form. So
+I = EN EN−1 . . . E2E1A,
+and therefore any invertible matrix can be represented as a product of elementary matrices,
+A = E1−1E2−1 . . . EN−1−1EN−1I = E1−1E2−1 . . . EN−1−1EN−1 (the inverse of an elementary matrix is an elementary matrix).
+Proof of Theorem 3.4. First of all, it can be easily checked, that for an elementary matrix E we have det E = det(ET ). Notice, that it is suﬃcient to prove the theorem only for invertible matrices A, since if A is not invertible then AT is also not invertible, and both determinants are zero.
+By Lemma 3.8 matrix A can be represented as a product of elementary matrices,
+A = E1E2 . . . EN ,
+
+84
+
+3. Determinants
+
+and by Corollary 3.7 the determinant of A is the product of determinants of the elementary matrices. Since taking the transpose just transposes each elementary matrix and reverses their order, Corollary 3.7 implies that det A = det AT .
+Proof of Theorem 3.5. Let us ﬁrst suppose that the matrix B is invertible. Then Lemma 3.8 implies that B can be represented as a product of elementary matrices
+B = E1E2 . . . EN , and so by Corollary 3.7
+det(AB) = (det A)[(det E1)(det E2) . . . (det EN )] = (det A)(det B).
+If B is not invertible, then the product AB is also not invertible, and the theorem just says that 0 = 0.
+To check that the product AB = C is not invertible, let us assume that it is invertible. Then multiplying the identity AB = C by C−1 from the left, we get C−1AB = I, so C−1A is a left inverse of B. So B is left invertible, and since it is square, it is invertible. We got a contradiction.
+3.6. Summary of properties of determinant. First of all, let us say once more, that the determinant is deﬁned only for square matrices! Since we now know that det A = det(AT ), the statements that we knew about columns are true for rows too.
+1. Determinant is linear in each row (column) when the other rows (columns) are ﬁxed.
+2. If one interchanges two rows (columns) of a matrix A, the determinant changes sign.
+3. For a triangular (in particular, for a diagonal) matrix its determinant is the product of the diagonal entries. In particular, det I = 1.
+4. If a matrix A has a zero row (or column), det A = 0.
+5. If a matrix A has two equal rows (columns), det A = 0.
+6. If one of the rows (columns) of A is a linear combination of the other rows (columns), i.e. if the matrix is not invertible, then det A = 0; More generally,
+7. det A = 0 if and only if A is not invertible, or equivalently
+8. det A = 0 if and only if A is invertible.
+9. det A does not change if we add to a row (column) a linear combination of the other rows (columns). In particular, the determinant is preserved under the row (column) replacement, i.e. under the row (column) operation of the third kind.
+
+3. Constructing the determinant.
+
+85
+
+10. det AT = det A.
+11. det(AB) = (det A)(det B). And ﬁnally,
+12. If A is an n × n matrix, then det(aA) = an det A.
+The last property follows from the linearity of the determinant, if we recall that to multiply a matrix A by a we have to multiply each row by a, and that each multiplication multiplies the determinant by a.
+
+Exercises.
+
+3.1. If A is an n × n matrix, how are the determinants det A and det(5A) related? Remark: det(5A) = 5 det A only in the trivial case of 1 × 1 matrices
+
+3.2. How are the determinants det A and det B related if
+
+a)
+
+ a1 a2 a3  A =  b1 b2 b3  ,
+c1 c2 c3
+
+ 2a1 3a2 5a3  B =  2b1 3b2 5b3  ;
+2c1 3c2 5c3
+
+b)
+
+ a1 a2 a3  A =  b1 b2 b3  ,
+c1 c2 c3
+
+ 3a1 B =  3b1
+3c1
+
+4a2 + 5a1 4b2 + 5b1 4c2 + 5c1
+
+5a3  5b3  . 5c3
+
+3.3. Using column or row operations compute the determinants
+
+01 2 −1 0 −3 ,
+23 0
+
+123 456, 789
+
+1 0 −2 3
+
+−3 0
+
+1 4
+
+1 −1
+
+2 1
+
+,
+
+23 01
+
+1 1
+
+x y
+
+.
+
+3.4. A square (n × n) matrix is called skew-symmetric (or antisymmetric) if AT = −A. Prove that if A is skew-symmetric and n is odd, then det A = 0. Is this true for even n?
+
+3.5. A square matrix is called nilpotent if Ak = 0 for some positive integer k. Show that for a nilpotent matrix A det A = 0.
+
+3.6. Prove that if the matrices A and B are similar, than det A = det B.
+
+3.7. A real square matrix Q is called orthogonal if QT Q = I. Prove that if Q is an orthogonal matrix then det Q = ±1.
+
+3.8. Show that
+
+1 x x2 1 y y2 = (z − x)(z − y)(y − x). 1 z z2
+
+This is a particular case of the so-called Vandermonde determinant.
+
+86
+
+3. Determinants
+
+3.9. Let points A, B and C in the plane R2 have coordinates (x1, y1), (x2, y2) and (x3, y3) respectively. Show that the area of triangle ABC is the absolute value of
+
+1 2
+
+1 1 1
+
+x1 x2 x3
+
+y1 y2 y3
+
+.
+
+Hint: use row operations and geometric interpretation of 2×2 determinants (area).
+
+3.10. Let A be a square matrix. Show that block triangular matrices
+
+I∗ 0A
+
+,
+
+A∗ 0I
+
+,
+
+I0 ∗A
+
+,
+
+A0 ∗I
+
+all have determinant equal to det A. Here ∗ can be anything.
+
+The following problems illustrate the power of block matrix notation.
+
+3.11. Use the previous problem to show that if A and C are square matrices, then
+
+det
+
+AB 0C
+
+= det A det C.
+
+Hint:
+
+AB 0C
+
+=
+
+IB 0C
+
+A0 0I
+
+.
+
+3.12. Let A be m × n and B be n × m matrices. Prove that
+
+det
+
+0A −B I
+
+= det(AB).
+
+Hint: While it is possible to transform the matrix by row operations to a form
+
+where the determinant is easy to compute, the easiest way is to right multiply the
+
+matrix by
+
+I0 BI
+
+.
+
+4. Formal deﬁnition. Existence and uniqueness of the determinant.
+
+In this section we arrive to the formal deﬁnition of the determinant. We show that a function, satisfying the basic properties 1, 2, 3 from Section 3 exists, and moreover, such function is unique, i.e. we do not have any choice in constructing the determinant.
+Consider an n × n matrix A = {aj,k}nj,k=1, and let v1, v2, . . . , vn be its columns, i.e.
+
+ a1,k 
+
+
+
+vk
+
+=
+
+ 
+
+
+
+a2,k ...
+
+n
+
+
+
+ 
+
+=
+
+a1,k e1
+
++
+
+a2,k e2
+
++
+
+...
+
++
+
+an,k en
+
+=
+
+aj,kej .
+
+
+
+j=1
+
+an,k
+
+4. Formal deﬁnition. Existence and uniqueness of the determinant. 87
+
+Using linearity of the determinant we expand it in the ﬁrst column v1:
+
+(4.1)
+
+D(v1, v2, . . . , vn) =
+
+n
+
+n
+
+D( aj,1ej, v2, . . . , vn) = aj,1D(ej, v2, . . . , vn).
+
+j=1
+
+j=1
+
+Then we expand it in the second column, then in the third, and so on. We get
+
+nn
+
+n
+
+D(v1, v2, . . . , vn) =
+
+...
+
+aj1,1aj2,2 . . . ajn,nD(ej1 .ej2 , . . . ejn ).
+
+j1=1 j2=1 jn=1
+
+Notice, that we have to use a diﬀerent index of summation for each column: we call them j1, j2, . . . , jn; the index j1 here is the same as the index j in (4.1).
+
+It is a huge sum, it contains nn terms. Fortunately, some of the terms are zero. Namely, if any 2 of the indices j1, j2, . . . , jn coincide, the determinant D(ej1.ej2, . . . ejn) is zero, because there are two equal columns here.
+So, let us rewrite the sum, omitting all zero terms. The most convenient way to do that is using the notion of a permutation. Informally, a permutation of an ordered set {1, 2, . . . , n} is a rearrangement of its elements. A convenient formal way to represent such a rearrangement is by using a function
+σ : {1, 2, . . . , n} → {1, 2, . . . , n},
+
+where σ(1), σ(2), . . . , σ(n) gives the new order of the set 1, 2, . . . , n. In other words, the permutation σ rearranges the ordered set 1, 2, . . . , n into σ(1), σ(2), . . . , σ(n).
+
+Such function σ has to be one-to-one (diﬀerent values for diﬀerent ar-
+guments) and onto (assumes all possible values from the target space). The
+functions which are one-to-one and onto are called bijections, and they give one-to-one correspondence between the domain and the target space.1
+
+Although it is not directly relevant here, let us notice, that it is wellknown in combinatorics, that the number of diﬀerent permutations of the set {1, 2, . . . , n} is exactly n!. The set of all permutations of the set {1, 2, . . . , n} will be denoted Perm(n).
+
+1 There is another canonical way to represent permutation by a bijection σ, namely in this representation σ(k) gives new position of the element number k. In this representation σ rearranges σ(1), σ(2), . . . , σ(n) into 1, 2, . . . , n.
+While in the ﬁrst representation it is easy to write the function if you know the rearrangement of the set 1, 2, . . . , n, the second one is more adapted to the composition of permutations: it coincides with the composition of functions. Namely if we ﬁrst perform the permutation that correspond to a function σ and then one that correspond to τ , the resulting permutation will correspond to τ ◦ σ.
+
+88
+
+3. Determinants
+
+Using the notion of a permutation, we can rewrite the determinant as
+D(v1, v2, . . . , vn) =
+aσ(1),1aσ(2),2 . . . aσ(n),nD(eσ(1), eσ(2), . . . , eσ(n)).
+σ∈Perm(n)
+The matrix with columns eσ(1), eσ(2), . . . , eσ(n) can be obtained from the identity matrix by ﬁnitely many column interchanges, so the determinant
+D(eσ(1), eσ(2), . . . , eσ(n))
+is 1 or −1 depending on the number of column interchanges.
+To formalize that, we (informally) deﬁne the sign (denoted sign σ) of a permutation σ to be 1 if an even number of interchanges is necessary to rearrange the n-tuple 1, 2, . . . , n into σ(1), σ(2), . . . , σ(n), and sign(σ) = −1 if the number of interchanges is odd.
+It is a well-known fact from the combinatorics, that the sign of permutation is well deﬁned, i.e. that although there are inﬁnitely many ways to get the n-tuple σ(1), σ(2), . . . , σ(n) from 1, 2, . . . , n, the number of interchanges is either always odd or always even.
+One of the ways to show that is to introduce an alternative deﬁnition. Let K = K(σ) be the number of disorders of σ, i.e. the number of pairs (j, k), j, k ∈ {1, 2, . . . , n}, j < k such that σ(j) > σ(k), and see if the number is even or odd. We call the permutation σ odd if K is odd and even if K is even. Then deﬁne sign σ := (−1)K(σ); note that this way sign σ is well deﬁned.
+We want to show that sign σ = (−1)K(σ) can indeed be computed by rearranging the n-tuple 1, 2, . . . , n into σ(1), σ(2), . . . , σ(n) and counting the number of interchanges, as was described above.
+If σ(k) = k ∀k, then the number of disorders K(σ) is 0, so sign of such identity permutation is 1. Note also, that any elementary transpose, which interchange two neighbors, changes the sign of a permutation, because it changes (increases or decreases) the number of disorders exactly by 1. So, to get from a permutation to another one always needs an even number of elementary transposes if the permutations have the same sign, and an odd number if the signs are diﬀerent.
+Finally, any interchange of two entries can be achieved by an odd number of elementary transposes. This implies that sign changes under an interchange of two entries. So, to get from 1, 2, . . . , n to an even permutation (positive sign) one always need even number of interchanges, and odd number of interchanges is needed to get an odd permutation (negative sign).
+
+4. Formal deﬁnition. Existence and uniqueness of the determinant. 89
+
+So, if we want determinant to satisfy basic properties 1–3 from Section 3, we must deﬁne it as
+
+(4.2)
+
+det A =
+
+aσ(1),1aσ(2),2 . . . aσ(n),n sign(σ),
+
+σ∈Perm(n)
+
+where the sum is taken over all permutations of the set {1, 2, . . . , n}.
+If we deﬁne the determinant this way, it is easy to check that it satisﬁes the basic properties 1–3 from Section 3. Indeed, it is linear in each column, because for each column every term (product) in the sum contains exactly one entry from this column.
+Interchanging two columns of A just adds an extra interchange to the permutation, so right side in (4.2) changes sign. Finally, for the identity matrix I, the right side of (4.2) is 1 (it has one non-zero term).
+
+Exercises.
+4.1. Suppose the permutation σ takes (1, 2, 3, 4, 5) to (5, 4, 1, 2, 3).
+a) Find sign of σ; b) What does σ2 := σ ◦ σ do to (1, 2, 3, 4, 5)? c) What does the inverse permutation σ−1 do to (1, 2, 3, 4, 5)? d) What is the sign of σ−1?
+4.2. Let P be a permutation matrix, i.e. an n × n matrix consisting of zeroes and ones and such that there is exactly one 1 in every row and every column.
+a) Can you describe the corresponding linear transformation? That will explain the name.
+b) Show that P is invertible. Can you describe P −1? c) Show that for some N > 0
+P N := P P . . . P = I.
+N times
+Use the fact that there are only ﬁnitely many permutations.
+4.3. Why is there an even number of permutations of (1, 2, . . . , 9) and why are exactly half of them odd permutations? Hint: This problem can be hard to solve in terms of permutations, but there is a very simple solution using determinants.
+4.4. If σ is an odd permutation, explain why σ2 is even but σ−1 is odd.
+4.5. How many multiplications and additions is required to compute the determinant using formal deﬁnition (4.2) of the determinant of an n × n matrix? Do not count the operations needed to compute sign σ.
+
+90
+
+3. Determinants
+
+5. Cofactor expansion.
+
+For an n × n matrix A = {aj,k}nj,k=1 let Aj,k denotes the (n − 1) × (n − 1) matrix obtained from A by crossing out row number j and column number k.
+
+Theorem 5.1 (Cofactor expansion of determinant). Let A be an n × n matrix. For each j, 1 ≤ j ≤ n, determinant of A can be expanded in the row number j as
+
+det A =
+aj,1(−1)j+1 det Aj,1 + aj,2(−1)j+2 det Aj,2 + . . . + aj,n(−1)j+n det Aj,n
+n
+= aj,k(−1)j+k det Aj,k.
+k=1
+Similarly, for each k, 1 ≤ k ≤ n, the determinant can be expanded in the column number k,
+n
+det A = aj,k(−1)j+k det Aj,k.
+j=1
+
+Proof. Let us ﬁrst prove the formula for the expansion in row number 1. The formula for expansion in row number 2 then can be obtained from it by interchanging rows number 1 and 2. Interchanging then rows number 2 and 3 we get the formula for the expansion in row number 3, and so on.
+Since det A = det AT , column expansion follows automatically.
+Let us ﬁrst consider a special case, when the ﬁrst row has one nonzero term a1,1. Performing column operations on columns 2, 3, . . . , n we transform A to the lower triangular form. The determinant of A then can be computed as
+
+the product of diagonal entries of the triangular matrix
+
+×
+
+correcting the column
+
+factor from operations
+
+.
+
+But the product of all diagonal entries except the ﬁrst one (i.e. without a1,1) times the correcting factor is exactly det A1,1, so in this particular case det A = a1,1 det A1,1.
+Let us now consider the case when all entries in the ﬁrst row except a1,2 are zeroes. This case can be reduced to the previous one by interchanging columns number 1 and 2, and therefore in this case det A = (−1)a1,2 det A1,2.
+The case when a1,3 is the only non-zero entry in the ﬁrst row, can be reduced to the previous one by interchanging rows 2 and 3, so in this case det A = a1,3 det A1,3.
+

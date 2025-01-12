@@ -1,0 +1,894 @@
+Memory barriers in C
+Sergey Vojtovich Software Engineer @ MariaDB Foundation
+
+*
+
+© 2017 MariaDB Foundation
+
+*
+
+Agenda
+● Normal: overview, problem, Relaxed ● Advanced: Acquire, Release ● Nightmare: Acquire_release, Consume ● Hell: Sequentially consistent ● Summoning Cthulhu: Atomic thread fence
+© 2017 MariaDB Foundation
+
+Abbreviations
+#define RELAXED MY_MEMORY_ORDER_RELAXED #define CONSUME MY_MEMORY_ORDER_CONSUME #define ACQUIRE MY_MEMORY_ORDER_ACQUIRE #define RELEASE MY_MEMORY_ORDER_RELEASE #define ACQ_REL MY_MEMORY_ORDER_ACQ_REL #define SEQ_CST MY_MEMORY_ORDER_SEQ_CST
+#define load my_atomic_load32_explicit #define store my_atomic_store32_explicit #define fas my_atomic_fas32_explicit #define add my_atomic_add32_explicit #define cas my_atomic_cas32_strong_explicit
+#define fence std::atomic_thread_fence
+/* Global variables */ uint32_t a= 0, b= 0, c= 0, d= 0, result= 0, ready= 0, stage= 0; char *str= NULL;
+/* Thread variables */ uint32_t v1, v2, o;
+© 2017 MariaDB Foundation
+
+The problem
+Code
+a= 1; v1= b; c= 2; v2= d;
+© 2017 MariaDB Foundation
+
+The problem
+
+Code
+a= 1; v1= b; c= 2; v2= d;
+
+Compiler
+v2= d; v1= b; a= 1; c= 2;
+
+© 2017 MariaDB Foundation
+
+The problem
+
+Code
+a= 1; v1= b; c= 2; v2= d;
+
+Compiler
+v2= d; v1= b; a= 1; c= 2;
+
+CPU
+v2= d; c= 2; a= 1; v1= b;
+
+© 2017 MariaDB Foundation
+
+The Problem
+Thread 1
+result= 42; ready= 1;
+
+Thread 2
+while (ready != 1); assert(result == 42);
+
+© 2017 MariaDB Foundation
+
+The Problem
+Thread 1
+result= 42; ready= 1;
+
+Thread 2
+while (ready != 1); assert(result == 42);
+
+Re-ordered by compiler or CPU
+
+© 2017 MariaDB Foundation
+
+The Problem
+Thread 1
+
+Thread 2
+
+ready= 1; result= 42;
+
+while (ready != 1); assert(result == 42);
+
+© 2017 MariaDB Foundation
+
+The Problem
+Thread 1
+result= 42; ready= 1;
+
+Thread 2
+while (ready != 1); assert(result == 42);
+Re-ordered by compiler or CPU
+
+© 2017 MariaDB Foundation
+
+The Problem
+Thread 1
+result= 42; ready= 1;
+
+Thread 2
+assert(result == 42);
+while (ready != 1);
+
+© 2017 MariaDB Foundation
+
+The Problem
+Thread 1
+result= 42; ready= 1;
+Re-ordered by compiler or CPU
+
+Thread 2
+while (ready != 1); assert(result == 42);
+Re-ordered by compiler or CPU
+
+© 2017 MariaDB Foundation
+
+The Problem
+Thread 1
+ready= 1; result= 42;
+
+Thread 2
+assert(result == 42);
+while (ready != 1);
+
+© 2017 MariaDB Foundation
+
+Rationale
+Memory barriers (jointly with atomic operations) are intended to make data changes visible in concurrent threads.
+© 2017 MariaDB Foundation
+
+API
+Memory barrier can be issued along with atomic op
+my_atomic_store32_explicit(&a, 0, MY_MEMORY_ORDER_RELAXED);
+or on its own (not available in MariaDB API)
+std::atomic_thread_fence(std::memory_order_relaxed);
+Note: thread fence is not supposed to be used alone, it must be accompanied by appropriate atomic operation.
+© 2017 MariaDB Foundation
+
+Memory barriers
+● relaxed ● consume ● acquire ● release ● acquire_release ● sequentially consistent (default)
+© 2017 MariaDB Foundation
+
+Default memory order
+#define my_atomic_load32(a) my_atomic_load32_explicit(a, MY_MEMORY_ORDER_SEQ_CST)
+#define my_atomic_store32(a, b) my_atomic_store32_explicit(a, b, MY_MEMORY_ORDER_SEQ_CST)
+#define my_atomic_fas32(a, b) my_atomic_fas32_explicit(a, b, MY_MEMORY_ORDER_SEQ_CST)
+#define my_atomic_add32(a, b) my_atomic_add32_explicit(a, b, MY_MEMORY_ORDER_SEQ_CST)
+#define my_atomic_cas32(a, b, c) my_atomic_cas32_strong_explicit(a, b, c, MY_MEMORY_ORDER_SEQ_CST, MY_MEMORY_ORDER_SEQ_CST)
+© 2017 MariaDB Foundation
+
+Memory barriers by strength
+1. sequentially consistent
+2. acquire_release
+3.1 acquire 3. release
+3.2 consume
+4. relaxed
+© 2017 MariaDB Foundation
+
+Relaxed memory order
+Relaxed barrier
+a= 1; v1= b; store(&ready, 1, RELAXED); c= 1; v2= d;
+Atomic operation with Relaxed memory barrier
+guarantees atomicity, but doesn’t impose any
+synchronization or ordering constraints on other loads
+or stores.
+© 2017 MariaDB Foundation
+
+Relaxed memory order
+Valid with any atomic operation
+b= load(&a, RELAXED); store(&a, 1, RELAXED); b= fas(&a, 1, RELAXED); b= add(&a, 1, RELAXED); b= cas(&a, &o, 1, RELAXED, RELAXED); fence(RELAXED); // no-op
+© 2017 MariaDB Foundation
+
+Relaxed memory order
+Example
+thd->query_id= my_atomic_add64_explicit(&global_query_id, 1, MY_MEMORY_ORDER_RELAXED);
+Example
+while (load(&a, RELAXED) != 1); fence(ACQUIRE);
+Example
+cas(&a, &o, 1, ACQUIRE, RELAXED);
+© 2017 MariaDB Foundation
+
+Release memory order
+Release barrier
+a= 1; v1= b; store(&ready, 1, RELEASE); c= 1; v2= d;
+Loads and stores before Release can not be reordered
+after Release.
+Loads and stores after Release can be reordered
+before Release.
+© 2017 MariaDB Foundation
+
+Release memory order
+
+Release barrier
+a= 1; v1= b;
+store(&ready, 1, RELEASE);
+c= 1; v2= d;
+
+Write barrier
+a= 1; v1= b;
+smp_wmb();
+c= 1; v2= d;
+
+Not same as write barrier!
+© 2017 MariaDB Foundation
+
+Release memory order
+
+Thread 1
+
+Thread 2
+
+result= 42; store(&ready, 1, RELEASE);
+
+while (ready != 1); assert(result == 42);
+
+Meaningless alone!
+© 2017 MariaDB Foundation
+
+Release memory order
+
+Thread 1
+result= 42; store(&ready, 1, RELEASE);
+
+Thread 2
+assert(result == 42);
+while (ready != 1);
+
+Meaningless alone!
+© 2017 MariaDB Foundation
+
+Release memory order
+Valid with atomic store or atomic read-modify-write
+store(&a, 1, RELEASE); b= fas(&a, 1, RELEASE); b= add(&a, 1, RELEASE); b= cas(&a, &o, 1, RELEASE, RELEASE); fence(RELEASE); // must be followed by RELAXED atomic store or RMW
+Not valid with atomic load
+b= load(&a, RELEASE); // undefined, may become RELAXED
+© 2017 MariaDB Foundation
+
+Acquire memory order
+Acquire barrier
+a= 1; v1= b; load(&ready, ACQUIRE); c= 1; v2= d;
+Loads and stores after Acquire can not be reordered
+before Acquire.
+Loads and stores before Acquire can be reordered
+after Acquire.
+© 2017 MariaDB Foundation
+
+Acquire memory order
+
+Acquire barrier
+a= 1; v1= b;
+load(&ready, ACQUIRE);
+c= 1; v2= d;
+
+Read barrier
+a= 1; v1= b;
+smp_rmb();
+c= 1; v2= d;
+
+Not same as read barrier!
+© 2017 MariaDB Foundation
+
+Acquire memory order
+
+Thread 1
+
+Thread 2
+
+result= 42; ready= 1;
+
+while (load(&ready, ACQUIRE) != 1); assert(result == 42);
+
+Meaningless alone!
+© 2017 MariaDB Foundation
+
+Acquire memory order
+
+Thread 1
+
+Thread 2
+
+ready= 1; result= 42;
+
+while (load(&ready, ACQUIRE) != 1); assert(result == 42);
+
+Meaningless alone!
+
+© 2017 MariaDB Foundation
+
+Acquire memory order
+Valid with atomic load or atomic read-modify-write
+b= load(&a, ACQUIRE); b= fas(&a, 1, ACQUIRE); b= add(&a, 1, ACQUIRE); b= cas(&a, &o, 1, ACQUIRE, ACQUIRE); fence(ACQUIRE); // must be preceded by RELAXED atomic load or RMW
+Not valid with atomic store
+store(&a, 1, ACQUIRE); // undefined, may become RELAXED
+© 2017 MariaDB Foundation
+
+Release-Acquire model
+
+Thread 1
+
+Thread 2
+
+result= 42; store(&ready, 1, RELEASE);
+
+while (load(&ready, ACQUIRE) != 1); assert(result == 42);
+
+Acquire must be always paired with Release (or stronger). Only then all stores before Release in Thread 1 become visible after Acquire in Thread 2.
+
+© 2017 MariaDB Foundation
+
+Acquire_release memory order
+Acquire_release barrier
+a= 1; v1= b; fas(&ready, 1, ACQ_REL); c= 1; v2= d;
+Loads and stores after Acquire_release can not be
+reordered before Acquire_release.
+Loads and stores before Acquire_release can not be
+reordered after Acquire_release.
+© 2017 MariaDB Foundation
+
+Acquire_release memory order
+Valid with atomic read-modify-write
+b= fas(&a, 1, ACQ_REL); b= add(&a, 1, ACQ_REL); b= cas(&a, &o, 1, ACQ_REL, ACQ_REL); fence(ACQ_REL); // must be preceded by RELAXED atomic load or RMW and
+// followed by RELAXED atomic store or RMW
+Not valid with atomic load and store
+b= load(&a, ACQ_REL); // undefined, may become ACQUIRE store(&a, 1, ACQ_REL); // undefined, may become RELEASE
+© 2017 MariaDB Foundation
+
+Acquire_release memory order
+
+Thread 1
+a= 1; stage= 1;
+while (stage != 2); assert(b == 1);
+
+Thread 2
+b= 1;
+while (stage != 1); stage= 2; assert(a == 1);
+
+© 2017 MariaDB Foundation
+
+Acquire_release memory order
+
+Thread 1
+a= 1; store(&stage, 1, RELEASE);
+while (load(&stage, ACQUIRE) != 2); assert(b == 1);
+
+Thread 2
+b= 1;
+while (load(&stage, ACQUIRE) != 1); store(&stage, 2, RELEASE); assert(a == 1);
+
+© 2017 MariaDB Foundation
+
+Acquire_release memory order
+
+Thread 1
+a= 1; store(&stage, 1, RELEASE); while (load(&stage, ACQUIRE) != 2); assert(b == 1);
+
+Thread 2
+b= 1; o= 1;
+while (!cas(&stage, &o, 2, ACQ_REL)) o= 1;
+assert(a == 1);
+
+© 2017 MariaDB Foundation
+
+Consume memory order
+Consume barrier
+a= 1; v1= b; load(&str, CONSUME); str[0]= ‘A’; v2= str[1]; c= 1; v2= d;
+Consume is a weaker form of Acquire: loads and
+stores, dependent on the value currently loaded, that
+happen after Consume can not be reordered before
+Consume.
+© 2017 MariaDB Foundation
+
+Consume memory order
+Valid with atomic load or atomic read-modify-write
+b= load(&a, CONSUME); b= fas(&a, 1, CONSUME); b= add(&a, 1, CONSUME); b= cas(&a, &o, 1, CONSUME, CONSUME); fence(CONSUME); // must be preceded by RELAXED atomic load or RMW
+Not valid with atomic store
+store(&a, 1, CONSUME); // undefined, may become RELAXED
+© 2017 MariaDB Foundation
+
+Release-Consume model
+
+Thread 1
+char *s= strdup(“Hello!”); result= 42;
+store(&str, s, RELEASE);
+
+char *s;
+
+Thread 2
+
+while (!(s= load(&str, CONSUME)));
+assert(!strcmp(s, “Hello!”)); assert(result == 42);
+
+Consume must be always paired with Release (or
+
+stronger). Only then all dependent stores before
+
+Release in Thread 1 become visible after Consume in
+
+Thread 2.
+
+© 2017 MariaDB Foundation
+
+Release-Consume model
+The specification of release-consume ordering is being revised, and the use of memory_order_consume is temporarily discouraged. Note that as of February 2015 no known production compilers track dependency chains: consume operations are lifted to acquire operations.
+© 2017 MariaDB Foundation
+
+Sequentially consistent memory order
+Sequentially consistent
+a= 1; v1= b; fas(&ready, 1, SEQ_CST); c= 1; v2= d;
+Loads and stores after Sequentially_consistent can
+not be reordered before Sequentially_consistent.
+Loads and stores before Sequentially_consistent can
+not be reordered after Sequentially_consistent.
+© 2017 MariaDB Foundation
+
+Sequentially consistent memory order
+Valid with any atomic operation...
+b= fas(&a, 1, SEQ_CST); b= add(&a, 1, SEQ_CST); b= cas(&a, &o, 1, SEQ_CST, SEQ_CST); fence(SEQ_CST);
+...but there are traps
+b= load(&a, SEQ_CST); // may become ACQUIRE + sync store(&a, 1, SEQ_CST); // may become RELEASE + sync
+© 2017 MariaDB Foundation
+
+Cache coherent system
+
+Core 1 Core 2 Core 3 Core 4
+
+0 Cache
+0 0 Cache 0 0 Cache 0 0 Cache 0
+
+© 2017 MariaDB Foundation
+
+Cache coherent system
+
+Core 1 Core 2 Core 3 Core 4
+
+a= 1
+
+1
+
+Cache
+
+0
+
+b= 1
+
+0
+
+Cache
+
+1
+
+0 Cache
+0
+
+0 Cache
+0
+
+© 2017 MariaDB Foundation
+
+Cache coherent system
+
+Core 1 Core 2 Core 3 Core 4
+
+a= 1
+
+1
+
+Cache
+
+0
+
+b= 1
+
+0
+
+Cache
+
+1
+
+1 Cache
+0
+
+0 Cache
+0
+
+© 2017 MariaDB Foundation
+
+Cache coherent system
+
+Core 1 Core 2 Core 3 Core 4
+
+a= 1
+
+1
+
+Cache
+
+0
+
+b= 1
+
+0
+
+Cache
+
+1
+
+1 Cache
+0
+
+0 Cache
+1
+
+© 2017 MariaDB Foundation
+
+Cache coherent system
+
+Core 1
+
+Core 1 was first
+No! Core 2 was first
+
+Core 2 Core 3 Core 4
+
+a= 1
+b= 1
+load a load b
+load a load b
+
+1 Cache
+0 0 Cache 1 1 Cache 0 0 Cache 1
+
+© 2017 MariaDB Foundation
+
+Sequentially consistent system
+
+Core 1 Core 2 Core 3 Core 4
+
+a= 1
+
+0
+
+Cache
+
+0
+
+b= 1
+
+0
+
+Cache
+
+0
+
+0 Cache
+0
+
+0 Cache
+0
+
+© 2017 MariaDB Foundation
+
+Sequentially consistent system
+
+Core 1 Core 2 Core 3 Core 4
+
+a= 1
+
+1
+
+Cache
+
+0
+
+b= 1
+
+1
+
+Cache
+
+0
+
+1 Cache
+0
+
+1 Cache
+0
+
+© 2017 MariaDB Foundation
+
+Sequentially consistent system
+
+Core 1 Core 2 Core 3 Core 4
+
+a= 1
+
+1
+
+Cache
+
+1
+
+b= 1
+
+1
+
+Cache
+
+1
+
+1 Cache
+1
+
+1 Cache
+1
+
+© 2017 MariaDB Foundation
+
+Sequentially consistent system
+
+Core 1
+
+Core 1 was first
+Yes, it was
+
+Core 2 Core 3 Core 4
+
+a= 1
+b= 1
+load a load b
+load a load b
+
+1 Cache
+0 1 Cache 0 1 Cache 0 1 Cache 0
+
+© 2017 MariaDB Foundation
+
+Atomic thread fence
+● It is possible to issue memory barrier without an associated atomic operation
+● it is very advanced technology ● frequently misunderstood ● generally slower than memory barriers associated
+with an atomic operation
+© 2017 MariaDB Foundation
+
+Atomic thread fence
+● non-atomic and Relaxed operations cannot be re-ordered after Release (first store)
+● non-atomic and Relaxed operations cannot be re-ordered before Acquire (last load)
+● still requires atomic operations to work as defined ● not implemented in MariaDB API.
+© 2017 MariaDB Foundation
+
+Atomic thread fence
+Initial state
+#define fence __atomic_thread_fence #define RELEASE __ATOMIC_RELEASE #define ACQUIRE __ATOMIC_ACQUIRE uint32_t a= 0, b= 0;
+
+Thread 1
+a= 1; fence(RELEASE); b= 1;
+
+Thread 2
+la= a; fence(ACQUIRE); lb= b;
+if (lb == 1) assert(la == 1); // expectation: // may not fire
+
+© 2017 MariaDB Foundation
+
+Atomic thread fence
+Initial state
+#define fence __atomic_thread_fence #define RELEASE __ATOMIC_RELEASE #define ACQUIRE __ATOMIC_ACQUIRE uint32_t a= 0, b= 0;
+
+Thread 1
+a= 1; b= 1;
+
+Thread 2
+la= a; fence(ACQUIRE); lb= b;
+if (lb == 1) assert(la == 1); // expectation: // may not fire
+
+© 2017 MariaDB Foundation
+
+Atomic thread fence
+Initial state
+#define fence __atomic_thread_fence #define RELEASE __ATOMIC_RELEASE #define ACQUIRE __ATOMIC_ACQUIRE uint32_t a= 0, b= 0;
+
+Thread 1
+a= 1; fence(RELEASE); b= 1;
+
+Thread 2
+la= a; lb= b;
+if (lb == 1) assert(la == 1); // expectation: // may not fire
+
+© 2017 MariaDB Foundation
+
+Atomic thread fence
+
+Initial state
+#define fence __atomic_thread_fence
+#define RELEASE __ATOMIC_RELEASE
+MAY #define ACQUIRE __ATOMIC_ACQUIRE
+uint32_t a= 0, b= 0;
+
+Thread 1
+a= 1; fence(RELEASE); b= 1;
+
+Thread 2
+FIRE la= a; fence(ACQUIRE); lb= b;
+if (lb == 1) assert(la == 1); // expectation: // may not fire
+
+© 2017 MariaDB Foundation
+
+Atomic thread fence
+Possible synchronizations: ● Fence-Atomic ● Atomic-Fence ● Fence-Fence
+© 2017 MariaDB Foundation
+
+Fence-Atomic synchronization
+A release fence F in thread A synchronizes-with atomic acquire operation Y in thread B, if...
+
+Thread A
+fence(RELEASE); // F
+
+Thread B
+load(&a, ACQUIRE); // Y
+
+© 2017 MariaDB Foundation
+
+Fence-Atomic synchronization
+● there exists an atomic store X (any memory order) ● Y reads the value written by X ● F is sequenced-before X in thread A
+
+Thread A
+fence(RELEASE); // F store(&a, 1, RELAXED); // X
+
+Thread B
+load(&a, ACQUIRE); // Y
+
+© 2017 MariaDB Foundation
+
+Fence-Atomic synchronization
+
+In this case, all non-atomic and relaxed atomic stores
+
+that happen-before X in thread A will be
+
+synchronized-with all non-atomic and relaxed atomic
+
+loads from the same locations made in thread B after F.
+
+Thread A
+b= 1; fence(RELEASE); // F store(&a, 1, RELAXED); // X
+
+Thread B
+if (load(&a, ACQUIRE) == 1) // Y assert(b == 1); // never fires
+
+© 2017 MariaDB Foundation
+
+Atomic-Fence synchronization
+An atomic release operation X in thread A synchronizes-with an acquire fence F in thread B, if ...
+
+Thread A
+store(&a, 1, RELEASE); // X
+
+Thread B
+fence(ACQUIRE); // F
+
+© 2017 MariaDB Foundation
+
+Atomic-Fence synchronization
+● there exists an atomic read Y (any memory order) ● Y reads the value written by X ● Y is sequenced-before F in thread B
+
+Thread A
+store(&a, 1, RELEASE); // X
+
+Thread B
+load(&a, RELAXED); // Y fence(ACQUIRE); // F
+
+© 2017 MariaDB Foundation
+
+Atomic-Fence synchronization
+
+In this case, all non-atomic and relaxed atomic stores
+
+that happen-before X in thread A will be
+
+synchronized-with all non-atomic and relaxed atomic
+
+loads from the same locations made in thread B after F.
+
+Thread A
+b= 1; store(&a, 1, RELEASE); // X
+
+Thread B
+if (load(&a, RELAXED) == 1) { // Y fence(ACQUIRE); // F assert(b == 1); // never fires
+}
+
+© 2017 MariaDB Foundation
+
+Fence-Fence synchronization
+A release fence FA in thread A synchronizes-with an acquire fence FB in thread B, if ...
+
+Thread A
+fence(RELEASE); // FA
+
+Thread B
+fence(ACQUIRE); // FB
+
+© 2017 MariaDB Foundation
+
+Fence-Fence synchronization
+● there exists an atomic store X (any memory order) ● FA is sequenced-before X in thread A
+
+Thread A
+fence(RELEASE); // FA store(&a, 1, RELAXED); // X
+
+Thread B
+fence(ACQUIRE); // FB
+
+© 2017 MariaDB Foundation
+
+Fence-Fence synchronization
+● there exists an atomic read Y (any memory order) ● Y reads the value written by X ● Y is sequenced-before FB in thread B
+
+Thread A
+fence(RELEASE); // FA store(&a, 1, RELAXED); // X
+
+Thread B
+load(&a, RELAXED); // Y fence(ACQUIRE); // FB
+
+© 2017 MariaDB Foundation
+
+Fence-Fence synchronization
+
+In this case, all non-atomic and relaxed atomic stores that happen-before FA in thread A will be synchronized-with all non-atomic and relaxed atomic loads from the same locations made in thread B after FB.
+
+Thread A
+b= 1; fence(RELEASE); // FA store(&a, 1, RELAXED); // X
+
+Thread B
+if (load(&a, RELAXED) == 1) { // Y fence(ACQUIRE); // FB assert(b == 1); // never fires }
+
+© 2017 MariaDB Foundation
+
+Fence-Fence synchronization
+Example
+char *data[10]; void producer() {
+for (int i= 0; i < 10; i++) data[i]= strdup("some long string");
+} void consumer() {
+for (int i= 0; i < 10; i++) puts(data[i]);
+}
+© 2017 MariaDB Foundation
+
+Fence-Fence synchronization
+Example
+char *data[10]; uint32_t ready[10]= { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+void producer() {
+for (int i= 0; i < 10; i++) {
+data[i]= strdup("some long string"); my_atomic_store32_explicit(&ready[i], 1, MY_MEMORY_ORDER_RELEASE); } }
+void consumer() {
+for (int i= 0; i < 10; i++) {
+if (my_atomic_load32_explicit(&ready[i], MY_MEMORY_ORDER_ACQUIRE) == 1) puts(data[i]);
+} }
+© 2017 MariaDB Foundation
+
+Fence-Fence synchronization
+Example
+char *data[10]; uint32_t ready[10]= { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+void producer() {
+for (int i= 0; i < 10; i++) data[i]= strdup("some long string");
+fence(MY_MEMORY_ORDER_RELEASE); for (int i= 0; i < 10; i++)
+my_atomic_store32_explicit(&ready[i], 1, MY_MEMORY_ORDER_RELAXED); }
+void consumer() {
+for (int i= 0; i < 10; i++) {
+if (my_atomic_load32_explicit(&ready[i], MY_MEMORY_ORDER_ACQUIRE) == 1) puts(data[i]);
+} }
+© 2017 MariaDB Foundation
+
+Fence-Fence synchronization
+Example
+char *data[10]; uint32_t ready[10]= { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+void producer() {
+for (int i= 0; i < 10; i++) {
+data[i]= strdup("some long string"); my_atomic_store32_explicit(&ready[i], 1, MY_MEMORY_ORDER_RELEASE); } }
+void consumer() {
+uint32_t tmp[10]; for (int i= 0; i < 10; i++)
+tmp[i]= my_atomic_load32_explicit(&ready[i], MY_MEMORY_ORDER_RELAXED); fence(MY_MEMORY_ORDER_ACQUIRE); for (int i= 0; i < 10; i++)
+if (tmp[i] == 1) puts(data[i]);
+}
+© 2017 MariaDB Foundation
+
+Fence-Fence synchronization
+Example
+char *data[10]; uint32_t ready[10]= { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+void producer() {
+for (int i= 0; i < 10; i++) data[i]= strdup("some long string");
+fence(MY_MEMORY_ORDER_RELEASE); for (int i= 0; i < 10; i++)
+my_atomic_store32_explicit(&ready[i], 1, MY_MEMORY_ORDER_RELAXED); }
+void consumer() {
+uint32_t tmp[10]; for (int i= 0; i < 10; i++)
+tmp[i]= my_atomic_load32_explicit(&ready[i], MY_MEMORY_ORDER_RELAXED); fence(MY_MEMORY_ORDER_ACQUIRE); for (int i= 0; i < 10; i++)
+if (tmp[i] == 1) puts(data[i]);
+}
+© 2017 MariaDB Foundation
+
+References
+http://en.cppreference.com/w/cpp/atomic/memory_order https://en.wikipedia.org/wiki/Memory_ordering http://preshing.com/20140709/the-purpose-of-memory_order_consume-in-cpp11/
+© 2017 MariaDB Foundation
+

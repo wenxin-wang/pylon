@@ -1,0 +1,1027 @@
+2
+
+3
+Copyright (c) 2012, 2014, 2015, 2016 Antti Kantee <pooka@iki.ﬁ> All Rights Reserved.
+You may download this book for study from http://book.rumpkernel.org/ in eletronic format free of charge. You MAY NOT redistribute this book or its contents in electronic format.
+You may distribute hardcopies of the book with or without fee, provided that the following conditions are met. The hardcopy must be produced by printing the pdf from http://book.rumpkernel.org/. Doublesided printing must be used, and the book must be bound with even-numbered pages on the left and the odd-numbered pages on the right. Absolutely no modiﬁcations may be made, including the addition or removal of text, or the addition or removal of full pages or covers. Each hardcopy must be bound as an individual unit, and not included for example in a collection of works.
+Exceptions to these terms require prior agreement in writing.
+Build information Revision: 7eda996413beed925d1df3fed6f327e709ae4119 Date: 20160802
+
+4
+
+5
+Preface
+I’ll tip my hat to the new constitution Take a bow for the new revolution Smile and grin at the change all around Pick up my guitar and play Just like yesterday Then I’ll get on my knees and pray We don’t get fooled again – The Who
+This document is intended as an up-to-date description on the fundamental concepts related to the anykernel and rump kernels. It is based on the dissertation written in 2011 and early 2012: Flexible Operating System Internals: The Design and Implementation of the Anykernel and Rump Kernels.
+The major change with rump kernels since the ﬁrst edition is a shift in focus and motivation. In work leading up to the ﬁrst edition, rump kernels were about running kernel components in userspace. That work deﬁned the core architecture, and that deﬁnition is still valid and accurate. Since then, work has focused on harnessing the potential of rump kernels for building entirely new computation stacks.
+Since this edition of the book is no longer an academic document, we do not support every statement we make with a citation or experiment. In fact, we also take the liberty to present opinions which are open for debate.
+
+6
+Acknowledgments
+Note: these acknowledgments are speciﬁcally about contributions to this book, not to the underlying subject of discussion. Given that the main purpose of the described work is to reuse decades worth of existing code, listing all contributers to the code is a herculean task. Should you be truly interested in who contributed what, the provenance is available from public repository logs.
+This book is based on the ﬁrst edition. The people who proofread the ﬁrst edition and provided detailed improvement suggestions are Dr. Marshall Kirk McKusick, Dr. Thomas Klausner and Dr. Xi Zhang. Additional thanks in the form of formal credits for the ﬁrst edition go to Prof. Heikki Saikkonen, Prof. Renzo Davoli and Dr. Peter Tr¨oger.
+The cover art was contributed by Sebastian Sala. It is based on the rump kernel project logo, the author of which Sebastian also is.
+Parts of the Introduction and Conclusions ﬁrst appeared in the author’s article “The Rise and Fall of the Operating System” in USENIX ;login: Vol. 40, No. 5 (October 2015). Rik Farrow provided multiple rounds of feedback and suggestions on the article.
+
+7
+Donations
+The following individuals and corporations provided donations to support work on the second edition of this book. Thank you!
+Ionut Hristodorescu / NettoLogic Danny Fullerton Anonymous Mehdi Ahmadi Neeraj Sharma
+
+8
+
+9
+Contents
+
+Preface
+
+5
+
+Contents
+
+9
+
+List of Abbreviations
+
+13
+
+List of Figures
+
+17
+
+List of Tables
+
+19
+
+1 Introduction
+
+21
+
+1.1 Operating Systems . . . . . . . . . . . . . . . . . . . . . . . . . . . 21
+
+1.1.1 Historical Perspective . . . . . . . . . . . . . . . . . . . . . . 22
+
+1.1.2 And Where It Got Us . . . . . . . . . . . . . . . . . . . . . 23
+
+1.1.3 What We Really Need . . . . . . . . . . . . . . . . . . . . . 25
+
+1.2 The Anykernel and Rump Kernels . . . . . . . . . . . . . . . . . . . 26
+
+1.3 Book Outline . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 29
+
+1.4 Further Material . . . . . . . . . . . . . . . . . . . . . . . . . . . . 30
+
+1.4.1 Source Code . . . . . . . . . . . . . . . . . . . . . . . . . . . 30
+
+1.4.2 Manual Pages . . . . . . . . . . . . . . . . . . . . . . . . . . 31
+
+2 Concepts: Anykernel and Rump Kernels
+
+33
+
+2.1 Driving Drivers . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 35
+
+2.1.1 Relegation and Reuse . . . . . . . . . . . . . . . . . . . . . . 35
+
+2.1.2 Base, Orthogonal Factions, Drivers . . . . . . . . . . . . . . 36
+
+2.1.3 Hosting . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 39
+
+2.2 Rump Kernel Clients . . . . . . . . . . . . . . . . . . . . . . . . . . 39
+
+2.3 Threads and Schedulers . . . . . . . . . . . . . . . . . . . . . . . . 45
+
+2.3.1 Kernel threads . . . . . . . . . . . . . . . . . . . . . . . . . 49
+
+2.3.2 A CPU for a Thread . . . . . . . . . . . . . . . . . . . . . . 50
+
+10
+
+2.3.3 Interrupts and Preemption . . . . . . . . . . . . . . . . . . . 52 2.3.4 An Example . . . . . . . . . . . . . . . . . . . . . . . . . . . 53 2.4 Virtual Memory . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 54 2.5 Distributed Services with Remote Clients . . . . . . . . . . . . . . . 56 2.6 Summary . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 57
+
+3 Implementation: Anykernel and Rump Kernels
+
+59
+
+3.1 Kernel Partitioning . . . . . . . . . . . . . . . . . . . . . . . . . . . 59
+
+3.1.1 Extracting and Implementing . . . . . . . . . . . . . . . . . 63
+
+3.1.2 Providing Components . . . . . . . . . . . . . . . . . . . . . 64
+
+3.2 Running the Kernel in an Hosted Environment . . . . . . . . . . . . 66
+
+3.2.1 C Symbol Namespaces . . . . . . . . . . . . . . . . . . . . . 66
+
+3.2.2 Privileged Instructions . . . . . . . . . . . . . . . . . . . . . 69
+
+3.2.3 The Hypercall Interface(s) . . . . . . . . . . . . . . . . . . . 69
+
+3.3 Rump Kernel Entry and Exit . . . . . . . . . . . . . . . . . . . . . 73
+
+3.3.1 CPU Scheduling . . . . . . . . . . . . . . . . . . . . . . . . . 76
+
+3.3.2 Interrupts and Soft Interrupts . . . . . . . . . . . . . . . . . 83
+
+3.4 Virtual Memory Subsystem . . . . . . . . . . . . . . . . . . . . . . 85
+
+3.4.1 Page Remapping . . . . . . . . . . . . . . . . . . . . . . . . 87
+
+3.4.2 Memory Allocators . . . . . . . . . . . . . . . . . . . . . . . 90
+
+3.4.3 Pagedaemon . . . . . . . . . . . . . . . . . . . . . . . . . . . 91
+
+3.5 Synchronization . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 94
+
+3.5.1 Passive Serialization Techniques . . . . . . . . . . . . . . . . 96
+
+3.5.2 Spinlocks on a Uniprocessor Rump Kernel . . . . . . . . . . 101
+
+3.6 Application Interfaces to the Rump Kernel . . . . . . . . . . . . . . 103
+
+3.6.1 System Calls . . . . . . . . . . . . . . . . . . . . . . . . . . 104
+
+3.6.2 vnode Interface . . . . . . . . . . . . . . . . . . . . . . . . . 109
+
+3.6.3 Interfaces Speciﬁc to Rump Kernels . . . . . . . . . . . . . . 111
+
+3.7 Rump Kernel Root File System . . . . . . . . . . . . . . . . . . . . 112
+
+3.7.1 Extra-Terrestrial File System . . . . . . . . . . . . . . . . . 113
+
+11
+
+3.7.2 External Storage . . . . . . . . . . . . . . . . . . . . . . . . 114 3.8 Attaching Components . . . . . . . . . . . . . . . . . . . . . . . . . 115
+3.8.1 Kernel Modules . . . . . . . . . . . . . . . . . . . . . . . . . 115 3.8.2 Modules: Supporting Standard Binaries . . . . . . . . . . . 119 3.8.3 Rump Component Init Routines . . . . . . . . . . . . . . . . 123 3.9 I/O Backends . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 124 3.9.1 Networking . . . . . . . . . . . . . . . . . . . . . . . . . . . 127 3.9.2 Disk Driver . . . . . . . . . . . . . . . . . . . . . . . . . . . 134 3.10 Hardware Devices: A Case of USB . . . . . . . . . . . . . . . . . . 136 3.10.1 Conclusions of the USB Approach . . . . . . . . . . . . . . . 137 3.11 Microkernel Servers: Case Study with File Servers . . . . . . . . . . 138 3.11.1 Mount Utilities and File Servers . . . . . . . . . . . . . . . . 138 3.11.2 Requests: The p2k Library . . . . . . . . . . . . . . . . . . . 141 3.11.3 Unmounting . . . . . . . . . . . . . . . . . . . . . . . . . . . 142 3.11.4 Security Beneﬁts . . . . . . . . . . . . . . . . . . . . . . . . 143 3.12 Remote Clients . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 144 3.12.1 Client-Kernel Locators . . . . . . . . . . . . . . . . . . . . . 146 3.12.2 The Client . . . . . . . . . . . . . . . . . . . . . . . . . . . . 146 3.12.3 The Server . . . . . . . . . . . . . . . . . . . . . . . . . . . . 147 3.12.4 Communication Protocol . . . . . . . . . . . . . . . . . . . . 149 3.12.5 Of Processes and Inheritance . . . . . . . . . . . . . . . . . 154 3.12.6 Host System Call Hijacking . . . . . . . . . . . . . . . . . . 155 3.12.7 A Tale of Two Syscalls: fork() and execve() . . . . . . . . 160 3.12.8 Performance . . . . . . . . . . . . . . . . . . . . . . . . . . . 163 3.13 Experiment: Bootstrap Time . . . . . . . . . . . . . . . . . . . . . 165 3.14 Summary . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 168
+
+4 Rump Kernel Ecosystem
+
+171
+
+4.1 buildrump.sh . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 171
+
+4.1.1 The Double-crossing Toolchain . . . . . . . . . . . . . . . . 172
+
+12
+
+4.1.2 POSIX Host Hypercalls . . . . . . . . . . . . . . . . . . . . 173 4.1.3 Full Userspace Build . . . . . . . . . . . . . . . . . . . . . . 174 4.1.4 src-netbsd . . . . . . . . . . . . . . . . . . . . . . . . . . . . 174 4.2 Rumprun Unikernel . . . . . . . . . . . . . . . . . . . . . . . . . . . 176 4.2.1 bmk – Bare Metal Kernel . . . . . . . . . . . . . . . . . . . 177 4.2.2 Rumpuser . . . . . . . . . . . . . . . . . . . . . . . . . . . . 181 4.2.3 To Userspace (or Not To Userspace) . . . . . . . . . . . . . 182 4.2.4 Toolchain . . . . . . . . . . . . . . . . . . . . . . . . . . . . 186 4.2.5 PCI: Big Yellow Bus . . . . . . . . . . . . . . . . . . . . . . 191 4.3 rumpctrl . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 193 4.4 fs-utils . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 195 4.5 Summary . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 196
+
+5 Short History
+
+197
+
+5.1 First Steps . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 197
+
+5.2 Towards Robust and Maintainable . . . . . . . . . . . . . . . . . . . 199
+
+5.3 Syscall Support . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 200
+
+5.4 Beyond File Systems . . . . . . . . . . . . . . . . . . . . . . . . . . 201
+
+5.5 Symbol Isolation . . . . . . . . . . . . . . . . . . . . . . . . . . . . 202
+
+5.6 Local Clients . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 203
+
+5.7 Remote Clients . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 204
+
+5.8 Shifting Focus Towards Driver Reuse . . . . . . . . . . . . . . . . . 204
+
+5.9 We’re not in Kansas Anymore . . . . . . . . . . . . . . . . . . . . . 205
+
+5.10 Summary . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 208
+
+6 Conclusions
+
+209
+
+References
+
+211
+
+13
+List of Abbreviations
+
+ABI
+ASIC CAS CPU
+DMA DSL DSO ELF
+FFS
+FS GPL HTTP i386
+
+Application Binary Interface: The interface between binaries. ABI-compatible binaries can interface with each other.
+Application-Speciﬁc Integrated Circuit (or Cloud ;-)
+Compare-And-Swap; atomic operation
+Central Processing Unit; in this document the term is context-dependant. It is used to denote both the physical hardware unit or a virtual concept of a CPU.
+Direct Memory Access
+Domain Speciﬁc Language
+Dynamic Shared Object
+Executable and Linking Format; the binary format used by NetBSD and some other modern Unix-style operating systems.
+Berkeley Fast File System; in most contexts, this can generally be understood to mean the same as UFS (Unix File System).
+File System
+General Public License; a software license
+HyperText Transfer Protocol
+Intel 32-bit ISA (a.k.a. IA-32)
+
+IPC ISA LGPL LRU LWP
+MD MI MMU
+NIC OS OS PCI PIC
+PR RTT
+
+14
+Inter-Process Communication Instruction Set Architecture Lesser GPL; a less restrictive variant of GPL Least Recently Used Light Weight Process; the kernel’s idea of a thread. This acronym is usually written in lowercase (lwp) to mimic the kernel structure name (struct lwp). Machine Dependent [code]; [code] speciﬁc to the platform Machine Independent [code]; [code] usable on all platforms Memory Management Unit: hardware unit which handles memory access and does virtual-to-physical translation for memory addresses Network Interface Controller Operating System Orchestrating System Peripheral Component Interconnect; hardware bus Position Independent Code; code which uses relative addressing and can be loaded at any location. It is typically used in shared libraries, where the load address of the code can vary from one process to another. Problem Report RoundTrip Time
+
+RUMP
+SLIP TLS TLS UML USB VAS VM
+VMM
+
+15
+Deprecated “backronym” denoting a rump kernel and its local client application. This backronym should not appear in any material written since mid-2010. Serial Line IP: protocol for framing IP datagrams over a serial line. Thread-Local Storage; private per-thread data Transport Layer Security User Mode Linux Universal Serial Bus Virtual Address Space Virtual Memory; the abbreviation is context dependent and can mean both virtual memory and the kernel’s virtual memory subsystem Virtual Machine Monitor
+
+16
+
+17
+List of Figures
+1.1 Relationship between key concepts . . . . . . . . . . . . . . . . . . 28
+2.1 Rump kernel hierarchy . . . . . . . . . . . . . . . . . . . . . . . . . 37 2.2 BPF access via ﬁle system . . . . . . . . . . . . . . . . . . . . . . . 40 2.3 BPF access without a ﬁle system . . . . . . . . . . . . . . . . . . . 41 2.4 Client types illustrated . . . . . . . . . . . . . . . . . . . . . . . . . 42 2.5 Use of curcpu() in the pool allocator . . . . . . . . . . . . . . . . . 51 2.6 Providing memory mapping support on top of a rump kernel . . . . 55
+3.1 Performance of position independent code (PIC) . . . . . . . . . . . 65 3.2 C namespace protection . . . . . . . . . . . . . . . . . . . . . . . . 67 3.3 Rump kernel entry/exit pseudocode . . . . . . . . . . . . . . . . . . 75 3.4 System call performance using the trivial CPU scheduler . . . . . . 77 3.5 CPU scheduling algorithm in pseudocode . . . . . . . . . . . . . . . 79 3.6 CPU release algorithm in pseudocode . . . . . . . . . . . . . . . . . 81 3.7 System call performance using the improved CPU scheduler . . . . 82 3.8 Performance of page remapping vs. copying . . . . . . . . . . . . . 89 3.9 Using CPU cross calls when checking for syscall users . . . . . . . . 99 3.10 Cost of atomic memory bus locks on a twin core host . . . . . . . . 102 3.11 Call stub for rump_sys_lseek() . . . . . . . . . . . . . . . . . . . 106 3.12 Compile-time optimized sizeof() check . . . . . . . . . . . . . . . 108 3.13 Implementation of RUMP_VOP_READ() . . . . . . . . . . . . . . . . . 110 3.14 Application interface implementation of lwproc rfork() . . . . . . 111 3.15 Comparison of pmap_is_modified deﬁnitions . . . . . . . . . . . . 121 3.16 Comparison of curlwp deﬁnitions . . . . . . . . . . . . . . . . . . . 122 3.17 Example: selected contents of netinet_component.c . . . . . . . . 126 3.18 Networking options for rump kernels . . . . . . . . . . . . . . . . . 127 3.19 Bridging a tap interface to the host’s re0 . . . . . . . . . . . . . . . 129
+
+18
+3.20 sockin attachment . . . . . . . . . . . . . . . . . . . . . . . . . . . . 133 3.21 File system server . . . . . . . . . . . . . . . . . . . . . . . . . . . . 139 3.22 Use of -o rump in /etc/fstab . . . . . . . . . . . . . . . . . . . . 140 3.23 Implementation of p2k_node_read() . . . . . . . . . . . . . . . . . 142 3.24 Mounting a corrupt FAT FS with the kernel driver in a rump kernel 143 3.25 Remote client architecture . . . . . . . . . . . . . . . . . . . . . . . 145 3.26 Example invocations for rump_server . . . . . . . . . . . . . . . . 148 3.27 System call hijacking . . . . . . . . . . . . . . . . . . . . . . . . . . 156 3.28 Implementation of fork() on the client side . . . . . . . . . . . . . 161 3.29 Local vs. Remote system call overhead . . . . . . . . . . . . . . . . 163 3.30 Time required to bootstrap one rump kernel . . . . . . . . . . . . . 165 3.31 Script for starting, conﬁguring and testing a network cluster . . . . 167 3.32 Network cluster startup time . . . . . . . . . . . . . . . . . . . . . . 168
+4.1 Rumprun software stack . . . . . . . . . . . . . . . . . . . . . . . . 178 4.2 Rumprun stack trace for sleep() . . . . . . . . . . . . . . . . . . . 181 4.3 Userspace aliases for rump kernel syscalls . . . . . . . . . . . . . . . 183 4.4 Building a runnable Rumprun unikernel image . . . . . . . . . . . . 189 4.5 Architecture of rumpctrl . . . . . . . . . . . . . . . . . . . . . . . . 194
+
+19
+List of Tables
+2.1 Comparison of client types . . . . . . . . . . . . . . . . . . . . . . . 43
+3.1 Symbol renaming illustrated . . . . . . . . . . . . . . . . . . . . . . 68 3.2 File system I/O performance vs. available memory . . . . . . . . . 93 3.3 Kernel module classiﬁcation . . . . . . . . . . . . . . . . . . . . . . 116 3.4 Component classes . . . . . . . . . . . . . . . . . . . . . . . . . . . 125 3.5 Requests from the client to the kernel . . . . . . . . . . . . . . . . . 150 3.6 Requests from the kernel to the client . . . . . . . . . . . . . . . . . 151 3.7 Step-by-step comparison of host and rump kernel syscalls, part 1/2 152 3.8 Step-by-step comparison of host and rump kernel syscalls, part 2/2 153
+4.1 src-netbsd branches . . . . . . . . . . . . . . . . . . . . . . . . . . . 175
+
+20
+
+21
+1 Introduction
+The mission of the ﬁrst edition of this book (2012) was to introduce the anykernel and rump kernels and motivate their existence. Additionally, we explored the characteristics of the technology through various experiments. The paramount, often criminally overlooked experiment was the one hiding in plain sight: is it possible to construct the system in a sustainable, real-world compatible fashion. That paramount experiment was shown to be a success, and that result has not changed since the original publication, only strengthened. The core technology is still almost identical to the one described in the original book.
+This new edition has been written to account for the practical experiences from new use cases, many of which were proposed in the ﬁrst edition, but which have since become reality.
+To start oﬀ, we will look at operating systems in general: what one is, how they developed throughout history, where they are now, what the problem is, and why the time is now ripe for change. After that, we will brieﬂy introduce the Anykernel and Rump Kernels, and argue why they are part of the solution to the problem.
+1.1 Operating Systems
+The term operating system originally meant a system which aids computer operators in loading tapes and punchcards onto the computer [15]. We take a slightly more modern approach, and deﬁne an operating system as a collection of subroutines which allow application programs to run on a given platform. The platform can be for example a physical unit of hardware, or be virtually provisioned such as on the cloud. Additionally, an operating system may, for example, multiplex the platform
+
+22
+for a number of applications, protect applications from each other, be distributed in nature, or provide an interface which is visually appealing to some people.
+The majority of the operating system is made up of drivers, which abstract some underlying entity. For example, device drivers know which device registers to read and write for the desired result, ﬁle system drivers know which blocks contain which parts of which ﬁles, and so forth. In essence, a driver is a protocol translator, which transforms requests and responses to diﬀerent representations.
+There is nothing about protocol translation which dictates that a driver must be an integral part of an operating system as opposed to being part of application code. However, operating system drivers may also be used as a tool for imposing protection boundaries. For example, an operating system may require that applications access a storage device through the ﬁle system driver. The ﬁle system can then enforce that users are reading or writing only the storage blocks that they are supposed to have access to. As we shall see shortly, imposing privilege boundaries grew out of historic necessity when computers were few and the operating system was a tool to multiplex a single machine for many users.
+1.1.1 Historical Perspective
+Computers were expensive in the 1950’s and 1960’s. For example, the cost of the UNIVAC I in 1951 was just short of a million dollars. Accounting for inﬂation, that is approximately 9 million dollars in today’s money. Since it was desirable to keep expensive machines doing something besides idling, batch scheduling was used to feed new computations and keep idletime to a minimum.
+As most of us intuitively know, reaching the solution of a problem is easier if you are allowed to stumble around with constant feedback, as compared to a situation where
+
+23
+you must have holistic clairvoyance over the entire scenario before you even start. The lack of near-instant feedback was a problem with batch systems. You submitted a job, context switched to something else, came back the next day, context switched back to your computation, and discovered your program was missing a comma.
+To address the feedback problem, timesharing was invented. Users logged into a machine via a terminal and got the illusion of having the whole system to themselves. The timesharing operating system juggled between users and programs. Thereby, poetic justice was administered: the computer was now the one context-switching, not the human. Going from running one program at a time to running multiple at the “same” time required more complex control infrastructure. The system had to deal with issues such as hauling programs in and out of memory depending on if they were running or not (swapping), scheduling the tasks according to some notion of fairness, and providing users with private, permanent storage (ﬁle system). In other words, 50 years ago they had the key concepts of current operating systems ﬁgured out. What has happened since?
+1.1.2 And Where It Got Us
+The early timesharing systems isolated users from other users. The average general purpose operating system still does a decent job at isolating users from each other. However, that type of isolation does little good in a world which does not revolve around people logging into a timesharing system. The increasing problem is isolating the user from herself or himself. Ages ago, when you yourself wrote all of the programs you ran, or at least had a physical interaction possibility with the people who did, you could be reasonably certain that a program you ran did not try to steal your credit card numbers. These days, when you download a million lines of so-so trusted application code from the Internet, you have no idea of what happens when you run it on a traditional operating system.
+
+24
+The timesharing system also isolates the system and hardware components from the unprivileged user. In this age when everyone has their own hardware — virtual if not physical — that isolation vector is of questionable value. It is no longer a catastrophe if an unprivileged process binds to transport layer ports less than 1024. Everyone should consider reading and writing the network medium unlimited due to hardware no longer costing a million, regardless of what the operating system on some system does. The case for separate system and user software components is therefore no longer universal. Furthermore, the abstract interfaces which hide underlying power, especially that of modern I/O hardware, are insuﬃcient for highperformance computing [45].
+In other words, since the operating system does not protect the user from evil or provide powerful abstractions, it fails its mission in the modern world. Why do we keep on using such systems? Let us imagine the world of computing as a shape sorter. In the beginning, all holes were square: all computation was done on a million dollar machine sitting inside of a mountain. Square pegs were devised to ﬁt the square holes, as one would logically expect. The advent of timesharing brought better square pegs, but it did so in the conﬁnes of the old scenario of the mountainmachine. Then the world of computing diversiﬁed. We got personal computing, we got mobile devices, we got IoT, we got the cloud. Suddenly, we had round holes, triangular holes and the occasional trapezoid and rhombus. Yet, we are still fascinated by square-shaped pegs, and desperately try to cram them into every hole, regardless of if they ﬁt or not.
+Why are we so fascinated with square-shaped pegs? What happens if we throw away the entire operating system? The ﬁrst problem with that approach is, and it is a literal show-stopper, that applications will fail to run. Already in the late 1940’s computations used subroutine libraries [8]. The use of subroutine libraries has not diminished in the past 70 years, quite to the contrary. An incredible amount of application software keeping the Internet and the world running has been written
+
+25
+against the POSIX-y interfaces oﬀered by a selection of operating systems. No matter how much you do not need the obsolete features provided by the square peg operating system, you do want to keep your applications working.
+From-scratch implementations of the services provided by operating systems are far from trivial undertakings. Just implementing the 20-or-so ﬂags for the open() call in a real-world-bug-compatible way is far from trivial. Assuming you want to run an existing libc/application stack, you have to keep in mind that you still have roughly 199 system calls to go after open(). After you are done with the system calls, you then have to implement the actual components that the system calls act as an interface to: networking, ﬁle systems, device drivers, and various other driver stacks.
+After the completing the above steps for a from-scratch implementation, the most time-consuming part remains: testing your implementation in the real world and ﬁxing it to work there. This step is also the most diﬃcult one, since no amount of conformance to formal speciﬁcation or testing in a laboratory is a substitute for being “bug-compatible” with the real world.
+So in essence, we are fascinated by square-shaped pegs because our applications rest on the support provided by those pegs. That is why we are stuck in a rut and few remember to look at the map.
+1.1.3 What We Really Need
+We want applications to run. We need the operating system to adapt to the scenario the application is deployed in, not for the application to adapt to a 1950’s understanding of computing and hardware cost.
+
+26
+Let us consider embedded systems. Your system consists of one trust-domain on one piece of hardware. There, you simply need at set of subroutines (drivers) to enable your application to run. You do not need any code which allows the singleuser, single-application system to act like a timesharing system with multiple users. However, for example the implementation of the TCP/IP driver can, assuming you do not want to scale to kilobyte-sized system or to the bleeding edge of performance, be the same as one for a multiuser system. After all, the TCP/IP protocols are standard, and therefore the protocol translation the driver needs to perform is also standard.
+Let us consider the cloud and especially microservices running on the cloud. We can indeed run the services on top of a timesharing operating system, A paravirtualized timesharing OS takes time to bootstrap [26] and consumes resources even for the features which are not used by the microservice. OS virtualization via containers [27] provides better performance and resource consumption than paravirtualization [53, 57], but at the cost of putting millions of lines of code into the trusted computing base.
+Using timesharing systems en masse will allow applications to run in both cases, but not adapting to the scenario comes with a price. In eﬀect, tradeoﬀs are made either for performance or security.
+1.2 The Anykernel and Rump Kernels
+This work is about how to move from the world of timesharing systems to the world of the future in a fashion in which applications continue to function. The two key terms are anykernel and rump kernel, both of which we will introduce and describe shortly.
+
+27
+Applications need subroutines to work, and those subroutines are provided by operating systems. We call those subroutines drivers, and state that not only does a typical application require a large set of drivers, but also that those drivers are also non-trivial to write and maintain. While operating systems built around a timesharing model are rich in drivers due to having a lot of history behind them, they are not suﬃcient for the use cases required by the modern world. We need to start treating drivers as library-like components instead of requiring a separate implementation for each operating system. The library-approach will allow to build the software stack to suit the scenario, instead of having to build the scenario to suit the available operating systems.
+The term anykernel was coined in response to the ever-increasing number of operating system models: monolithic kernel, microkernel, exokernel, multikernel, unikernel, etc. As the saying goes, creating something new is is 5% inspiration and 95% perspiration. While the inspiration required to come up with a new model should not be undervalued, after that 95% of the work for reaching a usable software stack remains. That 95% consists largely of the drivers. For example, even the most trivial cloud operating system requires a TCP/IP driver, and creating one from scratch or even porting one is far from trivial. The anykernel is a term describing a kerneltype codebase from which drivers, the 95%, can be extracted and integrated to any operating system model — or at least near any — without porting and maintenance work.
+A rump kernel, as the name implies, is a timesharing style kernel from which portions have been removed. What remains are drivers and the basic support routines required for the drivers to function – synchronization, memory allocators, and so forth. What is gone are policies of thread scheduling, virtual memory, application processes, and so forth. Rump kernels have a well-deﬁned (and small!) portability layer, so they are straightforward to integrate into various environments.
+
+anykernel
+
+... ext2 NFS
+
+... MPLS TCP /IP
+
+...
+
+PCI NIC
+
+802.11
+
+virtual memory
+
+scheduler
+
+process execution
+
+28
+
+rump kernel
+
+TCP NFS /IP
+PCI 802.11 NIC
+
+example of a rump kernel
+use case
+
+pick & choose components from anykernel
+
+Rumprun unikernel
+application & libc
+TCP NFS /IP
+PCI 802.11 NIC
+bootstrap & hypercalls & scheduler
+
+Figure 1.1: Relationship between key concepts: The anykernel allows driver components to be lifted out of the original source tree and rump kernels to be formed out of those drivers. Rump kernels can be used to build products and platforms; one example of a use case is illustrated.
+
+Figure 1.1 illustrates how a timesharing system, anykernel and rump kernel are related. The ﬁgure indeed illustrates only one example, and by extension, only one example platform for hosting rump kernels.
+Throughout most of the technical discussion in this book we will consider a userspace program as the platform for hosting a rump kernel. There are two reasons why it is so. First, the original motivation for rump kernels back in 2007 was developing, debugging and testing kernel drivers. What better place to do it than in userspace? Second, userspace is in itself a “hosted” platform, and we do not have full control of for example the symbol namespace or the scheduler. Therefore, if rump kernels can work in userspace, they can also easily work on platforms which are custom-built to host rump kernels.
+The implementation we discuss is available in NetBSD. It is crucial to diﬀerentiate between the implementation being in NetBSD, and it being available as patches for NetBSD. The idea of the anykernel is that it is an inherent property of a code base, so as to keep things maintained. What, in fact, keeps the implementation working
+
+29
+is NetBSD’s internal use of rump kernels for testing kernel drivers. This testing also allows NetBSD to provide better quality drivers, so there is clear synergy. However, we will not focus on the testing aspects in this book; if curious, see the ﬁrst edition for more discussion on development and testing.
+1.3 Book Outline
+The remainder of the book is as follows. Chapter 2 deﬁnes the concept of the anykernel and rump kernels and Chapter 3 discusses the implementation and provides microbenchmarks as supporting evidence for implementation decisions. Essentially, the two previous chapters are a two-pass ﬂight over the core subject. The intent is to give the reader a soft landing by ﬁrst introducing the new concept in abstract terms, and then doing the same in terms of the implementation. That way, we can include discussion of worthwhile implementation details without confusing the high-level picture. If something is not clear from either chapter alone, the recommendation is to study the relevant text from the other one. If you read the ﬁrst edition of this book, you may choose to only lightly skim these two chapters; the main ideas are the same as in the ﬁrst edition.
+Chapter 4 gives an overview of what we have built on top of rump kernels. A brief history of the project is presented in Chapter 5. The history chapter can be read ﬁrst, last, or anywhere in between, or not at all. Finally, Chapter 6 provides concluding remarks.
+What this book is not
+This book is not a user manual. You will not learn how to use rump kernels in day-to-day operations from this book. However, you will gain a deep understanding
+
+30 of rump kernels which, when coupled with the user documentation, will give you superior knowledge of how to use rump kernels. Most of the user documentation is available as a wiki at http://wiki.rumpkernel.org/.
+1.4 Further Material
+In general, further material is reachable from the rump kernel project website at http://rumpkernel.org/.
+1.4.1 Source Code
+The NetBSD source ﬁles and their respective development histories are available for study from repository provided by the NetBSD project, e.g. via the web interface at cvsweb.NetBSD.org. These ﬁles are most relevant for the discussion in Chapter 2 and Chapter 3.
+The easiest way to fetch the latest NetBSD source code in bulk is to run the following commands (see Section 4.1.4 for further information):
+git clone http://repo.rumpkernel.org/src-netbsd cd src-netbsd git checkout all-src
+Additionally, there is infrastructure to support building rump kernels for various platforms hosted at http://repo.rumpkernel.org/. The discussion in Chapter 4 is mostly centered around source code available from that location.
+
+31 Code examples
+This book includes code examples from the NetBSD source tree. All such examples are copyright of their respective owners and are not public domain. If pertinent, please check the full source for further information about the licensing and copyright of each such example.
+1.4.2 Manual Pages
+Various manual pages are cited in the document. They are available as part of the NetBSD distribution, or via the web interface at http://man.NetBSD.org/.
+
+32
+
+33
+2 Concepts: Anykernel and Rump Kernels
+As a primer for the technical discussion in this book, we consider the elements that make up a modern Unix-style operating system. Commonly, the operating system is cleft in twain with the kernel providing basic support, and userspace being where applications run. Since this chapter is about the anykernel and rump kernels, we limit the following discussion to the kernel.
+The CPU speciﬁc code is on the bottom layer of the operating system. This code takes care of low level bootstrap and provides an abstract interface to the hardware. In most, if not all, modern general purpose operating systems the CPU architecture is abstracted away from the bulk of the kernel and only the lowest layers have knowledge of it. To put the previous statement into terms which are used in our later discussions, the interfaces provided by the CPU speciﬁc code are the “hypercall” interfaces that the OS runs on. In the NetBSD kernel these functions are usually preﬁxed with “cpu”.
+The virtual memory subsystem manages the virtual address space of the kernel and application processes. Virtual memory management includes deﬁning what happens when a memory address is accessed. Examples include normal read/write access to the memory, ﬂagging a segmentation violation, or a ﬁle being read from the ﬁle system.
+The process execution subsystem understands the formats that executable binaries use and knows how to create a new process when an executable is run.
+The scheduling code includes a method and policy to deﬁne what code a CPU is executing. Scheduling can be cooperative or preemptive. Cooperative scheduling means that the currently running thread decides when to yield — sometimes this
+
+34
+decision is implicit, e.g. waiting for I/O to complete. Preemptive scheduling means that also the scheduler can decide to unschedule the current thread and schedule a new one, typically because the current thread exceeded its allotted share of CPU time. When a thread is switched, the scheduler calls the CPU speciﬁc code to save the machine context of the current thread and load the context of the new thread. NetBSD uses preemptive scheduling both in userspace and in the kernel.
+Atomic operations enable modifying memory atomically and avoid race conditions in for example a read-modify-write cycle. For uniprocessor architectures, kernel atomic operations are a matter of disabling interrupts and preemption for the duration of the operation. Multiprocessor architectures provide machine instructions for atomic operations. The operating system’s role with atomic operations is mapping function interfaces to the way atomic operations are implemented on that particular machine architecture.
+Synchronization routines such as mutexes and condition variables build upon atomic operations and interface with the scheduler. For example, if locking a mutex is attempted, the condition for it being free is atomically tested and set. If a sleep mutex was already locked, the currently executing thread interfaces with the scheduling code to arrange for itself to be put to sleep until the mutex is released.
+Various support interfaces such CPU cross-call, time-related routines, kernel linkers, etc. provide a basis on which to build drivers.
+Resource management includes general purpose memory allocation, a pool and slab [7] allocator, ﬁle descriptors, PID namespace, vmem/extent resource allocators etc. Notably, in addition to generic resources such as memory, there are more speciﬁc resources to manage. Examples of more speciﬁc resources include vnodes [30] for ﬁle systems and mbufs [58] for the TCP/IP stack.
+
+35
+Drivers deal with translating various protocols such as ﬁle system images, hardware devices, network packets, etc. Drivers are what we are ultimately interested in using in rump kernels, but to make them available we must deal with everything they depend on. We will touch this subject more in the next section.
+2.1 Driving Drivers
+To run drivers without having to run the entire timesharing OS kernel, in essence we have to provide semantically equivalent implementations of the support routines that the drivers use. The straightforward way indeed is to run the entire kernel, but it is not the optimal approach, as we argued in the introduction. The key is to ﬁgure out what to reuse verbatim and what needs rethinking.
+2.1.1 Relegation and Reuse
+There are essentially two problems to solve. One is coming up with an architecture which allows rump kernels to maximally integrate with the underlying platform. The second one is ﬁguring out how to satisfy the closure of the set of support routines used by desirable drivers. Those two problems are in fact related. We will clarify in the following.
+The key to drivers being able to adapt to situations is to allow them to use the features of the underlying world directly. For example, drivers need a memory address space to execute in; we use the underlying one instead of simulating a second one on top of it. Likewise, we directly use the threading and scheduling facilities in our rump kernel instead of having the scheduling a virtual kernel with its own layer of scheduling. Relegating support functionality to the host avoids adding a layer of indirection and overhead.
+
+36
+Rump kernels are never full kernels which can independently run directly on bare metal, and always need lower layer support from the host. This layer can be a spartan, specially-constructed one consisting of some thousands of lines of code, or an extremely complex such as a current generation general purpose operating system.
+Drivers in a rump kernel remain unmodiﬁed over the original ones. A large part of the support routines remain unmodiﬁed as well. Only in places where support is relegated to the host do we require speciﬁcally written glue code. As was indicated already in the introductory chapter, we use the term anykernel to describe a kernel code base with the property of being able use unmodiﬁed drivers and the relevant support routines in rump kernels.
+It should be noted that unlike for example the terms microkernel or unikernel, the term anykernel does not convey information about how the drivers are organized at runtime, but rather that it is possible to organize them in a number of ways.
+We examine the implementation details of an anykernel more closely in Chapter 3 where we turn the NetBSD kernel into an anykernel.
+2.1.2 Base, Orthogonal Factions, Drivers
+A monolithic kernel, as the name implies, is one single entity. The runtime footprint of a monolithic kernel contains support functionality for all subsystems, such as sockets for networking, vnodes for ﬁle systems and device autoconﬁguration for drivers. All of these facilities cost resources, especially memory, even if they are not used. They may also impose dependencies on the underlying platform, e.g. MMU for some aspects of virtual memory support.
+
+37
+Figure 2.1: Rump kernel hierarchy. The desired drivers dictate the required components. The factions are orthogonal and depend only on the rump kernel base. The rump kernel base depends purely on the hypercall layer.
+We have divided a rump kernel, and therefore the underlying NetBSD kernel codebase, into three layers which are illustrated in Figure 2.1: the base, factions and drivers. The base contains basic support such as memory allocation and locking. The dev, net and vfs factions, which denote devices, networking and [virtual] ﬁle systems, respectively, provide subsystem level support. To minimize runtime resource consumption, we require that factions are orthogonal. By orthogonal we mean that the code in one faction must be able to operate irrespective if any other faction is present in the rump kernel conﬁguration or not. Also, the base may not depend on any faction, as that would mean the inclusion of a faction in a rump kernel is mandatory instead of optional. We use the term component to describe a functional unit for a rump kernel. For example, a ﬁle system driver is a component. A rump kernel is constructed by linking together the desired set of components, either at compile-time or at run-time. A
+
+38
+loose similarity exists between kernel modules and the rump kernel approach: code is compiled once per target architecture, and a linker is used to determine runtime features. For a given driver to function properly, the rump kernel must be linked with the right set of dependencies. For example, the NFS component requires both the ﬁle system and networking factions, but in contrast the tmpfs component requires only the ﬁle system faction.
+User interfaces are used by applications to request services from rump kernels. Any dependencies induced by user interfaces are optional, as we will illustrate next. Consider Unix-style device driver access. Access is most commonly done through ﬁle system nodes in /dev, with the relevant user interfaces being open and read/write (some exceptions to the ﬁle system rule exist, such as Bluetooth and Ethernet interfaces which are accessed via sockets on NetBSD). To access a /dev ﬁle system node in a rump kernel, ﬁle systems must be supported. Despite ﬁle system access being the standard way to access a device, it is possible to architect an application where the device interfaces are called directly without going through ﬁle system code. Doing so means skipping the permission checks oﬀered by ﬁle systems, calling private kernel interfaces and generally having to write more fragile code. Therefore, it is not recommended as the default approach, but if need be due to resource limitations, it is a possibility. For example, let us assume we have a rump kernel running a TCP/IP stack and we wish to use the BSD Packet Filter (BPF) [34]. Access through /dev is presented in Figure 2.2, while direct BPF access which does not use ﬁle system user interfaces is presented in Figure 2.3. You will notice the ﬁrst example is similar to a regular application, while the latter is more complex. We will continue to refer to these examples in this chapter when we go over other concepts related to rump kernels.
+The faction divisions allow cutting down several hundred kilobytes of memory overhead and milliseconds in startup time per instance. While the saving per instance is not dramatic, the overall savings are sizeable in scenarios such as IoT, network
+
+39 testing [24], or cloud services, which demand thousands of instances. For example, a rump kernel TCP/IP stack without ﬁle system support is 40% smaller (400kB) than one which contains ﬁle system support.
+2.1.3 Hosting
+To function properly, a rump kernel must access certain underlying resources such as memory and the scheduler. These resources are accessed through the rumpuser hypercall interface. We will analyze and describe this interface in detail in Section 3.2.3. We call the underlying platform-speciﬁc software layer the host; the hypercalls are implemented on top of the host.
+Notably, as we already hinted earlier, the platform requirements for a rump kernel are extremely minimal, and a rump kernel can run virtually everywhere. For example, there is no need to run the rump kernel in privileged hardware mode. Ultimately, the host has full control and ﬁne-grained control of what a rump kernel has access to.
+2.2 Rump Kernel Clients
+We deﬁne a rump kernel client to be an entity which requests services from a rump kernel. Examples of rump kernel clients are userspace applications which access the network through a TCP/IP stack provided by a rump kernel, userspace applications which read ﬁles via a ﬁle system driver provided by a rump kernel, or simply any application running on the Rumprun unikernel (Section 4.2). Likewise, a test program that is used to test kernel code by means of running it in a rump kernel is a rump kernel client.
+
+40
+int main(int argc, char *argv[]) {
+struct ifreq ifr; int fd; /* bootstrap rump kernel */ rump_init(); /* open bpf device, fd is in implicit process */ if ((fd = rump_sys_open(_PATH_BPF, O_RDWR, 0)) == -1)
+err(1, "bpf open"); /* create virt0 in the rump kernel the easy way and set bpf to use it */ rump_pub_virtif_create(0); strlcpy(ifr.ifr_name, "virt0", sizeof(ifr.ifr_name)); if (rump_sys_ioctl(fd, BIOCSETIF, &ifr) == -1)
+err(1, "set if"); /* rest of the application */ [....] }
+Figure 2.2: BPF access via the ﬁle system. This ﬁgure demonstrates the system call style programming interface of a rump kernel.
+
+41
+int rumpns_bpfopen(dev_t, int, int, struct lwp *);
+int main(int argc, char *argv[]) {
+struct ifreq ifr; struct lwp *mylwp; int fd, error;
+/* bootstrap rump kernel */ rump_init();
+/* create an explicit rump kernel process context */ rump_pub_lwproc_rfork(RUMP_RFCFDG); mylwp = rump_pub_lwproc_curlwp();
+/* schedule rump kernel CPU */ rump_schedule();
+/* open bpf device */ error = rumpns_bpfopen(0, FREAD|FWRITE, 0, mylwp); if (mylwp->l_dupfd < 0) {
+rump_unschedule(); errx(1, "open failed"); }
+/* need to jump through a hoop due to bpf being a "cloning" device */ error = rumpns_fd_dupopen(mylwp->l_dupfd, &fd, 0, error); rump_unschedule(); if (error)
+errx(1, "dup failed");
+/* create virt0 in the rump kernel the easy way and set bpf to use it */ rump_pub_virtif_create(0); strlcpy(ifr.ifr_name, "virt0", sizeof(ifr.ifr_name)); if (rump_sys_ioctl(fd, BIOCSETIF, &ifr) == -1)
+err(1, "set if");
+/* rest of the application */ [....] }
+Figure 2.3: BPF access without a ﬁle system. This ﬁgure demonstrates the ability to directly call arbitrary kernel routines from a user program. For comparison, it implements the same functionality as Figure 2.2. This ability is most useful for writing kernel unit tests when the calls to the unit under test cannot be directly invoked by using the standard system call interfaces.
+
+42
+Figure 2.4: Client types illustrated. For local clients the client and rump kernel reside in a single process, while remote and microkernel clients reside in separate processes and therefore do not have direct memory access into the rump kernel.
+The relationship between a rump kernel and a rump kernel client is an almost direct analogy to an application process executing on an operating system and requesting services from the host kernel.
+There are several possible relationship types the client and rump kernel can have. Each of them have diﬀerent implications on the client and kernel. The possibilities are: local, remote and microkernel. The conﬁgurations are also depicted in Figure 2.4. The implications of each are available in summarized form in Table 2.1. Next, we will discuss the conﬁgurations and explain the table.
+• Local clients exist in the same application process as the rump kernel itself. They have full access to the rump kernel’s address space, and make requests via function calls directly into the rump kernel. Typically requests are done via established interfaces such as the rump kernel syscall interface, but there is nothing preventing the client from jumping to any routine inside the rump kernel. The beneﬁts of local clients include speed and compactness. Speed is due to a rump kernel request being essentially a function call. A null rump kernel
+
+43
+
+Type
+
+Request Policy Access Available Interface
+
+local
+
+client
+
+full all
+
+remote
+
+client
+
+limited system call
+
+microkernel host kernel
+
+limited depends on service
+
+Table 2.1: Comparison of client types. Local clients get full access to a rump kernel, but require explicit calls in the program code. Remote clients have standard system call access with security control and can use unmodiﬁed binaries. In microkernel mode, the rump kernel is run as a microkernel style system server with requests routed by the host kernel.
+
+system call is twice as fast as a native system call. Compactness results from the fact that there is only a single program and can make managing the whole easier. The drawback is that the single program must conﬁgure the kernel to a suitable state before the application can act. Examples of conﬁguration tasks include adding routing tables (the route utility) and mounting ﬁle systems (the mount utility). Since existing conﬁguration tools are built around the concept of executing diﬀerent conﬁguration steps as multiple invocations of the tool, adaptation of the conﬁguration code may not always be simple.
+Local clients do not have meaningful semantics for a host fork() call. This lack of semantics is because the rump kernel state would be duplicated and could result in for example two kernels accessing the same ﬁle system or having the same IP address.
+A typical example of a local client is an application which uses the rump kernel as a programming library e.g. to access a ﬁle system.
+• Remote clients use a rump kernel which resides elsewhere, either in a diﬀerent address space on the local host or on a remote one. The request routing policy is up to the client. The policy locus is an implementation decision, not a design decision, and alternative implementations can be considered [20] if it is important to have the request routing policy outside of the client.
+
+44
+Since the client and kernel are separated, kernel side access control is fully enforced — if the client and rump kernel are on the same host, we assume that the host enforces separation between the respective processes. This separation means that a remote client will not be able to access resources except where the rump kernel lets it, and neither will it be able to dictate the thread and process context in which requests are executed. The client not being able to access arbitrary kernel resources in turn means that real security models are possible, and that diﬀerent clients may have varying levels of privileges.
+By default, we provide support for remote clients which communicate with a rump kernel using host local domain sockets or TCP sockets. Using sockets is not the only option on general purpose operating systems, and for example the ptrace() facility can also be used to implement remote clients [16, 20]. Also, we know that the protocol can be implemented over various media in non-POSIX environments, e.g. over a hardware bus.
+Remote clients are not as performant as local clients due to IPC overhead. However, since multiple remote clients can run against a single rump kernel, they lead to more straightforward use of existing code and even that of unmodiﬁed binaries. Such binaries can be useful to conﬁgure and inspect a rump kernel (e.g. ifconfig). We discuss these binaries and their advantages further in Section 3.12 and Section 4.3.
+Remote clients, unlike local clients, have meaningful semantics for fork() since both the host kernel context and rump kernel contexts can be correctly preserved: the host fork() duplicates only the client and not the rump kernel. Of course, this statement applies only to hosts which support a fork() call.
+• Microkernel client requests are routed by the host kernel to a separate server which handles the requests using a driver in a rump kernel. While microkernel clients can be seen to be remote clients, the key diﬀerence to
+
+45
+remote clients is that the request routing policy is in the host kernel instead of in the client. Furthermore, the interface used to access the rump kernel is below the system call layer. We implemented microkernel callbacks for ﬁle systems (puﬀs [28]) and character /block device drivers (pud [43]). They use the NetBSD kernel VFS/vnode and cdev /bdev interfaces to access the rump kernel, respectively.
+It needs to be noted that rump kernels accepting multiple diﬀerent types of clients are possible. For example, remote clients can be used to conﬁgure a rump kernel, while the application logic still remains in the local client. The ability to use multiple types of clients on a single rump kernel makes it possible to reuse existing tools for the conﬁguration job and still reap the speed beneﬁt of a local client.
+Rump kernels used by remote or microkernel clients always include a local client as part of the process the rump kernel is hosted in. This local client is responsible for forwarding incoming requests to the rump kernel, and sending the results back after the request has been processed.
+2.3 Threads and Schedulers
+Next, we will discuss the theory and concepts related to processes, threads, CPUs, scheduling and interrupts in a rump kernel. An example scenario is presented after the theory in Section 2.3.4. This subject is revisited in Section 3.3 where we discuss it from a more concrete perspective along with the implementation.
+As stated earlier, a rump kernel uses the host’s thread and scheduling facilities. To understand why we still need to discuss this topic, let us ﬁrst consider what a thread represents to an operating system. First, a thread represents machine execution
+
+46
+context, such as the program counter, other registers and the virtual memory address space. We call this machine context the hard context. It determines how machine instructions will be executed when a thread is running on a CPU and what their eﬀects will be. The hard context is determined by the platform that the thread runs on. Second, a thread represents all auxiliary data required by the operating system. We call this auxiliary data the soft context. It comprises for example of information determining which process a thread belongs to, and e.g. therefore what credentials and ﬁle descriptors it has. The soft context is determined by the operating system.
+To further illustrate, we go over a simpliﬁed version of what happens on NetBSD when an application process creates a thread:
+1. The application calls pthread_create() and passes in the necessary parameters, including the address of the new thread’s start routine.
+2. The pthread library does the necessary initialization, including stack allocation. It creates a hard context by calling _lwp_makecontext() and passing the start routine’s address as an argument. The pthread library then invokes the _lwp_create() system call.
+3. The host kernel creates the kernel soft context for the new thread and the thread is put into the run queue.
+4. The newly created thread will be scheduled and begin execution at some point in the future.
+A rump kernel uses host threads for the hard context. Local client threads which call a rump kernel are created as described above. Since host thread creation does not involve the rump kernel, a host thread does not get an associated rump kernel thread soft context upon creation.
+
+47
+Nonetheless, a unique rump kernel soft context must exist for each thread executing within the rump kernel because the code we wish to run relies on it. For example, code dealing with ﬁle descriptors accesses the relevant data structure by dereferencing curlwp->l_fd 1. The soft context determines the value of curlwp.
+We must solve the lack of a rump kernel soft context resulting from the use of host threads. Whenever a host thread makes a function call into the rump kernel, an entry point wrapper must be called. Conversely, when the rump kernel routine returns to the client, an exit point wrapper is called. These calls are done automatically for oﬃcial interfaces, and must be done manually in other cases — compare Figure 2.2 and Figure 2.3 and see that the latter includes calls to rump_schedule() and rump_unschedule(). The wrappers check the host’s thread local storage (TLS) to see if there is a rump kernel soft context associated with the host thread. The soft context may either be set or not set. We discuss both cases in the following paragraphs.
+1. implicit threads: the soft context is not set in TLS. A soft context will be created dynamically and is called an implicit thread. Conversely, the implicit thread will be released at the exit point. Implicit threads are always attached to the same rump kernel process context, so callers performing multiple calls, e.g. opening a ﬁle and reading from the resulting ﬁle descriptor, will see expected results. The rump kernel thread context will be diﬀerent as the previous one no longer exists when the next call is made. A diﬀerent context does not matter, as the kernel thread context is not exposed to userspace through any portable interfaces — that would not make sense for systems which implement a threading model where userspace threads are multiplexed on top of kernel provided threads [2].
+1 curlwp is not variable in the C language sense. It is a platform-speciﬁc macro which produces a pointer to the currently executing thread’s kernel soft context. Furthermore, since ﬁle descriptors are a process concept instead of a thread concept, it would be more logical to access them via curlwp->l_proc->p_fd. This commonly referenced pointer is cached directly in the thread structure as an optimization to avoid indirection.
+
+48
+2. bound threads: the soft context is set in TLS. The rump kernel soft context in the host thread’s TLS can be set, changed and disbanded using interfaces further described in the manual page rump lwproc.3. We call a thread with the rump kernel soft context set a bound thread. All calls to the rump kernel made from a host thread with a bound thread will be executed with the same rump kernel soft context.
+The soft context is always set by a local client. Microkernel and remote clients are not able to directly inﬂuence their rump kernel thread and process context. Their rump kernel context is set by the local client which receives the request and makes the local call into the rump kernel.
+Discussion
+There are alternative approaches to implicit threads. It would be possible to require all local host threads to register with the rump kernel before making calls. The registration would create essentially a bound thread. There are two reasons why this approach was not chosen. First, it increases the inconvenience factor for casual users, e.g. in kernel testing use cases, as now a separate call per host thread is needed. Second, some mechanism like implicit threads must be implemented anyway: allocating a rump kernel thread context requires a rump kernel context for example to be able to allocate memory for the data structures. Our implicit thread implementation doubles as a bootstrap context.
+Implicit contexts are created dynamically because because any preconﬁgured reasonable amount of contexts risks application deadlock. For example, n implicit threads can be waiting inside the rump kernel for an event which is supposed to be delivered by the n + 1’th implicit thread, but only n implicit threads were precreated. Creating an amount which will never be reached (e.g. 10,000) may avoid deadlock,
+
+49
+but is wasteful. Additionally, we assume all users aiming for high performance will use bound threads.
+Notably, in some rump kernel use cases where rump kernel and host threads are always 1:1-mapped, such as with the Rumprun unikernel, all threads are established as bound threads transparently to the applications. However, the implicit thread mechanism is still used to bootstrap the contexts for those threads.
+2.3.1 Kernel threads
+Up until now, we have discussed the rump kernel context of threads which are created by the client, e.g. by calling pthread_create() on a POSIX host. In addition, kernel threads exist. The creation of a kernel thread is initiated by the kernel and the entry point lies within the kernel. Therefore, a kernel thread always executes within the kernel except when it makes a hypercall. Kernel threads are associated with process 0 (struct proc0). An example of a kernel thread is the workqueue worker thread, which the workqueue kernel subsystem uses to schedule and execute asynchronous work units.
+On a regular system, both an application process thread and a kernel thread have their hard context created by the kernel. As we mentioned before, a rump kernel cannot create a hard context. Therefore, whenever kernel thread creation is requested, the rump kernel creates the soft context and uses a hypercall to request the hard context from the host. The entry point given to the hypercall is a bouncer routine inside the rump kernel. The bouncer ﬁrst associates the kernel thread’s soft context with the newly created host thread and then proceeds to call the thread’s actual entry point.
+
+50
+2.3.2 A CPU for a Thread
+First, let us use broad terms to describe how scheduling works in regular virtualized setup. The hypervisor has an idle CPU it wants to schedule work onto and it schedules a guest system. While the guest system is running, the guest system decides which guest threads to run and when to run them using the guest system’s scheduler. This means that there are two layers of schedulers involved in scheduling a guest thread.
+We also point out that a guest CPU can be a purely virtual entity, e.g. the guest may support multiplexing a number of virtual CPUs on top of one host CPU. Similarly, the rump kernel may be conﬁgured to provide any number of CPUs that the guest OS supports regardless of the number of CPUs present on the host. The default for a rump kernel is to provide the same number of virtual CPUs as the number of physical CPUs on the host. Then, a rump kernel can fully utilize all the host’s CPUs, but will not waste resources on virtual CPUs where the host cannot schedule threads for them in parallel.
+As a second primer for the coming discussion, we will review CPU-local algorithms. CPU-local algorithms are used avoid slow cross-CPU locking and hardware cache invalidation. Consider a pool-style resource allocator (e.g. memory): accessing a global pool is avoided as far as possible because of the aforementioned reasons of locking and cache. Instead, a CPU-local allocation cache for the pools is kept. Since the local cache is tied to the CPU, and since there can be only one thread executing on one CPU at a time, there is no need for locking other than disabling thread preemption in the kernel while the local cache is being accessed. Figure 2.5 gives an illustrative example.
+The host thread doubles as the guest thread in a rump kernel and the host schedules guest threads. The guest CPU is left out of the relationship. The one-to-one
+
+51
+void * pool_cache_get_paddr(pool_cache_t pc) {
+pool_cache_cpu_t *cc;
+cc = pc->pc_cpus[curcpu()->ci_index]; pcg = cc->cc_current; if (__predict_true(pcg->pcg_avail > 0)) {
+/* fastpath */ object = pcg->pcg_objects[--pcg->pcg_avail].pcgo_va; return object; } else { return pool_cache_get_slow(); } }
+Figure 2.5: Use of curcpu() in the pool allocator simpliﬁed as pseudocode from sys/kern/subr_pool.c. An array of CPU-local caches is indexed by the current CPU’s number to obtain a pointer to the CPU-local data structure. Lockless allocation from this cache is attempted before reaching into the global pool.
+relationship between the guest CPU and the guest thread must exist because CPUlocal algorithms rely on that invariant. If we remove the restriction of each rump kernel CPU running at most one thread at a time, code written against CPU-local algorithms will cause data structure corruption. Therefore, it is necessary to uphold the invariant that a CPU has at most one thread executing on it at a time.
+Since selection of the guest thread is handled by the host, we select the guest CPU instead. The rump kernel virtual CPU is assigned for the thread that was selected by the host, or more precisely that thread’s rump kernel soft context. Simpliﬁed, scheduling in a rump kernel can be considered picking a CPU data structure oﬀ of a freelist when a thread enters the rump kernel and returning the CPU to the freelist once a thread exits the rump kernel. A performant implementation is more delicate due to multiprocessor eﬃciency concerns. One is discussed in more detail along with the rest of the implementation in Section 3.3.1.
+
+52
+Scheduling a CPU and releasing it are handled at the rump kernel entrypoint and exitpoint, respectively. The BPF example with VFS (Figure 2.2) relies on rump kernel interfaces handling scheduling automatically for the clients. The BPF example which calls kernel interfaces directly (Figure 2.3) schedules a CPU before it calls a routine inside the rump kernel.
+2.3.3 Interrupts and Preemption
+An interrupt is an asynchronously occurring event which preempts the current thread and proceeds to execute a compact handler for the event before returning control back to the original thread. The interrupt mechanism allows the OS to quickly acknowledge especially hardware events and schedule the required actions for a suitable time (which may be immediately). Taking an interrupt is tied to the concept of being able to temporarily replace the currently executing thread with the interrupt handler. Kernel thread preemption is a related concept in that code currently executing in the kernel can be removed from the CPU and a higher priority thread selected instead.
+The rump kernel uses a cooperative scheduling model where the currently executing thread runs to completion. There is no virtual CPU preemption, neither by interrupts nor by the scheduler. A thread holds on to the rump kernel virtual CPU until it either makes a blocking hypercall or returns from the request handler. A host thread executing inside the rump kernel may be preempted by the host. Preemption will leave the virtual CPU busy until the host reschedules the preempted thread and the thread runs to completion in the rump kernel.
+What would be delivered by a preempting interrupt in the monolithic kernel is always delivered via a schedulable thread in a rump kernel. In the event that later use cases present a strong desire for fast interrupt delivery and preemption, the
+
+53
+author’s suggestion is to create dedicated virtual rump CPUs for interrupts and real-time threads and map them to high-priority host threads. Doing so avoids interaction with the host threads via signal handlers (or similar mechanisms on other non-POSIX host architectures). It is also in compliance with the paradigm that the host handles all scheduling in a rump kernel.
+2.3.4 An Example
+We present a clarifying example. Let us assume two host threads, A and B, which both act as local clients. The host schedules thread A ﬁrst. It makes a call into the rump kernel requesting a bound thread. First, the soft context for an implicit thread is created and a CPU is scheduled. The implicit thread soft context is used to create the soft context of the bound thread. The bound thread soft context is assigned to thread A and the call returns after free’ing the implicit thread and releasing the CPU. Now, thread A calls the rump kernel to access a driver. Since it has a bound thread context, only CPU scheduling is done. Thread A is running in the rump kernel and it locks mutex M. Now, the host scheduler decides to schedule thread B on the host CPU instead. There are two possible scenarios:
+1. The rump kernel is a uniprocessor kernel and thread B will be blocked. This is because thread A is still scheduled onto the only rump kernel CPU. Since there is no preemption for the rump kernel context, B will be blocked until A runs and releases the rump kernel CPU. Notably, it makes no diﬀerence if thread B is an interrupt thread or not — the CPU will not be available until thread A releases it.
+2. The rump kernel is a multiprocessor kernel and there is a chance that other rump kernel CPUs may be available for thread B to be scheduled on. In this case B can run.
+
+54
+We assume that B can run immediately. Thread B uses implicit threads, and therefore upon entering the rump kernel an implicit thread soft context gets created and assigned to thread B, along with a rump kernel CPU.
+After having received a rump kernel CPU and thread context, thread B wants to lock mutex M. M is held, and thread B will have to block and await M’s release. Thread B will release the rump kernel CPU and sleep until A unlocks the mutex. After the mutex is unlocked, the host marks thread B as runnable and after B wakes up, it will attempt to schedule a rump kernel CPU and after that attempt to lock mutex M and continue execution. When B is done with the rump kernel call, it will return back to the application. Before doing so, the CPU will be released and the implicit thread context will be free’d.
+Note that for thread A and thread B to run in parallel, both the host and the rump kernel must have multiprocessor capability. If the host is uniprocessor but the rump kernel is conﬁgured with multiple virtual CPUs, the threads can execute inside the rump kernel concurrently. In case the rump kernel is conﬁgured with only one CPU, the threads will execute within the rump kernel sequentially irrespective of if the host has one or more CPUs available for the rump kernel.
+2.4 Virtual Memory
+Virtual memory address space management in a rump kernel (if any!) is relegated to the host, because requiring support in a rump kernel would impose restrictions on the platform and host. For example, emulating page faults and memory protection in a usermode OS exhibits over tenfold performance penalty and can be signiﬁcant in other, though not all, hypervisors [3]. Virtual memory support was not seen worth the increased implementation complexity and potentially reduced performance.
+
+55
+Figure 2.6: Providing memory mapping support on top of a rump kernel. The ﬁle is mapped into the client’s address space by the host kernel. When non-resident pages in the mapped range are accessed by the client, a page fault is generated and the rump kernel is invoked via the host kernel’s ﬁle system code to supply the desired data.
+The implication of a rump kernel not implementing full memory protection is that it does not support accessing resources via page faults. There is no support in a rump kernel for memory mapping a ﬁle to a client. Supporting page faults inside a rump kernel would not work for remote clients anyway, since the page faults need to be trapped on the client machine.
+However, it is possible to provide memory mapping support on top of rump kernels. In fact, when running ﬁle systems as microkernel servers, the puﬀs [28] userspace ﬁle system framework and the host kernel provide memory mapping support for the microkernel client. The page fault is resolved in the host kernel, and the I/O request for paging in the necessary data sent to the rump kernel. After the rump kernel has satisﬁed the request and responded via puﬀs, the host kernel unblocks the process that caused the page fault (Figure 2.6). If a desirable use case is found, distributed shared memory [40] can be investigated for memory mapping support in remote clients.
+
+56
+Another implication of the lack of memory protection is that a local client can freely access the memory in a rump kernel. Consider the BPF example which accesses the kernel directly (Figure 2.3). Not only does the local client call kernel routines, it also examines the contents of a kernel data structure.
+2.5 Distributed Services with Remote Clients
+As mentioned in our client taxonomy in Section 2.2, remote clients use services from a rump kernel hosted either on the same host in another process or on a remote host. We describe the general concept here and provide implementation details later in Section 3.12.
+It is known to be possible to build a Unix system call emulation library on top of a distributed system [41]. We go further: while we provide the Unix interface to applications, we also use existing Unix kernel code at the server side.
+Running a client and the rump kernel on separate hosts is possible because on a fundamental level Unix already works like a distributed system: the kernel and user processes live in diﬀerent address spaces and information is explicitly moved across this boundary by the kernel. Copying data across the boundary simpliﬁes the kernel, since data handled by the kernel can always be assumed to be resident and non-changing. Explicit copy requests in the kernel code make it possible to support remote clients by implementing only a request transport layer. System calls become RPC requests from the client to the kernel and routines which copy data between arbitrary address spaces become RPC requests from the kernel to the client.
+When a remote client connects to a rump kernel, it gets assigned a rump kernel process context with appropriate credentials. After the handshake is complete, the remote client can issue service requests via the standard system call interface. First,
+
+57
+the client calls a local stub routine, which marshals the request. The stub then sends the request to the server and blocks the caller. After the rump kernel server has processed the request and responded, the response is decoded and the client is unblocked. When the connection between a rump kernel and a remote client is severed, the rump kernel treats the client process as terminated.
+The straightforward use of existing data structures has its limitations: the system the client is hosted on must share the same ABI with the system hosting the rump kernel. Extending support for systems which are not ABI-compatible is beyond the scope of our work. However, working remote client support shows that it is possible to build distributed systems out of a Unix codebase without the need for a new design and codebase such as Plan 9 [46].
+2.6 Summary
+Rump kernels provide lightweight driver stacks which can run on practically any platform. To be as lightweight and portable as possible, rump kernels rely on two features: relegating support functionality to the host and an anykernel codebase where diﬀerent units of the kernel (e.g. networking and ﬁle systems) are disjoint enough to be usable in conﬁgurations where all parties are not present.
+Rump kernels support three types of clients: local, microkernel and remote. Each client type has its unique properties and varies for example in access rights to a rump kernel, the mechanism for making requests, and performance characteristics. Remote clients are able to access a rump kernel over the Internet and other media.
+For drivers to function, a rump kernel must possess runtime context information. This information consists of the process/thread context and a unique rump kernel CPU that each thread is associated with. A rump kernel does not assume virtual
+
+58
+memory, and does not provide support for page faults or memory protection. Virtual memory protection and page faults, where necessary, are always left to be performed by the host of the rump kernel client.
+
+59
+3 Implementation: Anykernel and Rump Kernels
+The previous chapter discussed the concept of an anykernel and rump kernels. This chapter describes the code level modiﬁcations that were necessary for a production quality implementation on NetBSD. The terminology used in this chapter is mainly that of NetBSD, but the concepts apply to other similar operating systems as well.
+In this chapter we reduce the number of variables in the discussion by limiting our examination to rump kernels and their clients running on a NetBSD host. See the next chapter (Chapter 4) for discussion on rump kernels and their clients running on hosts beyond NetBSD userspace.
+3.1 Kernel Partitioning
+As mentioned in Section 2.1.2, to maximize the lightweight nature of rump kernels, the kernel code was several logical layers: a base, three factions (dev, net and vfs) and drivers. The factions are orthogonal, meaning they do not depend on each other. Furthermore, the base does not depend on any other part of the kernel. The modiﬁcations we made to reach this goal of independence are described in this section.
+As background, it is necessary to recall how the NetBSD kernel is linked. In C linkage, symbols which are unresolved at compile-time must be satisﬁed at binary linktime. For example, if a routine in file1.c wants to call myfunc() and myfunc() is not present in any of the object ﬁles or libraries being linked into a binary, the linker ﬂags an error. A monolithic kernel works in a similar fashion: all symbols must be resolved when the kernel is linked. For example, if an object ﬁle with an unresolved symbol to the kernel’s pathname lookup routine namei() is included,
+
+60
+then either the symbol namei must be provided by another object ﬁle being linked, or the calling source module must be adjusted to avoid the call. Both approaches are useful for us and the choice depends on the context.
+We identiﬁed three obstacles for having a partitioned kernel:
+1. Compile-time deﬁnitions (#ifdef) indicating which features are present in the kernel. Compile-time deﬁnitions are ﬁne within a component, but do not work between components if linkage dependencies are created (for example a cross-component call which is conditionally included in the compilation).
+2. Direct references between components where we do not allow them. An example is a reference from the base to a faction.
+3. Multiclass source modules contain code which logically belongs in several components. For example, if the same ﬁle contains routines related to both ﬁle systems and networking, it belongs in this problem category.
+Since our goal is to change the original monolithic kernel and its characteristics as little as possible, we wanted to avoid heavy approaches in addressing the above problems. These approaches include but are not limited to converting interfaces to be called only via pointer indirection. Instead, we observed that indirect interfaces were already used on most boundaries (e.g. struct fileops, struct protosw, etc.) and we could concentrate on the exceptions. Code was divided into functionality groups using source modules as boundaries.
+The two techniques we used to address problems are as follows:
+1. code moving. This solved cases where a source module belonged to several classes. Part of the code was moved to another module. This technique had
+
+61
+to be used sparingly since it is very intrusive toward other developers who have outstanding changes in their local trees. However, we preferred moving over splitting a ﬁle into several portions using #ifdef, as the ﬁnal result is clearer to anyone looking at the source tree. In some cases code, moving had positive eﬀects beyond rump kernels. One such example was splitting up sys/kern/init_sysctl.c, which had evolved to include sysctl handlers for many diﬀerent pieces of functionality. For example, it contained the routines necessary to retrieve a process listing. Moving the process listing routines to the source ﬁle dealing with process management (sys/kern/kern_proc.c) not only solved problems with references to factions, but also grouped related code and made it easier to locate.
+2. function pointers. Converting direct references to calls via function pointers removes link-time restrictions. A function pointer gets a default value at compile time. Usually this value is a stub indicating the requested feature is not present. At runtime the pointer may be adjusted to point to an actual implementation of the feature if it is present.
+Previously, we also used weak symbol aliases sparingly to provide stub implementations which were overridden by the linker if the component providing the actual implementation was linked. Weak aliases were found to be problematic with dynamically linked libraries on some userspace platforms, e.g. Linux with glibc. In lazy binding, a function is resolved by the dynamic linker only when the function is ﬁrst called, so as to avoid long program startup times due to resolving symbols which are never used at runtime. As a side-eﬀect, lazy binding theoretically allows dlopen()’ing libraries which override weak aliases as long as the libraries are loaded before the overridden functions are ﬁrst called. Namely, in the case of rump kernels, loading must take place before rump_init() is called. However, some dynamic linkers treat libraries loaded with dlopen() diﬀerent from ones loaded when the binary is executed. For example, the aforementioned glibc dynamic linker overrides
+
+62
+weak aliases with symbols from dlopen()’d libraries only if the environment variable LD_DYNAMIC_WEAK is set. With some other dynamic linkers, overriding weak symbols is not possible at all. Part of the power of rump kernels is the ability to provide a single binary which dynamically loads the necessary components at runtime depending on the conﬁguration or command line parameters. Therefore, to ensure that rump kernels work the same on all userspace platforms, we took the extra steps necessary to remove uses of weak aliases and replace them with the above-mentioned two techniques.
+To illustrate the problems and our necessary techniques, we discuss the modiﬁcations to the ﬁle sys/kern/kern_module.c. The source module in question provides support for loadable kernel modules (discussed further in Section 3.8.1). Originally, the ﬁle contained routines both for loading kernel modules from the ﬁle system and for keeping track of them. Having both in one module was a valid possibility before the anykernel faction model. In the anykernel model, loading modules from a ﬁle system is VFS functionality, while keeping track of the modules is base functionality.
+To make the code comply with the anykernel model, we used the code moving technique to move all code related to ﬁle system access to its own source ﬁle in kern_module_vfs.c. Since loading from a ﬁle system must still be initiated by the kernel module management routines, we introduced a function pointer interface. By default, it is initialized to a stub:
+int (*module_load_vfs_vec)(const char *, int, bool, module_t *, prop_dictionary_t *) = (void *)eopnotsupp;
+If VFS is present, the routine module_load_vfs_init() is called during VFS subsystem init after the vfs_mountroot() routine has successfully completed to set the value of the function pointer to module_load_vfs(). In addition to avoiding a
+
+63
+direct reference from the base to a faction in rump kernels, this pointer has another beneﬁt: during bootstrap it protects the kernel from accidentally trying to load kernel modules from the ﬁle system before the root ﬁle system has been mounted 2.
+3.1.1 Extracting and Implementing
+We have two methods for providing functionality in the rump kernel: we can extract it out of the kernel sources, meaning we use the source ﬁle as such, or we can implement it, meaning that we do an implementation suitable for use in a rump kernel. We work on a source ﬁle granularity level, which means that either all of an existing source ﬁle is extracted, or the necessary routines from it (which may be all of them) are implemented. Implemented source ﬁles are placed under sys/rump, while extracted ones are picked up by Makeﬁles from other subdirectories under sys/.
+The goal is to extract as much as possible for the features we desire, as to minimize implementation and maintenance eﬀort and to maximize the semantic correctness of the used code. Broadly speaking, there are three cases where extraction is not possible.
+1. code that does not exist in the regular kernel: this means drivers speciﬁc to rump kernels. Examples include anything using rump hypercalls, such as the virtual block device driver.
+2. code dealing with concepts not supported in rump kernels. An example is the virtual memory fault handler: when it is necessary to call a routine which in a regular kernel is invoked from the fault hander, it must be done from implemented code.
+2sys/kern/vfs_subr.c rev 1.401
+
+64
+It should be noted, though, that not all VM code should automatically be disqualiﬁed from extraction. For instance, VM readahead code is an algorithm which does not have anything per se to do with virtual memory, and we have extracted it from sys/uvm/uvm_readahead.c.
+3. bypassed layers such as scheduling. They need diﬀerent handling.
+In some cases a source module contained code which was desirable to be extracted, but it was not possible to use the whole source module because others parts were not suitable for extraction. Here we applied the code moving technique. As an example, we once again look at the code dealing with processes (kern_proc.c). The source module contained mostly process data structure management routines, e.g. the routine for mapping a process ID number (pid_t) to the structure describing it (struct proc *). We were interested in being able to extract this code. However, the same ﬁle also contained the deﬁnition of the lwp0 variable. Since that deﬁnition included references to the scheduler (“concept not supported in a rump kernel”), we could not extract the ﬁle as such. However, after moving the deﬁnition of lwp0 to kern_lwp.c, where it arguably belongs, kern_proc.c could be extracted.
+3.1.2 Providing Components
+We provide components as libraries. The kernel base library is called librump and the hypervisor library is called librumpuser. The factions are installed with the names librumpdev, librumpnet and librumpvfs for dev, net and vfs, respectively. The driver components are named with the pattern librump<faction>_driver, e.g. librumpfs_nfs (NFS client driver). The faction part of the name is an indication of what type of driver is in question, but it does not convey deﬁnitive information on what the driver’s dependencies are. For example, consider the NFS client: while it is a ﬁle system driver, it also depends on networking.
+
+65
+
+runtime (s)
+
+2
+
+1.8
+
+1.6
+
+1.4
+
+1.2
+
+1
+
+0.8
+
+0.6
+
+0.4
+
+0.2
+
+0
+
+none
+
+hv
+
+base base+hv
+
+Figure 3.1: Performance of position independent code (PIC). A regular kernel is compiled as non-PIC code. This compilation mode is eﬀectively the same as “none” in the graph. If the hypervisor and rump kernel base use PIC code, the execution time increases as is expected. In other words, rump kernels allow to make a decision on the tradeoﬀ between execution speed and memory use.
+
+Two types of libraries are available: static and dynamic. Static libraries are linked by the toolchain into the binary, while dynamic binaries are linked at runtime. Commonly, dynamic linking is used with shared libraries compiled as position independent code (PIC), so as to allow one copy of a library to be resident in memory and be mapped into an arbitrary number of programs. Rump kernels support both types of libraries, but it needs to be noted that dynamic linking depends on the host supporting that runtime feature. It also need to be noted that while shared libraries save memory in case they are needed more than once, they have inherently worse performance due to indirection [21]. Figure 3.1 illustrates that performance penalty by measuring the time it takes to create and disband 300k threads in a rump kernel. As can be deduced from the combinations, shared and static libraries can be mixed in a single rump kernel instance so as to further optimize the behavior with the memory/CPU tradeoﬀ.
+
+66
+3.2 Running the Kernel in an Hosted Environment
+Software always runs on top of an entity which provides the interfaces necessary for the software to run. A typical operating system kernel runs on top of hardware and uses the hardware’s “interfaces” to fulﬁll its needs. When running on top a hardware emulator the emulator provides the same hardware interfaces. In a paravirtualized setup the hypervisor provides the necessary interfaces. In a usermode OS setup, the application environment of the hosting OS makes up the hypervisor. In this section we discuss details related to hosting a rump kernel in any environment. We use POSIX userspace as the case for the bulk of the discussion, since that host induces the superset of issues related to hosting rump kernels.
+3.2.1 C Symbol Namespaces
+In the regular case, the kernel and userspace C namespaces are disjoint. Both the kernel and application can contain the same symbol name, for example printf, without a collision occurring. When we run the kernel in a process container, we must take care to preserve this property. Calls to printf made by the client still need to go to libc, while calls to printf made by the rump kernel need to be handled by the in-kernel implementation.
+Single address space operating systems provide a solution [12], but require a different calling convention. On the other hand, C preprocessor macros were used by OSKit [18] to rename conﬂicting symbols and allow multiple diﬀerent namespaces to be linked together. UML [16] uses a variant of the same technique and renames colliding symbols using a set of preprocessor macros in the kernel build Makeﬁle, e.g. -Dsigprocmask=kernel_sigprocmask. This manual renaming approach is inadequate for a rump kernel; unlike a usermode OS kernel which is an executable application, a rump kernel is a library which is compiled, shipped, and may be linked
+
+67
+
+namespace: rump
+
+implicit
+
+rump_sys()
+
+rump_func()
+
+explicit
+
+application_func() namespace: std
+
+Figure 3.2: C namespace protection. When referencing a rump kernel symbol from outside of the rump kernel, the preﬁx must be explicitly included in the code. All references from inside the rump kernel implicitly contain the preﬁx due to bulk symbol renaming. Corollary: it is not possible to access a symbol outside the rump kernel namespace from inside the rump kernel without using a hypercall.
+
+with any other libraries afterwards. This set of libraries is not available at compile time and therefore we cannot know which symbols will cause conﬂicts at link time. Therefore, the only option is to assume that any symbol may cause a conﬂict.
+We address the issue by protecting all symbols within the rump kernel. The objcopy utility’s rename functionality is used ensure that all symbols within the rump kernel have a preﬁx starting with “rump” or “RUMP”. Symbol names which do not begin with “rump” or “RUMP” are renamed to contain the preﬁx “rumpns ”. After renaming, the kernel printf symbol will be seen as rumpns_printf by the linker. Preﬁxes are illustrated in Figure 3.2: callers outside of a rump kernel must include the preﬁx explicitly, while the preﬁx for routines inside a rump kernel is implicit since it is automatically added by objcopy. Table 3.1 illustrates further by providing examples of the outcome of renaming.
+However, renaming all symbols also creates a problem. Not all symbols in a kernel object ﬁle come from kernel source code. Some symbols are a property of the toolchain. An example is _GLOBAL_OFFSET_TABLE_, which is used by position independent code to store the oﬀsets. Renaming toolchain-generated symbols causes failures, since the toolchain expects to ﬁnd symbols where it left them.
+
+68
+
+rump kernel object original symbol name symbol after renaming
+
+yes
+
+rump_sys_call
+
+rump_sys_call
+
+yes
+
+printf
+
+rumpns_printf
+
+no
+
+rump_sys_call
+
+rump_sys_call
+
+no
+
+printf
+
+printf
+
+Table 3.1: Symbol renaming illustrated. Objects belonging to a rump kernel have their exported symbols and symbol dereferences renamed, if necessary, so that they are inside the rump kernel namespace. Objects which do not belong to a rump kernel are not aﬀected.
+
+We observed that almost all of the GNU toolchain’s symbols are in the doubleunderscore namespace “ ”, whereas the NetBSD kernel exported under 10 symbols in that namespace. The decision was to rename existing kernel symbols in the double underscore namespace to a single underscore namespace and exclude the double underscore namespace from the rename. There were two exceptions to the double underscore rule which had to be excluded from the rename as well: _GLOBAL_OFFSET_TABLE_ and architecture speciﬁc ones. We handle the architecture speciﬁc ones with a quirk table. There is one quirk each for PA-RISC, MIPS, and PowerPC64. For example, the MIPS toolchain generates the symbol _gp_disp, which needs to be excluded from the renaming. Experience of over 5 years shows that once support for an architecture is added, no maintenance is required.
+We conclude mass renaming symbols is a practical and feasible solution for the symbol collision problem which, unlike manual renaming, does not require knowledge of the set of symbols that the application namespace exports.
+
+69
+3.2.2 Privileged Instructions
+Kernel code dealing with for example the MMU may execute CPU instructions which are available only in privileged mode. Executing privileged instructions while in non-privileged mode should cause a trap and the host OS or VMM to take control. Typically, this trap will result in process termination.
+Virtualization and CPU emulation technologies solve the problem by not executing privileged instructions on the host CPU in unprivileged mode. For example, paravirtualized Xen [3] uses hypercalls, User Mode Linux [16] does not use privileged instructions in the usermode machine dependent code, QEMU [5] handles such instructions in the machine emulator, and CPU virtualization extensions trap the handling of those instructions to the hypervisor.
+In practice kernel drivers do not use privileged instructions because they are found only in the architecture speciﬁc parts of the kernel. Therefore, we can solve the problem by deﬁning that it does not exist in our model — if there are any it is a failure in modifying the OS to support rump kernels.
+3.2.3 The Hypercall Interface(s)
+The hypercall interfaces allow a rump kernel to access host platform resources and integrate with the host. For example, page level memory allocation and the blocking and running of threads is accomplished via the hypercall interface. Essentially, the hypercall interface represents the minimal interface for running kernel drivers. As we shall see later in Section 4.2, transitively the hypercall interface is also the minimal interface for running POSIX applications. Notably, the Embassies project [25] investigated a minimal execution interface for applications, and ended up with a similar interface, thereby increasing our conﬁdence in our result being correct.
+
+70
+Historically, all hypercalls were globally implemented by a single library. This was found to be inﬂexible for I/O devices for two reasons:
+• Diﬀerent I/O devices have diﬀerent requirements. Imagine the hypercalls for a network interface necessary to send and receive packets. If you imagined a PCI network interface card, the necessary hypercalls are completely diﬀerent from if you imagined /dev/tap or netmap [50]. With a growing number of diﬀerent I/O devices being supported, codifying the diﬀerent requirements under a compact, fast and understandable interface was not seen to be reasonably possible.
+• Not all platforms require all I/O devices to be supported. Globally pooling all hypercalls together obfuscates what is the minimal required set of hypercall functionality to run rump kernel on a given platform with a given set of I/O devices.
+Therefore, there are now two types of hypercalls: main hypercalls, which are always required by every rump kernel, and I/O hypercalls, which allow given types of I/O drivers to operate. The main hypercall interface is a single, stable and versioned interface. The I/O hypercalls are private to the I/O bus or the I/O driver, and an implementation is required only if the component using the hypercall is linked into the rump kernel. The versioning of I/O hypercalls and changes to them are up to individual drivers, and for example over the course of optimizing networking packet processing performance, we made several tweaks to the hypercalls used by the virtual packet I/O drivers (Section 3.9.1). These changes provided for example the ability to deliver packets in bursts and zero-copy processing. For the remainder of this section we will describe the main hypercall interface.
+
+71
+Main hypercalls
+For the historical reason of rump kernels initially running in userspace, the hypercall interface is called rumpuser ; for example rumphyper would be a more descriptive name, but changing it now brings unnecessary hassle. The version of the hypercall revision we describe here is 17. In reality, version 17 means the second stable rendition of the interface, as during initial development the interface was changed frequently and the version was bumped often. The canonical implementation for the interface is the POSIX platform implementation, currently found from lib/librumpuser in the NetBSD tree. Implementations for other platforms are found from http://repo.rumpkernel.org/, and also from 3rd parties.
+As an example of a hypercall, we consider allocating memory from the host. A hypercall is the only way that a rump kernel can allocate memory at runtime. Notably, though, in the fastpath case the hypercall is used to allocate page-sized chunks of memory, which are then dosed out by the pool and slab allocators in the rump kernel. The signature of the memory allocation hypercall is the following:
+int rumpuser_malloc(size_t howmuch, int alignment, void **retp);
+If a hypercall can fail, its return type is int, and it returns 0 for success or an error code. If a hypercall cannot fail, it is of type void. If successful, the memory allocation hypercall will have allocated howmuch bytes of memory and returns a pointer to that memory in retp. The pointer is guaranteed to be aligned to alignment bytes. For example on POSIX the implementation of this interface is a call to posix_memalign() or equivalent.
+The header ﬁle sys/rump/include/rump/rumpuser.h deﬁnes the hypercall interface. All hypercalls by convention begin with the string “rumpuser”. This naming
+
+72 convention prevents hypercall interface references in the rump kernel from falling under the jurisdiction of symbol renaming and hence the hypercalls are accessible from the rump kernel.
+The hypercalls required to run rump kernels can be categorized into the following groups:
+• initialization: bootstrap the hypercall layer and check that the rump kernel hypercall version matches a version supported by the hypercall implementation. This interface is called as the ﬁrst thing when a rump kernel initializes.
+• memory management: allocate aligned memory, free • thread management: create and join threads, TLS access • synchronization routines: mutex, read/write lock, condition variable. • time management: get clock value, suspend execution of calling thread for
+the speciﬁed duration • exit: terminate the platform. Notably, in some cases it is not possible to
+implement this fully, e.g. on bare metal platforms without software power control. In that case, a best eﬀort approximation should be provided.
+There are also a number of optional hypercalls, which are not strictly speaking required in all cases, but are nevertheless part of core functionality:
+• errno handling: If system calls are to be made, the hypervisor must be able to set a host thread-speciﬁc errno so that the client can read it. Note: errno handling is unnecessary if the clients do not use the rump system call API.
+
+73
+• putchar: output character onto console. Being able to print console output is helpful for debugging purposes.
+• printf : a printf-like call. see discussion below.
+The Beneﬁt of a printf-like Hypercall
+The rumpuser_dprintf() call has the same calling convention as the NetBSD kernel printf() routine. It is used to write debug output onto the console, or elsewhere if the implementation so chooses. While the kernel printf() routine can be used to produce debug output via rumpuser_putchar(), the kernel printf routine inkernel locks to synchronize with other in-kernel consumers of the same interface. These locking operations may cause the rump kernel virtual CPU context to be relinquished, which in turn may cause inaccuracies in debug prints especially when hunting racy bugs. Since the hypercall runs outside of the kernel, and will not unschedule the current rump kernel virtual CPU, we found that debugging information produced by it is much more accurate. Additionally, a hypercall can be executed without a rump kernel context. This property was invaluable when working on the low levels of the rump kernel itself, such as thread management and CPU scheduling.
+3.3 Rump Kernel Entry and Exit
+As we discussed in Chapter 2, a client must possess an execution context before it can successfully operate in a rump kernel. These resources consist of a rump kernel process/thread context and a virtual CPU context. The act of ensuring that these resources have been created and selected is presented as pseudocode in Figure 3.3 and available as real code in sys/rump/librump/rumpkern/scheduler.c. We will discuss obtaining the thread context ﬁrst.
+
+74
+Recall from Section 2.3 that there are two types of thread contexts: an implicit one which is dynamically created when a rump kernel is entered and a bound one which the client thread has statically set. We assume that all clients which are critical about their performance use bound threads.
+The entry point rump_schedule()3 starts by checking if the host thread has a bound rump kernel thread context. This check maps to consulting the host’s thread local storage with a hypercall. If a value is set, it is used and the entrypoint can move to scheduling a CPU.
+In case an implicit thread is required, we create one. We use the system thread lwp0 as the bootstrap context for creating the implicit thread. Since there is only one instance of this resource, it must be locked before use. After a lock on lwp0 has been obtained, a CPU is scheduled for it. Next, the implicit thread is created and it is given the same CPU we obtained for lwp0. Finally, lwp0 is unlocked and servicing the rump kernel request can begin.
+The exit point is the converse: in case we were using a bound thread, just releasing the CPU is enough. In case an implicit thread was used it must be released. Again, we need a thread context to do the work and again we use lwp0. A critical detail is noting the resource acquiry order which must be the same as the one used at the entry point. The CPU must be unscheduled before lwp0 can be locked. Next, a CPU must be scheduled for lwp0 via the normal path. Attempting to obtain lwp0 while holding on to the CPU may lead to a deadlock.
+Instead of allocating and free’ing an implicit context at every entry and exit point, respectively, a possibility is to cache them. Since we assume that all performanceconscious clients use bound threads, caching would add unwarranted complexity.
+3 rump_schedule() / rump_unschedule() are slight misnomers and for example rump_enter() / rump_exit() would be more descriptive. The interfaces are exposed to clients, so changing the names is not worth the eﬀort anymore.
+
+75
+void rump_schedule() {
+struct lwp *lwp;
+if (__predict_true(lwp = get_curlwp()) != NULL) { rump_schedule_cpu(lwp);
+} else { lwp0busy();
+/* allocate & use implicit thread. uses lwp0’s cpu */ rump_schedule_cpu(&lwp0); lwp = rump_lwproc_allocateimplicit(); set_curlwp(lwp);
+lwp0rele(); } }
+void rump_unschedule() {
+struct lwp *lwp = get_curlwp();
+rump_unschedule_cpu(lwp); if (__predict_false(is_implicit(lwp))) {
+lwp0busy();
+rump_schedule_cpu(&lwp0); rump_lwproc_releaseimplicit(lwp);
+lwp0rele(); set_curlwp(NULL); } }
+Figure 3.3: Rump kernel entry/exit pseudocode. The entrypoint and exitpoint are rump_schedule() and rump_unschedule(), respectively. The assignment of a CPU and implicit thread context are handled here.
+
+76
+3.3.1 CPU Scheduling
+Recall from Section 2.3.2 that the purpose of the rump kernel CPU scheduler is to map the currently executing thread to a unique rump CPU context. In addition to doing this mapping at the entry and exit points as described above, it must also be done around potentially blocking hypercalls as well. One reason for releasing the CPU around hypercalls is because the wakeup condition for the hypercall may depend on another thread being able to run. Holding on to the CPU could lead to zero available CPUs for performing a wakeup, and the system would deadlock.
+The straightforward solution is to maintain a list of free virtual CPUs: allocation is done by taking an entry oﬀ the list and releasing is done by putting it back on the list. A list works well for uniprocessor hosts. However, on a multiprocessor system with multiple threads, a global list causes cache contention and lock contention. The eﬀects of cache contention can be seen from Figure 3.4 which compares the wall time for executing 5 million getpid() calls per thread per CPU. This run was done 10 times, and the standard deviation is included in the graph (if it is not visible, it is practically nonexistent). The multiprocessor run took approximately three times as long as the uniprocessor one — doubling the number of CPUs made the normalized workload slower. To optimize the multiprocessor case, we developed an improved CPU scheduling algorithm.
+Improved algorithm
+The purpose of a rump kernel CPU scheduling algorithm is twofold. First, it ensures that at most one thread is using the CPU at any point in time. Second, it ensures that cache coherency is upheld. We dissect the latter point further. On a physical system, when thread A relinquishes a CPU and thread B is scheduled onto the same CPU, both threads will run on the same physical CPU, and therefore all data
+
+77
+
+seconds
+
+10 8 6 4 2 0
+native
+
+1CPU rump
+
+2CPU
+
+Figure 3.4: System call performance using the trivial CPU scheduler. While a system call into the rump kernel is faster in a single-threaded process, it is both jittery and slow for a multithreaded process. This deﬁciency is something we address with the advanced rump kernel CPU scheduler presented later.
+
+they see in the CPU-local cache will trivially be coherent. In a rump kernel, when host thread A relinquishes the rump kernel virtual CPU, host thread B may acquire the same rump kernel virtual CPU on a diﬀerent physical CPU. Unless the physical CPU caches are properly updated, thread B may see incorrect data. The simple way to handle cache coherency is to do a full cache update at every scheduling point. However, a full update is wasteful in the case where a host thread is continuously scheduled onto the same rump kernel virtual CPU.
+The improved algorithm for CPU scheduling is presented as pseudocode in Figure 3.5. It is available as code in sys/rump/librump/rumpkern/scheduler.c. The scheduler is optimized for the case where the number of active worker threads is smaller than the number of conﬁgured virtual CPUs. This assumption is reasonable for rump kernels, since the amount of virtual CPUs can be conﬁgured based on each individual application scenario.
+
+78
+The fastpath is taken in cases where the same thread schedules the rump kernel consecutively without any other thread running on the virtual CPU in between. The fastpath not only applies to the entry point, but also to relinquishing and rescheduling a CPU during a blocking hypercall. The implementation uses atomic operations to minimize the need for memory barriers which are required by full locks.
+Next, we oﬀer a verbose explanation of the scheduling algorithm.
+1. Use atomic compare-and-swap (CAS) to check if we were the previous thread to be associated with the CPU. If that is the case, we have locked the CPU and the scheduling fastpath was successful.
+2. The slow path does a full mutex lock to synchronize against another thread releasing the CPU. In addition to enabling a race-free sleeping wait, using a lock makes sure the cache of the physical CPU the thread is running on is up-to-date.
+3. Mark the CPU as wanted with an atomic swap. We examine the return value and if we notice the CPU was no longer busy at that point, try to mark it busy with atomic CAS. If the CAS succeeds, we have successfully scheduled the CPU. We proceed to release the lock we took in step 2. If the CAS did not succeed, check if we want to migrate the lwp to another CPU.
+4. In case the target CPU was busy and we did not choose to migrate to another CPU, wait for the CPU to be released. After we have woken up, loop and recheck if the CPU is available now. We must do a full check to prevent races against a third thread which also wanted to use the CPU.
+
+79
+void schedule_cpu() {
+struct lwp *lwp = curlwp;
+/* 1: fastpath */ cpu = lwp->prevcpu; if (atomic_cas(cpu->prevlwp, lwp, CPU_BUSY) == lwp)
+return;
+/* 2: slowpath */ mutex_enter(cpu->mutex); for (;;) {
+/* 3: signal we want the CPU */ old = atomic_swap(cpu->prevlwp, CPU_WANTED); if (old != CPU_BUSY && old != CPU_WANTED) {
+membar(); if (atomic_cas(cpu->prevlwp, CPU_WANTED, CPU_BUSY) == CPU_WANTED) {
+break; } } newcpu = migrate(lwp, cpu); if (newcpu != cpu) { continue; }
+/* 4: wait for CPU */ cpu->wanted++; cv_wait(cpu->cv, cpu->mutex); cpu->wanted--; } mutex_exit(cpu->mutex); return; }
+Figure 3.5: CPU scheduling algorithm in pseudocode. See the text for a detailed description.
+
+80
+Releasing a CPU requires the following steps. The pseudocode is presented in Figure 3.6. The fastpath is taken if no other thread wanted to take the CPU while the current thread was using it.
+1. Issue a memory barrier: even if the CPU is currently not wanted, we must perform this step. In more detail, the problematic case is as follows. Immediately after we release the rump CPU, the same rump CPU may be acquired by another hardware thread running on another physical CPU. Although the scheduling operation must go through the slowpath, unless we issue the memory barrier before releasing the CPU, the releasing CPU may have cached data which has not reached global visibility.
+2. Release the CPU with an atomic swap. The return value of the swap is used to determine if any other thread is waiting for the CPU. If there are no waiters for the CPU, the fastpath is complete.
+3. If there are waiters, take the CPU lock and perform a wakeup. The lock necessary to avoid race conditions with the slow path of schedule_cpu().
+
+81
+void unschedule_cpu() {
+struct lwp *lwp = curlwp; /* 1: membar */ membar(); /* 2: release cpu */ old = atomic_swap(cpu->prevlwp, lwp); if (old == CPU_BUSY) {
+return; } /* 3: wake up waiters */ mutex_enter(cpu->mutex); if (cpu->wanted)
+cv_broadcast(cpu->cv); mutex_exit(cpu->mutex); return; }
+Figure 3.6: CPU release algorithm in pseudocode. See the text for a detailed description.
+
+82
+
+seconds
+
+10 8 6 4 2 0
+native
+
+1CPU rump old
+
+2CPU rump new
+
+Figure 3.7: System call performance using the improved CPU scheduler. The advanced rump kernel CPU scheduler is lockless and cache conscious. With it, simultaneous system calls from multiple threads are over twice as fast as against the host kernel and over four times as fast as with the old scheduler.
+
+Performance
+The impact of the improved CPU scheduling algorithm is shown in Figure 3.7. The new algorithm performs four times as good as the freelist algorithm in the dual CPU multithreaded case. It also performs twice as fast as a host kernel system call. Also, there is scalability: the dual CPU case is within 1% of the performance of the single CPU case — native performance is 20% weaker with two CPUs. Finally, the jitter we set out to eliminate has been eliminated.
+
+CPU-bound lwps
+A CPU-bound lwp will execute only on a speciﬁc CPU. This functionality is required for example for delivering a clock interrupt on every virtual CPU. Any lwp which
+
+83
+is bound to a certain rump kernel virtual CPU simply has migration disabled. This way, the scheduler will always try to acquire the same CPU for the thread.
+Scheduler Priorities
+The assumption is that a rump kernel is conﬁgured with a number of virtual CPUs which is equal or greater to the number of frequently executing threads. Despite this conﬁguration, a rump kernel may run into a situation where there will be competition for virtual CPUs. There are two ways to approach the issue of deciding in which order threads should be given a rump CPU context: build priority support into the rump CPU scheduler or rely on host thread priorities.
+To examine the merits of having priority support in the rump CPU scheduler, we consider the following scenario. Thread A has higher priority than thread B in the rump kernel. Both are waiting for the same rump kernel virtual CPU. Even if the rump CPU scheduler denies thread B entry because the higher priority thread A is waiting for access, there is no guarantee that the host schedules thread A before thread B could theoretically run to completion in the rump kernel. By this logic, it is better to let host priorities dictate, and hand out rump kernel CPUs on a ﬁrst-come-ﬁrst-serve basis. Therefore, we do not support thread priorities in the rump CPU scheduler. It is the client’s task to call pthread_setschedparam() or equivalent if it wants to set a thread’s priority.
+3.3.2 Interrupts and Soft Interrupts
+As mentioned in Section 2.3.3, a rump kernel CPU cannot be preempted. The mechanism of how an interrupt gets delivered requires preemption, so we must examine that we meet the requirements of both hardware interrupts and soft interrupts.
+
+84
+Hardware interrupt handlers are typically structured to only do a minimal amount of work for acknowledging the hardware. They then schedule the bulk work to be done in a soft interrupt (softint) handler at a time when the OS deems suitable.
+As mentioned in Section 2.3.3, we implement interrupts as threads which schedule a rump kernel CPU, run the handler, and release the CPU. The only diﬀerence to a regular system is that interrupts are scheduled instead of preempting the CPU.
+Softints in NetBSD are almost like regular threads. However, they have a number of special properties to keep scheduling and running them cheap:
+1. Softints are run by level (e.g. networking and clock). Only one softint per level per CPU may be running, i.e. softints will run to ﬁnish before the next one may be started. Multiple outstanding softints will be queued until the currently running one has ﬁnished.
+2. Softints may block brieﬂy to acquire a short-term lock (mutex), but may not sleep. This property is a corollary of the previous property.
+3. Softint handlers must run on the same CPU they were scheduled to. By default, softints are scheduled on the calling CPU. However, to distribute interrupt load, NetBSD also allows scheduling softints to other CPUs. Regardless, once the handler has been scheduled, it runs entirely on the scheduled CPU.
+4. A softint may run only after the hardware interrupt ﬁnishes. That is to say, the softint handler may not run immediately after it is scheduled, only when the hardware interrupt handler that scheduled it has completed execution.
+Although in a rump kernel even “hardware” interrupts are already scheduled, a fair amount of code in NetBSD assumes that softint semantics are supported. For
+
+85
+example, the callout framework [9] schedules soft interrupts from hardware clock interrupts to run periodic tasks (used e.g. by TCP timers).
+The users of the kernel softint facility expect them to operate exactly according to the principles we listed. Initially, for simplicity, softints were implemented as regular threads. The use of regular threads resulted in a number of problems. For example, when the Ethernet code schedules a soft interrupt to do IP level processing for a received frame, code ﬁrst schedules the softint and only later adds the frame to the processing queue. When softints were implemented as regular threads, the host could run the softint thread before the Ethernet interrupt handler had put the frame on the processing queue. If the softint ran before the packet was queued, the packet would not be handled until the next incoming packet.
+Soft interrupts are implemented in sys/rump/librump/rumpkern/intr.c. The NetBSD implementation was not usable for rump kernels since that implementation is based on interaction with the NetBSD scheduler. Furthermore, the NetBSD implementation uses interprocess interrupts (IPIs) to schedule softints onto other CPUs. Rump kernels do not have interrupts or interprocessor interrupts. Instead, a helper thread is used. When scheduling a softint onto another rump kernel CPU, the helper thread schedules itself onto that virtual CPU and schedules the softint like for a local CPU. While that approach is not as performant as using IPIs, our assumption is that in high-performance computing the hardware interrupt is already scheduled onto the CPU where the work should be handled, thereby making the cost of scheduling a softint onto another CPU a non-issue.
+3.4 Virtual Memory Subsystem
+The main purpose of the NetBSD virtual memory subsystem is to manage memory address spaces and the mappings to the backing content [10]. While the memory
+
+86
+address spaces of a rump kernel and its clients are managed by their respective hosts, the virtual memory subsystem is conceptually exposed throughout the kernel. For example, ﬁle systems are tightly built around being able to use virtual memory subsystem data structures to cache ﬁle data. To illustrate, consider the standard way the kernel reads data from a ﬁle system: memory map the ﬁle, access the mapped range, and possibly fault in missing data [51].
+Due to the design choice that a rump kernel does not use (nor require) a hardware MMU, the virtual memory subsystem implementation is diﬀerent from the regular NetBSD VM. As already explained in Section 2.4, the most fundamental diﬀerence is that there is no concept of page protection or a page fault inside the rump kernel.
+The details of the rump kernel VM implementation along with their implications are described in the following subsections. The VM is implemented in the source module sys/rump/librump/rumpkern/vm.c. Additionally, routines used purely by the ﬁle system faction are in sys/rump/librump/rumpvfs/vm_vfs.c.
+Pages
+When running on hardware, the pages described by the struct vmpage data structure correspond with hardware pages4. Since the rump kernel does not interface with the MMU, the size of the memory page is merely a programmatical construct: the kernel hands out physical memory in multiples of the page size. In a rump kernel this memory is allocated from the host and since there is no memory protection or faults, the page size can in practice be any power of two within a sensible size range. However, so far there has been no reason to use anything diﬀerent than the page size for the machine architecture the rump kernel is running on.
+4 This correspondence is not a strict rule. For example the NetBSD VAX port uses clusters of 512 byte contiguous hardware pages to create logical 4kB pages to minimize management overhead.
+
+87
+The VM tracks status of when a page was last used. It does this tracking either by asking the MMU on CPU architectures where that is supported, e.g. i386, or by using memory protection and updating the information during page faults on architectures where it is not, e.g. alpha. This information is used by the page daemon during memory shortages to decide which pages are best suited to be paged to secondary storage so that memory can be reclaimed for other purposes. Instead of requiring a MMU to keep track of page usage, we observe that since memory pages allocated from a rump kernel cannot be mapped into a client’s address space, the pages are used only in kernel code. Every time kernel code wants to access a page, it does a lookup for it using uvm_pagelookup(), uses it, and releases the reference. Therefore, we hook usage information tracking to the lookup routine: whenever a lookup is done, the page is deemed as accessed.
+3.4.1 Page Remapping
+In practice, the kernel does not map physical pages in driver code. However, there is one exception we are interested in: the ﬁle system independent vnode pager. We will explain the situation in detail. The pages associated with a vnode object are cached in memory at arbitrary memory locations [51]. Consider a ﬁle which is the size of three memory pages. The content for ﬁle oﬀset 0x0000-0x0FFF might be in page X, 0x1000-0x1FFF in page X-1 and 0x2000-0x2FFF in page X+1. In other words, reading and writing a ﬁle is a scatter-gather operation with respect to memory addresses. When the standard vnode pager (sys/miscfs/genfs/genfs_io.c) writes contents from memory to backing storage, it ﬁrst maps all the pages belonging to the appropriate oﬀsets in a continuous memory address by calling uvm_pagermapin(). This routine in turn uses the pmap interface to request the MMU to map the physical pages to the speciﬁed virtual memory range in the kernel’s address space. After this step, the vnode pager performs I/O on this pager window. When I/O is complete, the pager window is unmapped. Reading works essentially the same way: pages
+
+88
+are allocated, mapped into a contiguous window, I/O is performed, and the pager window is unmapped.
+To support the standard NetBSD vnode pager with its remapping feature, there are three options for dealing with uvm_pagermapin():
+1. Create the window by allocating a new block of contiguous anonymous memory and use memory copy to move the contents. This approach works because pages are unavailable to other consumers during I/O; otherwise e.g. write() at an inopportune time might cause a cache ﬂush to write half old half new contents and cause a semantic break.
+2. Modify the vnode pager to issue multiple I/O requests in case the backing pages for a vnode object are not at consecutive addresses.
+3. Accept that memory remapping support is necessary in a rump kernel.
+It should be noted that a fourth option is to implement a separate vnode pager which does not rely on mapping pages. This option was our initial approach. While the effort produced a superﬁcially working result, we could not get all corner cases to function exactly the same as with the regular kernel — for example, the VOP_GETPAGES() interface implemented by the vnode pager takes 8 diﬀerent parameters and 14 different ﬂags. The lesson learnt from this attempt with the vnode pager reﬂects our premise for the entire work: it is easy to write superﬁcially working code, but getting all corner cases right for complicated drivers is extremely diﬃcult.
+So, which of the three options is the best? When comparing the ﬁrst and the second option, the principle used is that memory I/O is several orders of magnitude faster than device I/O. Therefore, anything which aﬀects device I/O should be avoided, especially if it might cause extra I/O operations and thus option 1 is preferable over option 2.
+
+Pager window create+access time (s)
+
+89
+0.12 mmap + munmap alloc + copy + free
+0.1
+0.08
+0.06
+0.04
+0.02
+0 2 4 6 8 10 12 14 16 Disjoint regions
+Figure 3.8: Performance of page remapping vs. copying. Allocating a pager window from anonymous memory and copying ﬁle pages to it for the purpose of pageout by the vnode pager is faster than remapping memory backed by a ﬁle. Additionally, the cost of copying is practically independent of the amount of noncontiguous pages. With remapping, each disjoint region requires a separate call to mmap().
+To evaluate the ﬁrst option against third option, let us ignore MMU-less environments where page remapping is not possible, and consider an environment where it is possible albeit clumsy: userspace. Usermode operating systems typically use a memory mapped ﬁle to represent the physical memory of the virtual kernel [16, 17]. The ﬁle acts as a handle and can be mapped to the location(s) desired by the usermode kernel using the mmap() system call. The DragonFly usermode vkernel uses special host system calls to make the host kernel execute low level mappings [17].
+We simulated pager conditions and measured the amount of time it takes to construct a contiguous 64kB memory window out of non-contiguous 4kB pages and to write the window out to a ﬁle backed by a memory ﬁle system. The result for 1000 loops as a function of non-contiguous pages is presented in Figure 3.8.
+
+90
+The conclusion is that without direct access to a MMU, page remapping is either slower than memory copy or impossible. The downside of memory copy is that in low-memory environments you need twice the amount of memory of the largest allowed pager window size. Furthermore, the pagedaemon (Section 3.4.3) needs the window’s worth of reserved memory to ensure that it is possible to ﬂush out pages and release memory. The simple choice is to mitigate the problems by restricting the pager window size.
+3.4.2 Memory Allocators
+Although memory allocators are not strictly speaking part of the virtual memory subsystem, they are related to memory so we describe them here.
+The lowest level memory allocator in NetBSD is the UVM kernel memory allocator (uvm_km). It is used to allocate memory on a pagelevel granularity. The standard implementation in sys/uvm/uvm_km.c allocates a virtual memory address range and, if requested, allocates physical memory for the range and maps it in. Since mapping is incompatible with a rump kernel, we did a straightforward implementation which allocates a page or contiguous page range with a hypercall.
+The kmem, pool and pool cache allocators are general purpose allocators meant to be used by drivers. Fundamentally, they operate by requesting pages from uvm_km and handing memory out in requested size chunks. The ﬂow of memory between UVM and the allocators is dynamic, meaning if an allocator runs out of memory, it will request more from UVM, and if there is a global memory shortage, the system will attempt to reclaim cached memory from the allocators. We have extracted the implementations for these allocators from the standard NetBSD kernel and provide them as part of the rump kernel base.
+
+91
+3.4.3 Pagedaemon
+The NetBSD kernel uses idle memory for caching data. As long as free memory is available, it will be used for caching. NetBSD’s pagedaemon serves the purpose of pushing out unnecessary data to recycle pages when memory is scarce. A mechanism is required to keep long-running rump kernels from consuming all memory for caching. The choices are to either eliminate caching and free memory immediately after it has been used, or to create a pagedaemon which can operate despite memory access information not being available with the help of a MMU. Since eliminating caching is undesirable for performance reasons, we chose the latter option.
+Typically, a system will have a speciﬁc amount of memory assigned to it. A straightforward example is a system running directly on hardware. While we could always require that the amount of memory be speciﬁed, that would introduce a default and conﬁgurable which is not always necessary. Since host memory is dynamically allocated using hypercalls, we can observe that in some cases we simply do not have to conﬁgure the amount of available memory. For example, short-lived test cases for kernel drivers running on a userspace host do not need one. For the rest of the discussion, we do assume that we have an “inﬂexible” use case and host, and do need to conﬁgure the amount of available memory.
+When the available memory is close to being exhausted, the rump kernel invokes the pagedaemon, which is essentially a kernel thread, to locate and free memory resources which are least likely to be used in the near future. There are fundamentally two types of memory: pageable and wired.
+• Pageable memory means that a memory page can be paged out. Paging is done using the pager construct that the NetBSD VM (UVM) inherited from the Mach VM [49] via the 4.4BSD VM. A pager has the capability to move the contents of the page in and out of secondary storage. NetBSD
+
+92
+currently supports three classes of pagers: anonymous, vnode and device. Device pagers map device memory, so they can be left out of a discussion concerning RAM. We extract the standard UVM anonymous memory object implementation (sys/uvm/uvm_aobj.c) mainly because the tmpfs ﬁle system requires anonymous memory objects. However, we compile uvm_aobj.c without deﬁning VMSWAP, i.e. the code for support moving memory to and from secondary is not included. Our view is that paging anonymous memory should be handled by the host. What is left is the vnode pager, i.e. moving ﬁle contents between the memory cache and the ﬁle system.
+• Wired memory is non-pageable, i.e. it is always present and mapped. Still, it needs to be noted that the host can page memory which is wired in the rump kernel barring precautions such as a hypercall invoking mlock() — DMAsafe memory notwithstanding (Section 4.2.5), this paging has no impact on the rump kernel’s correctness. During memory shortage, the pagedaemon requests the allocators to return unused pages back to the system.
+The pagedaemon is implemented in the uvm_pageout() routine in the source ﬁle sys/rump/librump/rumpkern/vm.c. The pagedaemon is invoked when memory use exceeds the critical threshold, and additionally when the memory allocation hypercall fails. The pagedaemon releases memory in stages, from the ones most likely to bring beneﬁt to the least likely. The use case the pagedaemon was developed against was the ability to run ﬁle systems with a rump kernel with limited memory. Measurements showing how memory capacity aﬀects ﬁle system performance are presented in Table 3.2.
+Since all pages managed by the VM are dynamically allocated and free’d, shrinking the virtual kernel or allowing it to allocate more memory is trivial. It is done by adjusting the limit. Making the limit larger causes the pagedaemon to cease activity until future allocations cause the new limit to be reached. Making the limit
+
+93
+
+rump kernel memory limit
+
+relative performance
+
+0.5MB
+
+50%
+
+1MB
+
+90%
+
+3MB
+
+100%
+
+unlimited (host container limit) 100%
+
+Table 3.2: File system I/O performance vs. available memory. If memory is extremely tight, the performance of the I/O system suﬀers. A few megabytes of rump kernel memory was enough to allow ﬁle I/O processing at full media speed.
+
+smaller causes the pagedaemon to clear out cached memory until the smaller limit is satisﬁed. In contrast to the ballooning technique [56], a rump kernel will fully release pages and associated metadata when memory is returned to the host.
+
+Multiprocessor Considerations for the Pagedaemon
+A rump kernel is more susceptible than a regular kernel to a single object using a majority of the available memory, if not all. This phenomenon exists because in a rump kernel it is a common scenario to use only one VM object at a time, e.g. a single ﬁle is being written/read via a rump kernel. In a regular kernel there minimally are at least a small number of active ﬁles due to various daemons and system processes running.
+Having all memory consumed by a single object leads to the following scenario on a multiprocessor rump kernel:
+1. A consumer running on CPU1 allocates memory and reaches the pagedaemon wakeup limit.
+
+94
+2. The pagedaemon starts running on CPU2 and tries to free pages.
+3. The consumer on CPU1 consumes all available memory for a single VM object and must go to sleep to wait for more memory. It is still scheduled on CPU1 and has not yet relinquished the memory object lock it is holding.
+4. The pagedaemon tries to lock the object that is consuming all memory. However, since the consumer is still holding the lock, the pagedaemon is unable to acquire it. Since there are no other places to free memory from, the pagedaemon can only go to a timed sleep and hope that memory and/or unlocked resources are available when it wakes up.
+This scenario killed performance, since all activity stalled at regular intervals while the pagedaemon went to sleep to await the consumer going to sleep. Notably, in a virtual uniprocessor setup the above mentioned scenario did not occur, since after waking up the pagedaemon the consumer would run until it got to sleep. When the pagedaemon got scheduled on the CPU and started running, the object lock had already been released and the pagedaemon could proceed to free pages. To remedy the problem in virtual multiprocessor setups, we implemented a check to see if the object lock holder is running on another virtual CPU. If the pagedaemon was unable to free memory, but it detects an object lock holder running on another CPU, the pagedaemon thread yields. This yield usually gives the consumer a chance to release the object lock so that the pagedaemon can proceed to free memory without a full sleep like it would otherwise do in a deadlock situation.
+3.5 Synchronization
+The NetBSD kernel synchronization primitives are modeled after the ones from Solaris [33]. Examples include mutexes, read/write locks and condition variables.
+
+95
+Regardless of the type, all of them have the same basic idea: a condition is checked for and if it is not met, the calling thread is put to sleep. Later, when another thread has satisﬁed the condition, the sleeping thread is woken up.
+The case we are interested in is when the thread checking the condition blocks. In a regular kernel when the condition is not met, the calling thread is put on the scheduler’s sleep queue and another thread is scheduled. Since a rump kernel is not in control of thread scheduling, it cannot schedule another thread if one blocks. When a rump kernel deems a thread to be unrunnable, it has two options: 1) spin until the host decides to schedule another rump kernel thread 2) notify the host that the current thread is unrunnable until otherwise announced.
+Option 2 is desirable since it saves resources. However, no such standard interface for implementing it exists on for example a POSIX host. The closest option would be to suspend for an arbitrary period (yield, sleep, etc.). To solve the problem, we deﬁne a set of hypercall interfaces which provide the mutex, read/write lock and condition variable primitives. On for example POSIX hosts, the implementations of those hypercalls are simply thin pass-through layers to the underlying locking primitives (pthread_mutex_lock() etc.). Where the rump kernel interfaces do not map 1:1, such as with the msleep() interface, we emulate the correct behavior using the hypercall interfaces (sys/rump/librump/rumpkern/ltsleep.c).
+As usual, for a blocking hypercall we need to unschedule and reschedule the rump kernel virtual CPU context. For condition variables making the decision to unschedule is straightforward, since we know the wait routine is going to block, and we can always release the CPU before the hypervisor calls libpthread. With some underlying locking primitives (e.g. pthread), for mutexes and read/write locks we do not know a priori if we are going to block. However, in those cases we can make a logical guess: code should be architectured to minimize lock contention, and therefore not blocking should be a more common operation than blocking. We
+
+96
+ﬁrst call the try variant of the lock operation. It does a non-blocking attempt and returns true or false depending on if the lock was taken or not. In case the lock was taken, we can return directly. If not, we unschedule the rump kernel CPU and call the blocking variant. When the blocking variant returns, perhaps immediately in a multiprocessor rump kernel, we reschedule a rump kernel CPU and return from the hypercall.
+3.5.1 Passive Serialization Techniques
+Passive serialization [23] is essentially a variation of a reader-writer lock where the read side of the lock is cheap and the write side of the lock is expensive, i.e. the lock is optimized for readers. It is called passive serialization because readers do not take an atomic hardware level lock. The lack of a read-side lock is made up for by deferred garbage collection, where an old copy is released only after it has reached a quiescent state, i.e. there are no readers accessing the old copy. In an operating system kernel the quiescent state is usually established by making the old copy unreachable and waiting until all CPUs in the system have run code.
+An example of passive serialization used for example in the Linux kernel is the readcopy update (RCU) facility [35]. However, the algorithm is patented and can be freely implemented only in GPL or LGPL licensed code. Both licenses are seen as too restrictive for the NetBSD kernel and are not allowed by the project. Therefore, RCU itself cannot be implemented in NetBSD. Another example of passive serialization is the rmlock (read-mostly lock) facility oﬀered by FreeBSD. It is essentially a reader/writer locking facility with a lockless fastpath for readers. The write locks are expensive and require cross calling other CPUs and running code on them.
+One example of where NetBSD uses passive synchronization is in the loading and unloading of system calls in sys/kern/kern_syscall.c. These operations require
+
+97 atomic locking so as to make sure no system call is loaded more than once, and also to make sure a system call is not unloaded while it is still in use. Having to take a regular lock every time a system call is executed would be wasteful, given that unloading of system calls during runtime takes place relatively seldom, if ever. Instead, the implementation uses a passive synchronization algorithm where a lock is used only for operations which are not performance-critical. We describe the elements of the synchronization part of the algorithm, and then explain how it works in a rump kernel.
+Four cases must be handled:
+1. execution of a system call which is loaded and functional (fast path) 2. loading a system call 3. attempting to execute an absent system call 4. unloading a system call
+1: Regular Execution
+Executing a system call is considered a read side lock. The essential steps are:
+1. Set currently executing system call in curlwp->l_sysent. This step is executed lockless and without memory barriers.
+2. Execute system call. 3. Clear curlwp->l_sysent.
+
+98 2: Loading a System Call
+Modifying the syscall vector is serialized using a lock. Since modiﬁcation happens seldom compared to syscall execution, this is not a performance issue.
+1. Take the kernel conﬁguration lock. 2. Check that the system call handler was not loading before we got the lock.
+If it was, another thread raced us into loading the call and we abort. 3. Patch the new value to the system call vector. 4. Release the conﬁguration lock.
+3: Absent System Call
+NetBSD supports autoloading absent system calls. This means that when a process makes a system call that is not supported, loading a handler may be automatically attempted. If loading a handler is successful, the system call may be able to complete without returning an error to the caller. System calls which may be loaded at runtime are set to the following stub in the syscall vector:
+1. Take the kernel conﬁguration lock. Locking is not a performance problem, since any unloaded system calls will not be frequently used by applications, and therefore will not aﬀect system performance.
+2. Check that the system call handler was not loading before we got the lock. If it was, another thread raced us into loading the call and we restart handling. Otherwise, we attempt to load the system call and patch the syscall vector.
+3. Release the conﬁguration lock.
+
+99
+/* * Run a cross call to cycle through all CPUs. This does two * things: lock activity provides a barrier and makes our update * of sy_call visible to all CPUs, and upon return we can be sure * that we see pertinent values of l_sysent posted by remote CPUs. */
+where = xc_broadcast(0, (xcfunc_t)nullop, NULL, NULL); xc_wait(where);
+Figure 3.9: Using CPU cross calls when checking for syscall users.
+4. If the system call handler was loaded (by us or another thread), restart system call handling. Otherwise, return ENOSYS and, due to Unix semantics, post SIGSYS.
+4: Unloading a System Call
+Finally, we discuss the most interesting case for passive serialization: the unloading of a system call. It showcases the technique that is used to avoid read-side locking.
+1. Take the conﬁguration lock. 2. Replace the system call with the stub in the system call vector. Once this
+operation reaches the visibility of other CPUs, the handler can no longer be called. Autoloading is prevented because we hold the conﬁguration lock. 3. Call a cross-CPU broadcast routine to make sure all CPUs see the update (Figure 3.9, especially the comment) and wait for the crosscall to run on all CPUs. This crosscall is the key to the algorithm. There is no diﬀerence in execution between a rump kernel with virtual CPUs and a regular kernel with physical CPUs.
+
+100
+4. Check if there are any users of the system call by looping over all thread soft contexts and checking l_sysent. If we see no instances of the system call we want to unload, we can now be sure there are no users. Notably, if we do see a non-zero amount of users, they may or may not still be inside the system call at the time of examination.
+5. In case we saw threads inside the system call, prepare to return EBUSY: unroll step 2 by reinstating the handler in the system call vector. Otherwise, unload the system call.
+6. Release the conﬁguration lock and return success or an error code.
+Discussion
+The above example for system calls is not the only example of passive serialization in a rump kernel. It is also used for example to reap threads executing in a rump kernel when a remote client calls exec (sys/rump/librump/rumpkern/rump.c). Nevertheless, we wanted to describe a usage which existed independently of rump kernels.
+In conclusion, passive synchronization techniques work in a rump kernel. There is no reason we would not expect them to work. For example, RCU works in a userspace environment [14] (a more easily obtained description is available in “Paper 3” here [13]). In fact, the best performing userspace implementation is one which requires threads to inform the RCU manager when they enter a quiescent state where they will not use any RCU-related resources. Since a rump kernel has a CPU model, this quiescent state reached when there has been scheduler activity on all rump kernel CPUs. In the syscall example this was accomplished by running the CPU crosscall (Figure 3.9). Therefore, no modiﬁcation is required as opposed to what is required for pure userspace applications to support the quiescence based RCU userspace approach [14].
+

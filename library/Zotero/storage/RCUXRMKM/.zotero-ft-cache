@@ -1,0 +1,556 @@
+
+设为首页 收藏本站
+切换到窄版
+恩山无线论坛
+账号 		自动登录 	  找回密码
+密码 		登录 	  立即注册
+
+QQ登录
+
+只需一步，快速开始
+快捷导航
+
+    门户 Portal
+    论坛 BBS
+    群组 Group
+    导读 Guide
+    家园 Space
+    应用 Manyou
+    淘帖 Collection
+    支付宝积分充值（下载附件和等级快速提升） 购买积分（下载附件和等级快速提升）
+    微信积分充值（下载附件和等级快速提升）
+    日志 Blog
+    相册 Album
+    分享 Share
+    记录 Doing
+    当贝投影 
+
+		搜索 	搜索 	
+
+恩山无线论坛 » 论坛 › 无线设备硬件相关板块 › 光猫/adsl/cable无线一体机 › 北京联通/移动 烽火HG6145D/HG6145D1 获取管理员密码 改 ...
+1 2 3 4 5 6 7 8 9 10 ... 23 / 23 页 下一页
+返回列表 发新帖
+查看: 27410 | 回复: 358
+	
+北京联通/移动 烽火HG6145D/HG6145D1 获取管理员密码 改省份 改桥接 破解 拆解
+  火... [复制链接]
+	
+icebee250
+	
+电梯直达
+1 #
+发表于 2022-5-10 17:37 | 只看该作者 | 只看大图 | 倒序浏览 | 阅读模式
+本帖最后由 icebee250 于 2022-8-5 21:22 编辑
+
+破解密码：感谢 @ oick88 提供的方案 (34楼、46楼)
+本帖最初发表时，原本为交流讨论帖，但当时很快引来了低素质人员的攻击，
+并且现在已经有可靠的破解方案了，故将此贴整理为教程指引贴，供各位参阅。
+
+本帖包含两部分内容：
+1、 移动/联通 HG6145D/D1破解密码方案， 为全国通用方案。此方案收集整理自各位坛友的讨论
+2、 联通 HG6145D1 改省份方案， 为应对 北京联通封禁CUAdmin账号 的方案，同时也可以解决 上海等地区最多连接4个设备 的问题。此方案我自己瞎试出来的，有一定风险。
+
+
+特别提醒：如果没有NAND编程器，不要随便尝试使用指令修改SN或者MAC、不要刷来路不明的固件升级包！！！大概率出问题！
+
+
+
+
+移动HG6145D/D1：
+0、先尝试 CMCCAdmin aDm8H%MdA 能否直接登录进去，我手头好几台，较早版本的HG6145D大部分都能直接登录。不行的话再继续试下面的
+1、 获取光猫MAC： 打开cmd， arp -a 192.168.1.1 ，查看光猫MAC地址，如 aa-bb-cc-dd-ee-ff
+2、 开启光猫telnet： http://192.168.1.1/cgi-bin/telnetenable.cgi?telnetenable=1&key= AABBCCDDEEFF   此处填写上面的mac，注意全大写，随后网页提示 telnet启用成功
+3、准备一个带telnet功能的软件如Xshell等，或者 启用windows自带的telnet 客户端，若不明白请百度～
+4、 登录telnet： telnet用户名 admin   密码 Fh@ DDEEFF 此处填写MAC的后6位 ，注意全大写，登录成功后出现#号
+5、 进入工厂模式： load_cli factory
+6、 显示管理员密码 ： show admin_pwd
+7、 登录管理员帐号： http://192.168.1.1/
+至此，成功。（这UI，难道不是电信的？）
+
+
+
+联通HG6145D1：
+联通管理比较混乱，根据楼下几位坛友的反馈（南宁/上海等），部分地区可以直接用默认密码登录进去
+
+0、先尝试在 http://192.168.1.1/cu.html 上能否直接使用CUAdmin或cuadmin登录进去，不行的话再继续试下面的
+1、 获取光猫MAC： 打开cmd， arp -a 192.168.1.1 ，查看光猫MAC地址，如 aa-bb-cc-dd-ee-ff
+2、 开启光猫telnet： http://192.168.1.1/telnet?enable=1&key= AABBCCDDEEFF   此处填写上面的mac，注意全大写，随后网页提示 Open telnet success!
+3、准备一个带telnet功能的软件如Xshell等，或者 启用windows自带的telnet ，若不明白请百度～
+4、 登录telnet： telnet用户名 root   密码 Fh@ DDEEFF 此处填写MAC的后6位 ，注意全大写，登录成功后出现#号
+5、 进入工厂模式： load_cli factory
+6、 显示管理员密码 ： show admin_pwd
+7、 登录管理员帐号 ： http://192.168.1.1/cu.html （北京用户跳过此步）
+
+至此，成功。
+如果是北京用户还需要继续切换省份才能登CUAdmin，相关方法如下，有一定风险。
+联通HG6145D1改省份：
+此方案会清除光猫内全部认证信息，请全部理解且做好足够心理准备再继续进行。
+有固定电话、IPTV的用户，不建议操作。（请参阅82、83楼）
+0、用光猫反面写的密码登录 http://192.168.1.1
+1、检查一下INTERNET的VLAN ID，北京是3961
+2、记下拨号账号和密码
+3、telnet打指令，进入工厂模式（ load_cli factory ），然后切换省份至河北（ load preconfig Hebei ），等几秒就完事， 然后重启，不推荐断电重启，尽量在网页上点重启
+4、 http://192.168.1.1/cu.html， 密码为 cuadmin （全小写）（如果不对，可以按照上面的方法重新获取一次密码）
+5、删除原有的TR069，添加一项INTERNET，桥接/路由根据需要选择，VLAN ID填写3961。
+（使用路由模式可能会发现一开网页，光猫自动重定向到注册下发页面，这种情况要么想办法解决重定向，要么把TR069按照原来的信息添加回来操作一遍业务下发（LOID=SN或MAC，无密码））
+至此，成功。
+注1：不同省份的配置不同，如河北 版本 限制 连接设备数 10个，上海 版本 限制连接设备数4个，北京 版本 限制连接设备数253个，等等乱七八糟的。
+最后一个Trunk版本我着似乎啥限制都没有，各位有兴趣可自行尝试。
+注2： 如果失败了 ，想恢复原来的样子，那就 改回Beijing，然后注册页面LOID填写光猫SN（GPON猫）或MAC（EPON猫），密码空着或者000000，点下发等跑进度条。
+
+
+
+可选省份一览：
+
+
+
+
+
+
+
+
+#######以下内容全部作废 #######
+
+
+
+
+
+
+拆解：
+1、外壳：普普通通，质量还算说得过去，看底部风格有点向小米靠拢的意思。（贬义）
+
+2、天线： 2.4G和5G没有复用同一组天线，信号稳的一批。 拆开一看，第一眼注意到的就是天线，每根塑料管里竟然都有2根同轴线。也就是说，这猫实际上是4天线。
+
+3、网口：四口千兆，网络变压器都很正规无阉割，不像打中移物联网定制标的那些不舍得用网络变压器的垃圾猫，如： https://www.right.com.cn/FORUM/thread-4267874-1-1.html
+
+
+
+4、散热：这散热太可怜了，这么一块小散热片根本压不住这soc
+
+
+5、详细配置信息：
+CPU：博通BCM68782，很新，查不到资料。但是看这个soc的封装类型，估计性能很猛。（发热也很猛。。。）
+RAM：H5TQ4G63，512MB，不错
+ROM：TC58NVG1S3，256MB/2Gbit
+2.4G网卡：BCM43217
+5G网卡：（CPU内置）
+
+在路由器的领域里对比，目测，性能可以赶上小米的AX系列旗舰机。 但缺点是wifi功放数量和天线数量有点少。
+在光猫的领域里对比，硬件配置吊打 某为 吝啬鬼。但缺点是固件比较烂，界面也只内置联通/移动/电信三套界面。
+
+总的来说，送的这个猫性能和wifi稳定性真的不错，不桥接、开路由模式绰绰有余。有点舍不得浪费掉。
+再加上它甚至能改E/GPON，MAC、SN等，这猫如果能玩顺了可真是顶级好猫。
+
+
+期待有比我更懂软件的大佬能研究出破解方法～
+
+
+
+
+
+
+下面发点评的tm5880891是个疯子，别理他。不必多说，看他历史贴就知道了。
+北京联通 , 破解密码 , 管理员 , 交流 , 方案
+评分
+
+    参与人数 4 	恩山币 +4 	收起 理由
+    awdw12122 	+ 1 	强大的恩山！(以下重复1万次)
+    377 	+ 1 	感谢lz
+    smartleon 	+ 1 	生活不易，相遇也不易，既然这样，让我们成.
+    gui4271363 	+ 1 	强大的恩山！(以下重复1万次)
+
+    查看全部评分
+
+分享到:  QQ好友和群 QQ好友和群 QQ空间 QQ空间
+收藏 49 分享 淘帖 0 支持 3 反对 1
+我的恩山、我的无线 The best wifi forum is right here.
+	
+回复
+
+举报
+	
+oick88
+	
+推荐
+发表于 2022-6-9 01:35 | 只看该作者
+本帖最后由 oick88 于 2022-6-12 11:45 编辑
+
+
+哎~~~~~~
+开 TELNET
+可在 cmd 运行
+arp -a 192.168.1.1
+或是看猫背后标签尾数是0的尝试打开TELNET失败，可尝试改+1以此类推
+查看猫的MAC 去掉‘-’ 改成大写
+如：11-22-33-aa-bb-cc
+例：MAC=112233AABBCC
+新版的开TELNET
+1、 http://192.168.1.1/telnet?enable=1&key=' 这里是猫的大写MAC'
+例： http://192.168.1.1/telnet?enable=1&key=112233AABBCC
+例： http://192.168.1.1/telnet?enable=1&key=AABBCC
+2、 http://192.168.1.1/cgi-bin/telne ... etenable=1&key= 这里是猫的大写MAC'
+例：
+
+    http://192.168.1.1/cgi-bin/telnetenable.cgi?telnetenable=1&key=112233AABBCC
+
+复制代码
+
+
+账号1：root
+账号2：admin
+密码：Fh@‘后六位MAC大写’
+//Fh@后六位MAC大写（对应打开TELENT的后六位MAC）
+例：Fh@AABBCC
+
+
+#老版本的开TELNET
+1. http://192.168.1.1/telnet?enable=1
+2. http://192.168.1.1/cgi-bin/telnetenable.cgi?telnetenable=1
+
+
+#user跟默认密码，或以下的
+3.账号：root           密码：hg2x0
+4.账号：telecom     密码：telecom
+5.账号：telecom     密码：nE7jA%5m
+6.账号：admin       密码：hg2x0
+7.账号：admin       密码：admin
+8.账号：admin       密码：CUAdmin
+9.账号：admin       密码：cuadmin
+A.账号：root          密码：abcd
+B.账号：admin       密码：abcd
+
+
+我的恩山、我的无线 The best wifi forum is right here.
+	
+回复 支持 反对
+
+举报
+	
+oick88
+	
+推荐
+发表于 2022-6-17 17:45 | 只看该作者
+本帖最后由 oick88 于 2022-6-18 23:50 编辑
+
+    cdj8105 发表于 2022-6-15 22:45
+    谢谢，用你的方法成功开启并登录了telecom，获取超密命令是什么？联通HG6145F,
+    用cfg_cmd get InternetG ...
+
+
+电信 联通 移动 就以下几个指令 都试试 通杀 肯定有一个合适你
+
+下面的只要有其中条指令成功 获取超密 就不用尝试其他的咯
+
+联通的推荐
+cat /var/InternetGatewayDevice/X_CU_Function/Web/value.conf
+grep -rni "CUAdmin" /var/
+grep -rni "cuadmin" /var/
+#辽宁
+grep -rni "lnadmin" /var/
+
+电信 联通 移动
+#获取TELNET SU密码
+
+    uci get -c /fhdata factory_conf.TelnetSuperPassword
+
+复制代码
+
+
+    #进入工厂模式
+    load_cli factory
+    #显示管理员密码
+    show admin_pwd
+
+复制代码
+
+
+
+#获取管理员密码
+
+    cfg_cmd get InternetGatewayDevice.DeviceInfo.X_CT111COM_TeleComAccount.Password | grep 'get success' | cut -d = -f 2
+
+复制代码
+
+    cfg_cmd get InternetGatewayDevice.DeviceInfo.X_CMCC_TeleComAccount.Password | grep 'get success' | cut -d = -f 2
+
+复制代码
+
+
+    cfg_cmd get InternetGatewayDevice.DeviceInfo.X_CT111COM_TeleComAccount.Password
+    cfg_cmd get InternetGatewayDevice.DeviceInfo.X_CMCC_TeleComAccount.Password
+    cfg_cmd get InternetGatewayDevice.X_CU_Function.Web.AdminPassword
+
+复制代码
+
+
+    get telpwd
+
+复制代码
+
+    cfg_cmd get InternetGatewayDevice.DeviceInfo.X_FH_Account.X_FH_WebUserInfo.WebPassword
+
+复制代码
+
+    #读取管理员账号
+    inter_web get 60 | cut -d '&' -f 1
+
+    #读取管理员密码
+    inter_web get 61 | cut -d '&' -f 1
+
+复制代码
+
+
+
+我的恩山、我的无线 The best wifi forum is right here.
+	
+回复 支持 反对
+
+举报
+	
+icebee250
+	
+推荐
+ 楼主 | 发表于 2022-8-3 22:24 | 只看该作者
+本帖最后由 icebee250 于 2022-8-3 22:45 编辑
+
+    linearn 发表于 2022-8-3 22:14
+    请教一下，我是北京联通的，运行命令 load preconfig Hebei 改成河北并重启后，是否需要重新注册？如果可 ...
+
+
+很可能无法重新注册下发，    不过可以试试手动配置TR069再等下发，        或者干脆不管注册下发、直接手动填写所有链路的参数（INTERNET、IPTV、VOICE或TR069）
+
+手动填写的话，要记下INTERNET、IPTV、VOICE或TR069这几个链路的详细信息，最主要的是VLAN ID不能错，改成河北之后再照着抄回去。此外，固定电话还有语音鉴权码的事情，我很久没用过固定电话了，这个具体我不太懂，建议多查查再下手～
+
+如果失败了， 改回Beijing，然后LOID填写光猫SN（GPON猫）或MAC（EPON猫），密码空着或者000000，点下发就完事。实在不行还可以叫装维，北京装维服务虽然态度不一定好，但是至少能办实事。
+我的恩山、我的无线 The best wifi forum is right here.
+	
+回复 支持 反对
+
+举报
+	
+ember2011
+	
+2 #
+发表于 2022-5-10 21:03 | 只看该作者
+本帖最后由 ember2011 于 2022-5-10 21:05 编辑
+
+上海联通同款光猫，192.168.1.1/cu.html 直接就进装维页面了，输入默认密码CUAdmin搞定
+我的恩山、我的无线 The best wifi forum is right here.
+	
+回复 支持 反对
+
+举报
+	
+iceyheart
+	
+3 #
+发表于 2022-5-10 21:07 | 只看该作者
+我上海移动用的也是这猫，型号HG6145D，一样的东西。我没有用无线，光猫本身的路由功能ping值非常低，响应很快，并且带机比小米AX1800轻松（用来做AP）。可以重置，但无法打开telnet，请教有什么方法可让我尝试的？
+我的恩山、我的无线 The best wifi forum is right here.
+	
+回复 支持 反对
+
+举报
+	
+mayi5147
+	
+4 #
+发表于 2022-5-10 21:57 | 只看该作者
+北京联通没有超密界面，所以怎么破解超密？？
+我的恩山、我的无线 The best wifi forum is right here.
+	
+回复 支持 反对
+
+举报
+	
+icebee250
+	
+5 #
+ 楼主 | 发表于 2022-5-10 22:00 | 只看该作者
+
+    mayi5147 发表于 2022-5-10 21:57
+    北京联通没有超密界面，所以怎么破解超密？？
+
+
+界面是存在的，CUAdmin账号也存在，权限为2级，只是不让登录。不过这不重要，改个地区就完事了。
+此外，还有一个fiber账户，权限为4级，用这个账号能改的东西更多，但也找不出密码。
+我的恩山、我的无线 The best wifi forum is right here.
+	
+回复 支持 反对
+
+举报
+	
+tm5880891
+	
+6 #
+发表于 2022-5-10 22:41 | 只看该作者
+可以搞，随便玩的东西
+我的恩山、我的无线 The best wifi forum is right here.
+	
+回复 支持 反对
+
+举报
+	
+icebee250
+	
+7 #
+ 楼主 | 发表于 2022-5-10 23:18 | 只看该作者
+本帖最后由 icebee250 于 2022-5-10 23:27 编辑
+
+    tm5880891 发表于 2022-5-10 22:41
+    可以搞，随便玩的东西
+
+
+大佬，是D1后缀，芯片全换了一波，直接刷D后缀的恐怕不太行
+我的恩山、我的无线 The best wifi forum is right here.
+	
+回复 支持 反对
+
+举报
+	
+icebee250
+	
+8 #
+ 楼主 | 发表于 2022-5-12 00:15 | 只看该作者
+
+    ember2011 发表于 2022-5-10 21:03
+    上海联通同款光猫，192.168.1.1/cu.html 直接就进装维页面了，输入默认密码CUAdmin搞定
+
+
+羡慕呀 。。。。。但是我注意到我这猫背面写了一个“Beijing”  “系统C”
+我的恩山、我的无线 The best wifi forum is right here.
+	
+回复 支持 反对
+
+举报
+	
+路边有帅哥
+	
+9 #
+发表于 2022-5-12 14:43 | 只看该作者
+
+    ember2011 发表于 2022-5-10 21:03
+    上海联通同款光猫，192.168.1.1/cu.html 直接就进装维页面了，输入默认密码CUAdmin搞定
+
+
+谢谢，这个方法我进去了，南宁联通。今天刚刚光改
+我的恩山、我的无线 The best wifi forum is right here.
+	
+回复 支持 反对
+
+举报
+	
+tm5880891
+	
+10 #
+发表于 2022-5-13 10:40 | 只看该作者
+
+    icebee250 发表于 2022-5-10 23:18
+    大佬，是D1后缀，芯片全换了一波，直接刷D后缀的恐怕不太行
+
+
+D1和D区别大了不是一点了，就是完全不同了
+我的恩山、我的无线 The best wifi forum is right here.
+	
+回复 支持 反对
+
+举报
+	
+xhbpass
+	
+11 #
+发表于 2022-5-13 11:04 | 只看该作者
+感谢分享~~~~~~~~~~~~~~
+我的恩山、我的无线 The best wifi forum is right here.
+	
+回复 支持 反对
+
+举报
+	
+icebee250
+	
+12 #
+ 楼主 | 发表于 2022-5-14 00:41 | 只看该作者
+
+    ember2011 发表于 2022-5-10 21:03
+    上海联通同款光猫，192.168.1.1/cu.html 直接就进装维页面了，输入默认密码CUAdmin搞定
+
+
+话说能否麻烦您尝试提取一下ROM？我想试试把上海版本的ROM烧录到北京版的机子里，强行破解
+PPPOE账号啥的不用担心我肯定用不了，不放心的话临时改掉再提取就是
+我的恩山、我的无线 The best wifi forum is right here.
+	
+回复 支持 反对
+
+举报
+	
+ember2011
+	
+13 #
+发表于 2022-5-14 17:25 | 只看该作者
+
+    icebee250 发表于 2022-5-14 00:41
+    话说能否麻烦您尝试提取一下ROM？我想试试把上海版本的ROM烧录到北京版的机子里，强行破解
+    PPPOE账 ...
+
+
+这个怎么提，麻烦不，不麻烦可以搞搞，五一把r6800刷砖了，这个猫没插光纤关了dhcp在当ap用，桥接的光猫换成了原来的华为的一款单频猫，这俩猫系统几乎一样，但是华为的界面响应速度慢了N倍
+我的恩山、我的无线 The best wifi forum is right here.
+	
+回复 支持 反对
+
+举报
+	
+懒懒猪
+	
+14 #
+发表于 2022-5-14 17:37 | 只看该作者
+博通系列的光猫是否有CFE？
+我的恩山、我的无线 The best wifi forum is right here.
+	
+回复 支持 反对
+
+举报
+	
+icebee250
+	
+15 #
+ 楼主 | 发表于 2022-5-14 19:53 | 只看该作者
+
+    ember2011 发表于 2022-5-14 17:25
+    这个怎么提，麻烦不，不麻烦可以搞搞，五一把r6800刷砖了，这个猫没插光纤关了dhcp在当ap用，桥接的光猫 ...
+
+
+感谢热心帮助，提取固件得开telnet，然后用dd命令把/dev/mtd0～mtdxx全都备份到USB
+
+但是这猫开telnet目前没有教程，网上的方案我在不登录CUAdmin的情况下也无法测试，我仔细想了一波，在这种无明确可行方案的情况下麻烦您实在是不太合适，我干脆海鲜市场淘个别人不要的买回来拆芯片提ROM吧～
+我的恩山、我的无线 The best wifi forum is right here.
+	
+回复 支持 反对
+
+举报
+	
+1 2 3 4 5 6 7 8 9 10 ... 23 / 23 页 下一页
+返回列表 发新帖
+	
+高级模式
+B Color Image Link Quote Code Smilies
+您需要登录后才可以回帖 登录 | 立即注册
+
+本版积分规则 发表回复 回帖后跳转到最后一页
+关闭
+欢迎大家光临恩山无线论坛
+
+论坛登录问题解释
+    最近论坛程序升级，因为DISCUZ代码转换的原因，所有注册用户的安全提问失效，现在只需要凭借用户名和密码即可登录、无需安全问题，在登录后请尽快设置安全提问！！！ 在此过渡期间，登录界面会有图片验证，如果在验证的时候遇到问题先升级浏览器，升级浏览器后如果还是无效的话，请加管理员QQ：86788181解决问题，浏览器推荐谷歌或者火狐或者微软EDGE，但一定要确保版本是最新或者最近的，否则动态图片验证会无法通过。 除此外，如果论坛使用方面也遇到了问题，请添加同样的QQ号码来解决问题，谢谢！
+
+查看 »
+
+有疑问请添加管理员QQ86788181 | 手机版 | 小黑屋 | Archiver | 恩山无线论坛(常州市恩山计算机开发有限公司版权所有) ( 苏ICP备05084872号 ) | 网站地图
+
+GMT+8, 2023-5-21 22:24
+
+Powered by Discuz! X3.5
+
+© 2001-2023 Discuz! Team .
+快速回复 返回顶部 返回列表

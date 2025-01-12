@@ -1,0 +1,2140 @@
+Homotopy Type Theory
+Univalent Foundations of Mathematics
+THE UNIVALENT FOUNDATIONS PROGRAM INSTITUTE FOR ADVANCED STUDY
+
+Homotopy Type Theory
+Univalent Foundations of Mathematics
+The Univalent Foundations Program Institute for Advanced Study
+
+“Homotopy Type Theory: Univalent Foundations of Mathematics” c 2013 The Univalent Foundations Program
+Book version: first-edition-1287-g1ac9408
+MSC 2010 classiﬁcation: 03-02, 55-02, 03B15
+This work is licensed under the Creative Commons Attribution-ShareAlike 3.0 Unported License. To view a copy of this license, visit http://creativecommons.org/licenses/ by-sa/3.0/.
+This book is freely available at http://homotopytypetheory.org/book/.
+Acknowledgment
+Apart from the generous support from the Institute for Advanced Study, some contributors to the book were partially or fully supported by the following agencies and grants:
+• Association of Members of the Institute for Advanced Study: a grant to the Institute for Advanced Study
+• Agencija za raziskovalno dejavnost Republike Slovenije: P1–0294, N1–0011. • Air Force Ofﬁce of Scientiﬁc Research: FA9550-11-1-0143, and FA9550-12-1-0370.
+This material is based in part upon work supported by the AFOSR under the above awards. Any opinions, ﬁndings, and conclusions or recommendations expressed in this publication are those of the author(s) and do not necessarily reﬂect the views of the AFOSR.
+• Engineering and Physical Sciences Research Council: EP/G034109/1, EP/G03298X/1. • European Union’s 7th Framework Programme under grant agreement nr. 243847
+(ForMath). • National Science Foundation: DMS-1001191, DMS-1100938, CCF-1116703, and DMS-
+1128155.
+This material is based in part upon work supported by the National Science Foundation under the above awards. Any opinions, ﬁndings, and conclusions or recommendations expressed in this material are those of the author(s) and do not necessarily reﬂect the views of the National Science Foundation.
+• The Simonyi Fund: a grant to the Institute for Advanced Study
+
+Preface
+
+IAS Special Year on Univalent Foundations
+A Special Year on Univalent Foundations of Mathematics was held in 2012-13 at the Institute for Advanced Study, School of Mathematics, organized by Steve Awodey, Thierry Coquand, and Vladimir Voevodsky. The following people were the ofﬁcial participants.
+
+Peter Aczel Benedikt Ahrens Thorsten Altenkirch Steve Awodey Bruno Barras Andrej Bauer Yves Bertot Marc Bezem Thierry Coquand Eric Finster Daniel Grayson Hugo Herbelin Andre´ Joyal Dan Licata
+
+Peter Lumsdaine Assia Mahboubi Per Martin-Lo¨ f Sergey Melikhov Alvaro Pelayo Andrew Polonsky Michael Shulman Matthieu Sozeau Bas Spitters Benno van den Berg Vladimir Voevodsky Michael Warren Noam Zeilberger
+
+There were also the following students, whose participation was no less valuable.
+
+Carlo Angiuli Anthony Bordg Guillaume Brunerie
+
+Chris Kapulkin Egbert Rijke Kristina Sojakova
+
+iv
+
+In addition, there were the following short- and long-term visitors, including student visitors, whose contributions to the Special Year were also essential.
+
+Jeremy Avigad Cyril Cohen Robert Constable Pierre-Louis Curien Peter Dybjer Mart´ın Escardo´ Kuen-Bang Hou Nicola Gambino Richard Garner Georges Gonthier Thomas Hales Robert Harper
+
+Martin Hofmann Pieter Hofstra Joachim Kock Nicolai Kraus Nuo Li Zhaohui Luo Michael Nahas Erik Palmgren Emily Riehl Dana Scott Philip Scott Sergei Soloviev
+
+About this book
+We did not set out to write a book. The present work has its origins in our collective attempts to develop a new style of “informal type theory” that can be read and understood by a human being, as a complement to a formal proof that can be checked by a machine. Univalent foundations is closely tied to the idea of a foundation of mathematics that can be implemented in a computer proof assistant. Although such a formalization is not part of this book, much of the material presented here was actually done ﬁrst in the fully formalized setting inside a proof assistant, and only later “unformalized” to arrive at the presentation you ﬁnd before you — a remarkable inversion of the usual state of affairs in formalized mathematics.
+Each of the above-named individuals contributed something to the Special Year — and so to this book — in the form of ideas, words, or deeds. The spirit of collaboration that prevailed throughout the year was truly extraordinary.
+Special thanks are due to the Institute for Advanced Study, without which this book would obviously never have come to be. It proved to be an ideal setting for the creation of this new branch of mathematics: stimulating, congenial, and supportive. May some trace of this unique
+
+v
+atmosphere linger in the pages of this book, and in the future development of this new ﬁeld of study.
+The Univalent Foundations Program Institute for Advanced Study Princeton, April 2013
+
+Contents
+
+Introduction
+
+1
+
+I Foundations
+
+21
+
+1 Type theory
+
+23
+
+1.1 Type theory versus set theory . . . . . . . . . . . . . . . . . 23
+
+1.2 Function types . . . . . . . . . . . . . . . . . . . . . . . . . . 29
+
+1.3 Universes and families . . . . . . . . . . . . . . . . . . . . . 32
+
+1.4 Dependent function types (Π-types) . . . . . . . . . . . . . 33
+
+1.5 Product types . . . . . . . . . . . . . . . . . . . . . . . . . . 35
+
+1.6 Dependent pair types (Σ-types) . . . . . . . . . . . . . . . . 40
+
+1.7 Coproduct types . . . . . . . . . . . . . . . . . . . . . . . . . 45
+
+1.8 The type of booleans . . . . . . . . . . . . . . . . . . . . . . 46
+
+1.9 The natural numbers . . . . . . . . . . . . . . . . . . . . . . 49
+
+1.10 Pattern matching and recursion . . . . . . . . . . . . . . . . 52
+
+1.11 Propositions as types . . . . . . . . . . . . . . . . . . . . . . 54
+
+1.12 Identity types . . . . . . . . . . . . . . . . . . . . . . . . . . 62
+
+Notes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 72
+
+Exercises . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 74
+
+2 Homotopy type theory
+
+77
+
+2.1 Types are higher groupoids . . . . . . . . . . . . . . . . . . 81
+
+2.2 Functions are functors . . . . . . . . . . . . . . . . . . . . . 92
+
+2.3 Type families are ﬁbrations . . . . . . . . . . . . . . . . . . 94
+
+2.4 Homotopies and equivalences . . . . . . . . . . . . . . . . . 99
+
+2.5 The higher groupoid structure of type formers . . . . . . . 104
+
+2.6 Cartesian product types . . . . . . . . . . . . . . . . . . . . 105
+
+2.7 Σ-types . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 109
+
+2.8 The unit type . . . . . . . . . . . . . . . . . . . . . . . . . . . 112
+
+viii
+
+Contents
+
+2.9 Π-types and the function extensionality axiom . . . . . . . 113 2.10 Universes and the univalence axiom . . . . . . . . . . . . . 116 2.11 Identity type . . . . . . . . . . . . . . . . . . . . . . . . . . . 118 2.12 Coproducts . . . . . . . . . . . . . . . . . . . . . . . . . . . . 121 2.13 Natural numbers . . . . . . . . . . . . . . . . . . . . . . . . 124 2.14 Example: equality of structures . . . . . . . . . . . . . . . . 126 2.15 Universal properties . . . . . . . . . . . . . . . . . . . . . . 130 Notes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 133 Exercises . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 136
+
+3 Sets and logic
+
+139
+
+3.1 Sets and n-types . . . . . . . . . . . . . . . . . . . . . . . . . 139
+
+3.2 Propositions as types? . . . . . . . . . . . . . . . . . . . . . 142
+
+3.3 Mere propositions . . . . . . . . . . . . . . . . . . . . . . . . 145
+
+3.4 Classical vs. intuitionistic logic . . . . . . . . . . . . . . . . 147
+
+3.5 Subsets and propositional resizing . . . . . . . . . . . . . . 149
+
+3.6 The logic of mere propositions . . . . . . . . . . . . . . . . 151
+
+3.7 Propositional truncation . . . . . . . . . . . . . . . . . . . . 152
+
+3.8 The axiom of choice . . . . . . . . . . . . . . . . . . . . . . . 154
+
+3.9 The principle of unique choice . . . . . . . . . . . . . . . . . 157
+
+3.10 When are propositions truncated? . . . . . . . . . . . . . . 158
+
+3.11 Contractibility . . . . . . . . . . . . . . . . . . . . . . . . . . 161
+
+Notes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 164
+
+Exercises . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 165
+
+4 Equivalences
+
+169
+
+4.1 Quasi-inverses . . . . . . . . . . . . . . . . . . . . . . . . . . 170
+
+4.2 Half adjoint equivalences . . . . . . . . . . . . . . . . . . . 173
+
+4.3 Bi-invertible maps . . . . . . . . . . . . . . . . . . . . . . . . 178
+
+4.4 Contractible ﬁbers . . . . . . . . . . . . . . . . . . . . . . . . 179
+
+4.5 On the deﬁnition of equivalences . . . . . . . . . . . . . . . 180
+
+4.6 Surjections and embeddings . . . . . . . . . . . . . . . . . . 181
+
+4.7 Closure properties of equivalences . . . . . . . . . . . . . . 182
+
+4.8 The object classiﬁer . . . . . . . . . . . . . . . . . . . . . . . 185
+
+4.9 Univalence implies function extensionality . . . . . . . . . 188
+
+Notes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 190
+
+Exercises . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 191
+
+Contents
+
+ix
+
+5 Induction
+
+195
+
+5.1 Introduction to inductive types . . . . . . . . . . . . . . . . 195
+
+5.2 Uniqueness of inductive types . . . . . . . . . . . . . . . . . 198
+
+5.3 W-types . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 202
+
+5.4 Inductive types are initial algebras . . . . . . . . . . . . . . 206
+
+5.5 Homotopy-inductive types . . . . . . . . . . . . . . . . . . 209
+
+5.6 The general syntax of inductive deﬁnitions . . . . . . . . . 214
+
+5.7 Generalizations of inductive types . . . . . . . . . . . . . . 219
+
+5.8 Identity types and identity systems . . . . . . . . . . . . . . 223
+
+Notes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 228
+
+Exercises . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 229
+
+6 Higher inductive types
+
+233
+
+6.1 Introduction . . . . . . . . . . . . . . . . . . . . . . . . . . . 233
+
+6.2 Induction principles and dependent paths . . . . . . . . . . 236
+
+6.3 The interval . . . . . . . . . . . . . . . . . . . . . . . . . . . 241
+
+6.4 Circles and spheres . . . . . . . . . . . . . . . . . . . . . . . 243
+
+6.5 Suspensions . . . . . . . . . . . . . . . . . . . . . . . . . . . 246
+
+6.6 Cell complexes . . . . . . . . . . . . . . . . . . . . . . . . . . 250
+
+6.7 Hubs and spokes . . . . . . . . . . . . . . . . . . . . . . . . 251
+
+6.8 Pushouts . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 253
+
+6.9 Truncations . . . . . . . . . . . . . . . . . . . . . . . . . . . 257
+
+6.10 Quotients . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 261
+
+6.11 Algebra . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 267
+
+6.12 The ﬂattening lemma . . . . . . . . . . . . . . . . . . . . . . 273
+
+6.13 The general syntax of higher inductive deﬁnitions . . . . . 280
+
+Notes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 282
+
+Exercises . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 283
+
+7 Homotopy n-types
+
+285
+
+7.1 Deﬁnition of n-types . . . . . . . . . . . . . . . . . . . . . . 286
+
+7.2 Uniqueness of identity proofs and Hedberg’s theorem . . . 290
+
+7.3 Truncations . . . . . . . . . . . . . . . . . . . . . . . . . . . 294
+
+7.4 Colimits of n-types . . . . . . . . . . . . . . . . . . . . . . . 301
+
+7.5 Connectedness . . . . . . . . . . . . . . . . . . . . . . . . . . 306
+
+7.6 Orthogonal factorization . . . . . . . . . . . . . . . . . . . . 313
+
+7.7 Modalities . . . . . . . . . . . . . . . . . . . . . . . . . . . . 319
+
+Notes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 324
+
+Exercises . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 325
+
+x
+
+Contents
+
+II Mathematics
+
+331
+
+8 Homotopy theory
+
+333
+
+8.1 π1(S1) . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 338 8.2 Connectedness of suspensions . . . . . . . . . . . . . . . . . 349 8.3 πk≤n of an n-connected space and πk<n(Sn) . . . . . . . . . 351 8.4 Fiber sequences and the long exact sequence . . . . . . . . 351
+
+8.5 The Hopf ﬁbration . . . . . . . . . . . . . . . . . . . . . . . 357
+
+8.6 The Freudenthal suspension theorem . . . . . . . . . . . . . 364
+
+8.7 The van Kampen theorem . . . . . . . . . . . . . . . . . . . 372
+
+8.8 Whitehead’s theorem and Whitehead’s principle . . . . . . 383
+
+8.9 A general statement of the encode-decode method . . . . . 388
+
+8.10 Additional Results . . . . . . . . . . . . . . . . . . . . . . . 390
+
+Notes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 391
+
+Exercises . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 393
+
+9 Category theory
+
+395
+
+9.1 Categories and precategories . . . . . . . . . . . . . . . . . 396
+
+9.2 Functors and transformations . . . . . . . . . . . . . . . . . 401
+
+9.3 Adjunctions . . . . . . . . . . . . . . . . . . . . . . . . . . . 405
+
+9.4 Equivalences . . . . . . . . . . . . . . . . . . . . . . . . . . . 406
+
+9.5 The Yoneda lemma . . . . . . . . . . . . . . . . . . . . . . . 414
+
+9.6 Strict categories . . . . . . . . . . . . . . . . . . . . . . . . . 418
+
+9.7 †-categories . . . . . . . . . . . . . . . . . . . . . . . . . . . 419
+
+9.8 The structure identity principle . . . . . . . . . . . . . . . . 420
+
+9.9 The Rezk completion . . . . . . . . . . . . . . . . . . . . . . 424
+
+Notes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 433
+
+Exercises . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 434
+
+10 Set theory
+
+437
+
+10.1 The category of sets . . . . . . . . . . . . . . . . . . . . . . . 438
+
+10.2 Cardinal numbers . . . . . . . . . . . . . . . . . . . . . . . . 449
+
+10.3 Ordinal numbers . . . . . . . . . . . . . . . . . . . . . . . . 453
+
+10.4 Classical well-orderings . . . . . . . . . . . . . . . . . . . . 461
+
+10.5 The cumulative hierarchy . . . . . . . . . . . . . . . . . . . 464
+
+Notes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 472
+
+Exercises . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 472
+
+Contents
+
+xi
+
+11 Real numbers
+
+477
+
+11.1 The ﬁeld of rational numbers . . . . . . . . . . . . . . . . . 478
+
+11.2 Dedekind reals . . . . . . . . . . . . . . . . . . . . . . . . . 479
+
+11.3 Cauchy reals . . . . . . . . . . . . . . . . . . . . . . . . . . . 488
+
+11.4 Comparison of Cauchy and Dedekind reals . . . . . . . . . 512
+
+11.5 Compactness of the interval . . . . . . . . . . . . . . . . . . 514
+
+11.6 The surreal numbers . . . . . . . . . . . . . . . . . . . . . . 523
+
+Notes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 538
+
+Exercises . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 539
+
+Appendix
+
+543
+
+A Formal type theory
+
+545
+
+A.1 The ﬁrst presentation . . . . . . . . . . . . . . . . . . . . . . 548
+
+A.2 The second presentation . . . . . . . . . . . . . . . . . . . . 553
+
+A.3 Homotopy type theory . . . . . . . . . . . . . . . . . . . . . 561
+
+A.4 Basic metatheory . . . . . . . . . . . . . . . . . . . . . . . . 563
+
+Notes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 565
+
+Bibliography
+
+567
+
+Index of symbols
+
+577
+
+Index
+
+585
+
+Introduction
+Homotopy type theory is a new branch of mathematics that combines aspects of several different ﬁelds in a surprising way. It is based on a recently discovered connection between homotopy theory and type theory. Homotopy theory is an outgrowth of algebraic topology and homological algebra, with relationships to higher category theory; while type theory is a branch of mathematical logic and theoretical computer science. Although the connections between the two are currently the focus of intense investigation, it is increasingly clear that they are just the beginning of a subject that will take more time and more hard work to fully understand. It touches on topics as seemingly distant as the homotopy groups of spheres, the algorithms for type checking, and the deﬁnition of weak ∞-groupoids.
+Homotopy type theory also brings new ideas into the very foundation of mathematics. On the one hand, there is Voevodsky’s subtle and beautiful univalence axiom. The univalence axiom implies, in particular, that isomorphic structures can be identiﬁed, a principle that mathematicians have been happily using on workdays, despite its incompatibility with the “ofﬁcial” doctrines of conventional foundations. On the other hand, we have higher inductive types, which provide direct, logical descriptions of some of the basic spaces and constructions of homotopy theory: spheres, cylinders, truncations, localizations, etc. Both ideas are impossible to capture directly in classical set-theoretic foundations, but when combined in homotopy type theory, they permit an entirely new kind of “logic of homotopy types”.
+This suggests a new conception of foundations of mathematics, with intrinsic homotopical content, an “invariant” conception of the objects of mathematics — and convenient machine implementations, which can serve as a practical aid to the working mathematician. This is the Univalent Foundations program. The present book is intended as a ﬁrst systematic exposition of the basics of univalent foundations, and a collection
+
+2
+
+INTRODUCTION
+
+of examples of this new style of reasoning — but without requiring the reader to know or learn any formal logic, or to use any computer proof assistant.
+We emphasize that homotopy type theory is a young ﬁeld, and univalent foundations is very much a work in progress. This book should be regarded as a “snapshot” of just one portion of the ﬁeld, taken at the time it was written, rather than a polished exposition of a completed ediﬁce. As we will discuss brieﬂy later, there are many aspects of homotopy type theory that are not yet fully understood — and some that are not even touched upon here. The ultimate theory will almost certainly not look exactly like the one described in this book, but it will surely be at least as capable and powerful; we therefore believe that univalent foundations will eventually become a viable alternative to set theory as the “implicit foundation” for the unformalized mathematics done by most mathematicians.
+Type theory
+Type theory was originally invented by Bertrand Russell [Rus08], as a device for blocking the paradoxes in the logical foundations of mathematics that were under investigation at the time. It was developed further by many people over the next few decades, particularly Church [Chu40, Chu41] who combined it with his λ-calculus. Although it is not generally regarded as the foundation for classical mathematics, set theory being more customary, type theory still has numerous applications, especially in computer science and the theory of programming languages [Pie02]. Per Martin-Lo¨ f [ML98, ML75, ML82, ML84], among others, developed a “predicative” modiﬁcation of Church’s type system, which is now usually called dependent, constructive, intuitionistic, or simply Martin-Lo¨f type theory. This is the basis of the system that we consider here; it was originally intended as a rigorous framework for the formalization of constructive mathematics. In what follows, we will often use “type theory” to refer speciﬁcally to this system and similar ones, although type theory as a subject is much broader (see [Som10, KLN04] for the history of type theory).
+In type theory, unlike set theory, objects are classiﬁed using a primitive notion of type, similar to the data-types used in programming languages. These elaborately structured types can be used to express detailed speciﬁcations of the objects classiﬁed, giving rise to principles of reasoning about these objects. To take a very simple example, the objects of a product type A × B are known to be of the form (a, b), and
+
+3
+so one automatically knows how to construct them and how to decompose them. Similarly, an object of function type A → B can be acquired from an object of type B parametrized by objects of type A, and can be evaluated at an argument of type A. This rigidly predictable behavior of all objects (as opposed to set theory’s more liberal formation principles, allowing inhomogeneous sets) is one aspect of type theory that has led to its extensive use in verifying the correctness of computer programs. The clear reasoning principles associated with the construction of types also form the basis of modern computer proof assistants, which are used for formalizing mathematics and verifying the correctness of formalized proofs. We return to this aspect of type theory below.
+One problem in understanding type theory from a mathematical point of view, however, has always been that the basic concept of type is unlike that of set in ways that have been hard to make precise. We believe that the new idea of regarding types, not as strange sets (perhaps constructed without using classical logic), but as spaces, viewed from the perspective of homotopy theory, is a signiﬁcant step forward. In particular, it solves the problem of understanding how the notion of equality of elements of a type differs from that of elements of a set.
+In homotopy theory one is concerned with spaces and continuous mappings between them, up to homotopy. A homotopy between a pair of continuous maps f : X → Y and g : X → Y is a continuous map H : X × [0, 1] → Y satisfying H(x, 0) = f (x) and H(x, 1) = g(x). The homotopy H may be thought of as a “continuous deformation” of f into g. The spaces X and Y are said to be homotopy equivalent, X Y, if there are continuous maps going back and forth, the composites of which are homotopical to the respective identity mappings, i.e., if they are isomorphic “up to homotopy”. Homotopy equivalent spaces have the same algebraic invariants (e.g., homology, or the fundamental group), and are said to have the same homotopy type.
+Homotopy type theory
+Homotopy type theory (HoTT) interprets type theory from a homotopical perspective. In homotopy type theory, we regard the types as “spaces” (as studied in homotopy theory) or higher groupoids, and the logical constructions (such as the product A × B) as homotopy-invariant constructions on these spaces. In this way, we are able to manipulate spaces directly without ﬁrst having to develop point-set topology (or any combinatorial replacement for it, such as the theory of simplicial sets). To brieﬂy explain this perspective, consider ﬁrst the basic concept of type
+
+4
+
+INTRODUCTION
+
+theory, namely that the term a is of type A, which is written:
+a : A.
+This expression is traditionally thought of as akin to:
+“a is an element of the set A”.
+However, in homotopy type theory we think of it instead as:
+“a is a point of the space A”.
+Similarly, every function f : A → B in type theory is regarded as a continuous map from the space A to the space B.
+We should stress that these “spaces” are treated purely homotopically, not topologically. For instance, there is no notion of “open subset” of a type or of “convergence” of a sequence of elements of a type. We only have “homotopical” notions, such as paths between points and homotopies between paths, which also make sense in other models of homotopy theory (such as simplicial sets). Thus, it would be more accurate to say that we treat types as ∞-groupoids; this is a name for the “invariant objects” of homotopy theory which can be presented by topological spaces, simplicial sets, or any other model for homotopy theory. However, it is convenient to sometimes use topological words such as “space” and “path”, as long as we remember that other topological concepts are not applicable.
+(It is tempting to also use the phrase homotopy type for these objects, suggesting the dual interpretation of “a type (as in type theory) viewed homotopically” and “a space considered from the point of view of homotopy theory”. The latter is a bit different from the classical meaning of “homotopy type” as an equivalence class of spaces modulo homotopy equivalence, although it does preserve the meaning of phrases such as “these two spaces have the same homotopy type”.)
+The idea of interpreting types as structured objects, rather than sets, has a long pedigree, and is known to clarify various mysterious aspects of type theory. For instance, interpreting types as sheaves helps explain the intuitionistic nature of type-theoretic logic, while interpreting them as partial equivalence relations or “domains” helps explain its computational aspects. It also implies that we can use type-theoretic reasoning to study the structured objects, leading to the rich ﬁeld of categorical logic. The homotopical interpretation ﬁts this same pattern: it clariﬁes the nature of identity (or equality) in type theory, and allows us to use type-theoretic reasoning in the study of homotopy theory.
+
+5
+The key new idea of the homotopy interpretation is that the logical notion of identity a = b of two objects a, b : A of the same type A can be understood as the existence of a path p : a b from point a to point b in the space A. This also means that two functions f , g : A → B can be identiﬁed if they are homotopic, since a homotopy is just a (continuous) family of paths px : f (x) g(x) in B, one for each x : A. In type theory, for every type A there is a (formerly somewhat mysterious) type IdA of identiﬁcations of two objects of A; in homotopy type theory, this is just the path space AI of all continuous maps I → A from the unit interval. In this way, a term p : IdA(a, b) represents a path p : a b in A.
+The idea of homotopy type theory arose around 2006 in independent work by Awodey and Warren [AW09] and Voevodsky [Voe06], but it was inspired by Hofmann and Streicher’s earlier groupoid interpretation [HS98]. Indeed, higher-dimensional category theory (particularly the theory of weak ∞-groupoids) is now known to be intimately connected to homotopy theory, as proposed by Grothendieck and now being studied intensely by mathematicians of both sorts. The original semantic models of Awodey–Warren and Voevodsky use well-known notions and techniques from homotopy theory which are now also in use in higher category theory, such as Quillen model categories and Kan simplicial sets.
+In particular, Voevodsky constructed an interpretation of type theory in Kan simplicial sets, and recognized that this interpretation satisﬁed a further crucial property which he dubbed univalence. This had not previously been considered in type theory (although Church’s principle of extensionality for propositions turns out to be a very special case of it, and Hofmann and Streicher had considered another special case under the name “universe extensionality”). Adding univalence to type theory in the form of a new axiom has far-reaching consequences, many of which are natural, simplifying and compelling. The univalence axiom also further strengthens the homotopical view of type theory, since it holds in the simplicial model and other related models, while failing under the view of types as sets.
+Univalent foundations
+Very brieﬂy, the basic idea of the univalence axiom can be explained as follows. In type theory, one can have a universe type, U , the terms of which are themselves types, A : U , etc. Those types that are terms of U are commonly called small types. Like any type, U has an identity type IdU , which expresses the identity relation A = B between small
+
+6
+
+INTRODUCTION
+
+types. Thinking of types as spaces, U is a space, the points of which are spaces; to understand its identity type, we must ask, what is a path p : A B between spaces in U ? The univalence axiom says that such paths correspond to homotopy equivalences A B, (roughly) as explained above. A bit more precisely, given any (small) types A and B, in addition to the primitive type IdU (A, B) of identiﬁcations of A with B, there is the deﬁned type Equiv(A, B) of equivalences from A to B. Since the identity map on any object is an equivalence, there is a canonical map,
+IdU (A, B) → Equiv(A, B).
+The univalence axiom states that this map is itself an equivalence. At the risk of oversimplifying, we can state this succinctly as follows:
+Univalence Axiom: (A = B) (A B).
+In other words, identity is equivalent to equivalence. In particular, one may say that “equivalent types are identical”. However, this phrase is somewhat misleading, since it may sound like a sort of “skeletality” condition which collapses the notion of equivalence to coincide with identity, whereas in fact univalence is about expanding the notion of identity so as to coincide with the (unchanged) notion of equivalence.
+From the homotopical point of view, univalence implies that spaces of the same homotopy type are connected by a path in the universe U , in accord with the intuition of a classifying space for (small) spaces. From the logical point of view, however, it is a radically new idea: it says that isomorphic things can be identiﬁed! Mathematicians are of course used to identifying isomorphic structures in practice, but they generally do so by “abuse of notation”, or some other informal device, knowing that the objects involved are not “really” identical. But in this new foundational scheme, such structures can be formally identiﬁed, in the logical sense that every property or construction involving one also applies to the other. Indeed, the identiﬁcation is now made explicit, and properties and constructions can be systematically transported along it. Moreover, the different ways in which such identiﬁcations may be made themselves form a structure that one can (and should!) take into account.
+Thus in sum, for points A and B of the universe U (i.e., small types), the univalence axiom identiﬁes the following three notions:
+• (logical) an identiﬁcation p : A = B of A and B • (topological) a path p : A B from A to B in U • (homotopical) an equivalence p : A B between A and B.
+
+7
+Higher inductive types
+One of the classical advantages of type theory is its simple and effective techniques for working with inductively deﬁned structures. The simplest nontrivial inductively deﬁned structure is the natural numbers, which is inductively generated by zero and the successor function. From this statement one can algorithmically extract the principle of mathematical induction, which characterizes the natural numbers. More general inductive deﬁnitions encompass lists and well-founded trees of all sorts, each of which is characterized by a corresponding “induction principle”. This includes most data structures used in certain programming languages; hence the usefulness of type theory in formal reasoning about the latter. If conceived in a very general sense, inductive deﬁnitions also include examples such as a disjoint union A + B, which may be regarded as “inductively” generated by the two injections A → A + B and B → A + B. The “induction principle” in this case is “proof by case analysis”, which characterizes the disjoint union.
+In homotopy theory, it is natural to consider also “inductively deﬁned spaces” which are generated not merely by a collection of points, but also by collections of paths and higher paths. Classically, such spaces are called CW complexes. For instance, the circle S1 is generated by a single point and a single path from that point to itself. Similarly, the 2sphere S2 is generated by a single point b and a single two-dimensional path from the constant path at b to itself, while the torus T2 is generated by a single point, two paths p and q from that point to itself, and a two-dimensional path from p q to q p.
+By using the identiﬁcation of paths with identities in homotopy type theory, these sort of “inductively deﬁned spaces” can be characterized in type theory by “induction principles”, entirely analogously to classical examples such as the natural numbers and the disjoint union. The resulting higher inductive types give a direct “logical” way to reason about familiar spaces such as spheres, which (in combination with univalence) can be used to perform familiar arguments from homotopy theory, such as calculating homotopy groups of spheres, in a purely formal way. The resulting proofs are a marriage of classical homotopy-theoretic ideas with classical type-theoretic ones, yielding new insight into both disciplines.
+Moreover, this is only the tip of the iceberg: many abstract constructions from homotopy theory, such as homotopy colimits, suspensions, Postnikov towers, localization, completion, and spectriﬁcation, can also be expressed as higher inductive types. Many of these are classically constructed using Quillen’s “small object argument”, which can be regarded
+
+8
+
+INTRODUCTION
+
+as a ﬁnite way of algorithmically describing an inﬁnite CW complex presentation of a space, just as “zero and successor” is a ﬁnite algorithmic description of the inﬁnite set of natural numbers. Spaces produced by the small object argument are infamously complicated and difﬁcult to understand; the type-theoretic approach is potentially much simpler, bypassing the need for any explicit construction by giving direct access to the appropriate “induction principle”. Thus, the combination of univalence and higher inductive types suggests the possibility of a revolution, of sorts, in the practice of homotopy theory.
+Sets in univalent foundations
+We have claimed that univalent foundations can eventually serve as a foundation for “all” of mathematics, but so far we have discussed only homotopy theory. Of course, there are many speciﬁc examples of the use of type theory without the new homotopy type theory features to formalize mathematics, such as the recent formalization of the Feit–Thompson odd-order theorem in COQ [GAA+13].
+But the traditional view is that mathematics is founded on set theory, in the sense that all mathematical objects and constructions can be coded into a theory such as Zermelo–Fraenkel set theory (ZF). However, it is well-established by now that for most mathematics outside of set theory proper, the intricate hierarchical membership structure of sets in ZF is really unnecessary: a more “structural” theory, such as Lawvere’s Elementary Theory of the Category of Sets [Law05], sufﬁces.
+In univalent foundations, the basic objects are “homotopy types” rather than sets, but we can deﬁne a class of types which behave like sets. Homotopically, these can be thought of as spaces in which every connected component is contractible, i.e. those which are homotopy equivalent to a discrete space. It is a theorem that the category of such “sets” satisﬁes Lawvere’s axioms (or related ones, depending on the details of the theory). Thus, any sort of mathematics that can be represented in an ETCSlike theory (which, experience suggests, is essentially all of mathematics) can equally well be represented in univalent foundations.
+This supports the claim that univalent foundations is at least as good as existing foundations of mathematics. A mathematician working in univalent foundations can build structures out of sets in a familiar way, with more general homotopy types waiting in the foundational background until there is need of them. For this reason, most of the applications in this book have been chosen to be areas where univalent foundations has something new to contribute that distinguishes it from existing
+
+9
+foundational systems. Unsurprisingly, homotopy theory and category theory are two of these,
+but perhaps less obvious is that univalent foundations has something new and interesting to offer even in subjects such as set theory and real analysis. For instance, the univalence axiom allows us to identify isomorphic structures, while higher inductive types allow direct descriptions of objects by their universal properties. Thus we can generally avoid resorting to arbitrarily chosen representatives or transﬁnite iterative constructions. In fact, even the objects of study in ZF set theory can be characterized, inside the sets of univalent foundations, by such an inductive universal property.
+Informal type theory
+One difﬁculty often encountered by the classical mathematician when faced with learning about type theory is that it is usually presented as a fully or partially formalized deductive system. This style, which is very useful for proof-theoretic investigations, is not particularly convenient for use in applied, informal reasoning. Nor is it even familiar to most working mathematicians, even those who might be interested in foundations of mathematics. One objective of the present work is to develop an informal style of doing mathematics in univalent foundations that is at once rigorous and precise, but is also closer to the language and style of presentation of everyday mathematics.
+In present-day mathematics, one usually constructs and reasons about mathematical objects in a way that could in principle, one presumes, be formalized in a system of elementary set theory, such as ZFC — at least given enough ingenuity and patience. For the most part, one does not even need to be aware of this possibility, since it largely coincides with the condition that a proof be “fully rigorous” (in the sense that all mathematicians have come to understand intuitively through education and experience). But one does need to learn to be careful about a few aspects of “informal set theory”: the use of collections too large or inchoate to be sets; the axiom of choice and its equivalents; even (for undergraduates) the method of proof by contradiction; and so on. Adopting a new foundational system such as homotopy type theory as the implicit formal basis of informal reasoning will require adjusting some of one’s instincts and practices. The present text is intended to serve as an example of this “new kind of mathematics”, which is still informal, but could now in principle be formalized in homotopy type theory, rather than ZFC, again given enough ingenuity and patience.
+
+10
+
+INTRODUCTION
+
+It is worth emphasizing that, in this new system, such formalization can have real practical beneﬁts. The formal system of type theory is suited to computer systems and has been implemented in existing proof assistants. A proof assistant is a computer program which guides the user in construction of a fully formal proof, only allowing valid steps of reasoning. It also provides some degree of automation, can search libraries for existing theorems, and can even extract numerical algorithms from the resulting (constructive) proofs.
+We believe that this aspect of the univalent foundations program distinguishes it from other approaches to foundations, potentially providing a new practical utility for the working mathematician. Indeed, proof assistants based on older type theories have already been used to formalize substantial mathematical proofs, such as the four-color theorem and the Feit–Thompson theorem. Computer implementations of univalent foundations are presently works in progress (like the theory itself). However, even its currently available implementations (which are mostly small modiﬁcations to existing proof assistants such as COQ and AGDA) have already demonstrated their worth, not only in the formalization of known proofs, but in the discovery of new ones. Indeed, many of the proofs described in this book were actually ﬁrst done in a fully formalized form in a proof assistant, and are only now being “unformalized” for the ﬁrst time — a reversal of the usual relation between formal and informal mathematics.
+One can imagine a not-too-distant future when it will be possible for mathematicians to verify the correctness of their own papers by working within the system of univalent foundations, formalized in a proof assistant, and that doing so will become as natural as typesetting their own papers in TEX. In principle, this could be equally true for any other foundational system, but we believe it to be more practically attainable using univalent foundations, as witnessed by the present work and its formal counterpart.
+Constructivity
+One of the most striking differences between classical foundations and type theory is the idea of proof relevance, according to which mathematical statements, and even their proofs, become ﬁrst-class mathematical objects. In type theory, we represent mathematical statements by types, which can be regarded simultaneously as both mathematical constructions and mathematical assertions, a conception also known as propositions as types. Accordingly, we can regard a term a : A as both an element
+
+11
+
+of the type A (or in homotopy type theory, a point of the space A), and at the same time, a proof of the proposition A. To take an example, suppose we have sets A and B (discrete spaces), and consider the statement “A is isomorphic to B”. In type theory, this can be rendered as:
+
+Iso(A, B) :≡
+
+∑
+
+∑ (∏(x:A)g( f (x)) = x) × (∏(y:B) f (g(y)) = y) .
+
+( f :A→B) (g:B→A)
+
+Reading the type constructors Σ, Π, × here as “there exists”, “for all”, and “and” respectively yields the usual formulation of “A and B are isomorphic”; on the other hand, reading them as sums and products yields the type of all isomorphisms between A and B! To prove that A and B are isomorphic, one constructs a proof p : Iso(A, B), which is therefore the same as constructing an isomorphism between A and B, i.e., exhibiting a pair of functions f , g together with proofs that their composites are the respective identity maps. The latter proofs, in turn, are nothing but homotopies of the appropriate sorts. In this way, proving a proposition is the same as constructing an element of some particular type. In particular, to prove a statement of the form “A and B” is just to prove A and to prove B, i.e., to give an element of the type A × B. And to prove that A implies B is just to ﬁnd an element of A → B, i.e. a function from A to B (determining a mapping of proofs of A to proofs of B).
+The logic of propositions-as-types is ﬂexible and supports many variations, such as using only a subclass of types to represent propositions. In homotopy type theory, there are natural such subclasses arising from the fact that the system of all types, just like spaces in classical homotopy theory, is “stratiﬁed” according to the dimensions in which their higher homotopy structure exists or collapses. In particular, Voevodsky has found a purely type-theoretic deﬁnition of homotopy n-types, corresponding to spaces with no nontrivial homotopy information above dimension n. (The 0-types are the “sets” mentioned previously as satisfying Lawvere’s axioms.) Moreover, with higher inductive types, we can universally “truncate” a type into an n-type; in classical homotopy theory this would be its nth Postnikov section. Particularly important for logic is the case of homotopy (−1)-types, which we call mere propositions. Classically, every (−1)-type is empty or contractible; we interpret these possibilities as the truth values “false” and “true” respectively.
+Using all types as propositions yields a very “constructive” conception of logic; for more on this, see [Kol32, TvD88a, TvD88b]. For instance, every proof that something exists carries with it enough information to
+
+12
+
+INTRODUCTION
+
+actually ﬁnd such an object; and every proof that “A or B” holds is either a proof that A holds or a proof that B holds. Thus, from every proof we can automatically extract an algorithm; this can be very useful in applications to computer programming.
+On the other hand, however, this logic does diverge from the traditional understanding of existence proofs in mathematics. In particular, it does not faithfully represent certain important classical principles of reasoning, such as the axiom of choice and the law of excluded middle. For these we need to use the “(−1)-truncated” logic, in which only the homotopy (−1)-types represent propositions.
+More speciﬁcally, consider on one hand the axiom of choice: “if for every x : A there exists a y : B such that R(x, y), there is a function f : A → B such that for all x : A we have R(x, f (x)).” The pure propositions-as-types notion of “there exists” is strong enough to make this statement simply provable — yet it does not have all the consequences of the usual axiom of choice. However, in (−1)-truncated logic, this statement is not automatically true, but is a strong assumption with the same sorts of consequences as its counterpart in classical set theory.
+On the other hand, consider the law of excluded middle: “for all A, either A or not A.” Interpreting this in the pure propositions-as-types logic yields a statement that is inconsistent with the univalence axiom. For since proving “A” means exhibiting an element of it, this assumption would give a uniform way of selecting an element from every nonempty type — a sort of Hilbertian choice operator. Univalence implies that the element of A selected by such a choice operator must be invariant under all self-equivalences of A, since these are identiﬁed with self-identities and every operation must respect identity; but clearly some types have automorphisms with no ﬁxed points, e.g. we can swap the elements of a two-element type. However, the “(−1)-truncated law of excluded middle”, though also not automatically true, may consistently be assumed with most of the same consequences as in classical mathematics.
+In other words, while the pure propositions-as-types logic is “constructive” in the strong algorithmic sense mentioned above, the default (−1)-truncated logic is “constructive” in a different sense (namely, that of the logic formalized by Heyting under the name “intuitionistic”); and to the latter we may freely add the axioms of choice and excluded middle to obtain a logic that may be called “classical”. Thus, homotopy type theory is compatible with both constructive and classical conceptions of logic, and many more besides. Indeed, the homotopical perspective reveals that classical and constructive logic can coexist, as endpoints of a
+
+13
+spectrum of different systems, with an inﬁnite number of possibilities in between (the homotopy n-types for −1 < n < ∞). We may speak of “LEMn” and “ACn”, with AC∞ being provable and LEM∞ inconsistent with univalence, while AC−1 and LEM−1 are the versions familiar to classical mathematicians (hence in most cases it is appropriate to assume the subscript (−1) when none is given). Indeed, one can even have useful systems in which only certain types satisfy such further “classical” principles, while types in general remain “constructive”.
+It is worth emphasizing that univalent foundations does not require the use of constructive or intuitionistic logic. Most of classical mathematics which depends on the law of excluded middle and the axiom of choice can be performed in univalent foundations, simply by assuming that these two principles hold (in their proper, (−1)-truncated, form). However, type theory does encourage avoiding these principles when they are unnecessary, for several reasons.
+First of all, every mathematician knows that a theorem is more powerful when proven using fewer assumptions, since it applies to more examples. The situation with AC and LEM is no different: type theory admits many interesting “nonstandard” models, such as in sheaf toposes, where classicality principles such as AC and LEM tend to fail. Homotopy type theory admits similar models in higher toposes, such as are studied in [TV02, Rez05, Lur09]. Thus, if we avoid using these principles, the theorems we prove will be valid internally to all such models.
+Secondly, one of the additional virtues of type theory is its computable character. In addition to being a foundation for mathematics, type theory is a formal theory of computation, and can be treated as a powerful programming language. From this perspective, the rules of the system cannot be chosen arbitrarily the way set-theoretic axioms can: there must be a harmony between them which allows all proofs to be “executed” as programs. We do not yet fully understand the new principles introduced by homotopy type theory, such as univalence and higher inductive types, from this point of view, but the basic outlines are emerging; see, for example, [LH12]. It has been known for a long time, however, that principles such as AC and LEM are fundamentally antithetical to computability, since they assert baldly that certain things exist without giving any way to compute them. Thus, avoiding them is necessary to maintain the character of type theory as a theory of computation.
+Fortunately, constructive reasoning is not as hard as it may seem. In some cases, simply by rephrasing some deﬁnitions, a theorem can be made constructive and its proof more elegant. Moreover, in univalent
+
+14
+
+INTRODUCTION
+
+foundations this seems to happen more often. For instance:
+(i) In set-theoretic foundations, at various points in homotopy theory and category theory one needs the axiom of choice to perform transﬁnite constructions. But with higher inductive types, we can encode these constructions directly and constructively. In particular, none of the “synthetic” homotopy theory in Chapter 8 requires LEM or AC.
+(ii) In set-theoretic foundations, the statement “every fully faithful and essentially surjective functor is an equivalence of categories” is equivalent to the axiom of choice. But with the univalence axiom, it is just true; see Chapter 9.
+(iii) In set theory, various circumlocutions are required to obtain notions of “cardinal number” and “ordinal number” which canonically represent isomorphism classes of sets and well-ordered sets, respectively — possibly involving the axiom of choice or the axiom of foundation. But with univalence and higher inductive types, we can obtain such representatives directly by truncating the universe; see Chapter 10.
+(iv) In set-theoretic foundations, the deﬁnition of the real numbers as equivalence classes of Cauchy sequences requires either the law of excluded middle or the axiom of (countable) choice to be wellbehaved. But with higher inductive types, we can give a version of this deﬁnition which is well-behaved and avoids any choice principles; see Chapter 11.
+Of course, these simpliﬁcations could as well be taken as evidence that the new methods will not, ultimately, prove to be really constructive. However, we emphasize again that the reader does not have to care, or worry, about constructivity in order to read this book. The point is that in all of the above examples, the version of the theory we give has independent advantages, whether or not LEM and AC are assumed to be available. Constructivity, if attained, will be an added bonus.
+Given this discussion of adding new principles such as univalence, higher inductive types, AC, and LEM, one may wonder whether the resulting system remains consistent. (One of the original virtues of type theory, relative to set theory, was that it can be seen to be consistent by proof-theoretic means). As with any foundational system, consistency is a relative question: “consistent with respect to what?” The short answer is that all of the constructions and axioms considered in this book have a model in the category of Kan complexes, due to Voevodsky [KLV12]
+
+15
+
+(see [LS17] for higher inductive types). Thus, they are known to be consistent relative to ZFC (with as many inaccessible cardinals as we need nested univalent universes). Giving a more traditionally type-theoretic account of this consistency is work in progress (see, e.g., [LH12, BCH13]).
+We summarize the different points of view of the type-theoretic operations in Table 1.
+
+Types
+A a:A B(x) b(x) : B(x) 0, 1 A+B A×B A→B ∑(x:A) B(x) ∏(x:A) B(x) IdA
+
+Logic
+
+Sets
+
+Homotopy
+
+proposition proof predicate conditional proof ⊥, A∨B A∧B A⇒B ∃x:A B(x) ∀x:A B(x) equality =
+
+set element family of sets family of elements ∅, {∅} disjoint union set of pairs set of functions disjoint sum product { (x, x) | x ∈ A }
+
+space point ﬁbration section ∅, ∗ coproduct product space function space total space space of sections path space AI
+
+Table 1: Comparing points of view on type-theoretic operations
+
+Open problems
+For those interested in contributing to this new branch of mathematics, it may be encouraging to know that there are many interesting open questions.
+Perhaps the most pressing of them is the “constructivity” of the Univalence Axiom, posed by Voevodsky in [Voe12]. The basic system of type theory follows the structure of Gentzen’s natural deduction. Logical connectives are deﬁned by their introduction rules, and have elimination rules justiﬁed by computation rules. Following this pattern, and using Tait’s computability method, originally designed to analyse Go¨ del’s Dialectica interpretation, one can show the property of normalization for type theory. This in turn implies important properties such as decidability of type-checking (a crucial property since type-checking corresponds to proof-checking, and one can argue that we should be able to “recognize a proof when we see one”), and the so-called “canonicity property”
+
+16
+
+INTRODUCTION
+
+that any closed term of the type of natural numbers reduces to a numeral. This last property, and the uniform structure of introduction/elimination rules, are lost when one extends type theory with an axiom, such as the axiom of function extensionality, or the univalence axiom. Voevodsky has formulated a precise mathematical conjecture connected to this question of canonicity for type theory extended with the axiom of Univalence: given a closed term of the type of natural numbers, is it always possible to ﬁnd a numeral and a proof that this term is equal to this numeral, where this proof of equality may itself use the univalence axiom? More generally, an important issue is whether it is possible to provide a constructive justiﬁcation of the univalence axiom. What about if one adds other homotopically motivated constructions, like higher inductive types? These questions remain open at the present time, although methods are currently being developed to try to ﬁnd answers.
+Another basic issue is the difﬁculty of working with types, such as the natural numbers, that are essentially sets (i.e., discrete spaces), containing only trivial paths. At present, homotopy type theory can really only characterize spaces up to homotopy equivalence, which means that these “discrete spaces” may only be homotopy equivalent to discrete spaces. Type-theoretically, this means there are many paths that are equal to reﬂexivity, but not judgmentally equal to it (see §1.1 for the meaning of “judgmentally”). While this homotopy-invariance has advantages, these “meaningless” identity terms do introduce needless complications into arguments and constructions, so it would be convenient to have a systematic way of eliminating or collapsing them.
+A more specialized, but no less important, problem is the relation between homotopy type theory and the research on higher toposes currently happening at the intersection of higher category theory and homotopy theory. There is a growing conviction among those familiar with both subjects that they are intimately connected. For instance, the notion of a univalent universe should coincide with that of an object classiﬁer, while higher inductive types should be an “elementary” reﬂection of local presentability. More generally, homotopy type theory should be the “internal language” of (∞, 1)-toposes, just as intuitionistic higher-order logic is the internal language of ordinary 1-toposes. Despite this general consensus, however, details remain to be worked out — in particular, questions of coherence and strictness remain to be addressed — and doing so will undoubtedly lead to further insights into both concepts.
+But by far the largest ﬁeld of work to be done is in the ongoing formalization of everyday mathematics in this new system. Recent suc-
+
+17
+cesses in formalizing some facts from basic homotopy theory and category theory have been encouraging; some of these are described in Chapters 8 and 9. Obviously, however, much work remains to be done.
+The homotopy type theory community maintains a web site and group blog at http://homotopytypetheory.org, as well as a discussion email list. Newcomers are always welcome!
+How to read this book
+This book is divided into two parts. Part I, “Foundations”, develops the fundamental concepts of homotopy type theory. This is the mathematical foundation on which the development of speciﬁc subjects is built, and which is required for the understanding of the univalent foundations approach. To a programmer, this is “library code”. Since univalent foundations is a new and different kind of mathematics, its basic notions take some getting used to; thus Part I is fairly extensive.
+Part II, “Mathematics”, consists of four chapters that build on the basic notions of Part I to exhibit some of the new things we can do with univalent foundations in four different areas of mathematics: homotopy theory (Chapter 8), category theory (Chapter 9), set theory (Chapter 10), and real analysis (Chapter 11). The chapters in Part II are more or less independent of each other, although occasionally one will use a lemma proven in another.
+A reader who wants to seriously understand univalent foundations, and be able to work in it, will eventually have to read and understand most of Part I. However, a reader who just wants to get a taste of univalent foundations and what it can do may understandably balk at having to work through over 200 pages before getting to the “meat” in Part II. Fortunately, not all of Part I is necessary in order to read the chapters in Part II. Each chapter in Part II begins with a brief overview of its subject, what univalent foundations has to contribute to it, and the necessary background from Part I, so the courageous reader can turn immediately to the appropriate chapter for their favorite subject. For those who want to understand one or more chapters in Part II more deeply than this, but are not ready to read all of Part I, we provide here a brief summary of Part I, with remarks about which parts are necessary for which chapters in Part II.
+Chapter 1 is about the basic notions of type theory, prior to any homotopical interpretation. A reader who is familiar with Martin-Lo¨ f type theory can quickly skim it to pick up the particulars of the theory we are using. However, readers without experience in type theory will need to
+
+18
+
+INTRODUCTION
+
+read Chapter 1, as there are many subtle differences between type theory and other foundations such as set theory.
+Chapter 2 introduces the homotopical viewpoint on type theory, along with the basic notions supporting this view, and describes the homotopical behavior of each component of the type theory from Chapter 1. It also introduces the univalence axiom (§2.10) — the ﬁrst of the two basic innovations of homotopy type theory. Thus, it is quite basic and we encourage everyone to read it, especially §§2.1–2.4.
+Chapter 3 describes how we represent logic in homotopy type theory, and its connection to classical logic as well as to constructive and intuitionistic logic. Here we deﬁne the law of excluded middle, the axiom of choice, and the axiom of propositional resizing (although, for the most part, we do not need to assume any of these in the rest of the book), as well as the propositional truncation which is essential for representing traditional logic. This chapter is essential background for Chapters 10 and 11, less important for Chapter 9, and not so necessary for Chapter 8.
+Chapters 4 and 5 study two special topics in detail: equivalences (and related notions) and generalized inductive deﬁnitions. While these are important subjects in their own rights and provide a deeper understanding of homotopy type theory, for the most part they are not necessary for Part II. Only a few lemmas from Chapter 4 are used here and there, while the general discussions in §§5.1, 5.6 and 5.7 are helpful for providing the intuition required for Chapter 6. The generalized sorts of inductive definition discussed in §5.7 are also used in a few places in Chapters 10 and 11.
+Chapter 6 introduces the second basic innovation of homotopy type theory — higher inductive types — with many examples. Higher inductive types are the primary object of study in Chapter 8, and some particular ones play important roles in Chapters 10 and 11. They are not so necessary for Chapter 9, although one example is used in §9.9.
+Finally, Chapter 7 discusses homotopy n-types and related notions such as n-connected types. These notions are important for Chapter 8, but not so important in the rest of Part II, although the case n = −1 of some of the lemmas are used in §10.1.
+This completes Part I. As mentioned above, Part II consists of four largely unrelated chapters, each describing what univalent foundations has to offer to a particular subject.
+Of the chapters in Part II, Chapter 8 (Homotopy theory) is perhaps the most radical. Univalent foundations has a very different “synthetic” approach to homotopy theory in which homotopy types are the basic
+
+19
+objects (namely, the types) rather than being constructed using topological spaces or some other set-theoretic model. This enables new styles of proof for classical theorems in algebraic topology, of which we present a sampling, from π1(S1) = Z to the Freudenthal suspension theorem.
+In Chapter 9 (Category theory), we develop some basic (1-)category theory, adhering to the principle of the univalence axiom that equality is isomorphism. This has the pleasant effect of ensuring that all deﬁnitions and constructions are automatically invariant under equivalence of categories: indeed, equivalent categories are equal just as equivalent types are equal. (It also has connections to higher category theory and higher topos theory.)
+Chapter 10 (Set theory) studies sets in univalent foundations. The category of sets has its usual properties, hence provides a foundation for any mathematics that doesn’t need homotopical or higher-categorical structures. We also observe that univalence makes cardinal and ordinal numbers a bit more pleasant, and that higher inductive types yield a cumulative hierarchy satisfying the usual axioms of Zermelo–Fraenkel set theory.
+In Chapter 11 (Real numbers), we summarize the construction of Dedekind real numbers, and then observe that higher inductive types allow a deﬁnition of Cauchy real numbers that avoids some associated problems in constructive mathematics. Then we sketch a similar approach to Conway’s surreal numbers.
+Each chapter in this book ends with a Notes section, which collects historical comments, references to the literature, and attributions of results, to the extent possible. We have also included Exercises at the end of each chapter, to assist the reader in gaining familiarity with doing mathematics in univalent foundations.
+Finally, recall that this book was written as a massively collaborative effort by a large number of people. We have done our best to achieve consistency in terminology and notation, and to put the mathematics in a linear sequence that ﬂows logically, but it is very likely that some imperfections remain. We ask the reader’s forgiveness for any such infelicities, and welcome suggestions for improvement of the next edition.
+
+20
+
+INTRODUCTION
+
+PART I
+FOUNDATIONS
+
+Chapter 1
+Type theory
+1.1 Type theory versus set theory
+Homotopy type theory is (among other things) a foundational language for mathematics, i.e., an alternative to Zermelo–Fraenkel set theory. However, it behaves differently from set theory in several important ways, and that can take some getting used to. Explaining these differences carefully requires us to be more formal here than we will be in the rest of the book. As stated in the introduction, our goal is to write type theory informally; but for a mathematician accustomed to set theory, more precision at the beginning can help avoid some common misconceptions and mistakes.
+We note that a set-theoretic foundation has two “layers”: the deductive system of ﬁrst-order logic, and, formulated inside this system, the axioms of a particular theory, such as ZFC. Thus, set theory is not only about sets, but rather about the interplay between sets (the objects of the second layer) and propositions (the objects of the ﬁrst layer).
+By contrast, type theory is its own deductive system: it need not be formulated inside any superstructure, such as ﬁrst-order logic. Instead of the two basic notions of set theory, sets and propositions, type theory has one basic notion: types. Propositions (statements which we can prove, disprove, assume, negate, and so on1) are identiﬁed with particular types, via the correspondence shown in Table 1 on page 15. Thus,
+1Confusingly, it is also a common practice (dating back to Euclid) to use the word “proposition” synonymously with “theorem”. We will conﬁne ourselves to the logician’s usage, according to which a proposition is a statement susceptible to proof, whereas a theorem (or “lemma” or “corollary”) is such a statement that has been proven. Thus “0 = 1” and its negation “¬(0 = 1)” are both propositions, but only the latter is a theorem.
+
+24
+
+CHAPTER 1. TYPE THEORY
+
+the mathematical activity of proving a theorem is identiﬁed with a special case of the mathematical activity of constructing an object—in this case, an inhabitant of a type that represents a proposition.
+This leads us to another difference between type theory and set theory, but to explain it we must say a little about deductive systems in general. Informally, a deductive system is a collection of rules for deriving things called judgments. If we think of a deductive system as a formal game, then the judgments are the “positions” in the game which we reach by following the game rules. We can also think of a deductive system as a sort of algebraic theory, in which case the judgments are the elements (like the elements of a group) and the deductive rules are the operations (like the group multiplication). From a logical point of view, the judgments can be considered to be the “external” statements, living in the metatheory, as opposed to the “internal” statements of the theory itself.
+In the deductive system of ﬁrst-order logic (on which set theory is based), there is only one kind of judgment: that a given proposition has a proof. That is, each proposition A gives rise to a judgment “A has a proof”, and all judgments are of this form. A rule of ﬁrst-order logic such as “from A and B infer A ∧ B” is actually a rule of “proof construction” which says that given the judgments “A has a proof” and “B has a proof”, we may deduce that “A ∧ B has a proof”. Note that the judgment “A has a proof” exists at a different level from the proposition A itself, which is an internal statement of the theory.
+The basic judgment of type theory, analogous to “A has a proof”, is written “a : A” and pronounced as “the term a has type A”, or more loosely “a is an element of A” (or, in homotopy type theory, “a is a point of A”). When A is a type representing a proposition, then a may be called a witness to the provability of A, or evidence of the truth of A (or even a proof of A, but we will try to avoid this confusing terminology). In this case, the judgment a : A is derivable in type theory (for some a) precisely when the analogous judgment “A has a proof” is derivable in ﬁrst-order logic (modulo differences in the axioms assumed and in the encoding of mathematics, as we will discuss throughout the book).
+On the other hand, if the type A is being treated more like a set than like a proposition (although as we will see, the distinction can become blurry), then “a : A” may be regarded as analogous to the set-theoretic statement “a ∈ A”. However, there is an essential difference in that “a : A” is a judgment whereas “a ∈ A” is a proposition. In particular, when working internally in type theory, we cannot make statements such as
+
+1.1 TYPE THEORY VERSUS SET THEORY
+
+25
+
+“if a : A then it is not the case that b : B”, nor can we “disprove” the judgment “a : A”.
+A good way to think about this is that in set theory, “membership” is a relation which may or may not hold between two pre-existing objects “a” and “A”, while in type theory we cannot talk about an element “a” in isolation: every element by its very nature is an element of some type, and that type is (generally speaking) uniquely determined. Thus, when we say informally “let x be a natural number”, in set theory this is shorthand for “let x be a thing and assume that x ∈ N”, whereas in type theory “let x : N” is an atomic statement: we cannot introduce a variable without specifying its type.
+At ﬁrst glance, this may seem an uncomfortable restriction, but it is arguably closer to the intuitive mathematical meaning of “let x be a natural number”. In practice, it seems that whenever we actually need “a ∈ A” to be a proposition rather than a judgment, there is always an ambient set B of which a is known to be an element and A is known to be a subset. This situation is also easy to represent in type theory, by taking a to be an element of the type B, and A to be a predicate on B; see §3.5.
+A last difference between type theory and set theory is the treatment of equality. The familiar notion of equality in mathematics is a proposition: e.g. we can disprove an equality or assume an equality as a hypothesis. Since in type theory, propositions are types, this means that equality is a type: for elements a, b : A (that is, both a : A and b : A) we have a type “a =A b”. (In homotopy type theory, of course, this equality proposition can behave in unfamiliar ways: see §1.12 and Chapter 2, and the rest of the book). When a =A b is inhabited, we say that a and b are (propositionally) equal.
+However, in type theory there is also a need for an equality judgment, existing at the same level as the judgment “x : A”. This is called judgmental equality or deﬁnitional equality, and we write it as a ≡ b : A or simply a ≡ b. It is helpful to think of this as meaning “equal by deﬁnition”. For instance, if we deﬁne a function f : N → N by the equation f (x) = x2, then the expression f (3) is equal to 32 by deﬁnition. Inside the theory, it does not make sense to negate or assume an equality-bydeﬁnition; we cannot say “if x is equal to y by deﬁnition, then z is not equal to w by deﬁnition”. Whether or not two expressions are equal by deﬁnition is just a matter of expanding out the deﬁnitions; in particular, it is algorithmically decidable (though the algorithm is necessarily meta-theoretic, not internal to the theory).
+As type theory becomes more complicated, judgmental equality can
+
+26
+
+CHAPTER 1. TYPE THEORY
+
+get more subtle than this, but it is a good intuition to start from. Alternatively, if we regard a deductive system as an algebraic theory, then judgmental equality is simply the equality in that theory, analogous to the equality between elements of a group—the only potential for confusion is that there is also an object inside the deductive system of type theory (namely the type “a = b”) which behaves internally as a notion of “equality”.
+The reason we want a judgmental notion of equality is so that it can control the other form of judgment, “a : A”. For instance, suppose we have given a proof that 32 = 9, i.e. we have derived the judgment p : (32 = 9) for some p. Then the same witness p ought to count as a proof that f (3) = 9, since f (3) is 32 by deﬁnition. The best way to represent this is with a rule saying that given the judgments a : A and A ≡ B, we may derive the judgment a : B.
+Thus, for us, type theory will be a deductive system based on two forms of judgment:
+
+Judgment
+a:A a≡b:A
+
+Meaning
+“a is an object of type A” “a and b are deﬁnitionally equal objects of type A”
+
+When introducing a deﬁnitional equality, i.e., deﬁning one thing to be equal to another, we will use the symbol “:≡”. Thus, the above deﬁnition of the function f would be written as f (x) :≡ x2.
+Because judgments cannot be put together into more complicated statements, the symbols “:” and “≡” bind more loosely than anything else.2 Thus, for instance, “p : x = y” should be parsed as “p : (x = y)”, which makes sense since “x = y” is a type, and not as “(p : x) = y”, which is senseless since “p : x” is a judgment and cannot be equal to anything. Similarly, “A ≡ x = y” can only be parsed as “A ≡ (x = y)”, although in extreme cases such as this, one ought to add parentheses anyway to aid reading comprehension. Moreover, later on we will fall into the common notation of chaining together equalities — e.g. writing a = b = c = d to mean “a = b and b = c and c = d, hence a = d” — and we will also include judgmental equalities in such chains. Context usually sufﬁces to make the intent clear.
+2In formalized type theory, commas and turnstiles can bind even more loosely. For instance, x : A, y : B c : C is parsed as ((x : A), (y : B)) (c : C). However, in this book we refrain from such notation until Appendix A.
+
+1.1 TYPE THEORY VERSUS SET THEORY
+
+27
+
+This is perhaps also an appropriate place to mention that the common mathematical notation “ f : A → B”, expressing the fact that f is a function from A to B, can be regarded as a typing judgment, since we use “A → B” as notation for the type of functions from A to B (as is standard practice in type theory; see §1.4).
+Judgments may depend on assumptions of the form x : A, where x is a variable and A is a type. For example, we may construct an object m + n : N under the assumptions that m, n : N. Another example is that assuming A is a type, x, y : A, and p : x =A y, we may construct an element p−1 : y =A x. The collection of all such assumptions is called the context; from a topological point of view it may be thought of as a “parameter space”. In fact, technically the context must be an ordered list of assumptions, since later assumptions may depend on previous ones: the assumption x : A can only be made after the assumptions of any variables appearing in the type A.
+If the type A in an assumption x : A represents a proposition, then the assumption is a type-theoretic version of a hypothesis: we assume that the proposition A holds. When types are regarded as propositions, we may omit the names of their proofs. Thus, in the second example above we may instead say that assuming x =A y, we can prove y =A x. However, since we are doing “proof-relevant” mathematics, we will frequently refer back to proofs as objects. In the example above, for instance, we may want to establish that p−1 together with the proofs of transitivity and reﬂexivity behave like a groupoid; see Chapter 2.
+Note that under this meaning of the word assumption, we can assume a propositional equality (by assuming a variable p : x = y), but we cannot assume a judgmental equality x ≡ y, since it is not a type that can have an element. However, we can do something else which looks kind of like assuming a judgmental equality: if we have a type or an element which involves a variable x : A, then we can substitute any particular element a : A for x to obtain a more speciﬁc type or element. We will sometimes use language like “now assume x ≡ a” to refer to this process of substitution, even though it is not an assumption in the technical sense introduced above.
+By the same token, we cannot prove a judgmental equality either, since it is not a type in which we can exhibit a witness. Nevertheless, we will sometimes state judgmental equalities as part of a theorem, e.g. “there exists f : A → B such that f (x) ≡ y”. This should be regarded as the making of two separate judgments: ﬁrst we make the judgment f : A → B for some element f , then we make the additional judgment
+
+28
+
+CHAPTER 1. TYPE THEORY
+
+that f (x) ≡ y.
+In the rest of this chapter, we attempt to give an informal presentation of type theory, sufﬁcient for the purposes of this book; we give a more formal account in Appendix A. Aside from some fairly obvious rules (such as the fact that judgmentally equal things can always be substituted for each other), the rules of type theory can be grouped into type formers. Each type former consists of a way to construct types (possibly making use of previously constructed types), together with rules for the construction and behavior of elements of that type. In most cases, these rules follow a fairly predictable pattern, but we will not attempt to make this precise here; see however the beginning of §1.5 and also Chapter 5.
+An important aspect of the type theory presented in this chapter is that it consists entirely of rules, without any axioms. In the description of deductive systems in terms of judgments, the rules are what allow us to conclude one judgment from a collection of others, while the axioms are the judgments we are given at the outset. If we think of a deductive system as a formal game, then the rules are the rules of the game, while the axioms are the starting position. And if we think of a deductive system as an algebraic theory, then the rules are the operations of the theory, while the axioms are the generators for some particular free model of that theory.
+In set theory, the only rules are the rules of ﬁrst-order logic (such as the rule allowing us to deduce “A ∧ B has a proof” from “A has a proof” and “B has a proof”): all the information about the behavior of sets is contained in the axioms. By contrast, in type theory, it is usually the rules which contain all the information, with no axioms being necessary. For instance, in §1.5 we will see that there is a rule allowing us to deduce the judgment “(a, b) : A × B” from “a : A” and “b : B”, whereas in set theory the analogous statement would be (a consequence of) the pairing axiom.
+The advantage of formulating type theory using only rules is that rules are “procedural”. In particular, this property is what makes possible (though it does not automatically ensure) the good computational properties of type theory, such as “canonicity”. However, while this style works for traditional type theories, we do not yet understand how to formulate everything we need for homotopy type theory in this way. In particular, in §§2.9 and 2.10 and Chapter 6 we will have to augment the rules of type theory presented in this chapter by introducing additional axioms, notably the univalence axiom. In this chapter, however, we conﬁne ourselves to a traditional rule-based type theory.
+
+1.2 FUNCTION TYPES
+
+29
+
+1.2 Function types
+
+Given types A and B, we can construct the type A → B of functions
+
+with domain A and codomain B. We also sometimes refer to functions
+
+as maps. Unlike in set theory, functions are not deﬁned as functional
+
+relations; rather they are a primitive concept in type theory. We explain
+
+the function type by prescribing what we can do with functions, how to
+
+construct them and what equalities they induce.
+
+Given a function f : A → B and an element of the domain a : A, we
+
+can apply the function to obtain an element of the codomain B, denoted
+
+f (a) and called the value of f at a. It is common in type theory to omit
+
+the parentheses and denote f (a) simply by f a, and we will sometimes
+
+do this as well.
+
+But how can we construct elements of A → B? There are two equiv-
+
+alent ways: either by direct deﬁnition or by using λ-abstraction. Intro-
+
+ducing a function by deﬁnition means that we introduce a function by
+
+giving it a name — let’s say, f — and saying we deﬁne f : A → B by
+
+giving an equation
+
+f (x) :≡ Φ
+
+(1.2.1)
+
+where x is a variable and Φ is an expression which may use x. In order for this to be valid, we have to check that Φ : B assuming x : A.
+Now we can compute f (a) by replacing the variable x in Φ with a. As an example, consider the function f : N → N which is deﬁned by f (x) :≡ x + x. (We will deﬁne N and + in §1.9.) Then f (2) is judgmentally equal to 2 + 2.
+If we don’t want to introduce a name for the function, we can use λ-abstraction. Given an expression Φ of type B which may use x : A, as above, we write λ(x : A). Φ to indicate the same function deﬁned by (1.2.1). Thus, we have
+
+(λ(x : A). Φ) : A → B. For the example in the previous paragraph, we have the typing judgment
+
+(λ(x : N). x + x) : N → N.
+As another example, for any types A and B and any element y : B, we have a constant function (λ(x : A). y) : A → B.
+We generally omit the type of the variable x in a λ-abstraction and write λx. Φ, since the typing x : A is inferable from the judgment that the function λx. Φ has type A → B. By convention, the “scope” of the
+
+30
+
+CHAPTER 1. TYPE THEORY
+
+variable binding “λx. ” is the entire rest of the expression, unless delimited with parentheses. Thus, for instance, λx. x + x should be parsed as λx. (x + x), not as (λx. x) + x (which would, in this case, be ill-typed anyway).
+Another equivalent notation is
+(x → Φ) : A → B.
+We may also sometimes use a blank “ – ” in the expression Φ in place of a variable, to denote an implicit λ-abstraction. For instance, g(x, – ) is another way to write λy. g(x, y).
+Now a λ-abstraction is a function, so we can apply it to an argument a : A. We then have the following computation rule3, which is a deﬁnitional equality:
+(λx. Φ)(a) ≡ Φ
+where Φ is the expression Φ in which all occurrences of x have been replaced by a. Continuing the above example, we have
+(λx. x + x)(2) ≡ 2 + 2.
+Note that from any function f : A → B, we can construct a lambda abstraction function λx. f (x). Since this is by deﬁnition “the function that applies f to its argument” we consider it to be deﬁnitionally equal to f :4
+f ≡ (λx. f (x)).
+This equality is the uniqueness principle for function types, because it shows that f is uniquely determined by its values.
+The introduction of functions by deﬁnitions with explicit parameters can be reduced to simple deﬁnitions by using λ-abstraction: i.e., we can read a deﬁnition of f : A → B by
+f (x) :≡ Φ
+as f :≡ λx. Φ.
+When doing calculations involving variables, we have to be careful when replacing a variable with an expression that also involves variables, because we want to preserve the binding structure of expressions.
+3Use of this equality is often referred to as β-conversion or β-reduction. 4Use of this equality is often referred to as η-conversion or η-expansion.
+
+1.2 FUNCTION TYPES
+
+31
+
+By the binding structure we mean the invisible link generated by binders such as λ, Π and Σ (the latter we are going to meet soon) between the place where the variable is introduced and where it is used. As an example, consider f : N → (N → N) deﬁned as
+
+f (x) :≡ λy. x + y.
+
+Now if we have assumed somewhere that y : N, then what is f (y)? It
+
+would be wrong to just naively replace x by y everywhere in the expres-
+
+sion “λy. x + y” deﬁning f (x), obtaining λy. y + y, because this means
+
+that y gets captured. Previously, the substituted y was referring to our
+
+assumption, but now it is referring to the argument of the λ-abstraction.
+
+Hence, this naive substitution would destroy the binding structure, al-
+
+lowing us to perform calculations which are semantically unsound.
+
+But what is f (y) in this example? Note that bound (or “dummy”)
+
+variables such as y in the expression λy. x + y have only a local mean-
+
+ing, and can be consistently replaced by any other variable, preserving
+
+the binding structure. Indeed, λy. x + y is declared to be judgmentally equal5 to λz. x + z. It follows that f (y) is judgmentally equal to λz. y + z,
+
+and that answers our question. (Instead of z, any variable distinct from
+
+y could have been used, yielding an equal result.)
+
+Of course, this should all be familiar to any mathematician: it is the
+
+same phenomenon as the fact that if f (x) :≡
+
+2 1
+
+dt x−t
+
+,
+
+then
+
+f (t)
+
+is
+
+not
+
+2 1
+
+dt t−t
+
+but
+
+rather
+
+2 1
+
+ds t−s
+
+.
+
+A λ-abstraction binds a dummy variable in
+
+exactly the same way that an integral does.
+
+We have seen how to deﬁne functions in one variable. One way to
+
+deﬁne functions in several variables would be to use the cartesian prod-
+
+uct, which will be introduced later; a function with parameters A and
+
+B and results in C would be given the type f : A × B → C. However,
+
+there is another choice that avoids using product types, which is called
+
+currying (after the mathematician Haskell Curry).
+
+The idea of currying is to represent a function of two inputs a : A and
+
+b : B as a function which takes one input a : A and returns another func-
+
+tion, which then takes a second input b : B and returns the result. That
+
+is, we consider two-variable functions to belong to an iterated function
+
+type, f : A → (B → C). We may also write this without the parentheses,
+
+as f : A → B → C, with associativity to the right as the default conven-
+
+tion. Then given a : A and b : B, we can apply f to a and then apply the
+
+result to b, obtaining f (a)(b) : C. To avoid the proliferation of parenthe-
+
+ses, we allow ourselves to write f (a)(b) as f (a, b) even though there are
+
+5Use of this equality is often referred to as α-conversion.
+
+32
+
+CHAPTER 1. TYPE THEORY
+
+no products involved. When omitting parentheses around function arguments entirely, we write f a b for ( f a) b, with the default associativity now being to the left so that f is applied to its arguments in the correct order.
+Our notation for deﬁnitions with explicit parameters extends to this situation: we can deﬁne a named function f : A → B → C by giving an equation
+f (x, y) :≡ Φ
+where Φ : C assuming x : A and y : B. Using λ-abstraction this corresponds to
+f :≡ λx. λy. Φ,
+which may also be written as
+f :≡ x → y → Φ.
+We can also implicitly abstract over multiple variables by writing multiple blanks, e.g. g( –, – ) means λx. λy. g(x, y). Currying a function of three or more arguments is a straightforward extension of what we have just described.
+
+1.3 Universes and families
+So far, we have been using the expression “A is a type” informally. We are going to make this more precise by introducing universes. A universe is a type whose elements are types. As in naive set theory, we might wish for a universe of all types U∞ including itself (that is, with U∞ : U∞). However, as in set theory, this is unsound, i.e. we can deduce from it that every type, including the empty type representing the proposition False (see §1.7), is inhabited. For instance, using a representation of sets as trees, we can directly encode Russell’s paradox [Coq92a].
+To avoid the paradox we introduce a hierarchy of universes
+U0 : U1 : U2 : · · ·
+where every universe Ui is an element of the next universe Ui+1. Moreover, we assume that our universes are cumulative, that is that all the elements of the ith universe are also elements of the (i + 1)st universe, i.e. if A : Ui then also A : Ui+1. This is convenient, but has the slightly unpleasant consequence that elements no longer have unique types, and is a bit tricky in other ways that need not concern us here; see the Notes.
+
+1.4 DEPENDENT FUNCTION TYPES (Π-TYPES)
+
+33
+
+When we say that A is a type, we mean that it inhabits some universe Ui. We usually want to avoid mentioning the level i explicitly, and just assume that levels can be assigned in a consistent way; thus we may write A : U omitting the level. This way we can even write U : U , which can be read as Ui : Ui+1, having left the indices implicit. Writing universes in this style is referred to as typical ambiguity. It is convenient but a bit dangerous, since it allows us to write valid-looking proofs that reproduce the paradoxes of self-reference. If there is any doubt about whether an argument is correct, the way to check it is to try to assign levels consistently to all universes appearing in it. When some universe U is assumed, we may refer to types belonging to U as small types.
+To model a collection of types varying over a given type A, we use functions B : A → U whose codomain is a universe. These functions are called families of types (or sometimes dependent types); they correspond to families of sets as used in set theory.
+An example of a type family is the family of ﬁnite sets Fin : N → U , where Fin(n) is a type with exactly n elements. (We cannot deﬁne the family Fin yet — indeed, we have not even introduced its domain N yet — but we will be able to soon; see Exercise 1.9.) We may denote the elements of Fin(n) by 0n, 1n, . . . , (n − 1)n, with subscripts to emphasize that the elements of Fin(n) are different from those of Fin(m) if n is different from m, and all are different from the ordinary natural numbers (which we will introduce in §1.9).
+A more trivial (but very important) example of a type family is the constant type family at a type B : U , which is of course the constant function (λ(x : A). B) : A → U .
+As a non-example, in our version of type theory there is no type family “λ(i : N). Ui”. Indeed, there is no universe large enough to be its codomain. Moreover, we do not even identify the indices i of the universes Ui with the natural numbers N of type theory (the latter to be introduced in §1.9).
+
+1.4 Dependent function types (Π-types)
+In type theory we often use a more general version of function types, called a Π-type or dependent function type. The elements of a Π-type are functions whose codomain type can vary depending on the element of the domain to which the function is applied, called dependent functions. The name “Π-type” is used because this type can also be regarded as the cartesian product over a given type.
+
+34
+
+CHAPTER 1. TYPE THEORY
+
+Given a type A : U and a family B : A → U , we may construct the
+type of dependent functions ∏(x:A) B(x) : U . There are many alternative notations for this type, such as
+
+∏(x: A) B(x)
+
+∏ B(x)
+(x:A)
+
+∏(x : A), B(x).
+
+If B is a constant family, then the dependent product type is the ordinary function type:
+∏(x:A)B ≡ (A → B).
+Indeed, all the constructions of Π-types are generalizations of the corresponding constructions on ordinary function types.
+We can introduce dependent functions by explicit deﬁnitions: to deﬁne f : ∏(x:A) B(x), where f is the name of a dependent function to be deﬁned, we need an expression Φ : B(x) possibly involving the variable x : A, and we write
+f (x) :≡ Φ for x : A.
+
+Alternatively, we can use λ-abstraction
+
+λx. Φ : ∏ B(x). x:A
+
+(1.4.1)
+
+As with non-dependent functions, we can apply a dependent function f : ∏(x:A) B(x) to an argument a : A to obtain an element f (a) : B(a). The equalities are the same as for the ordinary function type, i.e. we have the computation rule given a : A we have f (a) ≡ Φ and (λx. Φ)(a) ≡ Φ , where Φ is obtained by replacing all occurrences of x in Φ by a (avoiding variable capture, as always). Similarly, we have the uniqueness principle f ≡ (λx. f (x)) for any f : ∏(x:A) B(x).
+As an example, recall from §1.3 that there is a type family Fin : N → U whose values are the standard ﬁnite sets, with elements 0n, 1n, . . . , (n − 1)n : Fin(n). There is then a dependent function fmax : ∏(n:N) Fin(n + 1) which returns the “largest” element of each nonempty ﬁnite type, fmax(n) :≡ nn+1. As was the case for Fin itself, we cannot deﬁne fmax yet, but we will be able to soon; see Exercise 1.9.
+Another important class of dependent function types, which we can deﬁne now, are functions which are polymorphic over a given universe. A polymorphic function is one which takes a type as one of its arguments, and then acts on elements of that type (or of other types constructed from it). An example is the polymorphic identity function id :
+
+1.5 PRODUCT TYPES
+
+35
+
+∏(A:U) A → A, which we deﬁne by id :≡ λ(A : U ). λ(x : A). x. (Like λabstractions, Πs automatically scope over the rest of the expression unless delimited; thus id : ∏(A:U ) A → A means id : ∏(A:U )(A → A). This convention, though unusual in mathematics, is common in type theory.)
+We sometimes write some arguments of a dependent function as subscripts. For instance, we might equivalently deﬁne the polymorphic identity function by idA(x) :≡ x. Moreover, if an argument can be inferred from context, we may omit it altogether. For instance, if a : A, then writing id(a) is unambiguous, since id must mean idA in order for it to be applicable to a.
+Another, less trivial, example of a polymorphic function is the “swap” operation that switches the order of the arguments of a (curried) twoargument function:
+swap : ∏ ∏ ∏ (A → B → C) → (B → A → C).
+(A:U ) (B:U ) (C:U )
+We can deﬁne this by
+swap(A, B, C, g) :≡ λb. λa. g(a)(b).
+We might also equivalently write the type arguments as subscripts:
+swapA,B,C(g)(b, a) :≡ g(a, b).
+Note that as we did for ordinary functions, we use currying to deﬁne dependent functions with several arguments (such as swap). However, in the dependent case the second domain may depend on the ﬁrst one, and the codomain may depend on both. That is, given A : U and type families B : A → U and C : ∏(x:A) B(x) → U , we may construct the type ∏(x:A) ∏(y:B(x)) C(x, y) of functions with two arguments. In the case when B is constant and equal to A, we may condense the notation and write ∏(x,y:A); for instance, the type of swap could also be written as
+swap : ∏ (A → B → C) → (B → A → C). A,B,C:U
+Finally, given f : ∏(x:A) ∏(y:B(x)) C(x, y) and arguments a : A and b : B(a), we have f (a)(b) : C(a, b), which, as before, we write as f (a, b) : C(a, b).
+
+1.5 Product types
+Given types A, B : U we introduce the type A × B : U , which we call their cartesian product. We also introduce a nullary product type, called the
+
+36
+
+CHAPTER 1. TYPE THEORY
+
+unit type 1 : U . We intend the elements of A × B to be pairs (a, b) : A × B, where a : A and b : B, and the only element of 1 to be some particular object : 1. However, unlike in set theory, where we deﬁne ordered pairs to be particular sets and then collect them all together into the cartesian product, in type theory, ordered pairs are a primitive concept, as are functions.
+Remark 1.5.1. There is a general pattern for introduction of a new kind of type in type theory. We have already seen this pattern in §§1.2 and 1.46, so it is worth emphasizing the general form. To specify a type, we specify:
+(i) how to form new types of this kind, via formation rules. (For example, we can form the function type A → B when A is a type and when B is a type. We can form the dependent function type ∏(x:A) B(x) when A is a type and B(x) is a type for x : A.)
+(ii) how to construct elements of that type. These are called the type’s constructors or introduction rules. (For example, a function type has one constructor, λ-abstraction. Recall that a direct deﬁnition like f (x) :≡ 2x can equivalently be phrased as a λ-abstraction f :≡ λx. 2x.)
+(iii) how to use elements of that type. These are called the type’s eliminators or elimination rules. (For example, the function type has one eliminator, namely function application.)
+(iv) a computation rule7, which expresses how an eliminator acts on a constructor. (For example, for functions, the computation rule states that (λx. Φ)(a) is judgmentally equal to the substitution of a for x in Φ.)
+(v) an optional uniqueness principle8, which expresses uniqueness of maps into or out of that type. For some types, the uniqueness principle characterizes maps into the type, by stating that every element of the type is uniquely determined by the results of applying eliminators to it, and can be reconstructed from those results by applying a constructor—thus expressing how constructors act on eliminators, dually to the computation rule. (For example, for functions, the uniqueness principle says that any function f is judgmentally equal to the “expanded” function λx. f (x), and thus is uniquely determined by its values.) For other types, the
+6The description of universes above is an exception. 7also referred to as β-reduction 8also referred to as η-expansion
+
+1.5 PRODUCT TYPES
+
+37
+
+uniqueness principle says that every map (function) from that type is uniquely determined by some data. (An example is the coproduct type introduced in §1.7, whose uniqueness principle is mentioned in §2.15.)
+When the uniqueness principle is not taken as a rule of judgmental equality, it is often nevertheless provable as a propositional equality from the other rules for the type. In this case we call it a propositional uniqueness principle. (In later chapters we will also occasionally encounter propositional computation rules.)
+The inference rules in Appendix A.2 are organized and named accordingly; see, for example, Appendix A.2.4, where each possibility is realized.
+The way to construct pairs is obvious: given a : A and b : B, we may form (a, b) : A × B. Similarly, there is a unique way to construct elements of 1, namely we have : 1. We expect that “every element of A × B is a pair”, which is the uniqueness principle for products; we do not assert this as a rule of type theory, but we will prove it later on as a propositional equality.
+Now, how can we use pairs, i.e. how can we deﬁne functions out of a product type? Let us ﬁrst consider the deﬁnition of a non-dependent function f : A × B → C. Since we intend the only elements of A × B to be pairs, we expect to be able to deﬁne such a function by prescribing the result when f is applied to a pair (a, b). We can prescribe these results by providing a function g : A → B → C. Thus, we introduce a new rule (the elimination rule for products), which says that for any such g, we can deﬁne a function f : A × B → C by
+f ((a, b)) :≡ g(a)(b).
+We avoid writing g(a, b) here, in order to emphasize that g is not a function on a product. (However, later on in the book we will often write g(a, b) both for functions on a product and for curried functions of two variables.) This deﬁning equation is the computation rule for product types.
+Note that in set theory, we would justify the above deﬁnition of f by the fact that every element of A × B is an ordered pair, so that it sufﬁces to deﬁne f on such pairs. By contrast, type theory reverses the situation: we assume that a function on A × B is well-deﬁned as soon as we specify its values on pairs, and from this (or more precisely, from its more general version for dependent functions, below) we will be able to prove that
+
+38
+
+CHAPTER 1. TYPE THEORY
+
+every element of A × B is a pair. From a category-theoretic perspective, we can say that we deﬁne the product A × B to be left adjoint to the “exponential” B → C, which we have already introduced.
+As an example, we can derive the projection functions
+
+pr1 : A × B → A pr2 : A × B → B
+with the deﬁning equations
+
+pr1((a, b)) :≡ a pr2((a, b)) :≡ b.
+Rather than invoking this principle of function deﬁnition every time we want to deﬁne a function, an alternative approach is to invoke it once, in a universal case, and then simply apply the resulting function in all other cases. That is, we may deﬁne a function of type
+
+recA×B : ∏ (A → B → C) → A × B → C C:U
+with the deﬁning equation
+
+(1.5.2)
+
+recA×B(C, g, (a, b)) :≡ g(a)(b).
+
+Then instead of deﬁning functions such as pr1 and pr2 directly by a deﬁning equation, we could deﬁne
+
+pr1 :≡ recA×B(A, λa. λb. a) pr2 :≡ recA×B(B, λa. λb. b).
+We refer to the function recA×B as the recursor for product types. The name “recursor” is a bit unfortunate here, since no recursion is taking place. It comes from the fact that product types are a degenerate example of a general framework for inductive types, and for types such as the natural numbers, the recursor will actually be recursive. We may also speak of the recursion principle for cartesian products, meaning the fact that we can deﬁne a function f : A × B → C as above by giving its value on pairs.
+We leave it as a simple exercise to show that the recursor can be derived from the projections and vice versa.
+We also have a recursor for the unit type:
+
+rec1 : ∏ C → 1 → C C:U
+
+1.5 PRODUCT TYPES
+
+39
+
+with the deﬁning equation
+rec1(C, c, ) :≡ c.
+Although we include it to maintain the pattern of type deﬁnitions, the recursor for 1 is completely useless, because we could have deﬁned such a function directly by simply ignoring the argument of type 1.
+To be able to deﬁne dependent functions over the product type, we have to generalize the recursor. Given C : A × B → U , we may deﬁne a function f : ∏(x:A×B) C(x) by providing a function
+g : ∏ ∏ C((x, y))
+(x:A) (y:B)
+with deﬁning equation
+f ((x, y)) :≡ g(x)(y).
+For example, in this way we can prove the propositional uniqueness principle, which says that every element of A × B is equal to a pair. Speciﬁcally, we can construct a function
+uniqA×B : ∏ ((pr1(x), pr2(x)) =A×B x). x:A×B
+Here we are using the identity type, which we are going to introduce below in §1.12. However, all we need to know now is that there is a reﬂexivity element reﬂx : x =A x for any x : A. Given this, we can deﬁne
+uniqA×B((a, b)) :≡ reﬂ(a,b). This construction works, because in the case that x :≡ (a, b) we can calculate
+(pr1((a, b)), pr2((a, b))) ≡ (a, b) using the deﬁning equations for the projections. Therefore,
+reﬂ(a,b) : (pr1((a, b)), pr2((a, b))) = (a, b)
+is well-typed, since both sides of the equality are judgmentally equal. More generally, the ability to deﬁne dependent functions in this way
+means that to prove a property for all elements of a product, it is enough to prove it for its canonical elements, the ordered pairs. When we come to inductive types such as the natural numbers, the analogous property will be the ability to write proofs by induction. Thus, if we do as we
+
+40
+
+CHAPTER 1. TYPE THEORY
+
+did above and apply this principle once in the universal case, we call the resulting function induction for product types: given A, B : U we have
+
+indA×B : ∏ ∏ ∏ C((x, y)) → ∏ C(x)
+
+C:A×B→U (x:A) (y:B)
+
+x:A×B
+
+with the deﬁning equation
+
+indA×B(C, g, (a, b)) :≡ g(a)(b).
+
+Similarly, we may speak of a dependent function deﬁned on pairs being
+
+obtained from the induction principle of the cartesian product. It is easy
+
+to see that the recursor is just the special case of induction in the case
+
+that the family C is constant. Because induction describes how to use
+
+an element of the product type, induction is also called the (dependent)
+
+eliminator, and recursion the non-dependent eliminator.
+
+Induction for the unit type turns out to be more useful than the re-
+
+cursor:
+
+ind1 : ∏ C( ) → ∏ C(x)
+
+C:1→U
+
+x:1
+
+with the deﬁning equation
+
+ind1(C, c, ) :≡ c.
+Induction enables us to prove the propositional uniqueness principle for 1, which asserts that its only inhabitant is . That is, we can construct
+uniq1 : ∏ x = x:1
+by using the deﬁning equations
+
+uniq1( ) :≡ reﬂ or equivalently by using induction:
+
+uniq1 :≡ ind1(λx. x = , reﬂ ).
+
+1.6 Dependent pair types (Σ-types)
+Just as we generalized function types (§1.2) to dependent function types (§1.4), it is often useful to generalize the product types from §1.5 to allow
+
+1.6 DEPENDENT PAIR TYPES (Σ-TYPES)
+
+41
+
+the type of the second component of a pair to vary depending on the choice of the ﬁrst component. This is called a dependent pair type, or Σ-type, because in set theory it corresponds to an indexed sum (in the sense of coproduct or disjoint union) over a given type.
+Given a type A : U and a family B : A → U , the dependent pair type is written as ∑(x:A) B(x) : U . Alternative notations are
+
+∑(x: A) B(x)
+
+∑ B(x)
+(x:A)
+
+∑(x : A), B(x).
+
+Like other binding constructs such as λ-abstractions and Πs, Σs auto-
+matically scope over the rest of the expression unless delimited, so e.g.
+∑(x:A) B(x) → C means ∑(x:A)(B(x) → C). The way to construct elements of a dependent pair type is by pairing:
+we have (a, b) : ∑(x:A) B(x) given a : A and b : B(a). If B is constant, then the dependent pair type is the ordinary cartesian product type:
+
+∑ B ≡ (A × B).
+x:A
+All the constructions on Σ-types arise as straightforward generalizations of the ones for product types, with dependent functions often replacing non-dependent ones.
+For instance, the recursion principle says that to deﬁne a non-dependent function out of a Σ-type f : (∑(x:A) B(x)) → C, we provide a function g : ∏(x:A) B(x) → C, and then we can deﬁne f via the deﬁning equation
+f ((a, b)) :≡ g(a)(b).
+For instance, we can derive the ﬁrst projection from a Σ-type:
+
+pr1 : ∑ B(x) → A x:A
+by the deﬁning equation
+pr1((a, b)) :≡ a. However, since the type of the second component of a pair
+(a, b) : ∑ B(x) x:A
+is B(a), the second projection must be a dependent function, whose type involves the ﬁrst projection function:
+pr2 : ∏ B(pr1(p)).
+p:∑(x:A) B(x)
+
+42
+
+CHAPTER 1. TYPE THEORY
+
+Thus we need the induction principle for Σ-types (the “dependent eliminator”). This says that to construct a dependent function out of a Σ-type into a family C : (∑(x:A) B(x)) → U , we need a function
+g : ∏ ∏ C((a, b)).
+(a:A) (b:B(a))
+
+We can then derive a function
+
+with deﬁning equation
+
+f : ∏ C(p)
+p:∑(x:A) B(x)
+
+f ((a, b)) :≡ g(a)(b).
+
+Applying this with C(p) :≡ B(pr1(p)), we can deﬁne
+pr2 : ∏ B(pr1(p))
+p:∑(x:A) B(x)
+
+with the obvious equation
+
+pr2((a, b)) :≡ b.
+To convince ourselves that this is correct, we note that B(pr1((a, b))) ≡ B(a), using the deﬁning equation for pr1, and indeed b : B(a).
+We can package the recursion and induction principles into the recursor for Σ:
+
+∏ rec∑(x:A) B(x) :
+
+∏(x:A)B(x) → C → ∑(x:A)B(x) → C
+
+(C:U )
+
+with the deﬁning equation
+
+rec∑(x:A) B(x)(C, g, (a, b)) :≡ g(a)(b) and the corresponding induction operator:
+
+ind∑(x:A) B(x) :
+
+∏
+
+∏(a:A)∏(b:B(a))C((a, b)) →
+
+∏
+
+C(p)
+
+(C:(∑(x:A) B(x))→U )
+
+(p:∑(x:A) B(x))
+
+with the deﬁning equation
+
+ind∑(x:A) B(x)(C, g, (a, b)) :≡ g(a)(b).
+
+1.6 DEPENDENT PAIR TYPES (Σ-TYPES)
+
+43
+
+As before, the recursor is the special case of induction when the family C is constant.
+As a further example, consider the following principle, where A and B are types and R : A → B → U :
+ac : ∏(x:A)∑(y:B) R(x, y) → ∑( f :A→B)∏(x:A) R(x, f (x)) .
+We may regard R as a “proof-relevant relation” between A and B, with R(a, b) the type of witnesses for relatedness of a : A and b : B. Then ac says intuitively that if we have a dependent function g assigning to every a : A a dependent pair (b, r) where b : B and r : R(a, b), then we have a function f : A → B and a dependent function assigning to every a : A a witness that R(a, f (a)). Our intuition tells us that we can just split up the values of g into their components. Indeed, using the projections we have just deﬁned, we can deﬁne:
+ac(g) :≡ λx. pr1(g(x)), λx. pr2(g(x)) .
+To verify that this is well-typed, note that if g : ∏(x:A) ∑(y:B) R(x, y), we have
+λx. pr1(g(x)) : A → B, λx. pr2(g(x)) : ∏(x:A)R(x, pr1(g(x))).
+Moreover, the type ∏(x:A) R(x, pr1(g(x))) is the result of applying the type family λ f . ∏(x:A) R(x, f (x)) being summed over in the codomain of ac to the function λx. pr1(g(x)):
+∏(x:A)R(x, pr1(g(x))) ≡ λ f . ∏(x:A)R(x, f (x)) (λx. pr1(g(x))).
+Thus, we have
+λx. pr1(g(x)), λx. pr2(g(x)) : ∑( f :A→B)∏(x:A)R(x, f (x))
+as required. If we read Π as “for all” and Σ as “there exists”, then the type of the
+function ac expresses: if for all x : A there is a y : B such that R(x, y), then there is a function f : A → B such that for all x : A we have R(x, f (x)). Since this sounds like a version of the axiom of choice, the function ac has traditionally been called the type-theoretic axiom of choice, and as we have just shown, it can be proved directly from the rules of type theory,
+
+44
+
+CHAPTER 1. TYPE THEORY
+
+rather than having to be taken as an axiom. However, note that no choice is actually involved, since the choices have already been given to us in the premise: all we have to do is take it apart into two functions: one representing the choice and the other its correctness. In §3.8 we will give another formulation of an “axiom of choice” which is closer to the usual one.
+Dependent pair types are often used to deﬁne types of mathematical structures, which commonly consist of several dependent pieces of data. To take a simple example, suppose we want to deﬁne a magma to be a type A together with a binary operation m : A → A → A. The precise meaning of the phrase “together with” (and the synonymous “equipped with”) is that “a magma” is a pair (A, m) consisting of a type A : U and an operation m : A → A → A. Since the type A → A → A of the second component m of this pair depends on its ﬁrst component A, such pairs belong to a dependent pair type. Thus, the deﬁnition “a magma is a type A together with a binary operation m : A → A → A” should be read as deﬁning the type of magmas to be
+
+Magma :≡ ∑ (A → A → A). A:U
+
+Given a magma, we extract its underlying type (its “carrier”) with the
+
+ﬁrst projection pr1, and its operation with the second projection pr2. Of course, structures built from more than two pieces of data require it-
+
+erated pair types, which may be only partially dependent; for instance
+
+the type of pointed magmas (magmas (A, m) equipped with a basepoint
+
+e : A) is
+
+PointedMagma :≡ ∑ (A → A → A) × A. A:U
+
+We generally also want to impose axioms on such a structure, e.g. to
+
+make a pointed magma into a monoid or a group. This can also be done using Σ-types; see §1.11.
+
+In the rest of the book, we will sometimes make deﬁnitions of this
+
+sort explicit, but eventually we trust the reader to translate them from
+
+English into Σ-types. We also generally follow the common mathemat-
+
+ical practice of using the same letter for a structure of this sort and for
+
+its carrier (which amounts to leaving the appropriate projection function
+
+implicit in the notation): that is, we will speak of a magma A with its
+
+operation m : A → A → A.
+
+Note that the canonical elements of PointedMagma are of the form
+
+(A, (m, e)) where A : U , m : A → A → A, and e : A. Because of the fre-
+
+quency with which iterated Σ-types of this sort arise, we use the usual
+
+1.7 COPRODUCT TYPES
+
+45
+
+notation of ordered triples, quadruples and so on to stand for nested pairs (possibly dependent) associating to the right. That is, we have (x, y, z) :≡ (x, (y, z)) and (x, y, z, w) :≡ (x, (y, (z, w))), etc.
+
+1.7 Coproduct types
+Given A, B : U , we introduce their coproduct type A + B : U . This corresponds to the disjoint union in set theory, and we may also use that name for it. In type theory, as was the case with functions and products, the coproduct must be a fundamental construction, since there is no previously given notion of “union of types”. We also introduce a nullary version: the empty type 0 : U .
+There are two ways to construct elements of A + B, either as inl(a) : A + B for a : A, or as inr(b) : A + B for b : B. (The names inl and inr are short for “left injection” and “right injection”.) There are no ways to construct elements of the empty type.
+To construct a non-dependent function f : A + B → C, we need functions g0 : A → C and g1 : B → C. Then f is deﬁned via the deﬁning equations
+f (inl(a)) :≡ g0(a), f (inr(b)) :≡ g1(b).
+That is, the function f is deﬁned by case analysis. As before, we can derive the recursor:
+recA+B : ∏ (A → C) → (B → C) → A + B → C
+(C:U )
+with the deﬁning equations
+recA+B(C, g0, g1, inl(a)) :≡ g0(a), recA+B(C, g0, g1, inr(b)) :≡ g1(b).
+We can always construct a function f : 0 → C without having to give any deﬁning equations, because there are no elements of 0 on which to deﬁne f . Thus, the recursor for 0 is
+rec0 : ∏(C:U )0 → C,
+which constructs the canonical function from the empty type to any other type. Logically, it corresponds to the principle ex falso quodlibet.
+
+46
+
+CHAPTER 1. TYPE THEORY
+
+To construct a dependent function f : ∏(x:A+B) C(x) out of a coproduct, we assume as given the family C : (A + B) → U , and require
+g0 : ∏ C(inl(a)), a:A
+g1 : ∏ C(inr(b)).
+b:B
+This yields f with the deﬁning equations:
+f (inl(a)) :≡ g0(a), f (inr(b)) :≡ g1(b).
+We package this scheme into the induction principle for coproducts:
+
+indA+B :
+
+∏
+
+∏(a:A)C(inl(a)) →
+
+(C:(A+B)→U )
+
+∏(b:B)C(inr(b)) → ∏(x:A+B)C(x).
+
+As before, the recursor arises in the case that the family C is constant. The induction principle for the empty type
+
+ind0 : ∏ ∏ C(z)
+(C:0→U ) (z:0)
+
+gives us a way to deﬁne a trivial dependent function out of the empty type.
+
+1.8 The type of booleans
+The type of booleans 2 : U is intended to have exactly two elements 02, 12 : 2. It is clear that we could construct this type out of coproduct and unit types as 1 + 1. However, since it is used frequently, we give the explicit rules here. Indeed, we are going to observe that we can also go the other way and derive binary coproducts from Σ-types and 2.
+To derive a function f : 2 → C we need c0, c1 : C and add the deﬁning equations
+f (02) :≡ c0, f (12) :≡ c1.
+
+1.8 THE TYPE OF BOOLEANS
+
+47
+
+The recursor corresponds to the if-then-else construct in functional pro-
+
+gramming:
+
+rec2 : ∏ C → C → 2 → C C:U
+
+with the deﬁning equations
+
+rec2(C, c0, c1, 02) :≡ c0, rec2(C, c0, c1, 12) :≡ c1.
+Given C : 2 → U , to derive a dependent function f : ∏(x:2) C(x) we need c0 : C(02) and c1 : C(12), in which case we can give the deﬁning equations
+
+f (02) :≡ c0, f (12) :≡ c1.
+
+We package this up into the induction principle
+
+ind2 : ∏ C(02) → C(12) → ∏(x:2)C(x)
+(C:2→U )
+
+with the deﬁning equations
+
+ind2(C, c0, c1, 02) :≡ c0, ind2(C, c0, c1, 12) :≡ c1.
+
+As an example, using the induction principle we can deduce that, as we expect, every element of 2 is either 12 or 02. As before, in order to state this we use the equality types which we have not yet introduced, but we need only the fact that everything is equal to itself by reﬂx : x = x. Thus, we construct an element of
+
+∏ (x = 02) + (x = 12),
+x:2
+
+(1.8.1)
+
+i.e. a function assigning to each x : 2 either an equality x = 02 or an equality x = 12. We deﬁne this element using the induction principle for 2, with C(x) :≡ (x = 02) + (x = 12); the two inputs are inl(reﬂ02 ) : C(02) and inr(reﬂ12 ) : C(12). In other words, our element of (1.8.1) is
+
+ind2(λx. (x = 02) + (x = 12), inl(reﬂ02 ), inr(reﬂ12 )).
+
+We have remarked that Σ-types can be regarded as analogous to indexed disjoint unions, while coproducts are binary disjoint unions. It is
+
+48
+
+CHAPTER 1. TYPE THEORY
+
+natural to expect that a binary disjoint union A + B could be constructed as an indexed one over the two-element type 2. For this we need a type family P : 2 → U such that P(02) ≡ A and P(12) ≡ B. Indeed, we can obtain such a family precisely by the recursion principle for 2. (The ability to deﬁne type families by induction and recursion, using the fact that the universe U is itself a type, is a subtle and important aspect of type theory.) Thus, we could have deﬁned
+
+with
+
+A + B :≡ ∑ rec2(U , A, B, x) x:2
+
+inl(a) :≡ (02, a), inr(b) :≡ (12, b).
+
+We leave it as an exercise to derive the induction principle of a coproduct type from this deﬁnition. (See also Exercise 1.5 and §5.2.)
+We can apply the same idea to products and Π-types: we could have deﬁned
+A × B :≡ ∏ rec2(U , A, B, x). x:2
+Pairs could then be constructed using induction for 2:
+
+(a, b) :≡ ind2(rec2(U , A, B), a, b)
+
+while the projections are straightforward applications
+
+pr1(p) :≡ p(02), pr2(p) :≡ p(12).
+
+The derivation of the induction principle for binary products deﬁned in this way is a bit more involved, and requires function extensionality, which we will introduce in §2.9. Moreover, we do not get the same judgmental equalities; see Exercise 1.6. This is a recurrent issue when encoding one type as another; we will return to it in §5.5.
+We may occasionally refer to the elements 02 and 12 of 2 as “false” and “true” respectively. However, note that unlike in classical mathematics, we do not use elements of 2 as truth values or as propositions. (Instead we identify propositions with types; see §1.11.) In particular, the type A → 2 is not generally the power set of A; it represents only the “decidable” subsets of A (see Chapter 3).
+
+1.9 THE NATURAL NUMBERS
+
+49
+
+1.9 The natural numbers
+
+So far we have rules for constructing new types by abstract operations, but for doing concrete mathematics we also require some concrete types, such as types of numbers. The most basic such is the type N : U of natural numbers; once we have this we can construct integers, rational numbers, real numbers, and so on (see Chapter 11).
+The elements of N are constructed using 0 : N and the successor operation succ : N → N. When denoting natural numbers, we adopt the usual decimal notation 1 :≡ succ(0), 2 :≡ succ(1), 3 :≡ succ(2), . . . .
+The essential property of the natural numbers is that we can deﬁne functions by recursion and perform proofs by induction — where now the words “recursion” and “induction” have a more familiar meaning. To construct a non-dependent function f : N → C out of the natural numbers by recursion, it is enough to provide a starting point c0 : C and a “next step” function cs : N → C → C. This gives rise to f with the deﬁning equations
+f (0) :≡ c0, f (succ(n)) :≡ cs(n, f (n)).
+We say that f is deﬁned by primitive recursion. As an example, we look at how to deﬁne a function on natural num-
+bers which doubles its argument. In this case we have C :≡ N. We ﬁrst need to supply the value of double(0), which is easy: we put c0 :≡ 0. Next, to compute the value of double(succ(n)) for a natural number n, we ﬁrst compute the value of double(n) and then perform the successor operation twice. This is captured by the recurrence cs(n, y) :≡ succ(succ(y)). Note that the second argument y of cs stands for the result of the recursive call double(n).
+Deﬁning double : N → N by primitive recursion in this way, therefore, we obtain the deﬁning equations:
+double(0) :≡ 0 double(succ(n)) :≡ succ(succ(double(n))).
+This indeed has the correct computational behavior: for example, we
+
+50
+
+CHAPTER 1. TYPE THEORY
+
+have
+
+double(2) ≡ double(succ(succ(0))) ≡ cs(succ(0), double(succ(0))) ≡ succ(succ(double(succ(0)))) ≡ succ(succ(cs(0, double(0)))) ≡ succ(succ(succ(succ(double(0))))) ≡ succ(succ(succ(succ(c0)))) ≡ succ(succ(succ(succ(0)))) ≡ 4.
+
+We can deﬁne multi-variable functions by primitive recursion as well, by currying and allowing C to be a function type. For example, we deﬁne addition add : N → N → N with C :≡ N → N and the following “starting point” and “next step” data:
+
+c0 : N → N c0(n) :≡ n
+cs : N → (N → N) → (N → N) cs(m, g)(n) :≡ succ(g(n)).
+
+We thus obtain add : N → N → N satisfying the deﬁnitional equalities
+
+add(0, n) ≡ n add(succ(m), n) ≡ succ(add(m, n)).
+
+As usual, we write add(m, n) as m + n. The reader is invited to verify that 2 + 2 ≡ 4.
+As in previous cases, we can package the principle of primitive recursion into a recursor:
+
+recN : ∏ C → (N → C → C) → N → C
+(C:U )
+
+with the deﬁning equations
+
+recN(C, c0, cs, 0) :≡ c0, recN(C, c0, cs, succ(n)) :≡ cs(n, recN(C, c0, cs, n)).
+Using recN we can present double and add as follows:
+double :≡ recN(N, 0, λn. λy. succ(succ(y))) add :≡ recN(N → N, λn. n, λn. λg. λm. succ(g(m))).
+
+(1.9.1) (1.9.2)
+
+1.9 THE NATURAL NUMBERS
+
+51
+
+Of course, all functions deﬁnable only using the primitive recursion principle will be computable. (The presence of higher function types — that is, functions with other functions as arguments — does, however, mean we can deﬁne more than the usual primitive recursive functions; see e.g. Exercise 1.10.) This is appropriate in constructive mathematics; in §§3.4 and 3.8 we will see how to augment type theory so that we can deﬁne more general mathematical functions.
+We now follow the same approach as for other types, generalizing primitive recursion to dependent functions to obtain an induction principle. Thus, assume as given a family C : N → U , an element c0 : C(0), and a function cs : ∏(n:N) C(n) → C(succ(n)); then we can construct f : ∏(n:N) C(n) with the deﬁning equations:
+f (0) :≡ c0, f (succ(n)) :≡ cs(n, f (n)).
+We can also package this into a single function
+indN : ∏ C(0) → ∏(n:N)C(n) → C(succ(n)) → ∏(n:N)C(n)
+(C:N→U )
+with the deﬁning equations
+indN(C, c0, cs, 0) :≡ c0, indN(C, c0, cs, succ(n)) :≡ cs(n, indN(C, c0, cs, n)).
+Here we ﬁnally see the connection to the classical notion of proof by induction. Recall that in type theory we represent propositions by types, and proving a proposition by inhabiting the corresponding type. In particular, a property of natural numbers is represented by a family of types P : N → U . From this point of view, the above induction principle says that if we can prove P(0), and if for any n we can prove P(succ(n)) assuming P(n), then we have P(n) for all n. This is, of course, exactly the usual principle of proof by induction on natural numbers.
+As an example, consider how we might represent an explicit proof that + is associative. (We will not actually write out proofs in this style, but it serves as a useful example for understanding how induction is represented formally in type theory.) To derive
+assoc : ∏ i + (j + k) = (i + j) + k,
+i,j,k:N
+
+52
+
+CHAPTER 1. TYPE THEORY
+
+it is sufﬁcient to supply
+assoc0 : ∏ 0 + (j + k) = (0 + j) + k
+j,k:N
+and
+
+assocs : ∏
+i:N
+
+∏ i + (j + k) = (i + j) + k
+j,k:N
+→ ∏ succ(i) + (j + k) = (succ(i) + j) + k.
+j,k:N
+
+To derive assoc0, recall that 0 + n ≡ n, and hence 0 + (j + k) ≡ j + k ≡ (0 + j) + k. Hence we can just set
+
+assoc0(j, k) :≡ reﬂj+k.
+
+For assocs, recall that the deﬁnition of + gives succ(m) + n ≡ succ(m + n), and hence
+
+succ(i) + (j + k) ≡ succ(i + (j + k)) and (succ(i) + j) + k ≡ succ((i + j) + k).
+
+Thus, the output type of assocs is equivalently succ(i + (j + k)) = succ((i + j) + k). But its input (the “inductive hypothesis”) yields i + (j + k) = (i + j) + k, so it sufﬁces to invoke the fact that if two natural numbers are equal, then so are their successors. (We will prove this obvious fact in Lemma 2.2.1, using the induction principle of identity types.) We call this latter fact apsucc : (m =N n) → (succ(m) =N succ(n)), so we can deﬁne
+assocs(i, h, j, k) :≡ apsucc(h(j, k)).
+Putting these together with indN, we obtain a proof of associativity.
+
+1.10 Pattern matching and recursion
+The natural numbers introduce an additional subtlety over the types considered up until now. In the case of coproducts, for instance, we could deﬁne a function f : A + B → C either with the recursor:
+f :≡ recA+B(C, g0, g1)
+
+1.10 PATTERN MATCHING AND RECURSION
+
+53
+
+or by giving the deﬁning equations:
+
+f (inl(a)) :≡ g0(a) f (inr(b)) :≡ g1(b).
+
+To go from the former expression of f to the latter, we simply use the computation rules for the recursor. Conversely, given any deﬁning equations
+
+f (inl(a)) :≡ Φ0 f (inr(b)) :≡ Φ1
+where Φ0 and Φ1 are expressions that may involve the variables a and b respectively, we can express these equations equivalently in terms of the recursor by using λ-abstraction:
+
+f :≡ recA+B(C, λa. Φ0, λb. Φ1).
+
+In the case of the natural numbers, however, the “deﬁning equations” of a function such as double:
+
+double(0) :≡ 0 double(succ(n)) :≡ succ(succ(double(n)))
+
+(1.10.1) (1.10.2)
+
+involve the function double itself on the right-hand side. However, we would still like to be able to give these equations, rather than (1.9.1), as the deﬁnition of double, since they are much more convenient and readable. The solution is to read the expression “double(n)” on the righthand side of (1.10.2) as standing in for the result of the recursive call, which in a deﬁnition of the form double :≡ recN(N, c0, cs) would be the second argument of cs.
+More generally, if we have a “deﬁnition” of a function f : N → C such as
+
+f (0) :≡ Φ0 f (succ(n)) :≡ Φs
+
+where Φ0 is an expression of type C, and Φs is an expression of type C which may involve the variable n and also the symbol “ f (n)”, we may
+translate it to a deﬁnition
+
+f :≡ recN(C, Φ0, λn. λr. Φs)
+
+54
+
+CHAPTER 1. TYPE THEORY
+
+where Φs is obtained from Φs by replacing all occurrences of “ f (n)” by the new variable r.
+This style of deﬁning functions by recursion (or, more generally, dependent functions by induction) is so convenient that we frequently adopt it. It is called deﬁnition by pattern matching. Of course, it is very similar to how a computer programmer may deﬁne a recursive function with a body that literally contains recursive calls to itself. However, unlike the programmer, we are restricted in what sort of recursive calls we can make: in order for such a deﬁnition to be re-expressible using the recursion principle, the function f being deﬁned can only appear in the body of f (succ(n)) as part of the composite symbol “ f (n)”. Otherwise, we could write nonsense functions such as
+f (0) :≡ 0
+f (succ(n)) :≡ f (succ(succ(n))).
+If a programmer wrote such a function, it would simply call itself forever on any positive input, going into an inﬁnite loop and never returning a value. In mathematics, however, to be worthy of the name, a function must always associate a unique output value to every input value, so this would be unacceptable.
+This point will be even more important when we introduce more complicated inductive types in Chapters 5, 6 and 11. Whenever we introduce a new kind of inductive deﬁnition, we always begin by deriving its induction principle. Only then do we introduce an appropriate sort of “pattern matching” which can be justiﬁed as a shorthand for the induction principle.
+
+1.11 Propositions as types
+As mentioned in the introduction, to show that a proposition is true in type theory corresponds to exhibiting an element of the type corresponding to that proposition. We regard the elements of this type as evidence or witnesses that the proposition is true. (They are sometimes even called proofs, but this terminology can be misleading, so we generally avoid it.) In general, however, we will not construct witnesses explicitly; instead we present the proofs in ordinary mathematical prose, in such a way that they could be translated into an element of a type. This is no different from reasoning in classical set theory, where we don’t expect to see an explicit derivation using the rules of predicate logic and the axioms of set theory.
+
+1.11 PROPOSITIONS AS TYPES
+
+55
+
+However, the type-theoretic perspective on proofs is nevertheless different in important ways. The basic principle of the logic of type theory is that a proposition is not merely true or false, but rather can be seen as the collection of all possible witnesses of its truth. Under this conception, proofs are not just the means by which mathematics is communicated, but rather are mathematical objects in their own right, on a par with more familiar objects such as numbers, mappings, groups, and so on. Thus, since types classify the available mathematical objects and govern how they interact, propositions are nothing but special types — namely, types whose elements are proofs.
+The basic observation which makes this identiﬁcation feasible is that we have the following natural correspondence between logical operations on propositions, expressed in English, and type-theoretic operations on their corresponding types of witnesses.
+
+English
+True False A and B A or B If A then B A if and only if B Not A
+
+Type Theory
+1 0 A×B A+B A→B (A → B) × (B → A) A→0
+
+The point of the correspondence is that in each case, the rules for constructing and using elements of the type on the right correspond to the rules for reasoning about the proposition on the left. For instance, the basic way to prove a statement of the form “A and B” is to prove A and also prove B, while the basic way to construct an element of A × B is as a pair (a, b), where a is an element (or witness) of A and b is an element (or witness) of B. And if we want to use “A and B” to prove something else, we are free to use both A and B in doing so, analogously to how the induction principle for A × B allows us to construct a function out of it by using elements of A and of B.
+Similarly, the basic way to prove an implication “if A then B” is to assume A and prove B, while the basic way to construct an element of A → B is to give an expression which denotes an element (witness) of B which may involve an unspeciﬁed variable element (witness) of type A. And the basic way to use an implication “if A then B” is deduce B if we know A, analogously to how we can apply a function f : A → B to
+
+56
+
+CHAPTER 1. TYPE THEORY
+
+an element of A to produce an element of B. We strongly encourage the reader to do the exercise of verifying that the rules governing the other type constructors translate sensibly into logic.
+Of special note is that the empty type 0 corresponds to falsity. When speaking logically, we refer to an inhabitant of 0 as a contradiction: thus there is no way to prove a contradiction,9 while from a contradiction anything can be derived. We also deﬁne the negation of a type A as
+
+¬A :≡ A → 0.
+
+Thus, a witness of ¬A is a function A → 0, which we may construct by assuming x : A and deriving an element of 0. Note that although the logic we obtain is “constructive”, as discussed in the introduction, this sort of “proof by contradiction” (assume A and derive a contradiction, concluding ¬A) is perfectly valid constructively: it is simply invoking the meaning of “negation”. The sort of “proof by contradiction” which is disallowed is to assume ¬A and derive a contradiction as a way of proving A. Constructively, such an argument would only allow us to conclude ¬¬A, and the reader can verify that there is no obvious way to get from ¬¬A (that is, from (A → 0) → 0) to A.
+The above translation of logical connectives into type-forming operations is referred to as propositions as types: it gives us a way to translate propositions and their proofs, written in English, into types and their elements. For example, suppose we want to prove the following tautology (one of “de Morgan’s laws”):
+
+“If not A and not B, then not (A or B)”.
+
+(1.11.1)
+
+An ordinary English proof of this fact might go as follows.
+Suppose not A and not B, and also suppose A or B; we will derive a contradiction. There are two cases. If A holds, then since not A, we have a contradiction. Similarly, if B holds, then since not B, we also have a contradiction. Thus we have a contradiction in either case, so not (A or B).
+Now, the type corresponding to our tautology (1.11.1), according to the rules given above, is
+
+(A → 0) × (B → 0) → (A + B → 0)
+
+(1.11.2)
+
+9More precisely, there is no basic way to prove a contradiction, i.e. 0 has no constructors. If our type theory were inconsistent, then there would be some more complicated way to construct an element of 0.
+
+1.11 PROPOSITIONS AS TYPES
+
+57
+
+so we should be able to translate the above proof into an element of this type.
+As an example of how such a translation works, let us describe how a mathematician reading the above English proof might simultaneously construct, in his or her head, an element of (1.11.2). The introductory phrase “Suppose not A and not B” translates into deﬁning a function, with an implicit application of the recursion principle for the cartesian product in its domain (A → 0) × (B → 0). This introduces unnamed variables (hypotheses) of types A → 0 and B → 0. When translating into type theory, we have to give these variables names; let us call them x and y. At this point our partial deﬁnition of an element of (1.11.2) can be written as
+f ((x, y)) :≡ : A + B → 0
+with a “hole” of type A + B → 0 indicating what remains to be done. (We could equivalently write f :≡ rec(A→0)×(B→0)(A + B → 0, λx. λy. ), using the recursor instead of pattern matching.) The next phrase “also suppose A or B; we will derive a contradiction” indicates ﬁlling this hole by a function deﬁnition, introducing another unnamed hypothesis z : A + B, leading to the proof state:
+f ((x, y))(z) :≡ : 0.
+Now saying “there are two cases” indicates a case split, i.e. an application of the recursion principle for the coproduct A + B. If we write this using the recursor, it would be
+f ((x, y))(z) :≡ recA+B(0, λa. , λb. , z)
+while if we write it using pattern matching, it would be
+f ((x, y))(inl(a)) :≡ : 0
+f ((x, y))(inr(b)) :≡ : 0.
+Note that in both cases we now have two “holes” of type 0 to ﬁll in, corresponding to the two cases where we have to derive a contradiction. Finally, the conclusion of a contradiction from a : A and x : A → 0 is simply application of the function x to a, and similarly in the other case. (Note the convenient coincidence of the phrase “applying a function” with that of “applying a hypothesis” or theorem.) Thus our eventual deﬁnition is
+f ((x, y))(inl(a)) :≡ x(a)
+f ((x, y))(inr(b)) :≡ y(b).
+
+58
+
+CHAPTER 1. TYPE THEORY
+
+As an exercise, you should verify the converse tautology “If not (A or B), then (not A) and (not B)” by exhibiting an element of
+((A + B) → 0) → (A → 0) × (B → 0),
+for any types A and B, using the rules we have just introduced. However, not all classical tautologies hold under this interpretation.
+For example, the rule “If not (A and B), then (not A) or (not B)” is not valid: we cannot, in general, construct an element of the corresponding type
+((A × B) → 0) → (A → 0) + (B → 0).
+This reﬂects the fact that the “natural” propositions-as-types logic of type theory is constructive. This means that it does not include certain classical principles, such as the law of excluded middle (LEM) or proof by contradiction, and others which depend on them, such as this instance of de Morgan’s law.
+Philosophically, constructive logic is so-called because it conﬁnes itself to constructions that can be carried out effectively, which is to say those with a computational meaning. Without being too precise, this means there is some sort of algorithm specifying, step-by-step, how to build an object (and, as a special case, how to see that a theorem is true). This requires omission of LEM, since there is no effective procedure for deciding whether a proposition is true or false.
+The constructivity of type-theoretic logic means it has an intrinsic computational meaning, which is of interest to computer scientists. It also means that type theory provides axiomatic freedom. For example, while by default there is no construction witnessing LEM, the logic is still compatible with the existence of one (see §3.4). Thus, because type theory does not deny LEM, we may consistently add it as an assumption, and work conventionally without restriction. In this respect, type theory enriches, rather than constrains, conventional mathematical practice.
+We encourage the reader who is unfamiliar with constructive logic to work through some more examples as a means of getting familiar with it. See Exercises 1.12 and 1.13 for some suggestions.
+So far we have discussed only propositional logic. Now we consider predicate logic, where in addition to logical connectives like “and” and “or” we have quantiﬁers “there exists” and “for all”. In this case, types play a dual role: they serve as propositions and also as types in the conventional sense, i.e., domains we quantify over. A predicate over a type A is represented as a family P : A → U , assigning to every element a : A
+
+1.11 PROPOSITIONS AS TYPES
+
+59
+
+a type P(a) corresponding to the proposition that P holds for a. We now extend the above translation with an explanation of the quantiﬁers:
+
+English
+For all x : A, P(x) holds There exists x : A such that P(x)
+
+Type Theory
+∏(x:A) P(x) ∑(x:A) P(x)
+
+As before, we can show that tautologies of (constructive) predicate logic translate into inhabited types. For example, If for all x : A, P(x) and Q(x) then (for all x : A, P(x)) and (for all x : A, Q(x)) translates to
+(∏(x:A)P(x) × Q(x)) → (∏(x:A)P(x)) × (∏(x:A)Q(x)).
+An informal proof of this tautology might go as follows:
+Suppose for all x, P(x) and Q(x). First, we suppose given x and prove P(x). By assumption, we have P(x) and Q(x), and hence we have P(x). Second, we suppose given x and prove Q(x). Again by assumption, we have P(x) and Q(x), and hence we have Q(x).
+The ﬁrst sentence begins deﬁning an implication as a function, by introducing a witness for its hypothesis:
+f (p) :≡ : (∏(x:A)P(x)) × (∏(x:A)Q(x)).
+At this point there is an implicit use of the pairing constructor to produce an element of a product type, which is somewhat signposted in this example by the words “ﬁrst” and “second”:
+
+f (p) :≡
+
+: ∏(x:A)P(x) , : ∏(x:A)Q(x) .
+
+The phrase “we suppose given x and prove P(x)” now indicates deﬁning a dependent function in the usual way, introducing a variable for its input. Since this is inside a pairing constructor, it is natural to write it as a λabstraction:
+
+f (p) :≡ λx. ( : P(x)) , : ∏(x:A)Q(x) .
+
+Now “we have P(x) and Q(x)” invokes the hypothesis, obtaining p(x) : P(x) × Q(x), and “hence we have P(x)” implicitly applies the appropriate projection:
+
+f (p) :≡ λx. pr1(p(x)) , : ∏(x:A)Q(x) .
+
+60
+
+CHAPTER 1. TYPE THEORY
+
+The next two sentences ﬁll the other hole in the obvious way:
+f (p) :≡ λx. pr1(p(x)) , λx. pr2(p(x)) .
+Of course, the English proofs we have been using as examples are much more verbose than those that mathematicians usually use in practice; they are more like the sort of language one uses in an “introduction to proofs” class. The practicing mathematician has learned to ﬁll in the gaps, so in practice we can omit plenty of details, and we will generally do so. The criterion of validity for proofs, however, is always that they can be translated back into the construction of an element of the corresponding type.
+As a more concrete example, consider how to deﬁne inequalities of natural numbers. One natural deﬁnition is that n ≤ m if there exists a k : N such that n + k = m. (This uses again the identity types that we will introduce in the next section, but we will not need very much about them.) Under the propositions-as-types translation, this would yield:
+(n ≤ m) :≡ ∑ (n + k = m).
+k:N
+The reader is invited to prove the familiar properties of ≤ from this definition. For strict inequality, there are a couple of natural choices, such as
+(n < m) :≡ ∑ (n + succ(k) = m)
+k:N
+or (n < m) :≡ (n ≤ m) × ¬(n = m).
+The former is more natural in constructive mathematics, but in this case it is actually equivalent to the latter, since N has “decidable equality” (see §3.4 and Theorem 7.2.6).
+There is also another interpretation of the type ∑(x:A) P(x). Since an inhabitant of it is an element x : A together with a witness that P(x) holds, instead of regarding ∑(x:A) P(x) as the proposition “there exists an x : A such that P(x)”, we can regard it as “the type of all elements x : A such that P(x)”, i.e. as a “subtype” of A.
+We will return to this interpretation in §3.5. For now, we note that it allows us to incorporate axioms into the deﬁnition of types as mathematical structures which we discussed in §1.6. For example, suppose we want to deﬁne a semigroup to be a type A equipped with a binary operation m : A → A → A (that is, a magma) and such that for all
+
+1.11 PROPOSITIONS AS TYPES
+
+61
+
+x, y, z : A we have m(x, m(y, z)) = m(m(x, y), z). This latter proposition is represented by the type
+
+∏ m(x, m(y, z)) = m(m(x, y), z),
+x,y,z:A
+
+so the type of semigroups is
+
+Semigroup :≡ ∑
+
+∑
+
+∏ m(x, m(y, z)) = m(m(x, y), z),
+
+(A:U ) (m:A→A→A) (x,y,z:A)
+
+i.e. the subtype of Magma consisting of the semigroups. From an inhabitant of Semigroup we can extract the carrier A, the operation m, and a witness of the axiom, by applying appropriate projections. We will return to this example in §2.14.
+Note also that we can use the universes in type theory to represent “higher order logic” — that is, we can quantify over all propositions or over all predicates. For example, we can represent the proposition for all properties P : A → U , if P(a) then P(b) as
+
+∏ P(a) → P(b)
+P:A→U
+where A : U and a, b : A. However, a priori this proposition lives in a different, higher, universe than the propositions we are quantifying over; that is
+∏ P(a) → P(b) : Ui+1.
+P:A→Ui
+We will return to this issue in §3.5.
+We have described here a “proof-relevant” translation of propositions, where the proofs of disjunctions and existential statements carry some information. For instance, if we have an inhabitant of A + B, regarded as a witness of “A or B”, then we know whether it came from A or from B. Similarly, if we have an inhabitant of ∑(x:A) P(x), regarded as a witness of “there exists x : A such that P(x)”, then we know what the element x is (it is the ﬁrst projection of the given inhabitant).
+As a consequence of the proof-relevant nature of this logic, we may have “A if and only if B” (which, recall, means (A → B) × (B → A)), and yet the types A and B exhibit different behavior. For instance, it is easy to verify that “N if and only if 1”, and yet clearly N and 1 differ in important ways. The statement “N if and only if 1” tells us only that when regarded as a mere proposition, the type N represents the same proposition
+
+62
+
+CHAPTER 1. TYPE THEORY
+
+as 1 (in this case, the true proposition). We sometimes express “A if and only if B” by saying that A and B are logically equivalent. This is to be distinguished from the stronger notion of equivalence of types to be introduced in §2.4 and Chapter 4: although N and 1 are logically equivalent, they are not equivalent types.
+In Chapter 3 we will introduce a class of types called “mere propositions” for which equivalence and logical equivalence coincide. Using these types, we will introduce a modiﬁcation to the above-described logic that is sometimes appropriate, in which the additional information contained in disjunctions and existentials is discarded.
+Finally, we note that the propositions-as-types correspondence can be viewed in reverse, allowing us to regard any type A as a proposition, which we prove by exhibiting an element of A. Sometimes we will state this proposition as “A is inhabited”. That is, when we say that A is inhabited, we mean that we have given a (particular) element of A, but that we are choosing not to give a name to that element. Similarly, to say that A is not inhabited is the same as to give an element of ¬A. In particular, the empty type 0 is obviously not inhabited, since ¬0 ≡ (0 → 0) is inhabited by id0.10
+
+1.12 Identity types
+While the previous constructions can be seen as generalizations of standard set theoretic constructions, our way of handling identity seems to be speciﬁc to type theory. According to the propositions-as-types conception, the proposition that two elements of the same type a, b : A are equal must correspond to some type. Since this proposition depends on what a and b are, these equality types or identity types must be type families dependent on two copies of A.
+We may write the family as IdA : A → A → U (not to be mistaken for the identity function idA), so that IdA(a, b) is the type representing the proposition of equality between a and b. Once we are familiar with propositions-as-types, however, it is convenient to also use the standard equality symbol for this; thus “a = b” will also be a notation for the type IdA(a, b) corresponding to the proposition that a equals b. For clarity, we may also write “a =A b” to specify the type A. If we have an element of a =A b, we may say that a and b are equal, or sometimes propositionally
+10This should not be confused with the statement that type theory is consistent, which is the meta-theoretic claim that it is not possible to obtain an element of 0 by following the rules of type theory.
+
+1.12 IDENTITY TYPES
+
+63
+
+equal if we want to emphasize that this is different from the judgmental equality a ≡ b discussed in §1.1.
+Just as we remarked in §1.11 that the propositions-as-types versions of “or” and “there exists” can include more information than just the fact that the proposition is true, nothing prevents the type a = b from also including more information. Indeed, this is the cornerstone of the homotopical interpretation, where we regard witnesses of a = b as paths or equivalences between a and b in the space A. Just as there can be more than one path between two points of a space, there can be more than one witness that two objects are equal. Put differently, we may regard a = b as the type of identiﬁcations of a and b, and there may be many different ways in which a and b can be identiﬁed. We will return to the interpretation in Chapter 2; for now we focus on the basic rules for the identity type. Just like all the other types considered in this chapter, it will have rules for formation, introduction, elimination, and computation, which behave formally in exactly the same way.
+The formation rule says that given a type A : U and two elements a, b : A, we can form the type (a =A b) : U in the same universe. The basic way to construct an element of a = b is to know that a and b are the same. Thus, the introduction rule is a dependent function
+reﬂ : ∏ (a =A a) a:A
+called reﬂexivity, which says that every element of A is equal to itself (in a speciﬁed way). We regard reﬂa as being the constant path at the point a.
+In particular, this means that if a and b are judgmentally equal, a ≡ b, then we also have an element reﬂa : a =A b. This is well-typed because a ≡ b means that also the type a =A b is judgmentally equal to a =A a, which is the type of reﬂa.
+The induction principle (i.e. the elimination rule) for the identity types is one of the most subtle parts of type theory, and crucial to the homotopy interpretation. We begin by considering an important consequence of it, the principle that “equals may be substituted for equals”, as expressed by the following:
+Indiscernibility of identicals: For every family
+C:A→U
+there is a function
+f : ∏ ∏ C(x) → C(y)
+(x,y:A) (p:x=Ay)
+
+64
+
+CHAPTER 1. TYPE THEORY
+
+such that
+
+f (x, x, reﬂx) :≡ idC(x).
+
+This says that every family of types C respects equality, in the sense that applying C to equal elements of A also results in a function between the resulting types. The displayed equality states that the function associated to reﬂexivity is the identity function (and we shall see that, in general, the function f (x, y, p) : C(x) → C(y) is always an equivalence of types).
+Indiscernibility of identicals can be regarded as a recursion principle for the identity type, analogous to those given for booleans and natural numbers above. Just as recN gives a speciﬁed map N → C for any other type C of a certain sort, indiscernibility of identicals gives a speciﬁed map from x =A y to certain other reﬂexive, binary relations on A, namely those of the form C(x) → C(y) for some unary predicate C(x). We could also formulate a more general recursion principle with respect to reﬂexive relations of the more general form C(x, y). However, in order to fully characterize the identity type, we must generalize this recursion principle to an induction principle, which not only considers maps out of x =A y but also families over it. Put differently, we consider not only allowing equals to be substituted for equals, but also taking into account the evidence p for the equality.
+
+1.12.1 Path induction
+The induction principle for the identity type is called path induction, in view of the homotopical interpretation to be explained in the introduction to Chapter 2. It can be seen as stating that the family of identity types is freely generated by the elements of the form reﬂx : x = x.
+
+Path induction: Given a family
+
+C : ∏ (x =A y) → U x,y:A
+
+and a function there is a function
+
+c : ∏ C(x, x, reﬂx), x:A
+
+f : ∏ ∏ C(x, y, p)
+(x,y:A) (p:x=Ay)
+
+1.12 IDENTITY TYPES
+
+65
+
+such that
+
+f (x, x, reﬂx) :≡ c(x).
+
+Note that just like the induction principles for products, coproducts, natural numbers, and so on, path induction allows us to deﬁne speciﬁed functions which exhibit appropriate computational behavior. Just as we have the function f : N → C deﬁned by recursion from c0 : C and cs : N → C → C, which moreover satisﬁes f (0) ≡ c0 and f (succ(n)) ≡ cs(n, f (n)), we have the function f : ∏(x,y:A) ∏(p:x=Ay) C(x, y, p) deﬁned by path induction from c : ∏(x:A) C(x, x, reﬂx), which moreover satisﬁes f (x, x, reﬂx) ≡ c(x).
+To understand the meaning of this principle, consider ﬁrst the simpler case when C does not depend on p. Then we have C : A → A → U , which we may regard as a predicate depending on two elements of A. We are interested in knowing when the proposition C(x, y) holds for some pair of elements x, y : A. In this case, the hypothesis of path induction says that we know C(x, x) holds for all x : A, i.e. that if we evaluate C at the pair x, x, we get a true proposition — so C is a reﬂexive relation. The conclusion then tells us that C(x, y) holds whenever x = y. This is exactly the more general recursion principle for reﬂexive relations mentioned above.
+The general, inductive form of the rule allows C to also depend on the witness p : x = y to the identity between x and y. In the premise, we not only replace x, y by x, x, but also simultaneously replace p by reﬂexivity: to prove a property for all elements x, y and paths p : x = y between them, it sufﬁces to consider all the cases where the elements are x, x and the path is reﬂx : x = x. If we were viewing types just as sets, it would be unclear what this buys us, but since there may be many different identiﬁcations p : x = y between x and y, it makes sense to keep track of them in considering families over the type x =A y. In Chapter 2 we will see that this is very important to the homotopy interpretation.
+If we package up path induction into a single function, it takes the form:
+
+ind=A :
+
+∏
+
+(C:∏(x,y:A)(x=Ay)→U )
+
+∏(x:A)C(x, x, reﬂx) →
+∏ ∏ C(x, y, p)
+(x,y:A) (p:x=Ay)
+
+with the equality
+
+ind=A (C, c, x, x, reﬂx) :≡ c(x).
+
+66
+
+CHAPTER 1. TYPE THEORY
+
+The function ind=A is traditionally called J. We will show in Lemma 2.3.1 that indiscernibility of identicals is an instance of path induction, and also give it a new name and notation.
+Given a proof p : a = b, path induction requires us to replace both a and b with the same unknown element x; thus in order to deﬁne an element of a family C, for all pairs of equal elements of A, it sufﬁces to deﬁne it on the diagonal. In some proofs, however, it is simpler to make use of an equation p : a = b by replacing all occurrences of b with a (or vice versa), because it is sometimes easier to do the remainder of the proof for the speciﬁc element a mentioned in the equality than for a general unknown x. This motivates a second induction principle for identity types, which says that the family of types a =A x is generated by the element reﬂa : a = a. As we show below, this second principle is equivalent to the ﬁrst; it is just sometimes a more convenient formulation.
+
+Based path induction: Fix an element a : A, and suppose given a family
+
+C : ∏ (a =A x) → U x:A
+
+and an element
+
+c : C(a, reﬂa).
+
+Then we obtain a function
+
+f : ∏ ∏ C(x, p)
+(x:A) (p:a=x)
+
+such that
+
+f (a, reﬂa) :≡ c.
+
+Here, C(x, p) is a family of types, where x is an element of A and p is an element of the identity type a =A x, for ﬁxed a in A. The based path induction principle says that to deﬁne an element of this family for all x and p, it sufﬁces to consider just the case where x is a and p is reﬂa : a = a.
+Packaged as a function, based path induction becomes:
+
+ind=A : ∏
+
+∏
+
+C(a, reﬂa) → ∏ ∏ C(x, p)
+
+(a:A) (C:∏(x:A)(a=Ax)→U )
+
+(x:A) (p:a=Ax)
+
+with the equality
+
+ind=A (a, C, c, a, reﬂa) :≡ c.
+
+1.12 IDENTITY TYPES
+
+67
+
+Below, we show that path induction and based path induction are equivalent. Because of this, we will sometimes be sloppy and also refer to based path induction simply as “path induction”, relying on the reader to infer which principle is meant from the form of the proof.
+Remark 1.12.1. Intuitively, the induction principle for the natural numbers expresses the fact that every natural number is either 0 or of the form succ(n) for some natural number n, so that if we prove a property for these cases (with induction hypothesis in the second case), then we have proved it for all natural numbers. Similarly, the induction principle for A + B expresses the fact that every element of A + B is either of the form inl(a) or inr(b), and so on. Applying this same reading to path induction, we might say that path induction expresses the fact that every path is of the form reﬂa, so that if we prove a property for reﬂexivity paths, then we have proved it for all paths.
+However, this reading is quite confusing in the context of the homotopy interpretation of paths, where there may be many different ways in which two elements a and b can be identiﬁed, and therefore many different elements of the identity type! How can there be many different paths, but at the same time we have an induction principle asserting that the only path is reﬂexivity?
+The key observation is that it is not the identity type that is inductively deﬁned, but the identity family. In particular, path induction says that the family of types (x =A y), as x, y vary over all elements of A, is inductively deﬁned by the elements of the form reﬂx. This means that to give an element of any other family C(x, y, p) dependent on a generic element (x, y, p) of the identity family, it sufﬁces to consider the cases of the form (x, x, reﬂx). In the homotopy interpretation, this says that the type of triples (x, y, p), where x and y are the endpoints of the path p (in other words, the Σ-type ∑(x,y:A)(x = y)), is inductively generated by the constant loops at each point x. As we will see in Chapter 2, in homotopy theory the space corresponding to ∑(x,y:A)(x = y) is the free path space — the space of paths in A whose endpoints may vary — and it is in fact the case that any point of this space is homotopic to the constant loop at some point, since we can simply retract one of its endpoints along the given path. The analogous fact is also true in type theory: we can prove by path induction on p : x = y that (x, y, p) =∑(x,y:A)(x=y) (x, x, reﬂx).
+Similarly, based path induction says that for a ﬁxed a : A, the family of types (a =A y), as y varies over all elements of A, is inductively deﬁned by the element reﬂa. Thus, to give an element of any other family C(y, p) dependent on a generic element (y, p) of this family, it sufﬁces to
+
+68
+
+CHAPTER 1. TYPE THEORY
+
+consider the case (a, reﬂa). Homotopically, this expresses the fact that the space of paths starting at some chosen point (the based path space at that point, which type-theoretically is ∑(y:A)(a = y)) is contractible to the constant loop on the chosen point. Again, the corresponding fact is also true in type theory: we can prove by based path induction on p : a = y that (y, p) =∑(y:A)(a=y) (a, reﬂa). Note also that according to the interpretation of Σ-types as subtypes mentioned in §1.11, the type ∑(y:A)(a = y) can be regarded as “the type of all elements of A which are equal to a”, a type-theoretic version of the “singleton subset” {a}.
+Neither path induction nor based path induction provides a way to give an element of a family C(p) where p has two ﬁxed endpoints a and b. In particular, for a family C : (a =A a) → U dependent on a loop, we cannot apply path induction and consider only the case for C(reﬂa), and consequently, we cannot prove that all loops are reﬂexivity. Thus, inductively deﬁning the identity family does not prohibit non-reﬂexivity paths in speciﬁc instances of the identity type. In other words, a path p : x = x may be not equal to reﬂexivity as an element of (x = x), but the pair (x, p) will nevertheless be equal to the pair (x, reﬂx) as elements of ∑(y:A)(x = y).
+As a topological example, consider a loop in the punctured disc
+(x, y) 0 < x2 + y2 < 2
+which starts at (1, 0) and goes around the hole at (0, 0) once before returning back to (1, 0). If we hold both endpoints ﬁxed at (1, 0), this loop cannot be deformed into a constant path while staying within the punctured disc, just as a rope looped around a pole cannot be pulled in if we keep hold of both ends. However, the loop can be contracted back to a constant if we allow one endpoint to vary, just as we can always gather in a rope if we only hold onto one end.
+
+1.12.2 Equivalence of path induction and based path induction
+The two induction principles for the identity type introduced above are equivalent. It is easy to see that path induction follows from the based path induction principle. Indeed, let us assume the premises of path
+
+1.12 IDENTITY TYPES
+
+69
+
+induction:
+C : ∏ (x =A y) → U, x,y:A
+c : ∏ C(x, x, reﬂx). x:A
+Now, given an element x : A, we can instantiate both of the above, obtaining
+C : ∏ (x =A y) → U, y:A
+C :≡ C(x), c : C (x, reﬂx), c :≡ c(x).
+Clearly, C and c match the premises of based path induction and hence we can construct
+g : ∏ ∏ C (y, p)
+(y:A) (p:x=y)
+with the deﬁning equality
+g(x, reﬂx) :≡ c .
+Now we observe that g’s codomain is equal to C(x, y, p). Thus, discharging our assumption x : A, we can derive a function
+f : ∏ ∏ C(x, y, p)
+(x,y:A) (p:x=Ay)
+with the required judgmental equality f (x, x, reﬂx) ≡ g(x, reﬂx) :≡ c :≡ c(x).
+Another proof of this fact is to observe that any such f can be obtained as an instance of ind=A so it sufﬁces to deﬁne ind=A in terms of ind=A as
+ind=A (C, c, x, y, p) :≡ ind=A (x, C(x), c(x), y, p).
+The other direction is a bit trickier; it is not clear how we can use a particular instance of path induction to derive a particular instance of based path induction. What we can do instead is to construct one instance of path induction which shows all possible instantiations of based
+
+70
+
+CHAPTER 1. TYPE THEORY
+
+path induction at once. Deﬁne
+
+D : ∏ (x =A y) → U, x,y:A
+
+D(x, y, p) :≡
+
+∏
+
+C(x, reﬂx) → C(y, p).
+
+C:∏(z: A) (x= A z)→U
+
+Then we can construct the function
+
+d : ∏ D(x, x, reﬂx), x:A
+d :≡ λx. λC. λ(c : C(x, reﬂx)). c
+
+and hence using path induction obtain
+
+f : ∏ ∏ D(x, y, p)
+(x,y:A) (p:x=Ay)
+with f (x, x, reﬂx) :≡ d(x). Unfolding the deﬁnition of D, we can expand the type of f :
+
+f: ∏ ∏
+
+∏
+
+C(x, reﬂx) → C(y, p).
+
+(x,y:A) (p:x=Ay) (C:∏(z:A)(x=Az)→U )
+
+Now given x : A and p : a =A x, we can derive the conclusion of based path induction:
+f (a, x, p, C, c) : C(x, p).
+
+Notice that we also obtain the correct deﬁnitional equality. Another proof is to observe that any use of based path induction is
+an instance of ind=A and to deﬁne
+
+ind=A (a, C, c, x, p) :≡ ind=A ((λx, y. λp. ∏(C:∏(z:A)(x=Az)→U )C(x, reﬂx) → C(y, p)), (λx. λC. λd. d), a, x, p, C, c).
+
+Note that the construction given above uses universes. That is, if we want to model ind=A with C : ∏(x:A)(a =A x) → Ui, we need to use ind=A with
+D : ∏ (x =A y) → Ui+1 x,y:A
+since D quantiﬁes over all C of the given type. While this is compatible with our deﬁnition of universes, it is also possible to derive ind=A
+
+1.12 IDENTITY TYPES
+
+71
+
+without using universes: we can show that ind=A entails Lemmas 2.3.1 and 3.11.8, and that these two principles imply ind=A directly. We leave the details to the reader as Exercise 1.7.
+We can use either of the foregoing formulations of identity types to establish that equality is an equivalence relation, that every function preserves equality and that every family respects equality. We leave the details to the next chapter, where this will be derived and explained in the context of homotopy type theory.
+Remark 1.12.2. We emphasize that despite having some unfamiliar features, propositional equality is the equality of mathematics in homotopy type theory. This distinction does not belong to judgmental equality, which is rather a metatheoretic feature of the rules of type theory. For instance, the associativity of addition for natural numbers proven in §1.9 is a propositional equality, not a judgmental one. The same is true of the commutative law (Exercise 1.16). Even the very simple commutativity n + 1 = 1 + n is not a judgmental equality for a generic n (though it is judgmental for any speciﬁc n, e.g. 3 + 1 ≡ 1 + 3, since both are judgmentally equal to 4 by the computation rules deﬁning +). We can only prove such facts by using the identity type, since we can only apply the induction principle for N with a type as output (not a judgment).
+
+1.12.3 Disequality
+Finally, let us also say something about disequality, which is negation of equality:11
+(x =A y) :≡ ¬(x =A y).
+If x = y, we say that x and y are unequal or not equal. Just like negation, disequality plays a less important role here than it does in classical mathematics. For example, we cannot prove that two things are equal by proving that they are not unequal: that would be an application of the classical law of double negation, see §3.4.
+Sometimes it is useful to phrase disequality in a positive way. For example, in Theorem 11.2.4 we shall prove that a real number x has an inverse if, and only if, its distance from 0 is positive, which is a stronger requirement than x = 0.
+11We use “inequality” to refer to < and ≤. Also, note that this is negation of the propositional identity type. Of course, it makes no sense to negate judgmental equality ≡, because judgments are not subject to logical operations.
+
+72
+
+CHAPTER 1. TYPE THEORY
+
+Notes
+The type theory presented here is a version of Martin-Lo¨ f’s intuitionistic type theory [ML98, ML75, ML82, ML84], which itself is based on and inﬂuenced by the foundational work of Brouwer [Bee85], Heyting [Hey66], Scott [Sco70], de Bruijn [dB73], Howard [How80], Tait [Tai67, Tai68], and Lawvere [Law06]. Three principal variants of Martin-Lo¨ f’s type theory underlie the NUPRL [CAB+86], COQ [Coq12], and AGDA [Nor07] computer implementations of type theory. The theory given here differs from these formulations in a number of respects, some of which are critical to the homotopy interpretation, while others are technical conveniences or involve concepts that have not yet been studied in the homotopical setting.
+Most signiﬁcantly, the type theory described here is derived from the intensional version of Martin-Lo¨ f’s type theory [ML75], rather than the extensional version [ML82]. Whereas the extensional theory makes no distinction between judgmental and propositional equality, the intensional theory regards judgmental equality as purely deﬁnitional, and admits a much broader, proof-relevant interpretation of the identity type that is central to the homotopy interpretation. From the homotopical perspective, extensional type theory conﬁnes itself to homotopically discrete sets (see §3.1), whereas the intensional theory admits types with higher-dimensional structure. The NUPRL system [CAB+86] is extensional, whereas both COQ [Coq12] and AGDA [Nor07] are intensional. Among intensional type theories, there are a number of variants that differ in the structure of identity proofs. The most liberal interpretation, on which we rely here, admits a proof-relevant interpretation of equality, whereas more restricted variants impose restrictions such as uniqueness of identity proofs (UIP) [Str93], stating that any two proofs of equality are judgmentally equal, and Axiom K [Str93], stating that the only proof of equality is reﬂexivity (up to judgmental equality). These additional requirements may be selectively imposed in the COQ and AGDA systems.
+Another point of variation among intensional theories is the strength of judgmental equality, particularly as regards objects of function type. Here we include the uniqueness principle (η-conversion) f ≡ λx. f (x), as a principle of judgmental equality. This principle is used, for example, in §4.9, to show that univalence implies propositional function extensionality. Uniqueness principles are sometimes considered for other types. For instance, the uniqueness principle for the cartesian product A × B would be a judgmental version of the propositional equality
+
+CHAPTER 1 NOTES
+
+73
+
+uniqA×B which we constructed in §1.5, saying that u ≡ (pr1(u), pr2(u)). This and the corresponding version for dependent pairs would be reasonable choices (which we did not make), but we cannot include all such rules, because the corresponding uniqueness principle for identity types would trivialize all the higher homotopical structure. So we are forced to leave it out, and the question then becomes where to draw the line. With regards to inductive types, we discuss these points further in §5.5.
+It is important for our purposes that (propositional) equality of functions is taken to be extensional (in a different sense than that used above!). This is not a consequence of the rules in this chapter; it will be expressed by Axiom 2.9.3. This decision is signiﬁcant for our purposes, because it speciﬁes that equality of functions is as expected in mathematics. Although we include Axiom 2.9.3 as an axiom, it may be derived from the univalence axiom and the uniqueness principle for functions (see §4.9), as well as from the existence of an interval type (see Lemma 6.3.2).
+Regarding inductive types such as products, Σ-types, coproducts, natural numbers, and so on (see Chapter 5), there are additional choices regarding the formulation of induction and recursion. We have taken induction principles as basic and pattern matching as derived from them, but one may also do the other; see Appendix A. Usually in the latter case one allows also deep pattern matching; see [Coq92b]. There are several reasons for our choice. One reason is that induction principles are what we obtain naturally in categorical semantics. Another is that specifying the allowable kinds of (deep) pattern matching is quite tricky; for instance, AGDA’s pattern matching can prove Axiom K by default, although a ﬂag --without-K prevents this [CDP14]. Finally, deep pattern matching is not well-understood for higher inductive types (see Chapter 6). Therefore, we will only use pattern matches such as those described in §1.10, which are directly equivalent to the application of an induction principle.
+Unlike the type theory of COQ, we do not include a primitive type of propositions. Instead, as discussed in §1.11, we embrace the propositionsas-types (PAT) principle, identifying propositions with types. This was suggested originally by de Bruijn [dB73], Howard [How80], Tait [Tai68], and Martin-Lo¨ f [ML98]. (Our decision is explained more fully in §§3.2 and 3.3.)
+We do, however, include a full cumulative hierarchy of universes, so that the type formation and equality judgments become instances of the membership and equality judgments for a universe. As a convenience, we regard objects of a universe as types, rather than as codes for types; in the terminology of [ML84], this means we use “Russell-style
+
+74
+
+CHAPTER 1. TYPE THEORY
+
+universes” rather than “Tarski-style universes”. An alternative would be to use Tarski-style universes, with an explicit coercion function required to make an element A : U of a universe into a type El(A), and just say that the coercion is omitted when working informally.
+We also treat the universe hierarchy as cumulative, in that every type in Ui is also in Uj for each j ≥ i. There are different ways to implement cumulativity formally: the simplest is just to include a rule that if A : Ui then A : Uj. However, this has the annoying consequence that for a type family B : A → Ui we cannot conclude B : A → Uj, although we can conclude λa. B(a) : A → Uj. A more sophisticated approach that solves this problem is to introduce a judgmental subtyping relation <: generated by Ui <: Uj, but this makes the type theory more complicated to study. Another alternative would be to include an explicit coercion function ↑: Ui → Uj, which could be omitted when working informally.
+It is also not necessary that the universes be indexed by natural numbers and linearly ordered. For some purposes, it is more appropriate to assume only that every universe is an element of some larger universe, together with a “directedness” property that any two universes are jointly contained in some larger one. There are many other possible variations, such as including a universe “Uω” that contains all Ui (or even higher “large cardinal” type universes), or by internalizing the hierarchy into a type family λi. Ui. The latter is in fact done in AGDA.
+The path induction principle for identity types was formulated by Martin-Lo¨ f [ML98]. The based path induction rule in the setting of MartinLo¨ f type theory is due to Paulin-Mohring [PM93]; it can be seen as an intensional generalization of the concept of “pointwise functionality” for hypothetical judgments from NUPRL [CAB+86, Section 8.1]. The fact that Martin-Lo¨ f’s rule implies Paulin-Mohring’s was proved by Streicher using Axiom K (see §7.2), by Altenkirch and Goguen as in §1.12, and ﬁnally by Hofmann without universes (as in Exercise 1.7); see [Str93, §1.3 and Addendum].
+
+Exercises
+Exercise 1.1. Given functions f : A → B and g : B → C, deﬁne their composite g ◦ f : A → C. Show that we have h ◦ (g ◦ f ) ≡ (h ◦ g) ◦ f .
+Exercise 1.2. Derive the recursion principle for products recA×B using only the projections, and verify that the deﬁnitional equalities are valid. Do the same for Σ-types.
+
+CHAPTER 1 EXERCISES
+
+75
+
+Exercise 1.3. Derive the induction principle for products indA×B, using only the projections and the propositional uniqueness principle uniqA×B. Verify that the deﬁnitional equalities are valid. Generalize uniqA×B to Σtypes, and do the same for Σ-types. (This requires concepts from Chapter 2.)
+Exercise 1.4. Assuming as given only the iterator for natural numbers
+iter : ∏ C → (C → C) → N → C C:U
+with the deﬁning equations
+iter(C, c0, cs, 0) :≡ c0, iter(C, c0, cs, succ(n)) :≡ cs(iter(C, c0, cs, n)),
+derive a function having the type of the recursor recN. Show that the deﬁning equations of the recursor hold propositionally for this function, using the induction principle for N.
+Exercise 1.5. Show that if we deﬁne A + B :≡ ∑(x:2) rec2(U , A, B, x), then we can give a deﬁnition of indA+B for which the deﬁnitional equalities stated in §1.7 hold.
+Exercise 1.6. Show that if we deﬁne A × B :≡ ∏(x:2) rec2(U , A, B, x), then we can give a deﬁnition of indA×B for which the deﬁnitional equalities stated in §1.5 hold propositionally (i.e. using equality types). (This requires the function extensionality axiom, which is introduced in §2.9.)
+Exercise 1.7. Give an alternative derivation of ind=A from ind=A which avoids the use of universes. (This is easiest using concepts from later chapters.)
+Exercise 1.8. Deﬁne multiplication and exponentiation using recN. Verify that (N, +, 0, ×, 1) is a semiring using only indN. You will probably also need to use symmetry and transitivity of equality, Lemmas 2.1.1 and 2.1.2.
+Exercise 1.9. Deﬁne the type family Fin : N → U mentioned at the end of §1.3, and the dependent function fmax : ∏(n:N) Fin(n + 1) mentioned in §1.4.
+Exercise 1.10. Show that the Ackermann function ack : N → N → N is deﬁnable using only recN satisfying the following equations:
+ack(0, n) ≡ succ(n),
+ack(succ(m), 0) ≡ ack(m, 1),
+ack(succ(m), succ(n)) ≡ ack(m, ack(succ(m), n)).
+
+76
+
+CHAPTER 1. TYPE THEORY
+
+Exercise 1.11. Show that for any type A, we have ¬¬¬A → ¬A.
+Exercise 1.12. Using the propositions as types interpretation, derive the following tautologies.
+(i) If A, then (if B then A). (ii) If A, then not (not A). (iii) If (not A or not B), then not (A and B).
+Exercise 1.13. Using propositions-as-types, derive the double negation of the principle of excluded middle, i.e. prove not (not (P or not P)).
+Exercise 1.14. Why do the induction principles for identity types not allow us to construct a function f : ∏(x:A) ∏(p:x=x)(p = reﬂx) with the deﬁning equation
+f (x, reﬂx) :≡ reﬂreﬂx ?
+Exercise 1.15. Show that indiscernibility of identicals follows from path induction.
+Exercise 1.16. Show that addition of natural numbers is commutative: ∏(i,j:N)(i + j = j + i).
+
+Chapter 2
+Homotopy type theory
+The central new idea in homotopy type theory is that types can be regarded as spaces in homotopy theory, or higher-dimensional groupoids in category theory.
+We begin with a brief summary of the connection between homotopy theory and higher-dimensional category theory. In classical homotopy theory, a space X is a set of points equipped with a topology, and a path between points x and y is represented by a continuous map p : [0, 1] → X, where p(0) = x and p(1) = y. This function can be thought of as giving a point in X at each “moment in time”. For many purposes, strict equality of paths (meaning, pointwise equal functions) is too ﬁne a notion. For example, one can deﬁne operations of path concatenation (if p is a path from x to y and q is a path from y to z, then the concatenation p q is a path from x to z) and inverses (p−1 is a path from y to x). However, there are natural equations between these operations that do not hold for strict equality: for example, the path p p−1 (which walks from x to y, and then back along the same route, as time goes from 0 to 1) is not strictly equal to the identity path (which stays still at x at all times).
+The remedy is to consider a coarser notion of equality of paths called homotopy. A homotopy between a pair of continuous maps f : X1 → X2 and g : X1 → X2 is a continuous map H : X1 × [0, 1] → X2 satisfying H(x, 0) = f (x) and H(x, 1) = g(x). In the speciﬁc case of paths p and q from x to y, a homotopy is a continuous map H : [0, 1] × [0, 1] → X such that H(s, 0) = p(s) and H(s, 1) = q(s) for all s ∈ [0, 1]. In this case we require also that H(0, t) = x and H(1, t) = y for all t ∈ [0, 1], so that for each t the function H( –, t) is again a path from x to y; a homotopy of this sort is said to be endpoint-preserving or rel endpoints. In simple cases, we
+
+78
+
+CHAPTER 2. HOMOTOPY TYPE THEORY
+
+can think of the image of the square [0, 1] × [0, 1] under H as “ﬁlling the space” between p and q, although for general X this doesn’t really make sense; it is better to think of H as a continuous deformation of p into q that doesn’t move the endpoints. Since [0, 1] × [0, 1] is 2-dimensional, we also speak of H as a 2-dimensional path between paths.
+For example, because p p−1 walks out and back along the same route, you know that you can continuously shrink p p−1 down to the identity path—it won’t, for example, get snagged around a hole in the space. Homotopy is an equivalence relation, and operations such as concatenation, inverses, etc., respect it. Moreover, the homotopy equivalence classes of loops at some point x0 (where two loops p and q are equated when there is a based homotopy between them, which is a homotopy H as above that additionally satisﬁes H(0, t) = H(1, t) = x0 for all t) form a group called the fundamental group. This group is an algebraic invariant of a space, which can be used to investigate whether two spaces are homotopy equivalent (there are continuous maps back and forth whose composites are homotopic to the identity), because equivalent spaces have isomorphic fundamental groups.
+Because homotopies are themselves a kind of 2-dimensional path, there is a natural notion of 3-dimensional homotopy between homotopies, and then homotopy between homotopies between homotopies, and so on. This inﬁnite tower of points, paths, homotopies, homotopies between homotopies, . . . , equipped with algebraic operations such as the fundamental group, is an instance of an algebraic structure called a (weak) ∞-groupoid. An ∞-groupoid consists of a collection of objects, and then a collection of morphisms between objects, and then morphisms between morphisms, and so on, equipped with some complex algebraic structure; a morphism at level k is called a k-morphism. Morphisms at each level have identity, composition, and inverse operations, which are weak in the sense that they satisfy the groupoid laws (associativity of composition, identity is a unit for composition, inverses cancel) only up to morphisms at the next level, and this weakness gives rise to further structure. For example, because associativity of composition of morphisms p (q r) = (p q) r is itself a higher-dimensional morphism, one needs an additional operation relating various proofs of associativity: the various ways to reassociate p (q (r s)) into ((p q) r) s give rise to Mac Lane’s pentagon. Weakness also creates non-trivial interactions between levels.
+Every topological space X has a fundamental ∞-groupoid whose kmorphisms are the k-dimensional paths in X. The weakness of the ∞groupoid corresponds directly to the fact that paths form a group only
+
+79
+up to homotopy, with the (k + 1)-paths serving as the homotopies between the k-paths. Moreover, the view of a space as an ∞-groupoid preserves enough aspects of the space to do homotopy theory: the fundamental ∞-groupoid construction is adjoint to the geometric realization of an ∞-groupoid as a space, and this adjunction preserves homotopy theory (this is called the homotopy hypothesis/theorem, because whether it is a hypothesis or theorem depends on how you deﬁne ∞-groupoid). For example, you can easily deﬁne the fundamental group of an ∞groupoid, and if you calculate the fundamental group of the fundamental ∞-groupoid of a space, it will agree with the classical deﬁnition of fundamental group of that space. Because of this correspondence, homotopy theory and higher-dimensional category theory are intimately related.
+Now, in homotopy type theory each type can be seen to have the structure of an ∞-groupoid. Recall that for any type A, and any x, y : A, we have an identity type x =A y, also written IdA(x, y) or just x = y. Logically, we may think of elements of x = y as evidence that x and y are equal, or as identiﬁcations of x with y. Furthermore, type theory (unlike, say, ﬁrst-order logic) allows us to consider such elements of x =A y also as individuals which may be the subjects of further propositions. Therefore, we can iterate the identity type: we can form the type p =(x=Ay) q of identiﬁcations between identiﬁcations p, q, and the type r =(p=(x=Ay)q) s, and so on. The structure of this tower of identity types corresponds precisely to that of the continuous paths and (higher) homotopies between them in a space, or an ∞-groupoid.
+Thus, we will frequently refer to an element p : x =A y as a path from x to y; we call x its start point and y its end point. Two paths p, q : x =A y with the same start and end point are said to be parallel, in which case an element r : p =(x=Ay) q can be thought of as a homotopy, or a morphism between morphisms; we will often refer to it as a 2-path or a 2-dimensional path. Similarly, r =(p=(x=Ay)q) s is the type of 3dimensional paths between two parallel 2-dimensional paths, and so on. If the type A is “set-like”, such as N, these iterated identity types will be uninteresting (see §3.1), but in the general case they can model non-trivial homotopy types.
+An important difference between homotopy type theory and classical homotopy theory is that homotopy type theory provides a synthetic description of spaces, in the following sense. Synthetic geometry is geometry in the style of Euclid [EucBC]: one starts from some basic notions (points and lines), constructions (a line connecting any two points),
+
+80
+
+CHAPTER 2. HOMOTOPY TYPE THEORY
+
+and axioms (all right angles are equal), and deduces consequences logically. This is in contrast with analytic geometry, where notions such as points and lines are represented concretely using cartesian coordinates in Rn—lines are sets of points—and the basic constructions and axioms are derived from this representation. While classical homotopy theory is analytic (spaces and paths are made of points), homotopy type theory is synthetic: points, paths, and paths between paths are basic, indivisible, primitive notions.
+Moreover, one of the amazing things about homotopy type theory is that all of the basic constructions and axioms—all of the higher groupoid structure—arises automatically from the induction principle for identity types. Recall from §1.12 that this says that if
+
+• for every x, y : A and every p : x =A y we have a type D(x, y, p), and
+• for every a : A we have an element d(a) : D(a, a, reﬂa),
+then
+
+• there exists an element ind=A (D, d, x, y, p) : D(x, y, p) for every two elements x, y : A and p : x =A y, such that ind=A (D, d, a, a, reﬂa) ≡ d(a).
+
+In other words, given dependent functions
+
+D : ∏ (x = y) → U x,y:A
+d : ∏ D(a, a, reﬂa) a:A
+there is a dependent function
+
+ind=A (D, d) : ∏ ∏ D(x, y, p)
+(x,y:A) (p:x=y)
+
+such that
+
+ind=A (D, d, a, a, reﬂa) ≡ d(a)
+
+(2.0.1)
+
+for every a : A. Usually, every time we apply this induction rule we will either not care about the speciﬁc function being deﬁned, or we will immediately give it a different name.
+Informally, the induction principle for identity types says that if we want to construct an object (or prove a statement) which depends on an inhabitant p : x =A y of an identity type, then it sufﬁces to perform the
+
+2.1 TYPES ARE HIGHER GROUPOIDS
+
+81
+
+construction (or the proof) in the special case when x and y are the same (judgmentally) and p is the reﬂexivity element reﬂx : x = x (judgmentally). When writing informally, we may express this with a phrase such as “by induction, it sufﬁces to assume. . . ”. This reduction to the “reﬂexivity case” is analogous to the reduction to the “base case” and “inductive step” in an ordinary proof by induction on the natural numbers, and also to the “left case” and “right case” in a proof by case analysis on a disjoint union or disjunction.
+The “conversion rule” (2.0.1) is less familiar in the context of proof by induction on natural numbers, but there is an analogous notion in the related concept of deﬁnition by recursion. If a sequence (an)n∈N is deﬁned by giving a0 and specifying an+1 in terms of an, then in fact the 0th term of the resulting sequence is the given one, and the given recurrence relation relating an+1 to an holds for the resulting sequence. (This may seem so obvious as to not be worth saying, but if we view a deﬁnition by recursion as an algorithm for calculating values of a sequence, then it is precisely the process of executing that algorithm.) The rule (2.0.1) is analogous: it says that if we deﬁne an object f (p) for all p : x = y by specifying what the value should be when p is reﬂx : x = x, then the value we speciﬁed is in fact the value of f (reﬂx).
+This induction principle endows each type with the structure of an ∞-groupoid, and each function between two types with the structure of an ∞-functor between two such groupoids. This is interesting from a mathematical point of view, because it gives a new way to work with ∞groupoids. It is interesting from a type-theoretic point of view, because it reveals new operations that are associated with each type and function. In the remainder of this chapter, we begin to explore this structure.
+
+2.1 Types are higher groupoids
+We now derive from the induction principle the beginnings of the structure of a higher groupoid. We begin with symmetry of equality, which, in topological language, means that “paths can be reversed”.
+Lemma 2.1.1. For every type A and every x, y : A there is a function
+(x = y) → (y = x)
+denoted p → p−1, such that reﬂx−1 ≡ reﬂx for each x : A. We call p−1 the inverse of p.
+
+82
+
+CHAPTER 2. HOMOTOPY TYPE THEORY
+
+Since this is our ﬁrst time stating something as a “Lemma” or “Theorem”, let us pause to consider what that means. Recall that propositions (statements susceptible to proof) are identiﬁed with types, whereas lemmas and theorems (statements that have been proven) are identiﬁed with inhabited types. Thus, the statement of a lemma or theorem should be translated into a type, as in §1.11, and its proof translated into an inhabitant of that type. According to the interpretation of the universal quantiﬁer “for every”, the type corresponding to Lemma 2.1.1 is
+
+∏ ∏ (x = y) → (y = x).
+(A:U ) (x,y:A)
+
+The proof of Lemma 2.1.1 will consist of constructing an element of this
+type, i.e. deriving the judgment f : ∏(A:U ) ∏(x,y:A)(x = y) → (y = x) for some f . We then introduce the notation ( – )−1 for this element f , in
+which the arguments A, x, and y are omitted and inferred from context. (As remarked in §1.1, the secondary statement “reﬂx−1 ≡ reﬂx for each x : A” should be regarded as a separate judgment.)
+
+First proof. Assume given A : U , and let D : ∏(x,y:A)(x = y) → U be the type family deﬁned by D(x, y, p) :≡ (y = x). In other words, D is a
+function assigning to any x, y : A and p : x = y a type, namely the type
+y = x. Then we have an element
+
+d :≡ λx. reﬂx : ∏ D(x, x, reﬂx). x:A
+Thus, the induction principle for identity types gives us an element
+
+ind=A (D, d, x, y, p) : (y = x)
+
+for each p : (x = y). We can now deﬁne the desired function ( – )−1
+
+to be λp. ind=A (D, d, x, y, p), conversion rule (2.0.1) gives
+
+i.e. reﬂx
+
+−w1e≡serteﬂpx−,1as:≡reqinudi=reAd(.D,
+
+d,
+
+x,
+
+y,
+
+p).
+
+The
+
+We have written out this proof in a very formal style, which may be helpful while the induction rule on identity types is unfamiliar. To be even more formal, we could say that Lemma 2.1.1 and its proof together consist of the judgment
+
+λA. λx. λy. λp. ind=A ((λx. λy. λp. (y = x)), (λx. reﬂx), x, y, p)
+: ∏ ∏ (x = y) → (y = x)
+(A:U ) (x,y:A)
+
+2.1 TYPES ARE HIGHER GROUPOIDS
+
+83
+
+(along with an additional equality judgment). However, eventually we prefer to use more natural language, such as in the following equivalent proof.
+
+Second proof. We want to construct, for each x, y : A and p : x = y, an element p−1 : y = x. By induction, it sufﬁces to do this in the case when y
+is x and p is reﬂx. But in this case, the type x = y of p and the type y = x in which we are trying to construct p−1 are both simply x = x. Thus, in the “reﬂexivity case”, we can deﬁne reﬂx−1 to be simply reﬂx. The
+general case then follows by the induction principle, and the conversion rule reﬂx−1 ≡ reﬂx is precisely the proof in the reﬂexivity case that we
+gave.
+
+We will write out the next few proofs in both styles, to help the reader become accustomed to the latter one. Next we prove the transitivity of equality, or equivalently we “concatenate paths”.
+Lemma 2.1.2. For every type A and every x, y, z : A there is a function
+(x = y) → (y = z) → (x = z),
+written p → q → p q, such that reﬂx reﬂx ≡ reﬂx for any x : A. We call p q the concatenation or composite of p and q.
+Note that we choose to notate path concatenation in the opposite order from function composition: from p : x = y and q : y = z we get p q : x = z, whereas from f : A → B and g : B → C we get g ◦ f : A → C (see Exercise 1.1).
+
+First proof. The desired function has type ∏(x,y,z:A)(x = y) → (y = z) → (x = z). We will instead deﬁne a function with the equivalent type
+∏(x,y:A)(x = y) → ∏(z:A)(y = z) → (x = z), which allows us to apply path induction twice. Let D : ∏(x,y:A)(x = y) → U be the type family
+D(x, y, p) :≡ ∏ ∏ (x = z).
+(z:A) (q:y=z)
+
+Note that D(x, x, reﬂx) ≡ ∏(z:A) ∏(q:x=z)(x = z). Thus, in order to apply the induction principle for identity types to this D, we need a function of
+
+type
+
+∏ D(x, x, reﬂx)
+x:A
+
+(2.1.3)
+
+84
+
+CHAPTER 2. HOMOTOPY TYPE THEORY
+
+which is to say, of type
+
+∏ ∏ (x = z).
+(x,z:A) (q:x=z)
+
+Now let E : ∏(x,z:A) ∏(q:x=z) U be the type family E(x, z, q) :≡ (x = z). Note that E(x, x, reﬂx) ≡ (x = x). Thus, we have the function
+
+e(x) :≡ reﬂx : E(x, x, reﬂx).
+
+By the induction principle for identity types applied to E, we obtain a function
+d : ∏ ∏ E(x, z, q).
+(x,z:A) (q:x=z)
+But E(x, z, q) ≡ (x = z), so the type of d is (2.1.3). Thus, we can use this function d and apply the induction principle for identity types to D, to obtain our desired function of type
+
+∏ (x = y) → ∏ (y = z) → (x = z)
+
+x,y:A
+
+z:A
+
+and hence ∏(x,y,z:A)(y = z) → (x = y) → (x = z). The conversion rules for the two induction principles give us reﬂx reﬂx ≡ reﬂx for any x : A.
+
+Second proof. We want to construct, for every x, y, z : A and every p : x = y and q : y = z, an element of x = z. By induction on p, it sufﬁces to assume that y is x and p is reﬂx. In this case, the type y = z of q is x = z. Now by induction on q, it sufﬁces to assume also that z is x and q is reﬂx. But in this case, x = z is x = x, and we have reﬂx : (x = x).
+The reader may well feel that we have given an overly convoluted proof of this lemma. In fact, we could stop after the induction on p, since at that point what we want to produce is an equality x = z, and we already have such an equality, namely q. Why do we go on to do another induction on q?
+The answer is that, as described in the introduction, we are doing proof-relevant mathematics. When we prove a lemma, we are deﬁning an inhabitant of some type, and it can matter what speciﬁc element we deﬁned in the course of the proof, not merely the type inhabited by that element (that is, the statement of the lemma). Lemma 2.1.2 has three obvious proofs: we could do induction over p, induction over q, or induction over both of them. If we proved it three different ways, we would have
+
+2.1 TYPES ARE HIGHER GROUPOIDS
+
+85
+
+three different elements of the same type. It’s not hard to show that these three elements are equal (see Exercise 2.1), but as they are not deﬁnitionally equal, there can still be reasons to prefer one over another.
+In the case of Lemma 2.1.2, the difference hinges on the computation rule. If we proved the lemma using a single induction over p, then we would end up with a computation rule of the form reﬂy q ≡ q. If we proved it with a single induction over q, we would have instead p reﬂy ≡ p, while proving it with a double induction (as we did) gives only reﬂx reﬂx ≡ reﬂx.
+The asymmetrical computation rules can sometimes be convenient when doing formalized mathematics, as they allow the computer to simplify more things automatically. However, in informal mathematics, and arguably even in the formalized case, it can be confusing to have a concatenation operation which behaves asymmetrically and to have to remember which side is the “special” one. Treating both sides symmetrically makes for more robust proofs; this is why we have given the proof that we did. (However, this is admittedly a stylistic choice.)
+The table below summarizes the “equality”, “homotopical”, and “highergroupoid” points of view on what we have done so far.
+
+Equality
+reﬂexivity symmetry transitivity
+
+Homotopy
+constant path inversion of paths concatenation of paths
+
+∞-Groupoid
+identity morphism inverse morphism composition of morphisms
+
+In practice, transitivity is often applied to prove an equality by a chain of intermediate steps. We will use the common notation for this such as a = b = c = d. If the intermediate expressions are long, or we want to specify the witness of each equality, we may write
+
+a=b =c =d
+
+(by p) (by q) (by r).
+
+In either case, the notation indicates construction of the element (p q) r : (a = d). (We choose left-associativity for concreteness, although in view of Lemma 2.1.4(iv) below it makes little difference.) If it should
+
+86
+
+CHAPTER 2. HOMOTOPY TYPE THEORY
+
+happen that b and c, say, are judgmentally equal, then we may write
+
+a=b ≡c =d
+
+(by p) (by r)
+
+to indicate construction of p r : (a = d). We also follow common mathematical practice in not requiring the justiﬁcations in this notation (“by p” and “by r”) to supply the exact witness needed; instead we allow them to simply mention the most important (or least obvious) ingredient in constructing that witness. For instance, if “Lemma A” states that for all x and y we have f (x) = g(y), then we may write “by Lemma A” as a justiﬁcation for the step f (a) = g(b), trusting the reader to deduce that we apply Lemma A with x :≡ a and y :≡ b. We may also omit a justiﬁcation entirely if we trust the reader to be able to guess it.
+Now, because of proof-relevance, we can’t stop after proving “symmetry” and “transitivity” of equality: we need to know that these operations on equalities are well-behaved. (This issue is invisible in set theory, where symmetry and transitivity are mere properties of equality, rather than structure on paths.) From the homotopy-theoretic point of view, concatenation and inversion are just the “ﬁrst level” of higher groupoid structure — we also need coherence laws on these operations, and analogous operations at higher dimensions. For instance, we need to know that concatenation is associative, and that inversion provides inverses with respect to concatenation.
+
+Lemma 2.1.4. Suppose A : U , that x, y, z, w : A and that p : x = y and q : y = z and r : z = w. We have the following:
+
+(i) p = p reﬂy and p = reﬂx p. (ii) p−1 p = reﬂy and p p−1 = reﬂx. (iii) (p−1)−1 = p.
+(iv) p (q r) = (p q) r.
+
+Note, in particular, that (i)–(iv) are themselves propositional equali-
+ties, living in the identity types of identity types, such as p =x=y q for p, q : x = y. Topologically, they are paths of paths, i.e. homotopies. It
+is a familiar fact in topology that when we concatenate a path p with the reversed path p−1, we don’t literally obtain a constant path (which
+corresponds to the equality reﬂ in type theory) — instead we have a homotopy, or higher path, from p p−1 to the constant path.
+

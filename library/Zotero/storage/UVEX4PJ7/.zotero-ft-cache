@@ -1,0 +1,859 @@
+XPS 13 Service Manual
+Computer Model: XPS 13–9350 Regulatory Model: P54G Regulatory Type: P54G002
+
+Notes, cautions, and warnings
+NOTE: A NOTE indicates important information that helps you make better use of your computer. CAUTION: A CAUTION indicates either potential damage to hardware or loss of data and tells you how to avoid the problem. WARNING: A WARNING indicates a potential for property damage, personal injury, or death.
+© 2016 Dell Inc. All rights reserved. This product is protected by U.S. and international copyright and intellectual property laws. Dell and the Dell logo are trademarks of Dell Inc. in the United States and/or other jurisdictions. All other marks and names mentioned herein may be trademarks of their respective companies. 2016 -08 Rev. A01
+
+Contents
+Before working inside your computer............................ 8
+Before you begin ...................................................................................... 8 Safety instructions.................................................................................... 8 Recommended tools..................................................................................9
+After working inside your computer.............................. 11
+Removing the base cover............................................. 12
+Procedure................................................................................................ 12
+Replacing the base cover............................................. 15
+Procedure................................................................................................ 15
+Removing the battery...................................................16
+Prerequisites............................................................................................ 16 Procedure................................................................................................ 16
+Replacing the battery................................................... 19
+Procedure................................................................................................ 19 Post-requisites.........................................................................................19
+Removing the solid-state drive.................................... 20
+Prerequisites........................................................................................... 20 Procedure............................................................................................... 20
+Replacing the solid-state drive.....................................22
+Procedure............................................................................................... 22 Post-requisites........................................................................................ 23
+3
+
+Removing the wireless card......................................... 24
+Prerequisites........................................................................................... 24 Procedure............................................................................................... 24
+Replacing the wireless card......................................... 26
+Procedure............................................................................................... 26 Post-requisites........................................................................................ 27
+Removing the speakers................................................28
+Prerequisites........................................................................................... 28 Procedure............................................................................................... 28
+Replacing the speakers................................................ 30
+Procedure............................................................................................... 30 Post-requisites........................................................................................ 30
+Removing the coin-cell battery.....................................31
+Prerequisites............................................................................................ 31 Procedure................................................................................................ 31
+Replacing the coin-cell battery.................................... 33
+Procedure............................................................................................... 33 Post-requisites........................................................................................ 33
+Removing the heat sink................................................34
+Prerequisites........................................................................................... 34 Procedure............................................................................................... 34
+Replacing the heat sink................................................36
+Procedure............................................................................................... 36 Post-requisites........................................................................................ 36
+4
+
+Removing the battery-status light cable...................... 37
+Prerequisites........................................................................................... 37 Procedure............................................................................................... 37
+Replacing the battery-status light cable...................... 39
+Procedure............................................................................................... 39 Post-requisites........................................................................................ 39
+Removing the touch pad..............................................40
+Prerequisites........................................................................................... 40 Procedure................................................................................................ 41
+Replacing the touch pad.............................................. 43
+Procedure............................................................................................... 43 Post-requisites........................................................................................ 43
+Removing the I/O-board cable ....................................44
+Prerequisites........................................................................................... 44 Procedure............................................................................................... 44
+Replacing the I/O-board cable ....................................46
+Procedure............................................................................................... 46 Post-requisites........................................................................................ 46
+Removing the I/O board.............................................. 47
+Prerequisites........................................................................................... 47 Procedure............................................................................................... 47
+Replacing the I/O board.............................................. 50
+Procedure............................................................................................... 50 Post-requisites........................................................................................50
+5
+
+Removing the keyboard-controls board........................51
+Prerequisites............................................................................................ 51 Procedure................................................................................................ 51
+Replacing the keyboard-controls board....................... 54
+Procedure............................................................................................... 54 Post-requisites........................................................................................ 54
+Removing the display assembly................................... 55
+Prerequisites........................................................................................... 55 Procedure............................................................................................... 55
+Replacing the display assembly.................................... 61
+Procedure................................................................................................ 61 Post-requisites........................................................................................ 62
+Removing the system board........................................ 63
+Prerequisites........................................................................................... 63 Procedure............................................................................................... 63
+Replacing the system board.........................................68
+Procedure............................................................................................... 68 Post-requisites........................................................................................ 69
+Removing the power-adapter port............................... 70
+Prerequisites........................................................................................... 70 Procedure............................................................................................... 70
+Replacing the power-adapter port............................... 72
+Procedure............................................................................................... 72 Post-requisites........................................................................................ 72
+6
+
+Removing the fan.........................................................73
+Prerequisites........................................................................................... 73 Procedure............................................................................................... 73
+Replacing the fan......................................................... 76
+Procedure............................................................................................... 76 Post-requisites........................................................................................ 76
+Removing the keyboard............................................... 77
+Prerequisites............................................................................................77 Procedure............................................................................................... 78
+Replacing the keyboard................................................ 81
+Procedure................................................................................................ 81 Post-requisites.........................................................................................81
+Removing the palm rest............................................... 82
+Prerequisites........................................................................................... 82 Procedure............................................................................................... 83
+Replacing the palm rest............................................... 85
+Procedure............................................................................................... 85 Post-requisites........................................................................................ 85
+Flashing the BIOS........................................................ 86
+Getting help and contacting Dell.................................. 87
+Self-help resources................................................................................. 87 Contacting Dell........................................................................................88
+7
+
+Before working inside your computer
+NOTE: The images in this document may differ from your computer depending on the configuration you ordered.
+
+Before you begin
+
+1 Save and close all open files and exit all open applications. 2 Shut down your computer.
+The shut-down instruction varies depending on the operating system installed on your computer.
+
+– Windows 10: Click or tap Start → Power → Shut down.
+– Windows 8.1: On the Start screen, click or tap the power icon down.
+– Windows 7: Click or tap Start → Shut down.
+
+→ Shut
+
+NOTE: If you are using a different operating system, see the documentation of your operating system for shut-down instructions.
+3 Disconnect your computer and all attached devices from their electrical outlets.
+4 Disconnect all cables such as telephone cables and network cables, from your computer.
+5 Disconnect all attached devices and peripherals, such as keyboard, mouse, and monitor, from your computer.
+6 Remove any media card and optical disc from your computer, if applicable.
+
+Safety instructions
+
+Use the following safety guidelines to protect your computer from potential damage and ensure your personal safety.
+
+8
+
+WARNING: Before working inside your computer, read the safety information that shipped with your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance.
+WARNING: Disconnect all power sources before opening the computer cover or panels. After you finish working inside the computer, replace all covers, panels, and screws before connecting to the electrical outlet.
+CAUTION: To avoid damaging the computer, ensure that the work surface is flat and clean.
+CAUTION: To avoid damaging the components and cards, handle them by their edges, and avoid touching pins and contacts.
+CAUTION: You should only perform troubleshooting and repairs as authorized or directed by the Dell technical assistance team. Damage due to servicing that is not authorized by Dell is not covered by your warranty. See the safety instructions that shipped with the product or at www.dell.com/ regulatory_compliance.
+CAUTION: Before touching anything inside your computer, ground yourself by touching an unpainted metal surface, such as the metal at the back of the computer. While you work, periodically touch an unpainted metal surface to dissipate static electricity, which could harm internal components.
+CAUTION: When you disconnect a cable, pull on its connector or on its pull tab, not on the cable itself. Some cables have connectors with locking tabs or thumb-screws that you must disengage before disconnecting the cable. When disconnecting cables, keep them evenly aligned to avoid bending any connector pins. When connecting cables, ensure that the ports and connectors are correctly oriented and aligned.
+CAUTION: Press and eject any installed card from the media-card reader.
+Recommended tools
+The procedures in this document may require the following tools:
+• Philips screwdriver
+9
+
+• Flat-head screwdriver • Torx #5 (T5) screwdriver • Plastic scribe
+10
+
+After working inside your computer
+CAUTION: Leaving stray or loose screws inside your computer may severely damage your computer. 1 Replace all screws and ensure that no stray screws remain inside your computer. 2 Connect any external devices, peripherals, or cables you removed before working on your computer. 3 Replace any media cards, discs, or any other parts that you removed before working on your computer. 4 Connect your computer and all attached devices to their electrical outlets. 5 Turn on your computer.
+11
+
+Removing the base cover
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance.
+Procedure
+1 Close the display and turn the computer over. 2 Using your fingertips, open the system badge.
+12
+
+3 Remove the screws that secure the base cover to the palm-rest assembly.
+
+1 screws (9) 3 base cover
+
+2 system badge
+
+4 Starting from the back of the computer, pry up the base cover using a plastic scribe.
+
+13
+
+5 Lift the base cover off the palm-rest assembly.
+
+1 palm-rest assembly 3 plastic scribe
+
+2 base cover
+
+14
+
+Replacing the base cover
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance.
+Procedure
+1 Align the screw holes on the base cover with the screw holes on the palm-rest assembly and snap the base cover into place.
+2 Using your fingertips, turn the system badge over. 3 Replace the screws that secure the base cover to the palm-rest assembly. 4 Turn the system badge over and keep it in place.
+15
+
+Removing the battery
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance.
+Prerequisites
+Remove the base cover.
+Procedure
+1 Disconnect the battery cable from the system board.
+16
+
+2 Peel off the tapes that secure the speaker cable to the battery.
+
+1 battery cable 3 tapes (6)
+
+2 speaker cable
+
+3 Remove the screws that secure the battery to the palm-rest assembly.
+
+17
+
+4 Lift the battery off the palm-rest assembly.
+
+1 palm-rest assembly 3 screws (4)
+
+2 battery
+
+5 Turn the computer over, open the display, and press the power button for about 5 seconds to ground the computer.
+
+18
+
+Replacing the battery
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance.
+Procedure
+1 Align the screw holes on the battery with the screw holes on the palm-rest assembly.
+2 Adhere the tapes that secure the speaker cable to the battery. 3 Replace the screws that secure the battery to the palm-rest assembly. 4 Connect the battery cable to the system board.
+Post-requisites
+Replace the base cover.
+19
+
+Removing the solid-state drive
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance. CAUTION: Solid-state drives are fragile. Exercise care when handling the solid-state drive. CAUTION: To avoid data loss, do not remove the solid-state drive while the computer is in sleep or on state.
+Prerequisites
+1 Remove the base cover. 2 Remove the battery.
+Procedure
+1 Remove the screw that secures the solid-state drive to the system board.
+20
+
+2 Slide and remove the solid-state drive from the solid-state drive slot.
+
+1 solid-state drive slot 3 solid-state drive
+
+2 screw
+
+21
+
+Replacing the solid-state drive
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance. CAUTION: Solid-state drives are fragile. Exercise care when handling the solid-state drive.
+Procedure
+1 Align the notches on the solid-state drive with the tabs in the solid-state drive slot.
+2 Slide the solid-state drive at an angle into the solid-state drive slot.
+22
+
+3 Press the other end of the solid-state drive down and replace the screw that secures the solid-state drive to the system board.
+
+1 solid-state drive slot 3 notch 5 screw
+Post-requisites
+1 Replace the battery. 2 Replace the base cover.
+
+2 tab 4 solid-state drive
+23
+
+Removing the wireless card
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance.
+Prerequisites
+1 Remove the base cover. 2 Remove the battery.
+Procedure
+1 Remove the screw that secures the wireless-card bracket to the system board. 2 Lift the wireless-card bracket off the wireless card. 3 Disconnect the wireless-card cables from the wireless card.
+24
+
+4 Slide and remove the wireless card out of the wireless-card slot.
+
+1 wireless-card bracket 3 antenna cables (2) 5 wireless-card slot
+
+2 screw 4 wireless card
+
+25
+
+Replacing the wireless card
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance.
+
+Procedure
+
+1 Align the notches on the wireless card with the tabs in the wireless-card slot.
+
+CAUTION: To avoid damage to the wireless card, never place cables under the wireless card.
+2 Slide the wireless-card at an angle into the wireless-card slot. 3 Connect the antenna cables to the wireless card.
+The following table provides the antenna cable color schemes for the wireless card supported by your computer.
+
+Connectors on the wireless card
+
+Antenna-cable color
+
+Main (white triangle)
+
+White
+
+Auxiliary (black triangle)
+
+Black
+
+4 Press the other end of the wireless card down. 5 Place the wireless-card bracket on the wireless card.
+
+26
+
+6 Replace the screw that secures the wireless-card bracket to the system board.
+
+1 wireless card 3 tab 5 screw 7 wireless-card slot
+Post-requisites
+1 Replace the battery. 2 Replace the base cover.
+
+2 notch 4 antenna cables (2) 6 wireless-card bracket
+27
+
+Removing the speakers
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance.
+Prerequisites
+1 Remove the base cover. 2 Remove the battery.
+Procedure
+1 Disconnect the speaker cable from the system board. 2 Remove the screws that secure the speakers to the palm-rest assembly. 3 Note the speaker-cable routing and peel off the tapes that secure the speaker
+cable to the system board.
+28
+
+4 Lift the speakers, along with its cables, off the palm-rest assembly.
+
+1 tapes (2) 3 speaker cable 5 speakers (2)
+
+2 system board 4 screws (4) 6 palm-rest assembly
+
+29
+
+Replacing the speakers
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance.
+Procedure
+1 Using the alignment posts on the palm-rest assembly, place the speakers on the palm-rest assembly.
+2 Replace the screws that secure the speakers to the palm-rest assembly. 3 Route the speaker cable on the system board and adhere the tapes to the
+system board. 4 Connect the speaker cable to the system board.
+Post-requisites
+1 Replace the battery. 2 Replace the base cover.
+30
+
+Removing the coin-cell battery
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance. CAUTION: Removing the coin-cell battery resets the BIOS setup program’s settings to default. It is recommended that you note the BIOS setup program’s settings before removing the coin-cell battery.
+Prerequisites
+1 Remove the base cover. 2 Remove the battery.
+Procedure
+1 Disconnect the coin-cell battery cable from the system board.
+31
+
+2 Note the location of the coin-cell battery and pry it off the palm-rest assembly.
+
+1 coin-cell battery cable 3 coin-cell battery
+
+2 palm-rest assembly
+
+32
+
+Replacing the coin-cell battery
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance.
+Procedure
+1 Adhere the coin-cell battery to the palm-rest assembly. 2 Connect the coin-cell battery cable to the system board.
+Post-requisites
+1 Replace the battery. 2 Replace the base cover.
+33
+
+Removing the heat sink
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance. WARNING: The heat sink may become hot during normal operation. Allow sufficient time for the heat sink to cool before you touch it. CAUTION: For maximum cooling of the processor, do not touch the heat transfer areas on the heat sink. The oils in your skin can reduce the heat transfer capability of the thermal grease.
+Prerequisites
+1 Remove the base cover. 2 Remove the battery.
+Procedure
+1 In sequential order (as indicated on the heat-sink assembly), remove the screws that secure the heat sink to the system board.
+34
+
+2 Lift the heat sink off the system board.
+
+1 heat sink
+
+2 screws (4)
+
+35
+
+Replacing the heat sink
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance. CAUTION: Incorrect alignment of the heat sink can damage the system board and processor. NOTE: The original thermal grease can be reused if the original system board and heat sink are reinstalled together. If either the system board or the heat sink is replaced, use the thermal pad provided in the kit to ensure that thermal conductivity is achieved.
+Procedure
+1 Align the screw holes on the heat sink with the screw holes on the system board.
+2 Replace the screws that secure the heat sink to the system board.
+Post-requisites
+1 Replace the battery. 2 Replace the base cover.
+36
+
+Removing the battery-status light cable
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance.
+Prerequisites
+1 Remove the base cover. 2 Remove the battery.
+Procedure
+1 Peel off the tape that secures the battery-status light cable to the keyboardcontrols board.
+2 Lift the latch and disconnect the battery-status light cable from the keyboardcontrols board.
+37
+
+3 Note the battery-status light cable routing and peel off the cable from the palmrest assembly.
+
+1 tape 3 latch 5 palm-rest assembly
+
+2 keyboard-controls board 4 battery-status light cable
+
+38
+
+Replacing the battery-status light cable
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance.
+Procedure
+1 Adhere the battery-status light cable to the palm-rest assembly. 2 Route the battery-status light cable and adhere it to the palm-rest assembly. 3 Slide the battery-status light cable into the battery-status light cable connector
+and press down on the latch to secure the cable. 4 Adhere the tape that secures the battery-status light cable to the keyboard-
+controls board.
+Post-requisites
+1 Replace the battery. 2 Replace the base cover.
+39
+
+Removing the touch pad
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance.
+Prerequisites
+1 Remove the base cover. 2 Remove the battery.
+40
+
+Procedure
+1 Lift the latch and disconnect the touch-pad cable from the system board.
+
+1 latch
+
+2 touch-pad cable
+
+2 Peel off the touch-pad cable from the keyboard and palm-rest assembly. 3 Remove the screws that secure the touch pad to the palm-rest assembly.
+
+41
+
+4 Lift the touch pad from the inner edge and remove it from the palm-rest assembly.
+
+1 screws (4) 3 touch pad
+
+2 palm-rest assembly
+
+42
+
+Replacing the touch pad
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance.
+Procedure
+1 Align the screw holes on the touch pad with the screw holes on the palm-rest assembly.
+2 Replace the screws that secure the touch pad to the palm-rest assembly. 3 Slide the touch-pad cable into the system board and press down on the latch to
+secure the cable. 4 Route the touch-pad cable and adhere the cable to the palm-rest assembly and
+keyboard.
+Post-requisites
+1 Replace the battery. 2 Replace the base cover.
+43
+
+Removing the I/O-board cable
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance.
+Prerequisites
+1 Remove the base cover. 2 Remove the battery.
+Procedure
+1 Lift the latches and disconnect the I/O-board cable from the system board and the I/O board.
+44
+
+2 Note the I/O-board cable routing and peel off the cable from the keyboard.
+
+1 latches (2) 3 keyboard
+
+2 I/O-board cable
+
+45
+
+Replacing the I/O-board cable
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance.
+Procedure
+1 Slide the I/O-board cable into the connector on the system board and the I/O board and press down on the latches to secure the cable.
+2 Adhere the I/O-board cable to the keyboard.
+Post-requisites
+1 Replace the battery. 2 Replace the base cover.
+46
+
+Removing the I/O board
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance.
+Prerequisites
+1 Remove the base cover. 2 Remove the battery.
+Procedure
+1 Remove the screws that secure the I/O board to the palm-rest assembly. 2 Peel off the tape that secures the display cable to the I/O board. 3 Disconnect the media-card reader cable from the I/O board.
+47
+
+4 Lift the latch and disconnect the I/O-board cable from the I/O board.
+
+1 tape 3 media-card reader cable 5 I/O-board cable
+
+2 screws (2) 4 latch 6 display cable
+
+48
+
+5 Starting from the outer edge, slide the I/O board from under the fan and remove it from the palm-rest assembly.
+
+1 palm-rest assembly
+
+2 I/O board
+
+49
+
+Replacing the I/O board
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance.
+Procedure
+1 Slide the I/O board under the fan and align the screw holes on the I/O board with the screw holes on the palm-rest assembly.
+2 Align the screw hole on the display cable with the screw hole on the I/O board. 3 Replace the screws that secure the I/O board to the palm-rest assembly. 4 Slide the I/O-board cable into the I/O board and press down on the latch to
+secure the cable. 5 Connect the media-card reader cable to the I/O board. 6 Adhere the tape that secures the display cable to the I/O board.
+Post-requisites
+1 Replace the battery. 2 Replace the base cover.
+50
+
+Removing the keyboard-controls board
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance.
+Prerequisites
+1 Remove the base cover. 2 Remove the battery.
+Procedure
+1 Peel off the tape that secures the battery-status light cable to the keyboardcontrols board.
+2 Peel off the tape that secures the keyboard-controls board to the palm-rest assembly.
+51
+
+3 Lift the latches and disconnect the keyboard-backlight cable, the keyboard cable, the keyboard-controls board cable, and the battery-status light cable from the keyboard-controls board.
+
+1 tapes (2) 3 keyboard cable
+5 latches (4) 7 battery-status light cable
+
+2 keyboard-backlight cable 4 keyboard-controls board
+cable 6 keyboard-controls board
+
+4 Note the location of the keyboard-controls board on the palm-rest assembly.
+
+52
+
+5 Using a plastic scribe, pry up the keyboard-controls board off the palm-rest assembly.
+
+1 plastic scribe 3 palm-rest assembly
+
+2 keyboard-controls board
+
+53
+
+Replacing the keyboard-controls board
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance.
+Procedure
+1 Adhere the keyboard-controls board to the palm-rest assembly. 2 Slide the keyboard-backlight cable, the keyboard cable, the keyboard-controls
+board cable, and the battery-status light cable into the keyboard-controls board and press down the latches to secure cables. 3 Adhere the tape that secures the keyboard-controls board to the palm-rest assembly. 4 Adhere the tape that secures the battery-status light cable to the keyboardcontrols board.
+Post-requisites
+1 Replace the battery. 2 Replace the base cover.
+54
+
+Removing the display assembly
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance.
+Prerequisites
+1 Remove the base cover. 2 Remove the battery.
+Procedure
+1 Disconnect the touch-screen cable (optional) and camera cable from the system board.
+2 Peel off the tape that secures the antenna cables to the system board. 3 Remove the screw that secures the wireless-card bracket to the system board. 4 Lift the wireless-card bracket off the wireless card.
+55
+
+5 Disconnect the antenna cables from the wireless card.
+
+1 touch-screen cable (optional) 3 wireless-card bracket 5 antenna cables 7 tape
+
+2 camera cable 4 screw 6 wireless card
+
+6 Remove the screw that secures the display cable to the I/O board.
+7 Peel off the tapes that secure the display cable to the fan and the I/O board.
+8 Disconnect the media-card reader cable from the I/O board.
+9 Note the display-cable routing and remove the cable from the routing guides on the fan.
+
+56
+
+10 Peel off the tape from the display-cable bracket.
+
+1 tapes (4) 3 media-card reader cable 5 routing guides (2)
+
+2 screw 4 display cable
+
+11 Remove the screws that secure the display-cable bracket to the system board. 12 Lift the display-cable bracket off the display cable.
+
+57
+
+13 Using the pull tab, disconnect the display cable from the system board.
+
+1 display cable 3 screws (2)
+
+2 display-cable bracket
+
+58
+
+14 Open the palm-rest assembly and then remove the screws that secure the display hinges to the palm-rest assembly.
+
+1 palm-rest assembly 3 display hinges (2)
+
+2 display assembly 4 screws (4)
+
+59
+
+15 Slide and remove the palm-rest assembly from the display hinges.
+
+1 palm-rest assembly
+
+2 display assembly
+
+60
+
+Replacing the display assembly
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance.
+Procedure
+1 Slide the palm-rest assembly under the display hinges and align the screw holes on the palm-rest assembly with the screw holes on the display hinges.
+2 Replace the screws that secure the palm-rest assembly to the display hinges. 3 Close the palm-rest assembly. 4 Route the display cable through the routing guides on the fan. 5 Align the screw hole on the display cable with the screw hole on the I/O board. 6 Replace the screw that secures the display cable to the I/O board. 7 Connect the media-card reader cable to the I/O board. 8 Adhere the tapes that secure the display cable to the fan and the I/O board. 9 Connect the display cable to the system board. 10 Align the screw holes on the display-cable bracket with the screw holes on the
+system board. 11 Replace the screws that secure the display-cable bracket to system board. 12 Adhere the tape over the display-cable bracket. 13 Connect the wireless-card cables to the wireless card. 14 Align the screw hole on the wireless-card bracket with the screw hole on the
+system board. 15 Replace the screw that secures the wireless-card bracket to the system board. 16 Adhere the tape that secures the antenna cables to the system board. 17 Connect the touch-screen cable (optional) and camera cable to the system
+board.
+61
+
+Post-requisites
+1 Replace the battery. 2 Replace the base cover.
+62
+
+Removing the system board
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance. NOTE: Your computer’s Service Tag is stored in the system board. You must enter the Service Tag in the BIOS setup program after you replace the system board. NOTE: Replacing the system board removes any changes you have made to the BIOS using the BIOS setup program. You must make the appropriate changes again after you replace the system board. NOTE: Before disconnecting the cables from the system board, note the location of the connectors so that you can reconnect the cables correctly after you replace the system board.
+Prerequisites
+1 Remove the base cover. 2 Remove the battery. 3 Remove the wireless card. 4 Remove the solid-state drive. 5 Remove the heat sink.
+Procedure
+1 Peel off the tape that secures the antenna cables and power-adapter port cable to the system board.
+2 Disconnect the camera cable, touch-screen cable (optional), power-adapter port cable, and coin-cell battery cable from the system board.
+63
+
+3 Lift the latch and disconnect the keyboard-controls board cable from the system board.
+
+1 touch-screen cable (optional) 3 tape 5 coin-cell battery cable 7 keyboard-controls board cable
+
+2 camera cable 4 power-adapter port cable 6 speaker cable 8 latch
+
+4 Peel off the tape from the display-cable bracket. 5 Peel off the tapes that secure the speaker cable to the system board.
+
+64
+
+6 Disconnect the fan cable from the system board.
+7 Lift the latches and disconnect the I/O-board cable and the touch-pad cable from the system board.
+
+1 tapes (3) 3 I/O-board cable 5 fan cable
+
+2 latches (2) 4 touch-pad cable
+
+8 Remove the screws that secure the display-cable bracket to the system board. 9 Lift the display-cable bracket off the display cable.
+
+65
+
+10 Using the pull tab, disconnect the display cable from the system board.
+
+1 display-cable bracket 3 display cable
+
+2 screws (2)
+
+11 Remove the screws that secure the system board to the palm-rest assembly.
+
+66
+
+12 Starting from the outer edge, lift the system board at an angle and remove it from under the tabs on the palm-rest assembly.
+
+1 screws (6) 3 palm-rest assembly
+
+2 system board
+
+67
+
+Replacing the system board
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance.
+NOTE: Your computer’s Service Tag is stored in the system board. You must enter the Service Tag in the BIOS setup program after you replace the system board.
+NOTE: Replacing the system board removes any changes you have made to the BIOS using the BIOS setup program. You must make the appropriate changes again after you replace the system board.
+Procedure
+1 Slide the system board under the tabs on the palm-rest assembly and align the screw holes on the system board with the screw holes on the palm-rest assembly.
+2 Replace the screws that secure the system board to the palm-rest assembly. 3 Slide the I/O-board cable, the touch-pad cable, and the keyboard-controls board
+cable into the system board and press down on the connector latches to secure the cables. 4 Connect the camera cable, the touch-screen cable (optional), the poweradapter port cable, the coin-cell battery cable, the speaker cable, the fan cable, and the display cable to the system board. 5 Adhere the tape that secures the antenna cables and power-adapter port to the system board. 6 Align the screw holes on the display-cable bracket with the screw holes on the system board. 7 Replace the screws that secure the display-cable bracket to system board. 8 Adhere the tapes that secure the speaker cable to the system board. 9 Adhere the tape over the display-cable bracket.
+68
+
+Post-requisites
+1 Replace the heat sink. 2 Replace the solid-state drive. 3 Replace the wireless card. 4 Replace the battery. 5 Replace the base cover.
+69
+
+Removing the power-adapter port
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance.
+Prerequisites
+1 Remove the base cover. 2 Remove the battery. 3 Remove the wireless card. 4 Follow the procedure from step 1 to step 12 in “Removing the System Board”.
+Procedure
+1 Remove the screw that secures the power-adapter port to the palm-rest assembly.
+2 Note the power-adapter port cable routing and remove the cable from the routing guide on the palm-rest assembly.
+70
+
+3 Lift the power-adapter port off the palm-rest assembly.
+
+1 screw 3 palm-rest assembly
+
+2 power-adapter port
+
+71
+
+Replacing the power-adapter port
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance.
+Procedure
+1 Align the screw hole on the power-adapter port with the screw hole on the palm-rest assembly.
+2 Replace the screw that secures the power-adapter port to the palm-rest assembly.
+3 Route the power-adapter port cable through the routing guide on the palm-rest assembly.
+Post-requisites
+1 Follow the procedure from step 1 to step 8 in “Replacing the System Board”. 2 Replace the wireless card. 3 Replace the battery. 4 Replace the base cover.
+72
+
+Removing the fan
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance.
+Prerequisites
+1 Remove the base cover. 2 Remove the battery. 3 Remove the wireless card. 4 Follow the procedure from step 1 to step 12 in “Removing the System Board”.
+Procedure
+1 Peel off the tapes that secure the display cable to the fan.
+73
+
+2 Note the display-cable routing and remove the cable from the routing guides on the fan.
+
+1 tapes (3) 3 routing guides (2)
+
+2 display cable
+
+3 Remove the screw that secures the fan to the palm-rest assembly.
+
+74
+
+4 Lift the fan, along with its cable, off the palm-rest assembly.
+
+1 screw 3 palm-rest assembly
+
+2 fan
+
+75
+
+Replacing the fan
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance.
+Procedure
+1 Align the screw holes on the fan with the screw holes on the palm-rest assembly.
+2 Replace the screw that secures the fan to the palm-rest assembly. 3 Route the display cable through the routing guides on the fan. 4 Adhere the tapes that secure the display cable to the fan.
+Post-requisites
+1 Follow the procedure from step 1 to step 8 in “Replacing the System Board”. 2 Replace the wireless card. 3 Replace the battery. 4 Replace the base cover.
+76
+
+Removing the keyboard
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance.
+Prerequisites
+1 Remove the base cover. 2 Remove the battery. 3 Remove the wireless card. 4 Remove the speakers. 5 Remove the coin-cell battery. 6 Remove the heat sink. 7 Remove the I/O board. 8 Follow the procedure from step 1 to step 12 in “Removing the System Board”. 9 Remove the fan. 10 Remove the I/O-board cable.
+77
+
+Procedure
+1 Lift the latches and disconnect the keyboard cable and the keyboard-backlight cable from the keyboard-controls board.
+
+1 keyboard-backlight cable 3 keyboard cable
+
+2 latches (2) 4 keyboard-controls board
+
+2 Note the routing of the touch-pad cable, the I/O-board cable, and the keyboardcontrols board cable, and peel off the cables from the keyboard.
+
+78
+
+3 Remove the screws that secure the keyboard to the palm-rest assembly.
+
+1 screws (30) 3 palm-rest assembly
+
+2 keyboard
+
+79
+
+4 Lift the keyboard off the palm-rest assembly.
+
+1 keyboard
+
+2 palm-rest assembly
+
+80
+
+Replacing the keyboard
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance.
+Procedure
+1 Align the screw holes on the keyboard with the screw holes on the palm-rest assembly.
+2 Replace the screws that secure the keyboard to the palm-rest assembly. 3 Adhere the touch-pad cable, the I/O-board cable, and the keyboard-controls
+board cable to the keyboard. 4 Slide the keyboard cable and the keyboard-backlight cable into the keyboard-
+controls board and press down on the latches to secure the cables.
+Post-requisites
+1 Replace the I/O-board cable. 2 Replace the fan. 3 Follow the procedure from step 1 to step 8 in “Replacing the System Board”. 4 Replace the I/O board. 5 Replace the heat sink. 6 Replace the coin-cell battery. 7 Replace the speakers. 8 Replace the wireless card. 9 Replace the battery. 10 Replace the base cover.
+81
+
+Removing the palm rest
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance.
+Prerequisites
+1 Remove the base cover. 2 Remove the battery. 3 Remove the battery-status light cable. 4 Remove the wireless card. 5 Remove the heat sink. 6 Remove the I/O board. 7 Remove the speakers. 8 Remove the coin-cell battery. 9 Remove the touch pad. 10 Follow the procedure from step 1 to step 12 in “Removing the System Board”. 11 Remove the fan. 12 Remove the I/O-board cable. 13 Remove the keyboard.
+82
+
+Procedure
+1 Open the palm rest and then remove the screws that secure the palm rest to the display hinges.
+
+1 palm rest 3 display hinges (2)
+
+2 display assembly 4 screws (4)
+
+83
+
+2 Slide and remove the palm rest from the display hinges.
+
+1 palm rest
+
+2 display assembly
+
+84
+
+Replacing the palm rest
+WARNING: Before working inside your computer, read the safety information that shipped with your computer and follow the steps in Before working inside your computer. After working inside your computer, follow the instructions in After working inside your computer. For more safety best practices, see the Regulatory Compliance home page at www.dell.com/ regulatory_compliance.
+Procedure
+1 Slide the palm rest under the display hinges and align the screw holes on the palm rest with the screw holes on the display hinges.
+2 Replace the screws that secure the palm rest to the display hinges. 3 Close the palm rest.
+Post-requisites
+1 Replace the keyboard. 2 Replace the I/O-board cable . 3 Replace the fan. 4 Replace the system board. 5 Replace the touch pad. 6 Replace the coin-cell battery. 7 Replace the speakers. 8 Replace the I/O board. 9 Replace the heat sink. 10 Replace the wireless card. 11 Replace the battery-status light cable. 12 Replace the battery. 13 Replace the base cover.
+85
+
+Flashing the BIOS
+You may need to flash (update) the BIOS when an update is available or when you replace the system board. To flash the BIOS: 1 Turn on your computer. 2 Go to www.dell.com/support. 3 Click Product support, enter the Service Tag of your computer, and then click
+Submit. NOTE: If you do not have the Service Tag, use the auto-detect feature or manually browse for your computer model.
+4 Click Drivers & downloads → Find it myself. 5 Select the operating system installed on your computer. 6 Scroll down the page and expand BIOS. 7 Click Download to download the latest version of the BIOS for your computer. 8 After the download is complete, navigate to the folder where you saved the
+BIOS update file. 9 Double-click the BIOS update file icon and follow the instructions on the screen.
+86
+
+Getting help and contacting Dell
+
+Self-help resources
+
+You can get information and help on Dell products and services using these self-help resources:
+
+Information about Dell products and services
+Windows 8.1 and Windows 10
+
+www.dell.com Dell Help & Support app
+
+Windows 10
+
+Get started app
+
+Windows 8.1
+
+Help + Tips app
+
+Accessing help in Windows 8, Windows In Windows search, type Help and
+
+8.1, and Windows 10
+
+Support, and press Enter.
+
+Accessing help in Windows 7
+
+Click Start → Help and Support.
+
+Online help for operating system
+
+www.dell.com/support/windows www.dell.com/support/linux
+
+Troubleshooting information, user manuals, setup instructions, product specifications, technical help blogs, drivers, software updates, and so on.
+
+www.dell.com/support
+
+Learn about your operating system,
+
+See Me and My Dell at www.dell.com/
+
+setting up and using your computer, data support/manuals.
+
+backup, diagnostics, and so on.
+
+87
+
+Contacting Dell
+To contact Dell for sales, technical support, or customer service issues, see www.dell.com/contactdell.
+NOTE: Availability varies by country and product, and some services may not be available in your country. NOTE: If you do not have an active internet connection, you can find contact information on your purchase invoice, packing slip, bill, or Dell product catalog.
+88
+

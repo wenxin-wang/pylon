@@ -1,0 +1,73 @@
+ Re: On elisp running native
+emacs-devel
+[ Top ][ All Lists ]
+Advanced
+[ Date Prev ][ Date Next ][ Thread Prev ][ Thread Next ][ Date Index ][ Thread Index ]
+Re: On elisp running native
+From : 	Stefan Monnier
+Subject : 	Re: On elisp running native
+Date : 	Fri, 29 Nov 2019 10:30:33 -0500
+User-agent : 	Gnus/5.13 (Gnus v5.13) Emacs/27.0.50 (gnu/linux)
+
+ > > | | byte-compiled | native-compiled | speed-up | 
+> > |-------------+---------------+-----------------+----------| 
+> > | interactive | 27s | 19s | 1.4x | 
+> > | batch | 15s | 8s | 1.9x | 
+
+So, there's 11s-12s of "interactive cost".
+
+> > To me makes quite sense that in interactive there's less difference 
+> > cause of the re-display done in C anyway. 
+
+I'm not sure what those 11s-12s come from, but I think it's safe to take
+the "1.9x" as the more relevant measure in terms of measuring the impact
+of native compilation on the speed of bytecomp.el.
+
+> Regardless of the speed-up due to using native code, it sounds strange 
+> to me that byte-compiling interactively takes twice the time it takes 
+> non-interactively. I have hard time convincing myself that redisplay 
+> has such a profound effect on byte compilation, since byte-compiling a 
+> file normally yields one or two lines of output, regardless of the 
+> size of the file being compiled. 
+
+I agree it's a bit surprising.  Even it was running in a "large"
+interactive session, it could also be due to the time it takes to GC
+a larger heap (tho we normally GC such larger heaps proportionally less
+often, so that doesn't really explain it either).
+
+But since this is orthogonal to the gccemacs native compilation, maybe
+we should move it to a bug report where we can try and investigate it.
+
+
+        Stefan
+
+
+
+reply via email to
+[ Prev in Thread ] 	Current Thread 	[ Next in Thread ]
+
+    Re: On elisp running native , (continued)
+        Re: On elisp running native , Lars Ingebrigtsen , 2019/11/28
+            Re: On elisp running native , Andrea Corallo , 2019/11/28
+                Re: On elisp running native , Lars Brinkhoff , 2019/11/29
+        Re: On elisp running native , Stefan Monnier , 2019/11/28
+            Re: On elisp running native , Andrea Corallo , 2019/11/28
+                Re: On elisp running native , Stefan Monnier , 2019/11/28
+                Re: On elisp running native , Andrea Corallo , 2019/11/28
+                Re: On elisp running native , Eric Abrahamsen , 2019/11/28
+                Re: On elisp running native , Andrea Corallo , 2019/11/29
+                Re: On elisp running native , Eli Zaretskii , 2019/11/29
+                Re: On elisp running native , Stefan Monnier   <=
+                Re: On elisp running native , Andrea Corallo , 2019/11/29
+                Re: On elisp running native , Eli Zaretskii , 2019/11/29
+                Re: On elisp running native , Andrea Corallo , 2019/11/29
+
+    Prev by Date: Re: On elisp running native
+    Next by Date: Re: Some ideas with Emacs
+    Previous by thread: Re: On elisp running native
+    Next by thread: Re: On elisp running native
+    Index(es):
+        Date
+        Thread
+
+normal 

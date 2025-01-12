@@ -1,0 +1,4548 @@
+Computer vision: models, learning and inference
+Simon J.D. Prince July 7, 2012
+Copyright c 2011, 2012 by Simon Prince; to be published by Cambridge University Press 2012. For personal use only, not for distribution.
+The most recent version of this book can be downloaded from http://www.computervisionmodels.com.
+Please mail errata to s.prince@cs.ucl.ac.uk.
+
+2
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+This book is dedicated to Richard Eagle, without whom it would never have been started, and to Lynfa Stroud, without whom it would never have been ﬁnished.
+
+2
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+Contents
+
+1 Introduction
+
+15
+
+I Probability
+
+21
+
+2 Introduction to probability
+
+25
+
+2.1 Random variables . . . . . . . . . . . . . . . . . . . . . . . . . . . . 25
+
+2.2 Joint probability . . . . . . . . . . . . . . . . . . . . . . . . . . . . 26
+
+2.3 Marginalization . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 27
+
+2.4 Conditional probability . . . . . . . . . . . . . . . . . . . . . . . . . 28
+
+2.5 Bayes’ rule . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 30
+
+2.6 Independence . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 31
+
+2.7 Expectation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 31
+
+3 Common probability distributions
+
+35
+
+3.1 Bernoulli distribution . . . . . . . . . . . . . . . . . . . . . . . . . . 36
+
+3.2 Beta distribution . . . . . . . . . . . . . . . . . . . . . . . . . . . . 37
+
+3.3 Categorical distribution . . . . . . . . . . . . . . . . . . . . . . . . 38
+
+3.4 Dirichlet distribution . . . . . . . . . . . . . . . . . . . . . . . . . . 39
+
+3.5 Univariate normal distribution . . . . . . . . . . . . . . . . . . . . 40
+
+3.6 Normal-scaled inverse gamma distribution . . . . . . . . . . . . . . 40
+
+3.7 Multivariate normal distribution . . . . . . . . . . . . . . . . . . . 41
+
+3.8 Normal inverse Wishart distribution . . . . . . . . . . . . . . . . . 42
+
+3.9 Conjugacy . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 42
+
+4 Fitting probability models
+
+49
+
+4.1 Maximum likelihood . . . . . . . . . . . . . . . . . . . . . . . . . . 49
+
+4.2 Maximum a posteriori . . . . . . . . . . . . . . . . . . . . . . . . . 50
+
+4.3 The Bayesian approach . . . . . . . . . . . . . . . . . . . . . . . . . 50
+
+4.4 Worked example 1: univariate normal . . . . . . . . . . . . . . . . 51
+
+4.5 Worked example 2: categorical distribution . . . . . . . . . . . . . 60
+
+5 The normal distribution
+
+69
+
+5.1 Types of covariance matrix . . . . . . . . . . . . . . . . . . . . . . 69
+
+5.2 Decomposition of covariance . . . . . . . . . . . . . . . . . . . . . . 71
+
+5.3 Linear transformations of variables . . . . . . . . . . . . . . . . . . 72
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+4
+
+Contents
+
+5.4 Marginal distributions . . . . . . . . . . . . . . . . . . . . . . . . . 72 5.5 Conditional distributions . . . . . . . . . . . . . . . . . . . . . . . . 73 5.6 Product of two normals . . . . . . . . . . . . . . . . . . . . . . . . 74 5.7 Change of variable . . . . . . . . . . . . . . . . . . . . . . . . . . . 75
+
+II Machine learning for machine vision
+
+79
+
+6 Learning and inference in vision
+
+83
+
+6.1 Computer vision problems . . . . . . . . . . . . . . . . . . . . . . . 83
+
+6.2 Types of model . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 84
+
+6.3 Example 1: regression . . . . . . . . . . . . . . . . . . . . . . . . . 85
+
+6.4 Example 2: binary classiﬁcation . . . . . . . . . . . . . . . . . . . . 88
+
+6.5 Which type of model should we use? . . . . . . . . . . . . . . . . . 91
+
+6.6 Applications . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 93
+
+7 Modeling complex data densities
+
+101
+
+7.1 Normal classiﬁcation model . . . . . . . . . . . . . . . . . . . . . . 101
+
+7.2 Hidden variables . . . . . . . . . . . . . . . . . . . . . . . . . . . . 105
+
+7.3 Expectation maximization . . . . . . . . . . . . . . . . . . . . . . . 106
+
+7.4 Mixture of Gaussians . . . . . . . . . . . . . . . . . . . . . . . . . . 108
+
+7.5 The t-distribution . . . . . . . . . . . . . . . . . . . . . . . . . . . . 115
+
+7.6 Factor analysis . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 120
+
+7.7 Combining models . . . . . . . . . . . . . . . . . . . . . . . . . . . 126
+
+7.8 Expectation maximization in detail . . . . . . . . . . . . . . . . . . 127
+
+7.9 Applications . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 132
+
+8 Regression models
+
+143
+
+8.1 Linear regression . . . . . . . . . . . . . . . . . . . . . . . . . . . . 143
+
+8.2 Bayesian linear regression . . . . . . . . . . . . . . . . . . . . . . . 147
+
+8.3 Non-linear regression . . . . . . . . . . . . . . . . . . . . . . . . . . 150
+
+8.4 Kernels and the kernel trick . . . . . . . . . . . . . . . . . . . . . . 155
+
+8.5 Gaussian process regression . . . . . . . . . . . . . . . . . . . . . . 156
+
+8.6 Sparse linear regression . . . . . . . . . . . . . . . . . . . . . . . . . 157
+
+8.7 Dual linear regression . . . . . . . . . . . . . . . . . . . . . . . . . 161
+
+8.8 Relevance vector regression . . . . . . . . . . . . . . . . . . . . . . 163
+
+8.9 Regression to multivariate data . . . . . . . . . . . . . . . . . . . . 165
+
+8.10 Applications . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 165
+
+9 Classiﬁcation models
+
+171
+
+9.1 Logistic regression . . . . . . . . . . . . . . . . . . . . . . . . . . . 171
+
+9.2 Bayesian logistic regression . . . . . . . . . . . . . . . . . . . . . . 176
+
+9.3 Non-linear logistic regression . . . . . . . . . . . . . . . . . . . . . . 181
+
+9.4 Dual logistic regression . . . . . . . . . . . . . . . . . . . . . . . . . 183
+
+9.5 Kernel logistic regression . . . . . . . . . . . . . . . . . . . . . . . . 185
+
+9.6 Relevance vector classiﬁcation . . . . . . . . . . . . . . . . . . . . . 186
+
+9.7 Incremental ﬁtting and boosting . . . . . . . . . . . . . . . . . . . 190
+
+9.8 Classiﬁcation trees . . . . . . . . . . . . . . . . . . . . . . . . . . . 194
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+Contents
+
+5
+
+9.9 Multi-class logistic regression . . . . . . . . . . . . . . . . . . . . . 197 9.10 Random trees, forests, and ferns . . . . . . . . . . . . . . . . . . . . 198 9.11 Relation to non-probabilistic models . . . . . . . . . . . . . . . . . 200 9.12 Applications . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 201
+
+III Connecting local models
+
+213
+
+10 Graphical models
+
+217
+
+10.1 Conditional independence . . . . . . . . . . . . . . . . . . . . . . . 217
+
+10.2 Directed graphical models . . . . . . . . . . . . . . . . . . . . . . . 219
+
+10.3 Undirected graphical models . . . . . . . . . . . . . . . . . . . . . . 223
+
+10.4 Comparing directed and undirected graphical models . . . . . . . . 225
+
+10.5 Graphical models in computer vision . . . . . . . . . . . . . . . . . 227
+
+10.6 Inference in models with many unknowns . . . . . . . . . . . . . . 229
+
+10.7 Drawing samples . . . . . . . . . . . . . . . . . . . . . . . . . . . . 231
+
+10.8 Learning . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 233
+
+11 Models for chains and trees
+
+243
+
+11.1 Models for chains . . . . . . . . . . . . . . . . . . . . . . . . . . . . 244
+
+11.2 MAP inference for chains . . . . . . . . . . . . . . . . . . . . . . . 246
+
+11.3 MAP inference for trees . . . . . . . . . . . . . . . . . . . . . . . . 251
+
+11.4 Marginal posterior inference for chains . . . . . . . . . . . . . . . . 254
+
+11.5 Marginal posterior inference for trees . . . . . . . . . . . . . . . . . 262
+
+11.6 Learning in chains and trees . . . . . . . . . . . . . . . . . . . . . 262
+
+11.7 Beyond chains and trees . . . . . . . . . . . . . . . . . . . . . . . . 263
+
+11.8 Applications . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 266
+
+12 Models for grids
+
+279
+
+12.1 Markov random ﬁelds . . . . . . . . . . . . . . . . . . . . . . . . . 280
+
+12.2 MAP inference for binary pairwise MRFs . . . . . . . . . . . . . . 284
+
+12.3 MAP inference for multi-label pairwise MRFs . . . . . . . . . . . . 293
+
+12.4 Multi-label MRFs with non-convex potentials . . . . . . . . . . . . 296
+
+12.5 Conditional random ﬁelds . . . . . . . . . . . . . . . . . . . . . . . 300
+
+12.6 Higher order models . . . . . . . . . . . . . . . . . . . . . . . . . . 303
+
+12.7 Directed models for grids . . . . . . . . . . . . . . . . . . . . . . . 304
+
+12.8 Applications . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 304
+
+IV Preprocessing
+
+321
+
+13 Image preprocessing and feature extraction
+
+325
+
+13.1 Per-pixel transformations . . . . . . . . . . . . . . . . . . . . . . . 325
+
+13.2 Edges, corners, and interest points . . . . . . . . . . . . . . . . . . 336
+
+13.3 Descriptors . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 341
+
+13.4 Dimensionality reduction . . . . . . . . . . . . . . . . . . . . . . . . 345
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+6
+
+Contents
+
+V Models for geometry
+
+355
+
+14 The pinhole camera
+
+359
+
+14.1 The pinhole camera . . . . . . . . . . . . . . . . . . . . . . . . . . . 359
+
+14.2 Three geometric problems . . . . . . . . . . . . . . . . . . . . . . . 367
+
+14.3 Homogeneous coordinates . . . . . . . . . . . . . . . . . . . . . . . 371
+
+14.4 Learning extrinsic parameters . . . . . . . . . . . . . . . . . . . . . 373
+
+14.5 Learning intrinsic parameters . . . . . . . . . . . . . . . . . . . . . 375
+
+14.6 Inferring 3D world points . . . . . . . . . . . . . . . . . . . . . . . 376
+
+14.7 Applications . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 378
+
+15 Models for transformations
+
+389
+
+15.1 2D transformation models . . . . . . . . . . . . . . . . . . . . . . . 389
+
+15.2 Learning in transformation models . . . . . . . . . . . . . . . . . . 396
+
+15.3 Inference in transformation models . . . . . . . . . . . . . . . . . . 401
+
+15.4 Three geometric problems for planes . . . . . . . . . . . . . . . . . 402
+
+15.5 Transformations between images . . . . . . . . . . . . . . . . . . . 407
+
+15.6 Robust learning of transformations . . . . . . . . . . . . . . . . . . 410
+
+15.7 Applications . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 415
+
+16 Multiple cameras
+
+423
+
+16.1 Two-view geometry . . . . . . . . . . . . . . . . . . . . . . . . . . . 424
+
+16.2 The essential matrix . . . . . . . . . . . . . . . . . . . . . . . . . . 427
+
+16.3 The fundamental matrix . . . . . . . . . . . . . . . . . . . . . . . . 432
+
+16.4 Two-view reconstruction pipeline . . . . . . . . . . . . . . . . . . . 435
+
+16.5 Rectiﬁcation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 439
+
+16.6 Multi-view reconstruction . . . . . . . . . . . . . . . . . . . . . . . 443
+
+16.7 Applications . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 447
+
+VI Models for vision
+
+457
+
+17 Models for shape
+
+461
+
+17.1 Shape and its representation . . . . . . . . . . . . . . . . . . . . . . 462
+
+17.2 Snakes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 463
+
+17.3 Shape templates . . . . . . . . . . . . . . . . . . . . . . . . . . . . 468
+
+17.4 Statistical shape models . . . . . . . . . . . . . . . . . . . . . . . . 471
+
+17.5 Subspace shape models . . . . . . . . . . . . . . . . . . . . . . . . . 475
+
+17.6 Three-dimensional shape models . . . . . . . . . . . . . . . . . . . 482
+
+17.7 Statistical models for shape and appearance . . . . . . . . . . . . . 482
+
+17.8 Non-Gaussian statistical shape models . . . . . . . . . . . . . . . . 487
+
+17.9 Articulated models . . . . . . . . . . . . . . . . . . . . . . . . . . . 492
+
+17.10 Applications . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 493
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+Contents
+
+7
+
+18 Models for style and identity
+
+503
+
+18.1 Subspace identity model . . . . . . . . . . . . . . . . . . . . . . . . 506
+
+18.2 Probabilistic linear discriminant analysis . . . . . . . . . . . . . . . 514
+
+18.3 Non-linear identity models . . . . . . . . . . . . . . . . . . . . . . . 517
+
+18.4 Asymmetric bilinear models . . . . . . . . . . . . . . . . . . . . . . 518
+
+18.5 Symmetric bilinear and multilinear models . . . . . . . . . . . . . . 524
+
+18.6 Applications . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 528
+
+19 Temporal models
+
+537
+
+19.1 Temporal estimation framework . . . . . . . . . . . . . . . . . . . . 537
+
+19.2 Kalman ﬁlter . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 540
+
+19.3 Extended Kalman ﬁlter . . . . . . . . . . . . . . . . . . . . . . . . 550
+
+19.4 Unscented Kalman ﬁlter . . . . . . . . . . . . . . . . . . . . . . . . 554
+
+19.5 Particle ﬁltering . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 558
+
+19.6 Applications . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 563
+
+20 Models for visual words
+
+571
+
+20.1 Images as collections of visual words . . . . . . . . . . . . . . . . . 571
+
+20.2 Bag of words . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 573
+
+20.3 Latent Dirichlet allocation . . . . . . . . . . . . . . . . . . . . . . . 576
+
+20.4 Single author-topic model . . . . . . . . . . . . . . . . . . . . . . . 582
+
+20.5 Constellation models . . . . . . . . . . . . . . . . . . . . . . . . . . 585
+
+20.6 Scene models . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 590
+
+20.7 Applications . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 590
+
+VII Appendices
+
+597
+
+A Notation
+
+599
+
+B Optimization
+
+601
+
+B.1 Problem statement . . . . . . . . . . . . . . . . . . . . . . . . . . . 601
+
+B.2 Choosing a search direction . . . . . . . . . . . . . . . . . . . . . . 603
+
+B.3 Line search . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 608
+
+B.4 Reparameterization . . . . . . . . . . . . . . . . . . . . . . . . . . . 609
+
+C Linear algebra
+
+613
+
+C.1 Vectors . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 613
+
+C.2 Matrices . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 614
+
+C.3 Tensors . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 617
+
+C.4 Linear transformations . . . . . . . . . . . . . . . . . . . . . . . . . 617
+
+C.5 Singular value decomposition . . . . . . . . . . . . . . . . . . . . . 618
+
+C.6 Matrix calculus . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 621
+
+C.7 Common problems . . . . . . . . . . . . . . . . . . . . . . . . . . . 623
+
+C.8 Tricks for inverting large matrices . . . . . . . . . . . . . . . . . . . 626
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+8
+
+Contents
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+Acknowledgments
+I am incredibly grateful to the following people who read parts of this book and gave me feedback: Yun Fu, David Fleet, Alan Jepson, Marc’Aurelio Ranzato, Gabriel Brostow, Oisin Mac Aodha, Xiwen Chen, Po-Hsiu Lin, Jose Tejero Alonso, Amir Sani, Oswald Aldrian, Sara Vicente, Jozef Doboˇs, Andrew Fitzgibbon, Michael Firman, Gemma Morgan, Daniyar Turmukhambetov, Daniel Alexander, Mihaela Lapusneanu, John Winn, Petri Hiltunen, Jania Aghajanian, Alireza Bossaghzadeh, Mikhail Sizintsev, Roger De Souza-Eremita, Jacques Cali, Roderick de Nijs, James Tompkin, Jonathan O’Keefe, Benedict Kuester, Tom Hart, Marc Kerstein, Alex Bor´es, Marius Cobzarenco, Luke Dodd, Ankur Agarwal, Ahmad Humayun, Andrew Glennerster, Steven Leigh, Matteo Munaro, Peter van Beek, Hu Feng, Martin Parsley, Jordi Salvador Marcos, Josephine Sullivan, Steve Thompson, Laura Panagiotaki, Damien Teney, Malcolm Reynolds, Francisco Estrada, Peter Hall, James Elder, Paria Mehrani, Vida Movahedi, Eduardo Corral Soto, Ron Tal, Bob Hou, Simon Arridge, Norberto Goussies, Steve Walker, Tracy Petrie, Kostantinos Derpanis, Bernard Buxton, Matthew Pediaditis, Fernando Flores-Mangas, Jan Kautz, Alastair Moore, Yotam Doron, Tahir Majeed, David Barber, Pedro Quelhas, Wenchao Zhang, Alan Angold, Andrew Davison, Alex Yakubovich, Fatemeh Jamali, David Lowe, Ricardo David, Jamie Shotton, Andrew Zisserman, Sanchit Singh, Vincent Lepetit, David Liu, Marc Pollefeys, Christos Panagiotou, Ying Li, Shoaib Ehsan, Olga Veksler, Modesto Castrillo´n Santana, Axel Pinz, Matteo Zanotto, Gwynfor Jones, Brian Jensen, Mischa Schirris, Jacek Zienkiewicz, Erik Sudderth, Etienne Beauchesne, Moos Hueting, Giovanni Saponaro, Phi Hung Nguyen, Tran Duc Hieu, Simon Julier, Oscar Plag and Thomas Hoyoux. This book is much better because of your selﬂess eﬀorts!
+I am also especially grateful to Sven Dickinson, who hosted me at the University of Toronto for nine months during the writing of this book; Stephen Boyd, who let me use his beautiful LATEX template; and Mikhail Sizintsev, for his help in summarizing the bewildering literature on dense stereo vision. I am extremely indebted to Gabriel Brostow, who read the entire draft and spent hours of his valuable time discussing it with me. Finally, I am grateful to Bernard Buxton, who taught me most of this material in the ﬁrst place and has supported my career in computer vision and every stage.
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+10
+
+Contents
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+Foreword
+I was very pleased to be asked to write this foreword, having seen snapshots of the development of this book since its inception. I write this having just returned from BMVC 2011, where I found that others had seen draft copies, and where I heard comments like “What amazing ﬁgures!”, “It’s so comprehensive!”, and “He’s so Bayesian!”.
+But I don’t want you to read this book just because it has amazing ﬁgures, and provides new insights into vision algorithms of every kind, or even because it’s “Bayesian” (although more on that later). I want you to read it because it makes clear the most important distinction in computer vision research: the diﬀerence between “model” and “algorithm”. This is akin to the distinction that Marr made with his three-level computational theory, but Prince’s two-level distinction is made beautifully clear by his use of the language of probability.
+Why is this distinction so important? Well, let us look at one of the oldest and apparently easiest problems in vision: separating an image into “ﬁgure” and “ground.” It is still common to hear students new to vision address this problem just as the early vision researchers did, by reciting an algorithm: ﬁrst I’ll use PCA to ﬁnd the dominant color axis, then I’ll generate a grayscale image, then I’ll threshold that at some value, then I’ll clean up the holes using morphological operators. Trying their recipe on some test images, the novice discovers that real images are rather more complicated, so new steps are added: I’ll need some sort of adaptive threshold, I can get that by blurring the edge map and locally computing maxima.
+However, as most readers will already know, such recipes are extremely brittle, meaning that the various “magic numbers” controlling each step all interact, making it impossible to ﬁnd a set of parameters that works for all images (or even a useful subset). The root of this problem is that the objective of the algorithm has never been deﬁned. What do we mean by ﬁgure and ground separation? Can we specify what we mean mathematically?
+When vision researchers began to address these problems, the language of statistics and Markov random ﬁelds allowed a clean distinction between the objective and the algorithm to be drawn. We write down not the steps to solve the problem, but the problem itself, for example as a function to be minimized. In the language of this book, we write down formulae for all the probability distributions that deﬁne the problem and then perform operations on those distributions in order to provide answers. This book shows how this can be done for a huge variety of vision problems, and how doing so provides more robust solutions that are much easier to reason about.
+This is not to say that one can just write down the model and ask others to solve for its parameters, because the space of possible models is so much vaster than the space of ones in which the solution is tractable. Thus, one always has at the back of one’s mind a collection of models known to be soluble, and one always tries to ﬁnd a model for one’s problem, which is nearby some soluble one. At that stage, one may well think in terms of strategies such as “I can probably generalize alpha expansion a bit to solve for the discrete
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+12
+
+Contents
+
+parameters, and then I can use a Gauss-Newton method for the continuous ones, and that will probably be slow, but it will tell me if it’s worth trying to invent a faster combined algorithm”. Such strategies are common and can be helpful, providing one always retains an idea of the model underlying them.
+However, even armed with the attitudes this book will engender, experienced researchers today can fall into the trap of failing to distinguish model and algorithm. They ﬁnd themselves thinking thoughts like: “I’ll ﬁt a mixture of Gaussians to the color distribution. Then I’ll model the mixture weights as an MRF and use graph cuts to update them. Then I’ll go back to step 1 and repeat.” The good news is that often such recipes can be turned back into models. Even if the only known way of ﬁtting the model is to use the recipe you just thought of, the discipline of thinking of it as a model allows you to reason about it, to make use of alternative techniques, and ultimately to do better research. Reading this book is a sure way to improve your ability to make that jump.
+So what is this language of probabilities that will allow us to become better researchers? Well, let me provide my “Engineer’s view of Bayes’ theorem.” It is common to hear a distinction between “Bayesians” and “Frequentists”, but I think many engineers have a much more fundamental problem with Bayes: Bayesians must lie. Their estimates, biased toward the prior mean, are deliberately diﬀerent from the most probable reading of their sensor. Consider the example of an “I speak your height” machine whose sensor has a uniformly distributed ±1 cm error. You receive £1 every time you correctly predict someone’s height to within 1 cm. Bayesian principles suggest that if your sensor reads 200cm ±1 cm, you should report 199 cm; you will make more money than guessing the actual sensor reading, because more 199 cm people will appear than those of 200 cm. So I, as an engineer, believe in Bayes as a way of getting better answers, and thus very much welcome this book’s pragmatic (but much more subtle than mine) embrace of Bayes. I wonder if it might even be considered a book on statistics with vision examples rather than a book on vision built on probability.
+But it would be wrong to ﬁnish this foreword without mentioning the ﬁgures. They really are good, not because they’re beautiful (they often are), but because they provide crucial insights into the workings of even the most basic of algorithms and ideas. The illustrations in chapters 2 to 4 are fundamental to the understanding of modern Bayesian inference, and yet I doubt that there are more than a handful of researchers who have ever seen them all. Later ﬁgures express extremely complex ideas more clearly than I have ever seen, as well as representing fabulously “clean” implementations of fundamental algorithms, which really show us how the underlying models inﬂuence our capabilities.
+Finally I believe it is worth directly comparing this book to the recent textbook by my colleague Richard Szeliski. That book too is marked by an enormously comprehensive view of computer vision, by excellent illustration, by insightful notation, and intellectual synthesis of large groups of existing ideas. But in a real sense the two books operate at opposite ends of the pedagogical spectrum: Szeliski is a comprehensive summary of the state of the art in computer vision, the frontier of our knowledge and abilities, while this book addresses the fundamentals of how we make progress in this challenging and exciting ﬁeld. I look forward to many decades with both on my shelf, or indeed, I suspect, open on my desktop.
+Andrew Fitzgibbon September 2011
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+Preface
+There are already many computer vision textbooks, and it is reasonable to question the need for another. Let me explain why I chose to write this volume.
+Computer vision is an engineering discipline; we are primarily motivated by the realworld concern of building machines that see. Consequently, we tend to categorize our knowledge by the real-world problem that it addresses. For example, most existing vision textbooks contain chapters on object recognition and stereo vision. The sessions at our research conferences are organized in the same way. The role of this book is to question this orthodoxy: is this really the way that we should organize our knowledge?
+Consider the topic of object recognition. A wide variety of methods have been applied to this problem (e.g., subspace models, boosting methods, bag of words models, and constellation models). However, these approaches have little in common. Any attempt to describe the grand sweep of our knowledge devolves into an unstructured list of techniques. How can we make sense of it all for a new student? I will argue for a diﬀerent way to organize our knowledge, but ﬁrst let me tell you how I see computer vision problems.
+We observe an image and from this we extract measurements. For example, we might use the RGB values directly or we might ﬁlter the image or perform some more sophisticated preprocessing. The vision problem or goal is to use the measurements to infer the world state. For example, in stereo vision we try to infer the depth of the scene. In object detection we attempt to infer the presence or absence of a particular class of object.
+To accomplish the goal, we build a model. The model describes a family of statistical relationships between the measurements and the world state. The particular member of that family is determined by a set of parameters. In learning we choose these parameters so they accurately reﬂect the relationship between the measurements and the world. In inference we take a new set of measurements and use the model to tell us about the world state. The methods for learning and inference are embodied in algorithms. I believe that computer vision should be understood in these terms: the goal, the measurements, the world state, the model, the parameters, and the learning and inference algorithms.
+We could choose to organize our knowledge according to any of these quantities, but in my opinion what is most critical is the model itself – the statistical relationship between the world and the measurements. There are three reasons for this. First, the model type often transcends the application (the same model can be used for diverse vision tasks). Second, the models naturally organize themselves neatly into distinct families (e.g., regression, Markov random ﬁelds, camera models) that can be understood in relative isolation. Finally, discussing vision on the level of models allows us to draw connections between algorithms and applications that initially appear unrelated. Accordingly, this book is organized so that each main chapter considers a diﬀerent family of models.
+On a ﬁnal note, I should say that I found most of the ideas in this book very hard to grasp when I was ﬁrst exposed to them. My goal was to make this process easier for subsequent students following the same path; I hope that this book achieves this and inspires the reader to learn more about computer vision.
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+14
+
+Contents
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+Chapter 1
+Introduction
+The goal of computer vision is to extract useful information from images. This has proved a surprisingly challenging task; it has occupied thousands of intelligent and creative minds over the last four decades, and despite this we are still far from being able to build a general-purpose “seeing machine.”
+Part of the problem is the complexity of visual data. Consider the image in ﬁgure 1.1. There are hundreds of objects in the scene. Almost none of these are presented in a “typical” pose. Almost all of them are partially occluded. For a computer vision algorithm, it is not even easy to establish where one object ends and another begins. For example, there is almost no change in the image intensity at the boundary between the sky and the white building in the background. However, there is a pronounced change in intensity on the back window of the SUV in the foreground, although there is no object boundary or change in material here.
+We might have grown despondent about our chances of developing useful computer vision algorithms if it were not for one thing: we have concrete proof that vision is possible because our own visual systems make light work of complex images such as ﬁgure 1.1. If I ask you to count the trees in this image, or to draw me a sketch of the street layout, you can do this easily. You might even be able to pinpoint where this photo was taken on a world map by extracting subtle visual clues such as the ethnicity of the people, the types of cars and trees, and the weather.
+So, computer vision is not impossible, but it is very challenging; perhaps this was not appreciated at ﬁrst because what we perceive when we look at a scene is already highly processed. For example, consider observing a lump of coal in bright sunlight and then moving to a dim indoor environment and looking at a piece of white paper. The eye will receive far more photons per unit area from the coal than from the paper, but we nonetheless perceive the coal as black and the paper as white. The visual brain performs many tricks of this kind, but unfortunately when we build vision algorithms we do not have the beneﬁt of this preprocessing.
+Nonetheless, there has been remarkable recent progress in our understanding of computer vision, and the last decade has seen the ﬁrst large scale deployments of consumer computer vision technology. For example, most digital cameras now have embedded algorithms for face detection, and at the time of writing the Microsoft Kinect (a peripheral that allows real-time tracking of the human body) holds the
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+16
+
+1 Introduction
+
+Figure 1.1 A visual scene containing many objects, almost all of which are partially occluded. The red circle indicates a part of the scene where there is almost no brightness change to indicate the boundary between the sky and the building. The green circle indicates a region in which there is a large intensity change but this is due to irrelevant lighting eﬀects; there is no object boundary or change in the object material here.
+Guinness World Record for being the fastest-selling consumer electronics device ever. The principles behind both of these applications and many more are explained in this book.
+There are a number of reasons for the rapid recent progress in computer vision. The most obvious is that the processing power, memory, and storage capacity of computers has vastly increased; before we disparage the progress of early computer vision pioneers, we should pause to reﬂect that they would have needed specialized hardware to hold even a single high-resolution image in memory. Another reason for the recent progress in this area has been the increased use of machine learning. The last 20 years have seen exciting developments in this parallel research ﬁeld, and these are now deployed widely in vision applications. Not only has machine learning provided many useful tools, it has also helped us understand existing algorithms and their connections in a new light.
+The future of computer vision is exciting. Our understanding grows by the day, and it is likely that artiﬁcial vision will become increasingly prevalent in the next
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+17
+decade. However, this is still a young discipline. Until recently, it would have been unthinkable to even try to work with complex scenes such as that in ﬁgure 1.1. As Szeliski (2010) puts it, “It may be many years before computers can name and outline all of the objects in a photograph with the same skill as a two year old child.” However, this book provides a snapshot of what we have achieved and the principles behind these achievements.
+Organization of the book
+The structure of this book is illustrated in ﬁgure 1.2. It is divided into six parts. The ﬁrst part of the book contains background information on probability. All
+the models in this book are expressed in terms of probability, which is a useful language for describing computer vision applications. Readers with a rigorous background in engineering mathematics will know much of this material already but should skim these chapters to ensure they are familiar with the notation. Those readers who do not have this background should read these chapters carefully. The ideas are relatively simple, but they underpin everything else in the rest of the book. It may be frustrating to be forced to read ﬁfty pages of mathematics before the ﬁrst mention of computer vision, but please trust me when I tell you that this material will provide a solid foundation for everything that follows.
+The second part of the book discusses machine learning for machine vision. These chapters teach the reader the core principles that underpin all of our methods to extract useful information from images. We build statistical models that relate the image data to the information that we wish to retrieve. After digesting this material, the reader should understand how to build a model to solve almost any vision problem, although that model may not yet be very practical.
+The third part of the book introduces graphical models for computer vision. Graphical models provide a framework for simplifying the models that relate the image data to the properties we wish to estimate. When both of these quantities are high dimensional, the statistical connections between them become impractically complex; we can still deﬁne models that relate them, but we may not have the training data or computational power to make them useful. Graphical models provide a principled way to assert sparseness in the statistical connections between the data and the world properties.
+The fourth part of the book discusses image preprocessing. This is not necessary to understand most of the models in the book, but that is not to say that it is unimportant. The choice of preprocessing method is at least as critical as the choice of model in determining the ﬁnal performance of a computer vision system. Although image processing is not the main topic of this book, this section provides a compact summary of the most important and practical techniques.
+The ﬁfth part of the book concerns geometric computer vision; it introduces the projective pinhole camera – a mathematical model that describes where a given point in the 3D world will be imaged in the pixel array of the camera. Associated with this model are a set of techniques for ﬁnding the position of the camera relative to a scene and for reconstructing 3D models of objects.
+Finally, in the sixth part of the book, we present several families of vision models
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+18
+
+1 Introduction
+
+Part 1: Probability
+
+2. Introduction to probability
+3. Common probability distributions
+
+5. The normal distribution
+4. Fitting probability distributions
+
+Part 2: Machine learning
+
+8. Regression models
+9. Classification models
+
+6. Learning and inference in vision
+
+7. Modelling complex
+data densities
+
+14. The pinhole camera
+15. Models for transformations
+16. Multiple cameras
+Part 5: Geometry
+
+10. Graphical models
+
+11. Models for chains and trees
+
+12. Models for grids
+
+Part 3: Connecting local models
+
+13. Preprocessing methods
+Part 4: Preprocessing
+
+17. Models for shape
+18. Models for style and
+identity
+19. Temporal models
+20. Models for visual words
+Part 6: Vision models
+
+Figure 1.2 Chapter dependencies. The book is organized into six sections. The ﬁrst section is a review of probability and is necessary for all subsequent chapters. The second part concerns machine learning and inference. It describes both generative and discriminative models. The third part concerns graphical models: visual representations of the probabilistic dependencies between variables in large models. The fourth part describes preprocessing methods. The ﬁfth part concerns geometry and transformations. Finally, the sixth part presents several other important families of vision models.
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+19
+that build on the principles established earlier in the book. These models address some of the most central problems in computer vision including face recognition, tracking, and object recognition.
+The book concludes with several appendices. There is a brief discussion of the notational conventions used in the book, and compact summaries of linear algebra and optimization techniques. Although this material is widely available elsewhere, it makes the book more self-contained and is discussed in the same terminology as the main text.
+At the end of every chapter is a brief notes section. This provides details of the related research literature. It is heavily weighted toward the most useful and recent papers and does not reﬂect an accurate historical description of each area. There are also a number of exercises for the reader at the end of each chapter. In some cases, important but tedious derivations have been excised from the text and turned into problems to retain the ﬂow of the main argument. Here, the solution will be posted on the main book website (http://www.computervisionmodels.com). A series of applications are also presented at the end of each chapter (apart from chapters 1-5 and chapter 10 which contain only theoretical material). Collectively, these represent a reasonable cross-section of the important vision papers of the last decade.
+Finally, pseudocode for over 70 of the algorithms discussed is available and can be downloaded in a separate document from the associated website. This pseudocode uses the same notation as the book and will make it easy to implement many of the models. I chose not to include this in the main text because it would have decreased the readability. However, I encourage all readers of this book to implement as many of the models as possible. Computer vision is a practical engineering discipline and you can learn a lot by experimenting with real code.
+Other books
+I am aware that most people will not learn computer vision from this book alone so here is some advice about other books that complement this volume. To learn more about machine learning and graphical models I would recommend Pattern Recognition and Machine Learning by Bishop (2006) as a good starting point. There are many books on preprocessing, but my favorite is Feature Extraction and Image Processing by Nixon & Aguado (2008). The best source for information about geometrical computer vision is without a doubt Multiple View Geometry by Hartley & Zisserman (2004). Finally, for a much more comprehensive overview of the state of the art of computer vision and its historical development, consider Computer Vision: Algorithms and Applications by Szeliski (2010).
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+20
+
+1 Introduction
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+Part I
+Probability
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+Part I: Probability
+We devote the ﬁrst part of this book (chapters 2–5) to a brief review of probability and probability distributions. Almost all models for computer vision can be interpreted in a probabilistic context, and in this book we will present all the material in this light. The probabilistic interpretation may initially seem confusing, but it has a great advantage: it provides a common notation that will be used throughout the book and will elucidate relationships between diﬀerent models that would otherwise remain opaque.
+So why is probability a suitable language to describe computer vision problems? In a camera, the three-dimensional world is projected onto the optical surface to form the image: a two-dimensional set of measurements. Our goal is to take these measurements and use them to establish the properties of the world that created them. However, there are two problems. First, the measurement process is noisy; what we observe is not the amount of light that fell on the sensor, but a noisy estimate of this quantity. We must describe the noise in these data, and for this we use probability. Second, the relationship between world and measurements is generally many to one: there may be many real-world conﬁgurations that are compatible with the same measurements. The chance that each of these possible worlds is present can also be described using probability.
+The structure of part I is as follows: in chapter 2, we introduce the basic rules for manipulating probability distributions including the ideas of conditional and marginal probability and Bayes’ rule. We also introduce more advanced ideas such as independence and expectation.
+In chapter 3, we discuss the properties of eight speciﬁc probability distributions. We divide these into four pairs. The ﬁrst set will be used to describe either the observed data or the state of the world. The second set of distributions model the parameters of the ﬁrst set. In combination, they allow us to ﬁt a probability model and provide information about how certain we are about the ﬁt.
+In chapter 4, we discuss methods for ﬁtting probability distributions to observed data. We also discuss how to assess the probability of new data points under the ﬁtted model and how to take account of uncertainty in the ﬁtted model when we do this. Finally, in chapter 5, we investigate the properties of the multivariate normal distribution in detail. This distribution is ubiquitous in vision applications and has a number of useful properties that are frequently exploited in machine vision.
+Readers who are very familiar with probability models and the Bayesian philosophy may wish to skip this part and move directly to part II.
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+24
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+Chapter 2
+Introduction to probability
+In this chapter, we provide a compact review of probability theory. There are very few ideas, and each is relatively simple when considered separately. However, they combine to form a powerful language for describing uncertainty.
+2.1 Random variables
+A random variable x denotes a quantity that is uncertain. The variable may denote the result of an experiment (e.g., ﬂipping a coin) or a real-world measurement of a ﬂuctuating property (e.g., measuring the temperature). If we observe several instances {xi}Ii=1, then it might take a diﬀerent value on each occasion. However, some values may occur more often than others. This information is captured by the probability distribution P r(x) of the random variable.
+A random variable may be discrete or continuous. A discrete variable takes values from a predeﬁned set. This set may be ordered (the outcomes 1–6 of rolling a die) or unordered (the outcomes “sunny,” “raining,” “snowing,” upon observing the weather). It may be ﬁnite (there are 52 possible outcomes of drawing a card randomly from a standard pack) or inﬁnite (the number of people on the next train is theoretically unbounded). The probability distribution of a discrete variable can be visualized as a histogram or a Hinton diagram (ﬁgure 2.1). Each outcome has a positive probability associated with it and the sum of the probabilities for all outcomes is always one.
+Continuous random variables take values that are real numbers. These may be ﬁnite (the time taken to ﬁnish a 2-hour exam is constrained to be greater than 0 hours and less than 2 hours) or inﬁnite (the amount of time until the next bus arrives is unbounded above). Inﬁnite continuous variables may be deﬁned on the whole real range or may be bounded above or below (the 1D velocity of a vehicle may take any value, but the speed is bounded below by 0). The probability distribution of a continuous variable can be visualized by plotting the probability density function (pdf). The probability density for an outcome represents the relative propensity of the random variable to take that value (see ﬁgure 2.2). It may take any positive value. However, the integral of the pdf always sums to one.
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+Probability Probabidlity density
+
+26 a) 0.4
+
+2 Introduction to probability b)
+
+0.2
+
+Wind
+Sun Sleet Snow Cloud Drizzle Rain
+
+0.0
+
+1
+
+2
+
+3
+
+4
+
+5
+
+6
+
+Face value of biased die
+
+Figure 2.1 Two diﬀerent representations for discrete probabilities a) A bar graph representing the probability that a biased six-sided die lands on each face. The height of the bar represents the probability: the sum of all heights is one. b) A Hinton diagram illustrating the probability of observing diﬀerent weather types in England. The area of the square represents the probability, so the sum of all areas is one.
+
+Figure 2.2 Continuous probability dis-
+tribution (probability density function or pdf for short) for time taken to complete a test. Note that the probability density can exceed one, but the area under the curve must always have unit area.
+
+3.0
+
+2.0
+
+1.0
+
+0.0
+
+0
+
+1
+
+2
+
+Time taken to complete test (hours)
+
+2.2 Joint probability
+
+Problem 2.1
+
+Consider two random variables, x and y. If we observe multiple paired instances of x and y, then some combinations of the two outcomes occur more frequently than others. This information is encompassed in the joint probability distribution of x and y, which is written as P r(x, y). The comma in P r(x, y) can be read as the English word “and” so P r(x, y) is the probability of x and y. A joint probability distribution may relate variables that are all discrete or all continuous, or it may relate discrete variables to continuous ones (see ﬁgure 2.3). Regardless, the total probability of all outcomes (summing over discrete variables and integrating over continuous ones) is always one.
+In general, we will be interested in the joint probability distribution of more than two variables. We will write P r(x, y, z) to represent the joint probability distribution of scalar variables x, y, and z. We may also write P r(x) to represent the joint probability of all of the elements of the multidimensional variable x = [x1, x2, . . . , xK ]T . Finally, we will write P r(x, y) to represent the joint distribution of all of the elements from multidimensional variables x and y.
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+2.3 Marginalization
+
+27
+
+a)
+
+b)
+
+c)
+
+d)
+
+e)
+
+f)
+
+Figure 2.3 Joint probability distributions between variables x and y. a-c) The same joint pdf of two continuous variables represented as a surface, contour plot, and image, respectively. d) Joint distribution of two discrete variables represented as a 2D Hinton diagram. e) Joint distribution of a continuous variable x and discrete variable y. f) Joint distribution of a discrete variable x and continuous variable y.
+
+2.3 Marginalization
+We can recover the probability distribution of any single variable from a joint distribution by summing (discrete case) or integrating (continuous case) over all the other variables (ﬁgure 2.4). For example, if x and y are both continuous and we know P r(x, y), then we can recover the distributions P r(x) and P r(y) using the relations
+
+P r(x) = P r(y) =
+
+P r(x, y) dy, P r(x, y) dx.
+
+(2.1)
+
+The recovered distributions P r(x) and P r(y) are referred to as marginal distributions, and the process of integrating/summing over the other variables is called marginalization. Calculating the marginal distribution P r(x) from the joint distribution P r(x, y) by marginalizing over the variable y has a simple interpretation:
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+28 a)
+
+2 Introduction to probability
+
+b)
+
+c)
+
+Figure 2.4 Joint and marginal probability distributions. The marginal probability P r(x)is found by summing over all values of y (discrete case) or integrating over y (continuous case) in the joint distribution P r(x, y). Similarly, the marginal probability P r(y) is found by summing or integrating over x. Note that the plots for the marginal distributions have diﬀerent scales from those for the joint distribution (on the same scale, the marginals would look larger as they sum all of the mass from one direction). a) Both x and y are continuous. b) Both x and y are discrete. c) The random variable x is continuous and the variable y is discrete.
+
+Problem 2.2
+
+we are ﬁnding the probability distribution of x regardless of (or in the absence of information about) the value of y.
+In general, we can recover the joint probability of any subset of variables, by marginalizing over all of the others. For example, given variables, w, x, y, z, where w is discrete and z is continuous, we can recover P r(x, y) using
+
+P r(x, y) =
+
+P r(w, x, y, z) dz.
+
+w
+
+(2.2)
+
+2.4 Conditional probability
+The conditional probability of x given that y takes value y∗ tells us the relative propensity of the random variable x to take diﬀerent outcomes given that the random variable y is ﬁxed to value y∗. This conditional probability is written as P r(x|y = y∗) . The vertical line “|” can be read as the English word “given.”
+The conditional probability P r(x|y = y∗) can be recovered from the joint distribution P r(x, y). In particular, we examine the appropriate slice P r(x, y = y∗) of the joint distribution (ﬁgure 2.5). The values in the slice tell us about the relative probability that x takes various values having observed y = y∗, but they do not themselves form a valid probability distribution; they cannot sum to one as they constitute only a small part of the joint distribution which did itself sum to one. To calculate the conditional probability distribution, we hence normalize by the total probability in the slice:
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+2.4 Conditional probability
+
+29
+
+Figure 2.5 Conditional probability. Joint pdf of x and y and two conditional probability distributions P r(x|y = y1) and P r(x|y = y2). These are formed by extracting the appropriate slice from the joint pdf and normalizing so that the area is one. A similar operation can be performed for discrete distributions.
+
+P r(x|y = y∗) =
+
+P r(x, y = y∗)
+
+P r(x, y = y∗)
+
+P r(x, y = y∗)dx = P r(y = y∗) ,
+
+(2.3)
+
+where we have used the marginal probability relation (Equation 2.1) to simplify the
+denominator. It is common to write the conditional probability relation without explicitly deﬁning the value y = y∗ to give the more compact notation
+
+P r(x, y)
+
+P r(x|y) =
+
+.
+
+P r(y)
+
+This relationship can be re-arranged to give
+
+(2.4)
+
+P r(x, y) = P r(x|y)P r(y), and by symmetry we also have
+
+(2.5)
+
+P r(x, y) = P r(y|x)P r(x).
+
+(2.6)
+
+When we have more than two variables, we may repeatedly take conditional probabilities to divide up the joint probability distribution into a product of terms
+
+P r(w, x, y, z) = P r(w, x, y|z)P r(z) = P r(w, x|y, z)P r(y|z)P r(z) = P r(w|x, y, z)P r(x|y, z)P r(y|z)P r(z).
+
+(2.7)
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+Problem 2.3
+
+30
+a)
+
+2 Introduction to probability
+b)
+
+Figure 2.6 Independence. a) Joint pdf of continuous independent variables x and y. The independence of x and y means that every conditional distribution is the same: the value of y tells us nothing about x and vice-versa. Compare this to ﬁgure 2.5 which illustrated variables that were dependent. b) Joint distribution of discrete independent variables x and y. The conditional distributions of x given y are all the same.
+
+2.5 Bayes’ rule
+
+In equations 2.5 and 2.6 we expressed the joint probability in two ways. We can combine these formulations to ﬁnd a relationship between P r(x|y) and P r(y|x),
+
+P r(y|x)P r(x) = P r(x|y)P r(y), or, rearranging, we have
+
+(2.8)
+
+Problem 2.4
+
+P r(x|y)P r(y) P r(y|x) =
+P r(x)
+
+P r(x|y)P r(y) =
+P r(x, y) dy
+
+P r(x|y)P r(y)
+
+=
+
+,
+
+P r(x|y)P r(y) dy
+
+(2.9)
+
+where in the second and third lines we have expanded the denominator using the deﬁnitions of marginal and conditional probability, respectively. These three equations are all commonly referred to as Bayes’ rule.
+Each term in Bayes’ rule has a name. The term P r(y|x) on the left-hand side is the posterior. It represents what we know about y given x. Conversely, the term P r(y) is the prior as it represents what is known about y before we consider x. The term P r(x|y) is the likelihood , and the denominator P r(x) is the evidence.
+In computer vision, we often describe the relationship between variables x and y in terms of the conditional probability P r(x|y). However, we may be primarily interested in the variable y, and in this situation Bayes’ rule is exploited to compute the probability P r(y|x).
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+2.6 Independence
+2.6 Independence
+If knowing the value of variable x tells us nothing about variable y (and vice-versa) then we say x and y are independent (ﬁgure 2.6). Here, we can write
+
+P r(x|y) = P r(x) P r(y|x) = P r(y).
+
+(2.10)
+
+Substituting into equation 2.5, we see that for independent variables the joint probability P r(x, y) is the product of the marginal probabilities P r(x) and P r(y),
+
+P r(x, y) = P r(x|y)P r(y) = P r(x)P r(y).
+
+(2.11)
+
+31
+Problem 2.5
+Problem 2.6 Problem 2.7
+
+2.7 Expectation
+Given a function f [•] that returns a value for each possible value x∗ of the variable x and a probability P r(x = x∗) that each value of x occurs, we sometimes wish to calculate the expected output of the function. If we drew a very large number of samples from the probability distribution, calculated the function for each sample, and took the average of these values, the result would be the expectation. More precisely, the expected value of a function f [•] of a random variable x is deﬁned as
+
+E[f [x]] = E[f [x]] =
+
+f [x]P r(x),
+x
+f [x]P r(x) dx,
+
+(2.12)
+
+for the discrete and continuous cases, respectively. This idea generalizes to functions f [•] of more than one random variable so that, for example,
+
+E[f [x, y]] =
+
+f [x, y]P r(x, y) dx dy.
+
+(2.13)
+
+For some choices of the function f [•], the expectation is given a special name (table 2.1). Such quantities are commonly used to summarize the properties of complex probability distributions.
+There are four rules for manipulating expectations, which can be easily proved from the original deﬁnition (equation 2.12):
+
+1. The expected value of a constant κ with respect to the random variable x is
+
+just the constant itself:
+
+E[κ] = κ.
+
+(2.14)
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+Problem 2.8
+Problem 2.9 Problem 2.10
+
+32
+
+2 Introduction to probability
+
+Function f [•]
+x xk (x − µx)k (x − µx)2 (x − µx)3 (x − µx)4
+(x − µx)(y − µy)
+
+Expectation mean, µx
+kth moment about zero kth moment about the mean
+variance skew
+kurtosis covariance of x and y
+
+Table 2.1 Special cases of expectation. For some functions f (x), the expectation E[f (x)] is given a special name. Here we use the notation µx to represent the mean with respect to random variable x and µy the mean with respect to random variable y.
+
+2. The expected value of a constant κ times a function f [x] of the random variable x is κ times the expected value of the function:
+
+E[κf [x]] = κE[f [x]].
+
+(2.15)
+
+3. The expected value of the sum of two functions of a random variable x is the sum of the individual expected values of the functions:
+
+E[f [x] + g[x]] = E[f [x]] + E[g[x]].
+
+(2.16)
+
+4. The expected value of the product of two functions f [x] and g[y] of random variables x and y is equal to the product of the individual expected values if the variables x and y are independent:
+
+E[f [x]g[y]] = E[f [x]]E[g[y]], if x, y independent.
+
+(2.17)
+
+Discussion
+The rules of probability are remarkably compact and simple. The concepts of marginalization, joint and conditional probability, independence, and Bayes’ rule will underpin all of the machine vision algorithms in this book. There is one remaining important concept related to probability, which is conditional independence. We discuss this at length in chapter 10.
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+Notes
+
+33
+
+Notes
+
+For a more formal discussion of probability, the reader is encouraged to investigate one of the many books on this topic (e.g., Papoulis 1991). For a view of probability from a machine learning perspective, consult the ﬁrst chapter of Bishop (2006).
+
+Problems
+Problem 2.1 Give a real-world example of a joint distribution P r(x, y) where x is discrete and y is continuous.
+Problem 2.2 What remains if I marginalize a joint distribution P r(v, w, x, y, z) over ﬁve variables with respect to variables w and y? What remains if I marginalize the resulting distribution with respect to v?
+Problem 2.3 Show that the following relation is true:
+P r(w, x, y, z) = P r(x, y)P r(z|w, x, y)P r(w|x, y).
+Problem 2.4 In my pocket there are two coins. Coin 1 is unbiased, so the likelihood P r(h = 1|c = 1) of getting heads is 0.5 and the likelihood P r(h = 0|c = 1) of getting tails is also 0.5. Coin 2 is biased, so the likelihood P r(h = 1|c = 2) of getting heads is 0.8 and the likelihood P r(h = 0|c = 2) of getting tails is 0.2. I reach into my pocket and draw one of the coins at random. There is an equal prior probability I might have picked either coin. I ﬂip the coin and observe a head. Use Bayes’ rule to compute the posterior probability that I chose coin 2.
+Problem 2.5 If variables x and y are independent and variables x and z are independent, does it follow that variables y and z are independent?
+Problem 2.6 Use equation 2.3 to show that when x and y are independent, the marginal distribution P r(x) is the same as the conditional distribution P r(x|y = y∗) for any y∗.
+Problem 2.7 The joint probability P r(w, x, y, z) over four variables factorizes as
+P r(w, x, y, z) = P r(w)P r(z|y)P r(y|x, w)P r(x). Demonstrate that x is independent of w by showing that P r(x, w) = P r(x)P r(w).
+Problem 2.8 Consider a biased die where the probabilities of rolling sides {1, 2, 3, 4, 5, 6} are {1/12, 1/12, 1/12, 1/12, 1/6, 1/2}, respectively. What is the expected value of the die? If I roll the die twice, what is the expected value of the sum of the two rolls?
+Problem 2.9 Prove the four relations for manipulating expectations.
+E[κ] = κ, E[κf [x]] = κE[f [x]], E[f [x] + g[x]] = E[f [x]] + E[g[x]], E[f [x]g[y]] = E[f [x]]E[g[y]], if x, y independent.
+For the last case, you will need to use the deﬁnition of independence (see section 2.6).
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+34
+
+2 Introduction to probability
+
+Problem 2.10 Use the relations from problem 2.9 to prove the following relationship between the second moment around zero and the second moment about the mean (variance):
+E (x − µ)2 = E x2 − E[x]E[x].
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+Chapter 3
+Common probability distributions
+
+In chapter 2 we introduced abstract rules for manipulating probabilities. To use these rules we will need to deﬁne some probability distributions. The choice of distribution P r(x) that we use will depend on the domain of the data x that we are modeling (table 3.1).
+
+Data Type
+
+Domain
+
+Distribution
+
+univariate, discrete, binary
+univariate, discrete, multi-valued
+univariate, continuous, unbounded
+univariate, continuous, bounded
+multivariate, continuous, unbounded
+multivariate, continuous, bounded, sums to one bivariate, continuous, x1 unbounded, x2 bounded below
+multivariate vector x and matrix X, x unbounded,
+X square, positive deﬁnite
+
+x ∈ {0, 1}
+
+x ∈ {1, 2, . . . , K}
+
+x∈R
+
+x ∈ [0, 1]
+
+x ∈ RK
+
+x = [x1, x2, . . . , xK ]T
+
+xk ∈ [0, 1],
+
+K k=1
+
+xk
+
+=
+
+1
+
+x = [x1, x2]
+
+x1 ∈ R x2 ∈ R+
+
+x ∈ RK
+
+X ∈ RK×K
+
+zT Xz > 0
+
+∀
+
+z
+
+∈
+
+K
+R
+
+Bernoulli categorical univariate normal
+beta multivariate normal
+Dirichlet normal-scaled inverse gamma
+normal inverse Wishart
+
+Table 3.1: Common probability distributions: the choice of distribution depends on the type/domain of data to be modeled.
+
+Probability distributions such as the categorical and normal distributions are obviously useful for modeling visual data. However, the need for some of the other
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+36
+
+3 Common probability distributions
+
+distributions is not so obvious; for example, the Dirichlet distribution models K positive numbers that sum to one. Visual data do not normally take this form.
+The explanation is as follows: when we ﬁt probability models to data, we need to know how uncertain we are about the ﬁt. This uncertainty is represented as a probability distribution over the parameters of the ﬁtted model. So for each distribution used for modeling, there is a second distribution over the associated parameters (table 3.2). For example, the Dirichlet is used to model the parameters of the categorical distribution. In this context, the parameters of the Dirichlet would be known as hyperparameters. More generally, the hyperparameters determine the shape of the distribution over the parameters of the original distribution.
+
+Distribution
+
+Domain
+
+Parameters modeled by
+
+Bernoulli categorical univariate normal multivariate normal
+
+x ∈ {0, 1}
+
+x ∈ {1, 2, . . . , K}
+
+x∈R
+
+x
+
+∈
+
+k
+R
+
+beta Dirichlet normal inverse gamma normal inverse Wishart
+
+Table 3.2: Common distributions used for modeling (left) and their associated domains (center). For each of these distributions there is a second associated distribution over the parameters (right).
+
+We will now work through the distributions in table 3.2 before looking more closely at the relationship between these pairs of distributions.
+
+3.1 Bernoulli distribution
+
+Problem 3.1
+
+The Bernoulli distribution (ﬁgure 3.1) is a discrete distribution that models binary trials: it describes the situation where there are only two possible outcomes x ∈ {0, 1} which are referred to as “failure” and “success.” In machine vision, the Bernoulli distribution could be used to model the data. For example, it might describe the probability of a pixel taking an intensity value of greater or less than 128. Alternatively, it could be used to model the state of the world. For example, it might describe the probability that a face is present or absent in the image.
+The Bernoulli has a single parameter λ ∈ [0, 1] which deﬁnes the probability of observing a success x = 1. The distribution is hence
+
+P r(x = 0) = 1 − λ P r(x = 1) = λ.
+We can alternatively express this as
+
+(3.1)
+
+P r(x) = λx(1 − λ)1−x, and we will sometimes use the equivalent notation
+
+(3.2)
+
+P r(x) = Bernx[λ].
+
+(3.3)
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+Probability
+
+3.2 Beta distribution
+1
+0
+
+37
+Figure 3.1 Bernoulli distribution. The Bernoulli distribution is a discrete distribution with two possible outcomes, x ∈ {0, 1} which are referred to as failure and success, respectively. It is governed by a single parameter λ that determines the probability of success such that P r(x = 0) = 1 − λ and P r(x = 1) = λ.
+
+3.2 Beta distribution
+
+Probability
+
+The beta distribution (ﬁgure 3.2) is a continuous distribution deﬁned on single variable λ where λ ∈ [0, 1]. As such it is suitable for representing uncertainty in the parameter λ of the Bernoulli distribution.
+
+a)
+
+b)
+
+c)
+
+(10.0,10.0)
+
+(4.0,12.0) (2.0,6.0)
+
+(12.0,4.0) (6.0,2.0)
+
+(2.0,2.0) (1.0,1.0) (0.5,0.5) (0.1,0.1)
+0
+
+10
+
+(1.0,3.0)
+(0.5,1.5) (0.25,0.75)
+
+10
+
+(3.0,1.0) (1.5,0.5) (0.75,0.25)
+1
+
+Figure 3.2 Beta distribution. The beta distribution is deﬁned on [0, 1] and has parameters (α, β) whose relative values determine the expected value so E[λ] = α/(α + β) (numbers in parentheses show the α, β for each curve). As the absolute values of (α, β) increase, the concentration around E[λ] increases. a) E[λ] = 0.5 for each curve, concentration varies. b) E[λ] = 0.25. c) E[λ] = 0.75.
+
+The beta distribution has two parameters α, β ∈ [0, ∞] which both take positive values and aﬀect the shape of the curve as indicated in ﬁgure 3.2. Mathematically, the beta distribution has the form
+
+P r(λ) = Γ[α + β] λα−1(1 − λ)β−1, Γ[α]Γ[β]
+where Γ[•] is the gamma function1. For short, we abbreviate this to
+
+(3.4)
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+Problem 3.2 Problem 3.3 Problem 3.4
+Problem 3.5
+
+38
+
+3 Common probability distributions
+
+Figure 3.3 The categorical distribu-
+
+tion is a discrete distribution with K
+
+0.5
+
+possible outcomes, x ∈ {1, 2 . . . , K}
+
+and K parameters λ1, λ2 . . . , λK
+
+Probability
+
+where λk ≥ 0 and k λk = 1. Each parameter represents the probability
+
+of observing one of the outcomes,
+
+so that the probability of observing
+
+x = k is given by λk. When the
+
+number of possible outcomes K is
+
+2, the categorical reduces to the
+
+Bernoulli distribution.
+
+0
+
+P r(λ) = Betaλ[α, β].
+
+(3.5)
+
+3.3 Categorical distribution
+
+The categorical distribution (ﬁgure 3.3) is a discrete distribution that determines
+
+the probability of observing one of K possible outcomes. Hence, the Bernoulli
+
+distribution is a special case of the categorical distribution when there are only two
+
+outcomes. In machine vision the intensity data at a pixel is usually quantized into
+
+discrete levels and so can be modeled with a categorical distribution. The state of
+
+the world may also take one of several discrete values. For example an image of a
+
+vehicle might be classiﬁed into {car,motorbike,van,truck} and our uncertainty over
+
+this state could be described by a categorical distribution.
+
+The probabilities of observing the K outcomes are held in a K × 1 parameter
+
+vector λ = [λ1, λ2, . . . , λK ], where λk ∈ [0, 1] and
+
+K k=1
+
+λk
+
+= 1.
+
+The categorical
+
+distribution can be visualized as a normalized histogram with K bins and can be
+
+written as
+
+P r(x = k) = λk. For short, we use the notation
+
+(3.6)
+
+P r(x) = Catx [λ] .
+
+(3.7)
+
+Alternatively, we can think of the data as taking values x ∈ {e1, e2, . . . , eK } where ek is the kth unit vector; all elements of ek are zero except the kth, which is
+one. Here we can write
+
+K
+P r(x = ek) = λxj j = λk,
+j=1
+
+(3.8)
+
+where xj is the jth element of x.
+
+1The gamma function is deﬁned as Γ[z] =
+
+∞ 0
+
+tz−1 e−t dt
+
+and
+
+is
+
+closely
+
+related
+
+to
+
+factorials,
+
+so
+
+that for positive integers Γ[z] = (z − 1)! and Γ[z + 1] = zΓ[z].
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+3.4 Dirichlet distribution
+
+39
+
+a)
+1
+
+b)
+
+c)
+
+d)
+
+e)
+
+(0.90,0.90,0.90)
+
+(1.00,1.00,1.00)
+
+(2.00,2.00,2.00)
+
+(4.00,4.00,4.00)
+
+1
+
+f)
+
+g)
+
+h)
+
+i)
+
+0
+
+1
+
+(0.85,1.50,2.00)
+
+(1.00,1.76,2.35)
+
+(1.70,3.00,4.00)
+
+(3.40,6.00,8.00)
+
+Figure 3.4 The Dirichlet distribution in K dimensions is deﬁned on values λ1, λ2, . . . , λK such that k λk = 1 and λk ∈ [0, 1] ∀ k ∈ {1 . . . K}. a) For K=3, this corresponds to a triangular section of the plane k λk = 1. In K dimensions, the Dirichlet is deﬁned by K positive parameters α1...K . The ratio of the parameters determines the expected value for the distribution. The absolute values determine the concentration: the distribution is highly peaked around the expected value at high parameter values but pushed away from the expected value at low parameter values. b-e) Ratio of parameters is equal, absolute values increase. f-i) Ratio of parameters favors α3 > α2 > α1, absolute values increase.
+
+3.4 Dirichlet distribution
+
+The Dirichlet distribution (ﬁgure 3.4) is deﬁned over K continuous values λ1 . . . λK
+
+where λk ∈ [0, 1] and
+
+K k=1
+
+λk
+
+=
+
+1.
+
+Hence
+
+it
+
+is
+
+suitable
+
+for
+
+deﬁning
+
+a
+
+distribution
+
+over the parameters of the categorical distribution.
+
+In K dimensions the Dirichlet distribution has K parameters α1 . . . αK each of which can take any positive value. The relative values of the parameters determine the expected values E[λ1] . . . E[λk]. The absolute values determine the concentration around the expected value. We write
+
+or for short
+
+P r(λ1...K )
+
+=
+
+Γ[
+
+K k=1
+
+αk
+
+]
+
+K k=1
+
+Γ[αk ]
+
+K k=1
+
+λkαk −1 ,
+
+(3.9)
+
+P r(λ1...K ) = Dirλ1...K [α1...K ].
+
+(3.10)
+
+Just as the Bernoulli distribution was a special case of the categorical distribution with two possible outcomes, so the beta distribution is a special case of the Dirichlet distribution where the dimensionality is two.
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+40
+
+3 Common probability distributions
+
+Probability Density
+
+Figure 3.5 The univariate normal dis-
+tribution is deﬁned on x ∈ R and has two parameters {µ, σ2}. The mean
+parameter µ determines the expected value and the variance σ2 determines
+the concentration about the mean so that as σ2 increases, the distribution
+becomes wider and ﬂatter.
+
+(-3.4,0.25)
+
+(0.0,1.0)
+
+(1.5,4.41)
+
+-6
+
+0
+
+6
+
+3.5 Univariate normal distribution
+
+Problem 3.6 Problem 3.7
+
+The univariate normal or Gaussian distribution (ﬁgure 3.5) is deﬁned on continuous values x ∈ [−∞,∞]. In vision, it is common to ignore the fact that the intensity of a pixel is quantized and model it with the continuous normal distribution. The world state may also be described by the normal distribution. For example, the distance to an object could be represented in this way.
+The normal distribution has two parameters, the mean µ and the variance σ2. The parameter µ can take any value and determines the position of the peak. The parameter σ2 takes only positive values and determines the width of the distribution. The normal distribution is deﬁned as
+
+P r(x) = √ 1 exp −0.5(x − µ)2/σ2 , 2πσ2
+and we will abbreviate this by writing
+
+(3.11)
+
+P r(x) = Normx[µ, σ2].
+
+(3.12)
+
+3.6 Normal-scaled inverse gamma distribution
+
+Problem 3.8
+
+The normal-scaled inverse gamma distribution (ﬁgure 3.6) is deﬁned over a pair of continuous values µ, σ2, the ﬁrst of which can take any value and the second of which is constrained to be positive. As such it can deﬁne a distribution over the mean and variance parameters of the normal distribution.
+The normal-scaled inverse gamma has four parameters α, β, γ, δ where α, β, and γ are positive real numbers but δ can take any value. It has pdf:
+
+P r(µ, σ2) =
+
+√γ √
+
+βα
+
+σ 2π Γ[α]
+
+1 α+1
+
+2β + γ(δ − µ)2
+
+σ2
+
+exp −
+
+2σ2
+
+,
+
+(3.13)
+
+or for short
+
+P r(µ, σ2) = NormInvGamµ,σ2 [α, β, γ, δ].
+
+(3.14)
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+3.7 Multivariate normal distribution
+
+41
+
+a)
+(1.0,1.0,1.0,0.0)
+
+b)
+(0.5,1.0,1.0,0.0)
+
+c)
+(1.0,0.5,1.0,0.0)
+
+d)
+(1.0,1.0,0.4,0.0)
+
+e)
+(1.0,1.0,1.0,-2.0)
+
+5
+
+(2.0,1.0,1.0,0.0)
+
+(1.0,2.0,1.0,0.0)
+
+(1.0,1.0,4.0,0.0)
+
+(1.0,1.0,1.0,2.0)
+
+0
+
+-5
+
+0
+
+5
+
+Figure 3.6 The normal-scaled inverse gamma distribution deﬁnes a probability distribution over bivariate continuous values µ, σ2 where µ ∈ [−∞, ∞] and σ2 ∈ [0, ∞]. a) Distribution with parameters [α, β, γ, δ] = [1, 1, 1, 0]. b)
+Varying α. c) Varying β. d) Varying γ. e) Varying δ.
+
+Figure 3.7 The multivariate normal
+
+distribution models D-dimensional variables x = [x1 . . . xD]T where each
+
+dimension xd is continuous and real.
+
++
+
+It is deﬁned by a D × 1 vector µ deﬁn-
+
+ing the mean of the distribution and a
+
+D × D covariance matrix Σ which de-
+
+termines the shape. The iso-contours
+
+of the distribution are ellipsoids where
+
+the center of the ellipsoid is deter-
+
+mined by µ and the shape by Σ. This
+
+ﬁgure depicts a bivariate distribution,
+
+where the covariance is illustrated by
+
+drawing one of these ellipsoids.
+
+3.7 Multivariate normal distribution
+The multivariate normal or Gaussian distribution models D-dimensional variables x where each of the D elements x1 . . . xD is continuous and lies in the range [−∞, +∞] (ﬁgure 3.7). As such the univariate normal distribution is a special case of the multivariate normal where the number of elements D is one. In machine vision the multivariate normal might model the joint distribution of the intensities of D pixels within a region of the image. The state of the world might also be described by this distribution. For example, the multivariate normal might describe the joint uncertainty in the 3D position (x, y, z) of an object in the scene.
+The multivariate normal distribution has two parameters: the mean µ and covariance Σ. The mean µ is a D × 1 vector that describes the mean of the distribution. The covariance Σ is a symmetric D × D positive deﬁnite matrix so that zT Σz is positive for any real vector z. The probability density function has the following form
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+42
+
+3 Common probability distributions
+
+P r(x) =
+
+1 (2π)D/2|Σ|1/2 exp
+
+−0.5(x − µ)T Σ−1(x − µ)
+
+,
+
+or for short
+
+(3.15)
+
+P r(x) = Normx [µ, Σ] .
+
+(3.16)
+
+The multivariate normal distribution will be used extensively throughout this book, and we devote the whole of chapter 5 to describing its properties.
+
+3.8 Normal inverse Wishart distribution
+The normal inverse Wishart distribution deﬁnes a distribution over a D × 1 vector µ and a D × D positive deﬁnite matrix Σ. As such it is suitable for describing uncertainty in the parameters of a multivariate normal distribution. The normal inverse Wishart has four parameters α, Ψ, γ, δ, where α and γ are positive scalars, δ is a D × 1 vector and Ψ is a positive deﬁnite D × D matrix
+
+γD/2|Ψ|α/2 exp −0.5 Tr[ΨΣ−1] + γ(µ − δ)T Σ−1(µ − δ)
+
+P r(µ, Σ) =
+
+, (3.17)
+
+2αD/2 (2π )D/2 |Σ|(α+D+2)/2 ΓD [α/2]
+
+where ΓD[•] is the multivariate gamma function and Tr[Ψ] returns the trace of the matrix Ψ (see appendix C.2.4). For short we will write:
+
+P r(µ, Σ) = NorIWisµ,Σ [α, Ψ, γ, δ] .
+
+(3.18)
+
+The mathematical form of the normal inverse Wishart distribution is rather opaque. However, it is just a function that produces a positive value for any valid mean vector µ and covariance matrix Σ, such that when we integrate over all possible values of µ and Σ, the answer is one. It is hard to visualize the normal inverse Wishart, but easy to draw samples and examine them: each sample is the mean and covariance of a normal distribution (ﬁgure 3.8).
+
+3.9 Conjugacy
+We have argued that the beta distribution can represent probabilities over the parameters of the Bernoulli. Similarly the Dirichlet deﬁnes a distribution over the parameters of the categorical, and there are analogous relationships between the normal-scaled inverse gamma and univariate normal and the normal inverse Wishart and the multivariate normal.
+These pairs were carefully chosen because they have a special relationship: in each case, the former distribution is conjugate to the latter: the beta is conjugate to the Bernoulli and the Dirichlet is conjugate to the categorical and so on. When
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+3.9 Conjugacy
+
+43
+
+a)
+
+b)
+
+c)
+
+d)
+
+e)
+
+-6
+
+-6
+
+6 -6
+
+6
+
+6
+
+-6
+
+6 -6
+
+6 -6
+
+6 -6
+
+6 -6
+
+6
+
+Figure 3.8 Sampling from 2D normal inverse Wishart distribution. a) Each sample consists of a mean vector and covariance matrix, here visualized with 2D ellipses illustrating the iso-contour of the associated Gaussian at a ﬁxed Mahalanobis distance (i.e., a ﬁxed proportion of the way through the density from the mean). b) Changing α modiﬁes the dispersion of covariances observed. c) Changing Ψ modiﬁes the average covariance. d) Changing γ modiﬁes the dispersion of mean vectors observed. e) Changing δ modiﬁes the average value of the mean vectors.
+
+we multiply a distribution with its conjugate, the result is proportional to a new distribution which has the same form as the conjugate. For example
+
+Bernx[λ] · Betaλ[α, β] = κ(x, α, β) · Betaλ α˜, β˜ ,
+
+(3.19)
+
+where κ is a scaling factor that is constant with respect to the variable of interest, λ. It is important to realize that this was not necessarily the case: if we had picked any distribution other than the beta, then this product would not have retained the same form. For this case, the relationship in equation 3.19 is easy to prove
+
+Bernx[λ] · Betaλ[α, β]
+
+=
+
+λx(1 − λ)1−x Γ[α + β] λα−1(1 − λ)β−1 Γ[α]Γ[β]
+
+= Γ[α + β] λx+α−1(1 − λ)1−x+β−1 Γ[α]Γ[β]
+
+Γ[α + β] Γ[x + α]Γ[1 − x + β] = Γ[α]Γ[β] Γ[x + α + 1 − x + β] Betaλ[x + α, 1 − x + β]
+
+= κ(x, α, β) · Betaλ α˜, β˜ .
+
+(3.20)
+
+where in the third line we have both multiplied and divided by the constant associated with Betaλ[α˜, β˜].
+The conjugate relationship is important because we take products of distribu-
+tions during both learning (ﬁtting distributions) and evaluating the model (assess-
+ing probability of new data under ﬁtted distribution). The conjugate relationship
+means that these products can both be computed neatly in closed form.
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+Problem 3.9 Problem 3.10 Problem 3.11 Problem 3.12
+
+44
+
+3 Common probability distributions
+
+Summary
+We use probability distributions to describe both the world state and the image data. We have presented four distributions (Bernoulli, categorical, univariate normal, multivariate normal) that are suited to this purpose. We also presented four other distributions (beta, Dirichlet, normal-scaled inverse gamma, and normal inverse Wishart) that can be used to describe the uncertainty in parameters of the ﬁrst; they can hence describe the uncertainty in the ﬁtted model. These four pairs of distributions have a special relationship: each distribution from the second set is conjugate to one from the ﬁrst set. As we shall see, the conjugate relationship makes it easier to ﬁt these distributions to observed data and evaluate new data under the ﬁtted model.
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+Notes
+
+45
+
+Notes
+
+Throughout this book, I use rather esoteric terminology for discrete distributions. I distinguish between the binomial distribution (probability of getting M successes in N binary trials) and the Bernoulli distribution (the binary trial itself or probability of getting a success or failure in one trial) and talk exclusively about the latter distribution. I take a similar approach to discrete variables which can take K values. The multinomial distribution assigns a probability to observing the values {1,2,. . . , K} with frequency {M1, M2, . . . , MK } given N trials. The categorical distribution is a special case of this with N = 1. Most other authors do not make this distinction and would term this ‘multinomial’ as well.
+A more complete list of common probability distributions and details of their properties are given in Appendix B of Bishop (2006). Further information about conjugacy can be found in Chapter 2 of Bishop (2006) or any textbook on Bayesian methods, such as that of Gelman et al. (2004). Much more information about the normal distribution is provided in chapter 5 of this book.
+
+Problems
+Problem 3.1 Consider a variable x which is Bernoulli distributed with parameter λ. Show that the mean E[x] is λ and the variance E[(x − E[x])2] is λ(1 − λ).
+Problem 3.2 Calculate an expression for the mode (position of the peak) of the beta distribution with α, β > 1 in terms of the parameters α and β.
+Problem 3.3 The mean and variance of the beta distribution are given by the expressions
+
+α E[λ] = µ =
+α+β
+
+E[(λ − µ)2] = σ2 =
+
+αβ .
+
+(α + β)2(α + β + 1)
+
+We may wish to choose the parameters α and β so that the distribution has a particular mean µ and variance σ2. Derive suitable expressions for α and β in terms of µ and σ2.
+
+Problem 3.4 All of the distributions in this chapter are members of the exponential family and can be written in the form
+
+P r(x|θ) = a[x] exp[b[θ]T c[x] − d[θ]],
+where a[x] and c[x] are functions of the data and b[θ] and d[θ] are functions of the parameters. Find the functions a[x], b[θ], c[x] and d[θ] that allow the Beta distribution to be represented in the generalized form of the exponential family.
+
+Problem 3.5 Use integration by parts to prove that if
+
+then
+
+∞
+
+Γ[z] =
+
+tz−1e−tdt,
+
+0
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+46
+
+3 Common probability distributions
+
+Γ[z + 1] = zΓ[z].
+
+Problem 3.6 Consider a restricted family of univariate normal distributions where the variance is always 1, so that
+
+1 P r(x|µ) = √
+
+exp −0.5(x − µ)2 .
+
+2π
+
+Show that a normal distribution over the parameter µ
+
+P r(µ) = Normµ[µp, σp2]
+has a conjugate relationship to the restricted normal distribution.
+Problem 3.7 For the univariate normal distribution, ﬁnd the functions a[x], b[θ], c[x] and d[θ] that allow it to be represented in the generalized form of the exponential family (see problem 3.4).
+Problem 3.8 Calculate an expression for the mode (position of the peak in µ, σ2 space) of the normal scaled inverse gamma distribution in terms of the parameters α, β, γ, δ.
+Problem 3.9 Show that the more general form of the conjugate relation in which we multiply I Bernoulli distributions by the conjugate beta prior is given by
+
+where
+
+I
+Bernxi [λ] · Betaλ[α, β] = κ · Betaλ[α˜, β˜],
+i=1
+
+Γ[α + β]Γ[α + κ=
+
+xi]Γ[β +
+
+(1 − xi)]
+
+Γ[α + β + I]Γ[α]Γ[β]
+
+α˜ = α + xi
+
+β˜ = β + (1 − xi).
+
+Problem 3.10 Prove the conjugate relation
+I
+Catxi [λ1...K ] · Dirλ1...K [α1...K ] = κ · Dirλ1...K [α˜1...K ],
+i=1
+where
+
+κ˜
+
+=
+
+Γ[ Γ[I +
+
+K j=1
+
+αj
+
+]
+
+K j=1
+
+αj
+
+]
+
+.
+
+K j=1
+
+Γ[αj
+
++
+
+Nj ]
+
+K j=1
+
+Γ[αj
+
+]
+
+α˜1...K = [α1 + N1, α2 + N2, . . . , αK + NK ].
+
+and Nk is the total number of times that the variable took the value k.
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+Notes
+
+47
+
+Problem 3.11 Show that the conjugate relation between the normal and normal inverse gamma is given by
+
+I
+Normxi [µ, σ2] · NormInvGamµ,σ2 [α, β, γ, δ] = κ · NormInvGamµ,σ2 [α˜, β˜, γ˜, δ˜],
+i=1
+where
+
+1 √γβα Γ[α˜] κ = (2π)I/2 √γ˜β˜α˜ Γ[α]
+
+α˜ = α + I/2
+
+β˜ =
+
+i x2i + β + γδ2 − (γδ + i xi)2
+
+2
+
+2
+
+2(γ + I)
+
+γ˜ = γ + I
+
+δ˜ = (γδ + i xi) . γ+I
+
+Problem 3.12 Show that the conjugate relationship between the multivariate normal and the normal inverse Wishart is given by
+
+where
+
+I
+Normxi [µ, Σ] · NorIWisµ,Σ [α, Ψ, γ, δ] = κ · NorIWis α˜, Ψ˜ , γ˜, δ˜ ,
+i=1
+
+κ=
+
+1 Ψα/2 ΓD[α˜/2] γD/2
+
+πID/2 Ψ˜ α˜/2 ΓD[α/2] γ˜D/2
+
+α˜ = α + I
+
+Ψ˜
+
+=
+
+Ψ + γδδT +
+
+I
+
+xixTi
+
+−
+
+(γ
+
+1 + I)
+
+I
+γδ + xi
+
+i=1
+
+i=1
+
+γ˜ = γ + I
+
+δ˜ =
+
+γδ +
+
+I i=1
+
+xi
+
+.
+
+γ+I
+
+You may need to use the relation Tr zzT A−1 = zT A−1z.
+
+I
+
+T
+
+γδ + xi
+
+i=1
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+48
+
+3 Common probability distributions
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+Chapter 4
+Fitting probability models
+
+This chapter concerns ﬁtting probability models to data {xi}Ii=1. This process is referred to as learning because we learn about the parameters θ of the model.1 It also concerns calculating the probability of a new datum x∗ under the resulting model. This is known as evaluating the predictive distribution. We consider three methods: maximum likelihood, maximum a posteriori, and the Bayesian approach.
+
+4.1 Maximum likelihood
+As the name suggests, the maximum likelihood (ML) method ﬁnds the set of parameters θˆ under which the data {xi}Ii=1 are most likely. To calculate the likelihood function P r(xi|θ) at a single data point xi, we simply evaluate the probability density function at xi. Assuming each data point was drawn independently from the distribution, the likelihood function P r(x1...I |θ) for a set of points is the product of the individual likelihoods. Hence, the ML estimate of the parameters is
+
+θˆ = argmax [P r(x1...I |θ)]
+θ
+
+I
+
+= argmax P r(xi|θ) ,
+
+θ
+
+i=1
+
+(4.1)
+
+where argmaxθ f [θ] returns the value of θ that maximizes the argument f [θ]. To evaluate the predictive distribution for a new data point x∗ (compute the
+probability that x∗ belongs to the ﬁtted model), we simply evaluate the probability density function P r(x∗|θˆ) using the ML ﬁtted parameters θˆ.
+
+1Here we adopt the notation θ to represent a generic set of parameters when we have not speciﬁed the particular probability model.
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+50
+
+4 Fitting probability models
+
+4.2 Maximum a posteriori
+
+In maximum a posteriori (MAP) ﬁtting, we introduce prior information about the parameters θ. From previous experience we may know something about the possible parameter values. For example, in a time-sequence the values of the parameters at time t tell us a lot about the possible values at time t + 1, and this information would be encoded in the prior distribution.
+As the name suggests, maximum a posteriori estimation maximizes the posterior probability P r(θ|x1...I ) of the parameters
+
+θˆ = argmax [P r(θ|x1...I )]
+θ
+
+= argmax P r(x1...I |θ)P r(θ)
+
+θ
+
+P r(x1...I )
+
+= argmax
+θ
+
+I i=1
+
+P
+
+r(xi
+
+|θ)P
+
+r(θ)
+
+,
+
+P r(x1...I )
+
+(4.2)
+
+where we have used Bayes’ rule between the ﬁrst two lines and subsequently assumed independence. In fact, we can discard the denominator as it is constant with respect to the parameters and so does not aﬀect the position of the maximum, and we get
+
+I
+
+θˆ = argmax P r(xi|θ)P r(θ) .
+
+θ
+
+i=1
+
+(4.3)
+
+Comparing this to the maximum likelihood criterion (equation 4.1) we see that it
+is identical except for the additional prior term; maximum likelihood is a special
+case of maximum a posteriori where the prior is uninformative. The predictive density (probability of a new datum x∗ under the ﬁtted model)
+is again calculated by evaluating the pdf P r(x∗|θˆ) using the new parameters.
+
+4.3 The Bayesian approach
+
+In the Bayesian approach we stop trying to estimate single ﬁxed values (point esti-
+mates) of the parameters θ and admit what is obvious; there may be many values
+of the parameters that are compatible with the data. We compute a probability distribution P r(θ|x1...I ) over the parameters θ based on data {xi}Ii=1 using Bayes’ rule so that
+
+P r(θ|x1...I ) =
+
+I i=1
+
+P
+
+r(xi
+
+|θ)P
+
+r(θ)
+
+.
+
+P r(x1...I )
+
+(4.4)
+
+Evaluating the predictive distribution is more diﬃcult for the Bayesian case
+
+since we have not estimated a single model but have instead found a probability
+
+distribution over possible models. Hence, we calculate
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+4.4 Worked example 1: univariate normal
+
+51
+
+P r(x∗|x1...I ) = P r(x∗|θ)P r(θ|x1...I ) dθ,
+
+(4.5)
+
+which can be interpreted as follows: the term P r(x∗|θ) is the prediction for a given value of θ. So, the integral can be thought of as a weighted sum of the predictions given by diﬀerent parameters θ, where the weighting is determined by the posterior probability distribution P r(θ|x1...I ) over the parameters (representing our conﬁdence that diﬀerent parameters are correct).
+The predictive density calculations for the Bayesian, MAP and ML cases can be uniﬁed if we consider the ML and MAP estimates to be special probability distributions over the parameters where all of the density is at θˆ. More formally, we can consider them as delta functions centered at θˆ. A delta function δ[z] is a function that integrates to one, and that returns zero everywhere except at z = 0. We can now write
+
+P r(x∗|x1...I ) = P r(x∗|θ)δ[θ − θˆ] dθ = P r(x∗|θˆ),
+
+(4.6)
+
+which is exactly the calculation we originally prescribed: we simply evaluate the probability of the data under the model with the estimated parameters.
+
+4.4 Worked example 1: univariate normal
+
+To illustrate the above ideas, we will consider ﬁtting a univariate normal model to scalar data {xi}Ii=1. Recall that the univariate normal model has pdf
+
+P r(x|µ, σ2)
+
+=
+
+Normx[µ, σ2]
+
+=
+
+1 √
+2πσ2
+
+exp
+
+(x − µ)2 −0.5 σ2
+
+,
+
+(4.7)
+
+and has two parameters, the mean µ and the variance σ2. Let us generate I independent data points x1...I from a univariate normal with µ = 1 and σ2 = 1. Our goal is to re-estimate these parameters from the data.
+
+4.4.1 Maximum likelihood estimation
+The likelihood P r(x1...I |µ, σ2) of the parameters {µ, σ2} for observed data {xi}Ii=1 is computed by evaluating the pdf for each data point separately and taking the product:
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+Algorithm 4.1
+
+52
+a)
+
+Likelihood = 3.12 x 10-9
+
+b)
+
+4 Fitting probability models
+
+Likelihood = 1.99 x 10-11
+
+c)
+
+Likelihood = 7.18 x 10-7
+= 0.836 = 1.035
+
+-5.0
+
+5.0 -5.0
+
+5.0 -5.0
+
+5.0
+
+Figure 4.1 Maximum likelihood ﬁtting. The likelihood of the parameters for a single datapoint is the height of the pdf evaluated at that point (blue vertical lines). The likelihood of a set of independently sampled data is the product of the individual likelihoods. a) The likelihood for this normal distribution is low because the large variance means the height of the pdf is low everywhere. b) The likelihood for this normal distribution is even lower as the left-most datum is very unlikely under the model. c) The maximum likelihood solution is the set of parameters for which the likelihood is maximized.
+
+I
+
+P r(x1...I |µ, σ2) =
+
+P r(xi|µ, σ2)
+
+i=1
+
+I
+
+=
+
+Normxi [µ, σ2]
+
+i=1
+
+=
+
+1 (2πσ2)I/2 exp
+
+I
+−0.5
+
+(xi − µ)2 σ2
+
+.
+
+i=1
+
+(4.8)
+
+Obviously, the likelihood for some sets of parameters {µ, σ2} will be higher than others (ﬁgure 4.1) and it is possible to visualize this as a 2D function of the mean µ and variance σ2 (ﬁgure 4.2). The maximum likelihood solution µˆ, σˆ will occur at the peak of this surface so that
+
+µˆ, σˆ2 = argmax P r(x1...I |µ, σ2) .
+µ,σ2
+
+(4.9)
+
+In principle we can maximize this by taking the derivative of equation 4.8 with respect to µ and σ2, equating the result to zero and solving. In practice, however, the resulting equations are messy. To simplify things, we work instead with the logarithm of this expression (the log likelihood, L). Since the logarithm is a monotonic function (ﬁgure 4.3), the position of the maximum in the transformed function remains the same. Algebraically, the logarithm turns the product of the likelihoods of the individual data points into a sum and so decouples the contribution of each. The ML parameters can now be calculated as
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+4.4 Worked example 1: univariate normal
+
+53
+
+Figure 4.2 The likelihood function for
+
+a ﬁxed set of observed data is a func-
+
+2.0
+
+tion of the mean µ and variance σ2 pa-
+
+rameters. The plot shows that there
+
+are many parameter settings which
+
+might plausibly be responsible for the
+
+ten data points from ﬁgure 4.1. A
+
+sensible choice for the “best” parame-
+
++
+
+ter setting is the maximum likelihood solution (green cross), which corre-
+
+sponds to the maximum of this func-
+
+tion.
+
+0.0
+
+−2.0
+
+2.0
+
+I
+
+µˆ, σˆ2 = argmax
+
+log Normxi [µ, σ2]
+
+µ,σ2
+
+i=1
+
+(4.10)
+
+=
+
+I
+argmax −0.5I log[2π] − 0.5I log σ2 − 0.5
+
+(xi − µ)2
+
+.
+
+µ,σ2
+
+σ2
+i=1
+
+To maximize, we diﬀerentiate this log likelihood L with respect to µ and equate the result to zero
+
+∂L =
+∂µ
+
+I (xi − µ) σ2
+
+i=1
+
+=
+
+I i=1
+
+xi
+
+σ2
+
+−
+
+Iµ σ2
+
+=
+
+0
+
+and re-arranging, we see that
+
+(4.11)
+
+µˆ =
+
+I i=1
+
+xi
+
+.
+
+I
+
+By a similar process, the expression for the variance can be shown to be
+
+(4.12)
+
+σˆ2 = I (xi − µˆ)2 . I
+i=1
+
+(4.13)
+
+These expressions are hardly surprising, but the same idea can be used to
+
+estimate parameters in other distributions where the results are less familiar.
+
+Figure 4.1 shows a set of data points and three possible ﬁts to the data. The
+
+mean of the maximum likelihood ﬁt is the mean of the data. The ML ﬁt is neither
+
+too narrow (giving very low probabilities to the furthest data points from the
+
+mean) nor too wide (resulting in a ﬂat distribution and giving low probability to
+
+all points).
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+Problem 4.1
+
+54
+
+4 Fitting probability models
+
+3
+Figure 4.3 The logarithm is a mono-
+
+tonic transformation: if one point is
+
+higher than another then it will also
+
+0
+
+be higher after transformation by the
+
+logarithmic function. It follows that if
+
+we transform the surface in ﬁgure 4.2
+
+through the logarithmic function, the
+
+maximum will remain in the same
+
+−5
+
+position.
+
+0
+
+5
+
+10
+
+Least squares ﬁtting
+As an aside, we note that many texts discuss ﬁtting in terms of least squares. Consider ﬁtting just the mean parameter µ of the normal distribution using maximum likelihood. Manipulating the cost function so that
+
+µˆ
+
+=
+
+argmax
+µ
+
+−0.5I log[2π] − 0.5I log σ2 − 0.5
+
+I
+
+(xi − µ)2 σ2
+
+i=1
+
+I
+
+= argmax − (xi − µ)2
+
+µ
+
+i=1
+
+I
+
+= argmin (xi − µ)2 ,
+
+µ
+
+i=1
+
+(4.14)
+
+leads to a formulation where we minimize the sum of squares. In other words, least squares ﬁtting is equivalent to ﬁtting the mean parameter of a normal distribution using the maximum likelihood method.
+
+4.4.2 Maximum a posteriori estimation
+
+Algorithm 4.2
+
+Returning to the main thread, we will now demonstrate maximum a posteriori ﬁtting of the parameters of the normal distribution. The cost function becomes
+
+I
+
+µˆ, σˆ2 = argmax P r(xi|µ, σ2)P r(µ, σ2)
+
+µ,σ2
+
+i=1
+
+I
+
+= argmax Normxi [µ, σ2]NormInvGamµ,σ2 [α, β, γ, δ] , (4.15)
+
+µ,σ2
+
+i=1
+
+where we have chosen normal inverse gamma prior with parameters α, β, γ, δ (ﬁgure 4.4) as this is conjugate to the normal distribution. The expression for the prior is
+
+P r(µ, σ2) =
+
+√γ √
+
+βα
+
+σ 2π Γ(α)
+
+1 α+1
+
+2β + γ(δ − µ)2
+
+σ2
+
+exp −
+
+2σ2
+
+.
+
+(4.16)
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+4.4 Worked example 1: univariate normal
+
+55
+
+2.0
+
+a)
+
++
+
++
+
+0.9 b)
+
+++
+
++ +
+
+0.0 −2.0
+
+2.0
+
+0.0−5.0
+
+5.0
+
+Figure 4.4 Prior over normal parameters. a) A normal inverse gamma with α, β, γ = 1 and δ = 0 gives a broad prior distribution over univariate normal parameters. The magenta cross indicates the peak of this prior distribution. The blue crosses are ﬁve samples randomly drawn from the distribution. b) The peak and the samples can be visualized by plotting the normal distributions that they represent.
+
+2.0 a)
+
+b)
+
+c)
+
+0.0 −2.0
+
++
+2.0 −2.0
+
++
++
+
++++
+
+ML MAP MP
+
+++ +
+
+2.0 −2.0
+
+2.0
+
+Figure 4.5 MAP inference for normal parameters. a) The likelihood function is multiplied by b) the prior probability to give a new function c) that is proportional to the posterior distribution. The maximum a posteriori (MAP) solution (cyan cross) is found at the peak of the posterior distribution. It lies between the maximum likelihood (ML) solution (green cross) and the maximum of the prior distribution (MP, magenta cross).
+
+The posterior distribution is proportional to the product of the likelihood and the prior (ﬁgure 4.5), and has the highest density in regions that both agree with the data and were a priori plausible.
+Like the maximum likelihood case, it is easier to maximize the logarithm of equation 4.15:
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+56
+
+4 Fitting probability models
+
+Problem 4.2
+
+I
+
+µˆ, σˆ2 = argmax
+
+log[Normxi µ, σ2] +log NormInvGamµ,σ2 [α, β, γ, δ] .
+
+µ,σ2
+
+i=1
+
+(4.17)
+To ﬁnd the MAP parameters, we substitute in the expressions, diﬀerentiate with respect to µ and σ, equate to zero, and rearrange to give
+
+µˆ =
+
+I i=1
+
+xi
+
++
+
+γδ
+
+and
+
+σˆ2 =
+
+I i=1
+
+(xi
+
+−
+
+µˆ)2
+
++
+
+2β
+
++
+
+γ(δ
+
+−
+
+µˆ)2
+
+.
+
+I +γ
+
+I + 3 + 2α
+
+The formula for the mean can be more easily understood if we write it as
+
+(4.18)
+
+Ix + γδ
+
+µˆ =
+
+.
+
+I +γ
+
+(4.19)
+
+This is a weighted sum of two terms. The ﬁrst term is the data mean x and is weighted by the number of training examples I. The second term is δ, the value of µ favored by the prior, and is weighted by γ.
+This gives some insight into the behavior of the MAP estimate (ﬁgure 4.6). With a large amount of data, the ﬁrst term dominates, and the MAP estimate µˆ is very close to the data mean (and the ML estimate). With intermediate amounts of data, µˆ is a weighted sum of the prediction from the data and the prediction from the prior. With no data at all, the estimate is completely governed by the prior. The hyperparameter (parameter of the prior) γ controls the concentration of the prior with respect to µ and determines the extent of its inﬂuence. Similar conclusions can be drawn about the MAP estimate of the variance.
+Where there is a single data point (ﬁgure 4.6e-f), the data tells us nothing about the variance and the maximum likelihood estimate σˆ2 is actually zero; the best ﬁt is an inﬁnitely thin and inﬁnitely tall normal distribution centered on the one data point. This is unrealistic, not least because it accords the datum an inﬁnite likelihood. However, MAP estimation is still valid as the prior ensures that sensible parameter values are chosen.
+
+4.4.3 The Bayesian approach
+
+Algorithm 4.3
+
+In the Bayesian approach, we calculate a posterior distribution P r(µ, σ2|x1...I ) over possible parameter values using Bayes’ rule,
+
+P r(µ, σ2|x1...I ) =
+
+I i=1
+
+P
+
+r(xi|µ,
+
+σ2)P
+
+r(µ,
+
+σ2
+
+)
+
+P r(x1...I )
+
+=
+
+I i=1
+
+Normxi
+
+[µ,
+
+σ2
+
+]NormInvGamµ,σ2
+
+[α,
+
+β
+
+,
+
+γ
+
+,
+
+δ
+
+]
+
+P r(x1...I )
+
+= κNormInvGamµ,σ2 [α˜, β˜, γ˜, δ˜] , P r(x1...I )
+
+(4.20)
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+4.4 Worked example 1: univariate normal
+
+57
+
+2.0 a)
+
+c)
+
+e)
+
++ ML
+
+++
+
+MAP MP
+
+++ +
+
+++ +
+
+++
+
+0.0 50 Datapoints
+
+5 Datapoints
+
+1 Datapoint
+
+−2.0
+
+2.0 −2.0
+
+2.0 −2.0
+
+2.0
+
+0.9
+
+b)
+
+d)
+
+f)
+
+0.0 −5.0
+
+5.0 −5.0
+
+5.0 −5.0
+
+5.0
+
+Figure 4.6 Maximum a posteriori estimation. a) MAP solution (cyan cross) lies between ML (green cross) and the peak of the prior (purple cross). b) Normal distributions corresponding to MAP solution, ML solution and peak of prior. c-d) With fewer data points, the prior has a greater eﬀect on the ﬁnal solution. e-f) With only one data point, the maximum likelihood solution cannot be computed (you cannot calculate the variance of a single point). However, the MAP solution can still be calculated.
+
+where we have used the conjugate relationship between likelihood and prior (section 3.9) and κ is the associated constant. The product of the normal likelihood and normal inverse gamma prior creates a posterior over µ and σ2, which is a new normal inverse gamma distribution and can be shown to have parameters
+
+α˜ = α + I/2, β˜ =
+
+γ˜ = γ + I
+
+δ˜ = (γδ + i xi) γ+I
+
+i x2i + β + γδ2 − (γδ + i xi)2 .
+
+2
+
+2
+
+2(γ + I)
+
+(4.21)
+
+Note that the posterior (left-hand side of equation 4.20) must be a valid probability distribution and sum to one, so the constant κ from the conjugate product and the denominator from the right-hand side must exactly cancel to give
+
+P r(µ, σ2|x1...I ) = NormInvGamµ,σ2 [α˜, β˜, γ˜, δ˜].
+
+(4.22)
+
+Now we see the major advantage of using a conjugate prior: we are guaranteed a closed form expression for the posterior distribution over the parameters.
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+58
+2.0 a)
+
+0.9 b)
+
+4 Fitting probability models
+
+0.9 c)
+
+MAP Bayesian
+
++ + +++++ +
+
+++
+
++
+
+++++++ +
+
++ +
+
+++++++++
+
+0.0 −2.0
+
+0.0 2.0 −5.0
+
+0.0
+
+5.0 −5.0
+
+5.0
+
+Figure 4.7 Bayesian predictions. a) Posterior probability distribution over parameters. b) Samples from posterior probability distribution correspond to normal distributions. c) The predictive distribution for the Bayesian case is the average of an inﬁnite set of samples. Alternately, we can think of choosing the parameters from a uniform distribution and computing a weighted average where the weights correspond to the posterior distribution.
+
+This posterior distribution represents the relative plausibility of various parameter settings µ and σ2 having created the data. At the peak of the distribution is the MAP estimate, but there are many other plausible conﬁgurations (ﬁgure 4.6).
+When data are plentiful (ﬁgure 4.6a), the parameters are well speciﬁed, and the probability distribution is concentrated. In this case, placing all of the probability mass at the MAP estimate is a good approximation to the posterior. However, when data are scarce (ﬁgure 4.6c), many possible parameters might have explained the data and the posterior is broad. In this case approximation with a point mass is inadequate.
+Predictive density
+For the maximum likelihood and MAP estimates, we evaluate the predictive density (probability that a new data point x∗ belongs to the same model) by simply evaluating the normal pdf with the estimated parameters. For the Bayesian case, we compute a weighted average of the predictions for each possible parameter set, where the weighting is given by the posterior distribution over parameters (ﬁgures 4.6a-c and 4.7),
+
+P r(x∗|x1...I ) = = =
+
+P r(x∗|µ, σ2)P r(µ, σ2|x1...I ) dµdσ
+
+(4.23)
+
+Normx∗ [µ, σ2]NormInvGamµ,σ2 [α˜, β˜, γ˜, δ˜] dµdσ
+
+κ(x∗, α˜, β˜, γ˜, δ˜)NormInvGamµ,σ2 [α˘, β˘, γ˘, δ˘] dµdσ.
+
+Here we have used the conjugate relation for a second time. The integral contains a constant with respect to µ and σ2 multiplied by a probability distribution. Taking
+the constant outside the integral, we get
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+4.4 Worked example 1: univariate normal
+
+59
+
+50 training examples
+
+0.6 a)
+
+MAP
+
+Bayesian
+
+5 training examples
+
+b)
+
+MAP
+
+Bayesian
+
+1 training example
+
+c)
+
+MAP
+
+Bayesian
+
+0-5
+
+5 -5
+
+5 0-5
+
+5
+
+d)
+
+e)
+
+f)
+
+MAP Bayesian
+
+MAP Bayesian
+
+MAP Bayesian
+
+-5
+
+5 -5
+
+5 -5
+
+5
+
+Figure 4.8 a-c) Predictive densities for MAP and Bayesian approaches with 50, 5, and 1 training examples, respectively. As the training data decreases, the Bayesian prediction becomes less certain but the MAP prediction is erroneously overconﬁdent. d-f) This eﬀect is even more clear on a log scale.
+
+P r(x∗|x1...I ) = κ(x∗, α˜, β˜, γ˜, δ˜) = κ(x∗, α˜, β˜, γ˜, δ˜),
+
+NormInvGamµ,σ2 [α˘, β˘, γ˘, δ˘] dµdσ (4.24)
+
+which follows because the integral of a pdf is one. It can be shown that the constant is given by
+
+κ(x∗, α˜, β˜, γ˜, δ˜)
+
+=
+
+√1 2π
+
+√γ˜β˜α˜ √γ˘β˘α˘
+
+Γ[α˘] ,
+Γ[α˜]
+
+(4.25)
+
+where
+
+α˘ = α˜ + 1/2,
+
+γ˘ = γ˜ + 1
+
+β˘
+
+=
+
+x∗2
+
++ β˜ +
+
+γ˜δ˜2
+
+−
+
+(γ˜δ˜ + x∗)2 .
+
+2
+
+2 2(γ˜ + 1)
+
+(4.26)
+
+Here, we see the second advantage of using the conjugate prior; it means that the integral can be computed and so we get a nice closed form expression for the predictive density.
+Figure 4.8 shows the predictive distribution for the Bayesian and MAP cases, for varying amounts of training data. With plenty of training data, they are quite
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+60
+
+4 Fitting probability models
+
+Figure 4.9 a) Categorical probabil-
+
+ity distribution over six discrete val-
+
+ues with parameters {λk}6k=1 where
+
+6 k=1
+
+λk
+
+=
+
+1.
+
+This
+
+could
+
+be
+
+the
+
+rela-
+
+tive probability of a biased die land-
+
+ing on its six sides. b) Fifteen ob-
+
+servations {xi}Ii=1 randomly sampled from this distribution. We denote the
+
+number of times category k was ob-
+
+served by Nk so that here the total
+
+observations
+
+6 k=1
+
+Nk
+
+=
+
+15.
+
+0.4 a)
+
+10 b)
+
+Frequency
+
+0.0 123456
+
+0 123456
+
+similar but as the amount of data decreases, the Bayesian predictive distribution has a signiﬁcantly longer tail. This is typical of Bayesian solutions: they are more moderate (less certain) in their predictions. In the MAP case, erroneously committing to a single estimate of µ and σ2 causes overconﬁdence in our future predictions.
+
+4.5 Worked example 2: categorical distribution
+As a second example, we consider discrete data {xi}Ii=1 where xi ∈ {1, 2, . . . , 6} (ﬁgure 4.9). This could represent observed rolls of a die with unknown bias. We will describe the data using a categorical distribution (normalized histogram) where
+
+P r(x = k|λ1...K ) = λk.
+
+(4.27)
+
+For the ML and MAP techniques, we estimate the six parameters {λk}6k=1. For the Bayesian approach, we compute a probability distribution over the parameters.
+
+4.5.1 Maximum Likelihood
+
+Algorithm 4.4
+
+To ﬁnd the maximum likelihood solution, we maximize the product of the likelihoods for each individual data point with respect to the parameters λ1...6.
+
+I
+
+λˆ1...6 = argmax
+
+P r(xi|λ1...6)
+
+λ1...6
+
+i=1
+
+I
+
+= argmax
+
+Catxi [λ1...6]
+
+λ1...6
+
+i=1
+
+6
+
+= argmax
+
+λNk k
+
+λ1...6
+
+k=1
+
+s.t. λk = 1
+k
+s.t. λk = 1
+k
+s.t. λk = 1,
+k
+
+(4.28)
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+4.5 Worked example 2: categorical distribution
+
+61
+
+where Nk is the total number of times we observed bin k in the training data. As before, it is easier to maximize the log probability, and we use the criterion
+
+6
+
+6
+
+L = Nk log[λk] + ν
+
+λk − 1 ,
+
+k=1
+
+k=1
+
+(4.29)
+
+where the second term uses the Lagrange multiplier ν to enforce the constraint on
+
+the parameters
+
+6 k=1
+
+λk
+
+=
+
+1.
+
+We
+
+diﬀerentiate
+
+L
+
+with
+
+respect
+
+to
+
+λk
+
+and
+
+ν,
+
+set
+
+the
+
+derivatives equal to zero, and solve for λk to obtain
+
+λˆk =
+
+Nk
+6 m=1
+
+Nm
+
+.
+
+In other words, λk is the proportion of times that we observed bin k.
+
+(4.30)
+
+4.5.2 Maximum a posteriori
+To ﬁnd the maximum a posteriori solution we need to deﬁne a prior. We choose the Dirichlet distribution as it is conjugate to the categorical likelihood. This prior over the six categorical parameters is hard to visualize but samples can be drawn and examined (ﬁgure 4.10a-e). The MAP solution is given by
+
+I
+
+λˆ1...6 = argmax
+
+P r(xi|λ1...6)P r(λ1...6)
+
+λ1...6
+
+i=1
+
+I
+
+= argmax
+
+Catxi [λ1...6]Dirλ1...6 [α1...6]
+
+λ1...6
+
+i=1
+
+6
+
+6
+
+= argmax
+
+λNk k
+
+λkαk −1
+
+λ1...6
+
+k=1
+
+k=1
+
+6
+
+= argmax
+
+λNk k+αk−1 .
+
+λ1...6
+
+k=1
+
+(4.31)
+
+which is again subject to the constraint that
+
+6 k=1
+
+λk
+
+=
+
+1.
+
+As in the maximum
+
+likelihood case, this constraint is enforced using a Lagrange multiplier. The MAP
+
+estimate of the parameters can be shown to be
+
+λˆk =
+
+Nk + αk 6m=1(Nm +
+
+−1 αm
+
+−
+
+1)
+
+,
+
+(4.32)
+
+where Nk is the number of times that observation k occurred in the training data. Note that if all the values αk are set to one, the prior is uniform and this expression reverts to the maximum likelihood solution (equation 4.30).
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+Algorithm 4.5 Problem 4.4
+
+62
+
+4 Fitting probability models
+
+0.4 a)
+
+b)
+
+c)
+
+d)
+
+e)
+
+0.0 123456
+0.4 f)
+
+123456
+g)
+
+123456
+h)
+
+123456
+i)
+
+123456
+j)
+
+0.0 123456
+
+123456
+
+123456
+
+123456
+
+123456
+
+Figure 4.10 a-e) Five samples drawn from Dirichlet prior with hyperparameters α1...6 = 1. This deﬁnes a uniform prior, so each sample looks like a random unstructured probability distribution. f-j) Five samples from Dirichlet posterior. The distribution favors histograms where bin three is larger and bin four is small as suggested by the data.
+
+4.5.3 Bayesian Approach
+
+Algorithm 4.6
+
+In the Bayesian approach we calculate a posterior over the parameters
+
+P r(λ1 . . . λ6|x1...I ) =
+
+I i=1
+
+P
+
+r(xi
+
+|λ1...6)P
+
+r(λ1...6)
+
+P r(x1...I )
+
+=
+
+I i=1
+
+Catxi
+
+[λ1...6
+
+]Dirλ1...6
+
+[α1...6
+
+]
+
+P r(x1...I )
+
+= κ(α1...6, x1...I )Dirλ1...6 [α˜1...6] P r(x1...I )
+
+= Dirλ1...6 [α˜1...6],
+
+(4.33)
+
+where α˜k = Nk + αk. We have again exploited the conjugate relationship to yield a posterior distribution with the same form as the prior. The constant κ must again cancel with the denominator to ensure a valid probability distribution on the left hand side. Samples from this distribution are shown in ﬁgure 4.10f-j.
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+4.5 Worked example 2: categorical distribution
+
+63
+
+0.4 a)
+
+0.4 b)
+
+0.0 123456
+
+0.0 123456
+
+Figure 4.11 Predictive distributions
+with α1...6 = 1 for a) maximum likelihood / maximum a posteriori approaches and b) Bayesian approach. The ML/MAP approaches predict the same distribution that exactly follows the data frequencies. The Bayesian approach predicts a more moderate distribution and allots some probability to the case x = 4 despite having seen no training examples in this category.
+
+Predictive Density
+For the ML and MAP estimates we evaluate the predictive density (probability that a new data point x∗ belongs to the same model) by simply evaluating the categorical pdf with the estimated parameters. With the uniform prior (α1...6 = 1) the MAP and ML predictions are identical (ﬁgure 4.11a) and both are exactly proportional to the frequencies of the observed data.
+For the Bayesian case, we compute a weighted average of the predictions for each possible parameter set, where the weighting is given by the posterior distribution over parameters so that
+
+P r(x∗|x1...I ) = P r(x∗|λ1...6)P r(λ1...6|x1...I ) dλ1...6
+
+= Catx∗ [λ1...6]Dirλ1...6 [α˜1...6] dλ1...6
+
+=
+
+κ(x∗, α˜1...6)Dirλ1...6 [α˘1...6] dλ1...6
+
+= κ(x∗, α˜1...6).
+
+(4.34)
+
+Here, we have again exploited the conjugate relationship to yield a constant multiplied by a probability distribution and the integral is simply the constant as the integral of the pdf is one. For this case, it can be shown that
+
+P r(x∗ = k|x1...I ) = κ(x∗, α˜1...6) =
+
+Nk + 6j=1(Nj
+
+αk +
+
+αj
+
+)
+
+.
+
+(4.35)
+
+This is illustrated in ﬁgure 4.11b. It is notable that once more the Bayesian predictive density is less conﬁdent than the ML/MAP solutions. In particular, it does not allot zero probability to observing x∗ = 4 despite the fact that this value was never observed in the training data. This is sensible; just because we have not drawn a 4 in 15 observations does not imply that it is inconceivable that we will ever see one. We may have just been unlucky. The Bayesian approach takes this into account and allots this category a small amount of probability.
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+64
+
+4 Fitting probability models
+
+Summary
+We presented three ways to ﬁt a probability distribution to data and to predict the probability of new points. Of the three methods discussed, the Bayesian approach is the most desirable. Here it is not necessary to ﬁnd a point estimate of the (uncertain) parameters, and so errors are not introduced because this point estimate is inaccurate.
+However, the Bayesian approach is only tractable when we have a conjugate prior, which makes it easy to calculate the posterior distribution over the parameters P r(θ|x1...I ) and also to evaluate the integral in the predictive density. When this is not the case, we will usually have to rely on maximum a posteriori estimates. Maximum likelihood estimates can be thought of as a special case of maximum a posteriori estimates in which the prior is uninformative.
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+Notes
+
+65
+
+Notes
+
+For more information about the Bayesian approach to ﬁtting distributions consult chapter 3 of Gelman et al. (2004). More information about Bayesian model selection (problem 4.6), including an impassioned argument for its superiority as a method of hypothesis testing can be found in Mackay (2003).
+
+Problems
+
+Problem 4.1 Show that the maximum likelihood solution for the variance σ2 of the normal distribution is given by
+
+σ2 = I (xi − µˆ)2 . I
+i=1
+Problem 4.2 Show that the MAP solution for the mean µ and variance σ2 of the normal distribution are given by
+
+µˆ =
+
+I i=1
+
+xi
+
++
+
+γδ
+
+I +γ
+
+and
+
+σˆ2 =
+
+I i=1
+
+(xi
+
+−
+
+µˆ)2
+
++
+
+2β
+
++
+
+γ(δ
+
+−
+
+µˆ)2
+
+,
+
+I + 3 + 2α
+
+when we use the conjugate normal-scaled inverse gamma prior
+
+√
+
+P r(µ, σ2) =
+
+γ √
+
+βα
+
+σ 2π Γ[α]
+
+1 α+1
+
+2β + γ(δ − µ)2
+
+σ2
+
+exp −
+
+2σ2
+
+.
+
+Problem 4.3 Taking equation 4.29 as a starting point, show that the maximum likelihood parameters for the categorical distribution are given by
+
+λˆk =
+
+Nk
+6 m=1
+
+Nm
+
+,
+
+where Nk is the number of times that category K was observed in the training data.
+
+Problem 4.4 Show that the MAP estimate for the parameters {λ}K k=1 of the categorical distribution is given by
+
+λˆk =
+
+Nk + αk
+
+6 m=1
+
+(Nm
+
++
+
+−1 αm
+
+−
+
+1)
+
+,
+
+under the assumption of a Dirichlet prior with hyperparameters {αk}K k=1. The terms Nk again indicate the number of times that category k was observed in the training data.
+
+Problem 4.5 The denominator of Bayes’ rule
+
+I
+
+P r(x1...I ) =
+
+P r(xi|θ)P r(θ) dθ
+
+i=1
+
+is known as the evidence. It is a measure of how well the distribution ﬁts regardless of
+
+the particular values of the parameters. Find an expression for the evidence term for (i)
+
+the normal distribution and (ii) the categorical distribution assuming conjugate priors in
+
+each case.
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+66
+
+4 Fitting probability models
+
+Problem 4.6 The evidence term can be used to compare models. Consider two sets of data S1 = {0.1, −0.5, 0.2, 0.7} and S2 = {1.1, 2.0, 1.4, 2.3}. Let us pose the question of whether these two data sets came from the same normal distribution or from two diﬀerent normal distributions.
+Let model M1 denote the case where all of the data comes from the one normal distribution. The evidence for this model is
+
+P r(S1 ∪ S2|M1) =
+
+P r(xi|θ)P r(θ) dθ,
+
+i∈S1 ∪S2
+
+where θ = {µ, σ2} contains the parameters of this normal distribution. Similarly, we will let M2 denote the case where the two sets of data belong to diﬀerent normal distributions
+
+P r(S1 ∪ S2|M2) =
+
+P r(xi|θ1)P r(θ1) dθ1
+
+P r(xi|θ2)P r(θ2) dθ2,
+
+i∈S1
+
+i∈S2
+
+where θ1 = {µ1, σ12} and θ2 = {µ2, σ22}. Now it is possible to compare the probability of the data under each of these two models using Bayes’ rule
+
+P r(M1|S1 ∪ S2) =
+
+P r(S1 ∪ S2|M1)P r(M1)
+
+2 n=1
+
+P
+
+r(S1
+
+∪
+
+S2|Mn)P
+
+r(Mn)
+
+Use this expression to compute the posterior probability that the two datasets came from the same underlying normal distribution. You may assume normal-scaled inverse gamma priors over θ, θ1, and θ2 with parameters α = 1, β = 1, γ = 1, δ = 0.
+
+Note that this is (roughly) a Bayesian version of the two-sample t-test, but it is much neater - we get a posterior probability distribution over the two hypotheses rather than the potentially misleading p value of the t-test. The process of comparing evidence terms in this way is known as Bayesian model selection or the evidence framework. It is rather clever in that two normal distributions ﬁtted with maximum likelihood will always explain the data better than one; the additional parameters simply make the model more ﬂexible. However because we have marginalized these parameters away here, it is valid to compare these models in the Bayesian case.
+
+Problem 4.7 In the Bernoulli distribution, the likelihood P r(x1...I |λ) of the data {xi}Ii=1 where xi ∈ {0, 1} given the parameter λ is
+
+I
+P r(x1...I |λ) = λxi (1 − λ)1−xi .
+i=1
+Find an expression for the maximum likelihood estimate of the parameter λ.
+Problem 4.8 Find an expression for the MAP estimate of the Bernoulli parameter λ (see problem 4.7) assuming a beta distributed prior
+
+P r(λ) = Betaλ[α, β].
+Problem 4.9 Now consider the Bayesian approach to ﬁtting Bernoulli data, using a beta distributed prior. Find expressions for (i) the posterior probability distribution over the Bernoulli parameters given observed data {xi}Ii=1 and (ii) the predictive distribution for new data x∗.
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+Notes
+
+67
+
+Problem 4.10 Staying with the Bernoulli distribution, consider observing data 0, 0, 0, 0 from four trials. Assuming a uniform beta prior (α = 1, β = 1), compute the predictive distribution using the (i) maximum likelihood, (ii) maximum a posteriori and (iii) Bayesian approaches. Comment on the results.
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+68
+
+4 Fitting probability models
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+Chapter 5
+The normal distribution
+
+The most common representation for uncertainty in machine vision is the multivariate normal distribution. We devote this chapter to exploring its main properties, which will be used extensively throughout the rest of the book.
+Recall from chapter 3 that the multivariate normal distribution has two parameters: the mean µ and covariance Σ. The mean µ is a D×1 vector that describes the position of the distribution. The covariance Σ is a symmetric D ×D positive deﬁnite matrix (implying that zT Σz is positive for any real vector z) and describes the shape of the distribution. The probability density function is
+
+P r(x) =
+
+1
+
+exp −0.5(x − µ)T Σ−1(x − µ) ,
+
+(2π)D/2|Σ|1/2
+
+(5.1)
+
+or for short
+
+P r(x) = Normx [µ, Σ] .
+
+(5.2)
+
+5.1 Types of covariance matrix
+
+Covariance matrices in multivariate normals take three forms, termed spherical, diagonal, and full covariances. For the two dimensional (bivariate) case, these are
+
+Σspher =
+
+σ2 0
+
+0 σ2
+
+Σdiag =
+
+σ12 0
+
+0 σ22
+
+Σfull =
+
+σ121 σ221
+
+σ122 σ222
+
+.
+
+(5.3)
+
+The spherical covariance matrix is a positive multiple of the identity matrix and so has the same value on all of the diagonal elements and zeros elsewhere. In the diagonal covariance matrix, each value on the diagonal has a diﬀerent positive value. The full covariance matrix can have non-zero elements everywhere although the matrix is still constrained to be symmetric and positive deﬁnite so for the 2D example, σ122 = σ221.
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+70
+
+5 The normal distribution
+
+Spherical covariances
+5 a)
+
+Diagonal covariances
+c)
+
+Full covariances
+e)
+
+-5
+5 b)
+
+d)
+
+f)
+
+-5
+
+-5
+
+5 -5
+
+5 -5
+
+5
+
+Figure 5.1 Covariance matrices take three forms. a-b) Spherical covariance matrices are multiples of the identity. The variables are independent and the iso-probability surfaces are hyperspheres. c-d) Diagonal covariance matrices permit diﬀerent non-zero entries on the diagonal, but have zero entries elsewhere. The variables are independent, but scaled diﬀerently and the isoprobability surfaces are hyper-ellipsoids (ellipses in 2D) whose principal axes are aligned to the coordinate axes. e-f) Full covariance matrices are symmetric and positive deﬁnite. Variables are dependent and iso-probability surfaces are ellipsoids that are not aligned in any special way.
+
+For the bivariate case (ﬁgure 5.1), spherical covariances produce circular isodensity contours. Diagonal covariances produce ellipsoidal iso-contours that are aligned with the coordinate axes. Full covariances also produce ellipsoidal isodensity contours, but these may now take an arbitrary orientation. More generally, in D dimensions, spherical covariances produce iso-contours that are D-spheres, diagonal covariances produce iso-contours that are D-dimensional ellipsoids aligned with the coordinate axes, and full covariances produce iso-contour that are ndimensional ellipsoids in general position.
+When the covariance is spherical or diagonal, the individual variables are independent. For example, for the bivariate diagonal case with zero mean, we have
+
+P r(x1, x2)
+
+=
+
+1 exp −0.5 x1
+2π |Σ|
+
+x2 Σ−1
+
+x1 x2
+
+1
+
+=
+
+exp 2πσ1σ2
+
+−0.5
+
+x1
+
+x2
+
+σ1−2 0 0 σ2−2
+
+x1 x2
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+5.2 Decomposition of covariance
+
+71
+
+Figure 5.2 Decomposition of full co-
+variance. For every bivariate normal
+distribution in variables x1 and x2 with full covariance matrix, there ex-
+ists a coordinate system with variables
+x1 and x2 where the covariance is diagonal: the ellipsoidal iso-contours
+align with the coordinate axes x1 and x2 in this canonical coordinate frame. The two frames of reference are re-
+lated by the rotation matrix R which
+maps (x1, x2) to (x1, x2). From this it follows (see text) that any covariance
+matrix Σ can be broken down into the product RT Σdiag R of a rotation matrix R and a diagonal covariance ma-
+trix Σdiag .
+
+=
+
+1 exp
+2πσ12
+
+−
+
+x21 2σ12
+
+= P r(x1)P r(x2).
+
+1 exp
+2πσ22
+
+−
+
+x22 2σ22
+
+(5.4)
+
+5.2 Decomposition of covariance
+
+We can use the foregoing geometrical intuitions to decompose the full covariance matrix Σfull . Given a normal distribution with mean zero and a full covariance matrix, we know that the iso-contours take an ellipsoidal form with the major and minor axes at arbitrary orientations.
+Now consider viewing the distribution in a new coordinate frame where the axes are aligned with the axes of the normal (ﬁgure 5.2): in this new frame of reference, the covariance matrix Σdiag will be diagonal. We denote the data vector in the new coordinate system by x = [x1, x2]T where the frames of reference are related by x = Rx. We can write the probability distribution over x as
+
+1
+
+P r(x ) =
+
+exp
+
+(2π)D/2|Σdiag |1/2
+
+−0.5x T Σd−ia1g x
+
+.
+
+(5.5)
+
+We now convert back to the original axes by substituting in x = Rx to get
+
+P r(x)
+
+=
+
+1 exp
+(2π)D/2|Σdiag |1/2
+
+−0.5(Rx)T Σd−ia1g Rx
+
+=
+
+1 exp
+(2π)D/2|RT Σdiag R|1/2
+
+−0.5xT (RT Σdiag R)−1x
+
+(5.6)
+
+where we have used |RT Σ R| = |RT |.|Σ |.|R| = 1.|Σ |.1 = |Σ |. Equation 5.6 is a multivariate normal with covariance
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+72
+
+5 The normal distribution
+
+Figure 5.3 Transformation of normal variables. a) If x has a multivari-
+
+a)
+
+b)
+
+ate normal pdf and we apply a linear
+
+transformation to create new variable
+
+y = Ax + b, then b) the distribution
+
+of y is also multivariate normal. The
+
+mean and covariance of y depend on
+
+the original mean and covariance of x
+
+and the parameters A and b.
+
+Σfull = RT Σdiag R.
+
+(5.7)
+
+We conclude that full covariance matrices are expressible as a product of this form involving a rotation matrix R and a diagonal covariance matrix Σdiag . Having understood this, it is possible to retrieve these elements from an arbitrary valid covariance matrix Σfull by decomposing it in this way using the singular value decomposition.
+The matrix R contains the principal directions of the ellipsoid in its columns. The values on the diagonal of Σdiag encode the variance (and hence the width of the distribution) along each of these axes. Hence we can use the results of the eigen-decomposition to answer questions about which directions in space are most and least certain.
+
+5.3 Linear transformations of variables
+
+Problem 5.1 Problem 5.2
+
+The form of the multivariate normal is preserved under linear transformations y = Ax + b (ﬁgure 5.3). If the original distribution was
+
+P r(x) = Normx [µ, Σ] , then the transformed variable y is distributed as:
+
+(5.8)
+
+P r(y) = Normy Aµ + b, AΣAT .
+
+(5.9)
+
+This relationship provides a simple method to draw samples from a normal distribution with mean µ and covariance Σ. We ﬁrst draw a sample x from a standard normal distribution (with mean µ = 0 and covariance Σ = I) and then apply the transform y = Σ1/2x + µ.
+
+5.4 Marginal distributions
+
+Problem 5.3
+
+If we marginalize over any subset of random variables in a multivariate normal
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+5.5 Conditional distributions
+
+73
+Figure 5.4 The marginal distribution of any subset of variables in a normal distribution is also normally distributed. In other words, if we sum over the distribution in any direction, the remaining quantity is also normally distributed. To ﬁnd the mean and the covariance of the new distribution, we can simply extract the relevant entries from the original mean and covariance matrix.
+
+distribution, the remaining distribution is also normally distributed (ﬁgure 5.4). If we partition the original random variable into two parts x = [xT1 , xT2 ]T so that
+
+P r(x) = P r
+
+x1 x2
+
+= Normx
+
+µ1 µ2
+
+,
+
+Σ11 Σ21
+
+ΣT21 Σ22
+
+,
+
+(5.10)
+
+then
+
+P r(x1) = Normx1 [µ1, Σ11] P r(x2) = Normx2 [µ2, Σ22] .
+
+(5.11)
+
+So, to ﬁnd the mean and covariance of the marginal distribution of a subset of variables, we extract the relevant entries from the original mean and covariance.
+
+5.5 Conditional distributions
+
+If the variable x is distributed as a multivariate normal, then the conditional distribution of a subset of variables x1 given known values for the remaining variables x2 is also distributed as a multivariate normal (ﬁgure 5.5). If
+
+P r(x) = P r
+
+x1 x2
+
+= Normx
+
+µ1 µ2
+
+,
+
+Σ11 Σ21
+
+ΣT21 Σ22
+
+,
+
+then the conditional distributions are
+
+(5.12)
+
+P r(x1|x2 = x∗2) = Normx1 µ1 +ΣT21Σ−221(x∗2 −µ2), Σ11 −ΣT21Σ−221Σ21 (5.13) P r(x2|x1 = x∗1) = Normx2 µ2 +Σ21Σ−111(x∗1 −µ1), Σ22 −Σ21Σ−111ΣT21 .
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+Problem 5.4 Problem 5.5 Problem 5.6
+
+74
+5 a)
+
+5 The normal distribution
+5 b)
+
+-5
+
+-5
+
+-5
+
+5
+
+-5
+
+5
+
+Figure 5.5 Conditional distributions of multivariate normal. a) If we take any multivariate normal distribution, ﬁx a subset of the variables, and look at the distribution of the remaining variables, this distribution will also take the form of a normal. The mean of this new normal depends on the values that we ﬁxed the subset to, but the covariance is always the same. b) If the original multivariate normal has spherical or diagonal covariance, both the mean and covariance of the resulting normal distributions are the same, regardless of the value we conditioned on: these forms of covariance matrix imply independence between the constituent variables.
+
+5.6 Product of two normals
+
+Problem 5.7 Problem 5.8
+
+The product of two normal distributions is proportional to a third normal distribution (ﬁgure 5.6). If the two original distributions have means a and b and covariances A and B, respectively, then we ﬁnd that
+
+Problem 5.9
+
+Normx[a, A]Normx[b, B] =
+
+(5.14)
+
+κ · Normx A−1 +B−1 −1 (A−1a+B−1b), A−1 +B−1 −1 ,
+
+where the constant κ is itself a normal distribution,
+
+κ = Norma[b, A + B] = Normb[a, A + B].
+
+(5.15)
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+5.7 Change of variable
+
+75
+Figure 5.6 The product of any two normals N1 and N2 is proportional to a third normal distribution, with a mean between the two original means and a variance that is smaller than either of the original distributions.
+
+5.6.1 Self-conjugacy
+The preceding property can be used to demonstrate that the normal distribution is self-conjugate with respect to its mean µ. Consider taking a product of a normal distribution over data x and a second normal distribution over the mean vector µ of the ﬁrst distribution. It is easy to show from equation 5.14 that
+
+Normx[µ, Σ]Normµ[µp, Σp] = Normµ[x, Σ]Normµ[µp, Σp] = κ · Normµ[µ˜ , Σ˜ ],
+
+(5.16)
+
+which is the deﬁnition of conjugacy (see section 3.9). The new parameters µ˜ and Σ˜ are determined from equation 5.14. This analysis assumes that the variance Σ
+is being treated as a ﬁxed quantity. If we also treat this as uncertain, then we must
+use a normal inverse Wishart prior.
+
+5.7 Change of variable
+Consider a normal distribution in variable x whose mean is a linear function Ay+b of a second variable y. We can re-express this in terms of a normal distribution in y which is a linear function A x + b of x so that
+
+Normx[Ay + b, Σ] = κ · Normy[A x + b , Σ ], where κ is a constant and the new parameters are given by
+
+(5.17)
+
+Σ = (AT Σ−1A)−1 A = (AT Σ−1A)−1AT Σ−1 b = −(AT Σ−1A)−1AT Σ−1b.
+
+(5.18)
+
+This relationship is mathematically opaque, but it is easy to understand visually when x and y are scalars (ﬁgure 5.7). It is often used in the context of Bayes’ rule where our goal is to move from P r(x|y) to P r(y|x).
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+Problem 5.10
+
+76
+1 a)
+
+5 The normal distribution
+1 b)
+
+00
+
+1 00
+
+1
+
+Figure 5.7 a) Consider a normal distribution in x whose variance σ2 is con-
+stant, but whose mean is a linear function ay + b of a second variable y. b)
+This is mathematically equivalent to a constant κ times a normal distribution in y whose variance σ 2 is constant and whose mean is a linear function
+a x + b of x.
+
+Summary
+In this chapter we have presented a number of properties of the multivariate normal distribution. The most important of these relate to the marginal and conditional distributions: when we marginalize or take the conditional distribution of a normal with respect to a subset of variables, the result is another normal. These properties are exploited in many vision algorithms.
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+Notes
+
+77
+
+Notes
+
+The normal distribution has further interesting properties which are not discussed because they are not relevant for this book. For example, the convolution of a normal distribution with a second normal distribution produces a function that is proportional to a third normal, and the Fourier transform of a normal proﬁle creates a normal proﬁle in frequency space. For a diﬀerent treatment of this topic the interested reader can consult chapter 2 of Bishop (2006).
+
+Problems
+Problem 5.1 Consider a multivariate normal distribution in variable x with mean µ and covariance Σ. Show that if we make the linear transformation y = Ax + b then the transformed variable y is distributed as:
+P r(y) = Normy Aµ + b, AΣAT .
+Problem 5.2 Show that we can convert a normal distribution with mean µ and covariance Σ to a new distribution with mean 0 and covariance I using the linear transformation y = Ax + b where
+
+A = Σ−1/2 b = −Σ−1/2µ.
+
+This is known as the whitening transform.
+
+Problem 5.3 Show that for multivariate normal distribution
+
+P r(x) = P r
+
+x1 x2
+
+= Normx
+
+µ1 µ2
+
+,
+
+Σ11 Σ21
+
+ΣT21 Σ22
+
+,
+
+the marginal distribution in x1 is
+
+P r(x1) = Normx1 [µ1, Σ11] .
+Hint: apply the transformation y = [I, 0]x.
+Problem 5.4 The Schur complement identity states that inverse of a matrix in terms of its sub-blocks is
+
+A C
+
+B D
+
+−1
+
+=
+
+(A − BD−1C)−1 −D−1C(A − BD−1C)−1
+
+−(A − BD−1C)−1BD−1 D−1 + D−1C(A − BD−1C)−1BD−1
+
+.
+
+Show that this relation is true.
+
+Problem 5.5 Prove the conditional distribution property for the normal distribution: if
+
+P r(x) = P r
+
+x1 x2
+
+= Normx
+
+µ1 µ2
+
+,
+
+Σ11 Σ12
+
+ΣT12 Σ22
+
+,
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+78
+
+5 The normal distribution
+
+then
+P r(x1|x2) = Normx1 µ1 + ΣT12Σ−221(x2 − µ2), Σ11 − ΣT12Σ−221Σ12 . Hint: use Schur’s complement.
+Problem 5.6 Use the conditional probability relation for the normal distribution to show that the conditional distribution P r(x1|x2 = k) is the same for all k when the covariance is diagonal and the variables are independent (see ﬁgure 5.5b).
+Problem 5.7 Show that
+
+Normx[a, A]Normx[b, B] ∝ Normx[(A−1 + B−1)−1(A−1a + B−1b), (A−1 + B−1)−1].
+Problem 5.8 For the 1D case, show that when we take the product of the two normal distributions with means µ1, µ2 and variances σ12, σ22, the new mean lies between the original two means and the new variance is smaller than either of the original variances. Problem 5.9 Show that the constant of proportionality κ in the product relation in problem 5.7 is also a normal distribution where
+κ = Norma[b, A + B].
+Problem 5.10 Prove the change of variable relation. Show that
+Normx[Ay + b, Σ] = κ · Normy[A x + b , Σ ], and derive expressions for κ, A , b and Σ . Hint: write out the terms in the original exponential, extract quadratic and linear terms in y, and complete the square.
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+Part II
+Machine learning for machine vision
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+Part II: Machine learning for
+machine vision
+In the second part of this book (chapters 6-9), we treat vision as a machine learning problem and disregard everything we know about the creation of the image. For example, we will not exploit our understanding of perspective projection or light transport. Instead, we treat vision as pattern recognition; we interpret new image data based on prior experience of images in which the contents were known. We divide this process into two parts: in learning we model the relationship between the image data and the scene content. In inference, we exploit this relationship to predict the contents of new images.
+To abandon useful knowledge about image creation may seem odd, but the logic is twofold. First, these same learning and inference techniques will also underpin our algorithms when image formation is taken into account. Second, it is possible to achieve a great deal with a pure learning approach to vision. For many tasks, knowledge of the image formation process is genuinely unnecessary.
+The structure of part II is as follows: in chapter 6 we present a taxonomy of models that relate the measured image data and the actual scene content. In particular, we distinguish between generative models and discriminative models. For generative models, we build a probability model of the data and parameterize it by the scene content. For discriminative models, we build a probability model of the scene content and parameterize it by the data. In the subsequent three chapters, we elaborate our discussion of these models.
+In chapter 7 we consider generative models. In particular, we discuss how to use hidden variables to construct complex probability densities over visual data. As examples, we consider mixtures of Gaussians, t-distributions, and factor analyzers. Together, these three models allow us to build densities that are multi-modal, robust, and suitable for modeling high dimensional data.
+In chapter 8 we consider regression models: we aim to estimate a continuous quantity from continuous data. For example, we might want to predict the joint angles from an image of the human body. We start with linear regression and move to more complex nonlinear methods such as Gaussian process regression and relevance vector regression. In chapter 9 we consider classiﬁcation models: here we want to predict a discrete quantity from continuous data. For example, we might want to assign a label to a region of the image to indicate whether or not a face is present. We start with logistic regression and work toward more sophisticated methods such as Gaussian process classiﬁcation, boosting, and classiﬁcation trees.
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+82
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+Chapter 6
+Learning and inference in vision
+At an abstract level, the goal of computer vision problems is to use the observed image data to infer something about the world. For example, we might observe adjacent frames of a video sequence and infer the camera motion, or we might observe a facial image and infer the identity.
+The aim of this chapter is to describe a mathematical framework for solving this type of problem and to organize the resulting models into useful subgroups, which will be explored in subsequent chapters.
+6.1 Computer vision problems
+In vision problems, we take visual data x and use them to infer the state of the world w. The world state w may be continuous (e.g., the 3D pose of a body model) or discrete (e.g., the presence or absence of a particular object). When the state is continuous, we call the inference process regression. When the state is discrete, we call it classiﬁcation.
+Unfortunately, the measurements x may be compatible with more than one world state w. The measurement process is noisy and there is inherent ambiguity in visual data: a lump of coal viewed under bright light may produce the same luminance measurements as white paper in dim light. Similarly, a small object seen close-up may produce the same image as a larger object that is further away.
+In the face of such ambiguity, the best that we can do is to return the posterior probability distribution P r(w|x) over possible states w. This describes everything we know about the state after observing the visual data. So, a more precise description of an abstract vision problem is that we wish to take observations x and return the whole posterior probability distribution P r(w|x) over world states.
+In practice, computing the posterior is not always tractable; we often have to settle for returning the world state wˆ at the peak of the posterior (the maximum a posteriori solution). Alternatively, we might draw samples from the posterior and use the collection of samples as an approximation to the full distribution.
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+84
+
+6 Learning and inference in vision
+
+6.1.1 Components of the solution
+To solve a vision problem of this kind, we need three components.
+• We need a model that mathematically relates the visual data x and the world state w. The model speciﬁes a family of possible relationships between x and w and the particular relationship is determined by the model parameters θ.
+• We need a learning algorithm that allows us to ﬁt the parameters θ using paired training examples {xi, wi} where we know both the measurements and the underlying state.
+• We need an inference algorithm that takes a new observation x and uses the model to return the posterior P r(w|x, θ) over the world state w. Alternately, it might return the MAP solution or draw samples from the posterior.
+The rest of this book is structured around these components: each chapter focusses on one model or one family of models, and discusses the associated learning and inference algorithms.
+
+6.2 Types of model
+The ﬁrst and most important component of the solution is the model. Models relating the data x to the world w fall into one of two categories. We either:
+1. model the contingency of the world state on the data P r(w|x) or 2. model the contingency of the data on the world state P r(x|w).
+The ﬁrst type of model is termed discriminative. The second is termed generative; here, we construct a probability model over the data and this can be used to generate (confabulate) new observations. Let us consider these two types of model in turn and discuss learning and inference in each.
+6.2.1 Model contingency of world on data (discriminative)
+To model P r(w|x), we choose an appropriate form for the distribution P r(w) over the world state w and then make the distribution parameters a function of the data x. So if the world state was continuous, we might model P r(w) with a normal distribution and make the mean µ a function of the data x.
+The value that this function returns also depends on a set of parameters, θ. Since the distribution over the state depends on both the data and these parameters, we write it as P r(w|x, θ) and refer to it as the posterior distribution.
+The goal of the learning algorithm is to ﬁt the parameters θ using paired training data {xi, wi}Ii=1. This can be done using the maximum likelihood (ML), maximum a posteriori (MAP), or Bayesian approaches (chapter 4).
+The goal of inference is to ﬁnd a distribution over the possible world states w for a new observation x. In this case, this is easy: we have already directly
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+6.3 Example 1: regression
+
+85
+
+constructed an expression for the posterior distribution P r(w|x, θ), and we simply evaluate it with the new data.
+
+6.2.2 Model contingency of data on world (generative)
+
+To model P r(x|w), we choose the form for the distribution P r(x) over the data and make the distribution parameters a function of the world state w. For example, if the data were discrete and multi-valued then we might use a categorical distribution and make the parameter vector λ a function of the world state w.
+The value that this function returns also depends on a set of parameters θ. Since the distribution P r(x) now depends on both the world state and these parameters, we write it as P r(x|w, θ) and refer to it as the likelihood. The goal of learning is to ﬁt the parameters θ using paired training examples {xi, wi}Ii=1.
+In inference, we aim to compute the posterior distribution P r(w|x). To this end we specify a prior P r(w) over the world state and then use Bayes’ rule,
+
+P r(x|w)P r(w)
+
+P r(w|x) =
+
+.
+
+P r(x|w)P r(w)dw
+
+(6.1)
+
+Here we have modeled both the likelihood P r(x|w) and the prior P r(w) and multiplied these together in the numerator of Bayes’ rule. However, notice that we could have equivalently modeled the joint distribution P r(x, w) = P r(x|w)P r(w) directly. Sometimes generative models are presented in this form (see section 7.9.5).
+
+Summary
+We’ve seen that there are two distinct approaches to modeling the relationship between the world state w and the data x, corresponding to modeling the posterior P r(w|x), or the likelihood P r(x|w).
+The two model types result in diﬀerent approaches to inference. For the discriminative model, we describe the posterior P r(w|x) directly and there is no need for further work. For the generative model, we compute the posterior using Bayes’ rule. This sometimes results in complex inference algorithms.
+To make these ideas concrete, we now consider two toy examples. For each case, we will investigate using both generative and discriminative models. At this stage, we won’t present the details of the learning and inference algorithms; these are presented in subsequent chapters anyway. The goal here is to introduce the main types of model used in computer vision in their most simple form.
+
+6.3 Example 1: regression
+Consider the situation where we make a univariate continuous measurement x and use this to predict a univariate continuous state w. For example, we might predict the distance to a car in a road scene based on the number of pixels in its silhouette.
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+86
+a)
+
+6 Learning and inference in vision
+b)
+10
+
+0
+
+0
+
+10
+
+Figure 6.1 Regression by modeling the posterior P r(w|x) (discriminative).
+a) We model the world state w as normally distributed. b) We make the
+normal parameters a function of the observations x: the mean is a linear function µ = φ0 + φ1x of the observations, and the variance σ2 is ﬁxed. The learning algorithm ﬁts the parameters θ = {φ0, φ1, σ2} to example training pairs {xi, wi}Ii=1 (blue dots). In inference we take a new observation x and compute the posterior distribution P r(w|x) over the state.
+
+6.3.1 Model contingency of world on data (discriminative)
+
+Problem 6.5
+
+We deﬁne a probability distribution over the world state w and make its parameters contingent on the data x. Since the world state is univariate and continuous, we chose the univariate normal. We ﬁx the variance, σ2 and make the mean µ a linear function φ0 + φ1x of the data. So we have
+
+P r(w|x, θ) = Normw φ0 + φ1x, σ2 ,
+
+(6.2)
+
+where θ = {φ0, φ1, σ2} are the unknown parameters of the model (ﬁgure 6.1). This model is referred to as linear regression.
+The learning algorithm estimates the model parameters θ from paired training examples {xi, wi}Ii=1. For example, in the MAP approach, we seek
+
+θˆ = argmax [P r(θ|w1...I , x1...I )]
+θ
+
+= argmax [P r(w1...I |x1...I , θ)P r(θ)]
+θ
+
+I
+
+= argmax P r(wi|xi, θ)P r(θ) ,
+
+θ
+
+i=1
+
+(6.3)
+
+where we have assumed that the I training pairs {xi, wi}Ii=1 are independent, and deﬁned a suitable prior P r(θ).
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+6.3 Example 1: regression
+
+a)
+
+b)
+
+10
+
+87 c)
+
+d)
+10
+
+0
+
+0
+
+10
+
+e)
+10
+
+0
+
+0
+
+0
+
+10
+
+0
+
+10
+
+Figure 6.2 Regression by modeling likelihood P r(x|w) (generative). a) We represent the data x with a normal distribution. b) We make the normal parameters functions of the world state w. Here the mean is a linear function µ = φ0 + φ1w of the world state and the variance σ2 is ﬁxed. The learning algorithm ﬁts the parameters θ = {φ0, φ1, σ2} to example training pairs {xi, wi}Ii=1 (blue dots). c) We also learn a prior distribution over the world state w (here modeled as a normal distribution with parameters θp = {µp, σp}). In inference we take a new datum x and compute the posterior P r(w|x) over the state. d) This can be done by computing the joint distribution P r(x, w) = P r(x|w)P r(w) (weighting each row of (b) by the appropriate value from the prior) and e) normalizing the columns P r(w|x) = P r(x, w)/P r(x). Together these operations implement Bayes’ rule: P r(w|x) = P r(x|w)P r(w)/P r(x).
+
+We also need an inference algorithm that takes visual data x and returns the posterior distribution P r(w|x, θ). Here this is very simple: we simply evaluate equation 6.2 using the data x and the learned parameters θˆ.
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+88
+
+6 Learning and inference in vision
+
+6.3.2 Model the contingency of data on world (generative)
+In the generative formulation, we choose a probability distribution over the data x and make its parameters contingent on the world state w. Since the data are univariate and continuous, we will model the data as a normal distribution with ﬁxed variance, σ2 and a mean µ that is a linear function φ0 + φ1w of the world state (ﬁgure 6.2) so that
+
+P r(x|w, θ) = Normx φ0 + φ1w, σ2 .
+
+(6.4)
+
+We also need a prior P r(w) over the world states which might also be normal so
+
+P r(w) = Normw[µp, σp2].
+
+(6.5)
+
+The learning algorithm ﬁts the parameters θ = {φ0, φ1, σ2} using paired training data {xi, wi}Ii=1, and ﬁts the parameters θp = {µp, σp2} using the world states {wi}Ii=1. The inference algorithm takes a new datum x and returns the posterior
+P r(w|x) over the world state w using Bayes’ rule
+
+P r(x|w)P r(w) P r(x, w)
+
+P r(w|x) =
+
+=
+
+.
+
+P r(x)
+
+P r(x)
+
+(6.6)
+
+In this case, the posterior can be computed in closed form and is again normally distributed with ﬁxed variance and a mean that is proportional to the data x.
+
+Discussion
+We have presented two models that can be used to estimate the world state w from an observed data example x, based on modeling the posterior P r(w|x) and the likelihood P r(x|w), respectively.
+The models were carefully chosen so that they predict exactly the same posterior P (w|x) over the world state (compare ﬁgures 6.1b and 6.2e). This is only the case with maximum likelihood learning: in the MAP approach we would have placed priors on the parameters, and because each model is parameterized diﬀerently, they would, in general, have diﬀerent eﬀects.
+
+6.4 Example 2: binary classiﬁcation
+As a second example, we will consider the case where the observed measurement x is univariate and continuous, but the world state w is discrete and can take one of two values. For example, we might wish to classify a pixel as belonging to a skin or non-skin region based on observing just the red channel.
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+6.4 Example 2: binary classiﬁcation
+
+89
+
+a)
+
+b)
+
+c)
+
+1
+
+10
+
+1
+
+0
+
+0
+
+0
+
+1
+
+-100
+
+0.5 0 0
+
+1
+
+1
+
+0
+
+1
+
+Figure 6.3 Classiﬁcation by modeling posterior P r(w|x) (discriminative). a) We represent the world state w as a Bernoulli distribution. We make the Bernoulli parameter λ a function of the observations x. b) To this end we form a linear function φ0 + φ1x of the observations. c) The Bernoulli parameter λ = sig[φ0 +φ1x] is formed by passing the linear function through the logistic sigmoid sig[•] to constrain the value to lie between 0 and 1, giving the characteristic sigmoid shape (red curve). In learning we ﬁt parameters θ = {φ0, φ1} using example training pairs {xi, wi}Ii=1. In inference we take a new datum x and evaluate the posterior P r(w|x) over the state.
+
+6.4.1 Model contingency of world on data (discriminative)
+We deﬁne a probability distribution over the world state w ∈ {0, 1} and make its parameters contingent on the data x. Since the world state is discrete and binary, we will use a Bernoulli distribution. This has a single parameter λ, which determines the probability of success so that P r(w = 1) = λ.
+We make λ a function of the data x, but in doing so we must ensure the constraint 0 ≤ λ ≤ 1 is obeyed. To this end, we form linear function φ0 + φ1x of the data x, which returns a value in the range [−∞ ∞]. We then pass the result through a function sig[•] that maps [−∞ ∞] to [0 1], so that
+
+1 P r(w|x) = Bernw [sig[φ0 + φ1x]] = Bernw 1 + exp[−φ0 − φ1x] .
+
+(6.7)
+
+This produces a sigmoidal dependence of the distribution parameter λ on the data x (ﬁgure 6.3). The function sig[•] is called the logistic sigmoid. This model is confusingly termed logistic regression despite being used here for classiﬁcation.
+In learning, we aim to ﬁt the parameters θ = {φ0, φ1} from paired training examples {xi, wi}Ii=1. In inference, we simply substitute in the observed data value x into equation 6.7 to retrieve the posterior distribution P r(w|x) over the state.
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+90
+a)
+
+6 Learning and inference in vision
+b)
+0.5
+
+0 0
+
+0
+
+1
+
+10
+
+1
+
+c)
+
+d)
+
+1
+
+1
+
+0 0
+
+0
+
+0
+
+1
+
+1 0
+
+1
+
+Figure 6.4 Classiﬁcation by modeling the likelihood P r(x|w) (generative).
+a) We choose a normal distribution to represent the data x. b) We make the parameters {µ, σ2} of this normal a function of the world state w. In
+practice, this means using one set of mean and variance parameters when
+the world state w = 0 and another when w = 1. The learning algorithm ﬁts the parameters θ = {µ0, µ1, σ02, σ12} to example training pairs {xi, wi}Ii=1 . c) We also model the prior probability of the world state w with a Bernoulli
+distribution with parameter λp. d) In inference we take a new datum x and compute the posterior P r(w|x) over the state using Bayes’ rule.
+
+6.4.2 Model contingency of data on world (generative)
+
+Algorithm 6.1
+Problem 6.7 Problem 6.8
+
+We choose a probability distribution over the data x and make its parameters contingent on the world state w. Since the data are univariate and continuous, we will choose a univariate normal and allow the variance σ2 and the mean µ to be functions of the binary world state w (ﬁgure 6.4) so that the likelihood is
+
+P r(x|w, θ) = Normx µw, σw2 .
+
+(6.8)
+
+In practice this means that we have one set of parameters {µ0, σ02} when the state of the world is w = 0 and a diﬀerent set {µ1, σ12} when the state is w = 1 so
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+6.5 Which type of model should we use?
+
+91
+
+P r(x|w = 0) = Normx µ0, σ02 P r(x|w = 1) = Normx µ1, σ12 .
+
+(6.9)
+
+These are referred to as class conditional density functions as they model the density of the data for each class separately.
+We also deﬁne a prior distribution P r(w) over the world state,
+
+P r(w) = Bernw[λp],
+
+(6.10)
+
+where λp is the prior probability of observing the state w = 1. In learning, we ﬁt the parameters θ = {µ0, σ02, µ1, σ12, λp} using paired training
+data {xi, wi}Ii=1. In practice, this consists of ﬁtting the parameters µ0 and σ02 of the ﬁrst class conditional density function P r(x|w = 0) from just the data x where the state w was 0, and the parameters µ1 and σ12 of P (x|w = 1) from the data x where the state was 1. We learn the prior parameter λp from the training world states {wi}Ii=1.
+The inference algorithm takes new datum x and returns the posterior distribu-
+tion P r(w|x, θ) over the world state w using Bayes’ rule,
+
+P r(x|w)P r(w)
+
+P r(w|x) =
+
+1 w=0
+
+P
+
+r(x|w)P
+
+r(w)
+
+.
+
+(6.11)
+
+This is very easy to compute; we evaluate the two class conditional density func-
+
+tions, weight each by the appropriate prior and normalize so that these two values
+
+sum to one.
+
+Discussion
+For binary classiﬁcation, there is an asymmetry between the world state, which is discrete, and the measurements, which are continuous. Consequently, the generative and discriminative models look quite diﬀerent, and the posteriors over the world state w as a function of the data x have diﬀerent shapes (compare ﬁgure 6.3c with ﬁgure 6.4d). For the discriminative model, this function is by deﬁnition sigmoidal, but for the generative case it has a more complex form that was implicitly deﬁned by the normal likelihoods. In general, choosing to model P r(w|x) or P (x|w) will aﬀect the expressiveness of the ﬁnal model.
+
+6.5 Which type of model should we use?
+We have established that there are two diﬀerent types of model that relate the world state and the observed data. But when should we use each type of model? There is no deﬁnitive answer to this question, but some considerations are:
+• Inference is generally simpler with discriminative models. They directly model the conditional probability distribution of the world P r(w|x) given
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+Problem 6.9
+
+92
+a) 2.0
+
+6 Learning and inference in vision
+b) 1
+
+0 0
+
+0 0
+
+10
+
+1
+
+1 0
+
+1
+
+Figure 6.5 Generative vs. discriminative models. a) Generative approach: we separately model the probability P r(x|w) for each class. This may require a complex model with many parameters. b) Posterior probability distribution P r(w|x) computed via Bayes’ rule with a uniform prior. Notice that the complicated structure of the individual class conditional density functions isn’t reﬂected in the posterior: here, it would have been more eﬃcient to take a discriminative approach and model this posterior directly.
+
+the data. In contrast, generative models calculate this probability via Bayes’ rule, and sometimes this requires a computationally expensive algorithm.
+• Generative methods build probability models P r(x|w) over the data whereas discriminative models just build a probability model P r(w|x) over the world state. The data (usually an image) are generally of much higher dimension than the world state (some aspect of a scene), and modeling it is costly. Moreover, there may be many aspects of the data which do not inﬂuence the state; we might devote parameters to describing whether data conﬁguration 1 is more likely than data conﬁguration 2 although they both imply the same world state (ﬁgure 6.5).
+• Modeling the likelihood P r(x|w) mirrors the actual way that the data were created; the state of the world did create the observed data through some physical process (usually light being emitted from a source, interacting with the object and being captured by a camera). If we wish to build information about the generation process into our model, then this approach is desirable. For example, we can account for phenomena such as perspective projection and occlusion. Using the other approaches, it is harder to exploit this knowledge: essentially we have to re-learn these phenomena from the data.
+• Sometimes parts of the training or test data vector x may be missing. Here, generative models are preferred. They model the joint distribution over all of the data dimensions and can eﬀectively interpolate the missing elements.
+• A fundamental property of the generative approach is that it allows incorporation of expert knowledge in the form of a prior. It is harder to impose prior knowledge in a principled way in discriminative models.
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+6.6 Applications
+
+93
+
+
+
+
+
+
+
+
+
+
+
+Figure 6.6 Skin detection. For each pixel we aim to infer a label w ∈ {0, 1} denoting the absence or presence of skin based on the RGB triple x. Here we modeled the class conditional density functions P r(x|w) as normal distributions. a) Original image. b) Log likelihood (log of data assessed under class-conditional density function) for non-skin. c) Log likelihood for skin. d) Posterior probability of belonging to skin class. e) Thresholded posterior probability P r(w|x) > 0.5 gives estimate of w.
+
+It is notable that generative models are more common in vision applications. Consequently, most of the chapters in the rest of the book concern generative models.
+
+6.6 Applications
+The focus of this chapter, and indeed most of the chapters of this book, is on the models themselves and the learning and inference algorithms. From this point forward, we will devote a section at the end of each chapter to discussing practical applications of the relevant models in computer vision. For this chapter, only one of the models can actually be implemented based on the information presented so far. This is the generative classiﬁcation model from section 6.4.2. Consequently, we will focus the applications on variations of this model and return to the other models in subsequent chapters.
+
+6.6.1 Skin detection
+The goal of skin-detection algorithms is to infer a label w ∈ {0, 1} denoting the presence or absence of skin at a pixel, based on the RGB measurements x = [xR, xG, xB] at that pixel. This is a useful precursor to segmenting a face or hand, or it may be used as the basis of a crude method for detecting prurient content in web images. Taking a generative approach, we describe the likelihoods as
+
+P r(x|w = k) = Normx[µk, Σk] and the prior probability over states as
+
+(6.12)
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+94
+
+6 Learning and inference in vision
+
+P r(w) = Bernw[λ].
+
+(6.13)
+
+In the learning algorithm, we estimate the parameters µ0, µ1, Σ0, Σ1 from training data pairs {wi, xi}Ii=1 where the pixels have been labeled by hand. In particular we learn µ0 and Σ0 from the subset of the training data where wi = 0 and µ1 and Σ1 from the subset where wi = 1. The prior parameter is learned from the world states {wi}Ii=1 alone. In each case, this involves ﬁtting a probability distribution to data using one of the techniques discussed in chapter 4.
+To classify a new data point x as skin or non-skin we apply Bayes’ rule
+
+P r(x|w = 1)P r(w = 1)
+
+P r(w = 1|x) =
+
+1 k=0
+
+P
+
+r(x|w
+
+=
+
+k)P
+
+r(w
+
+=
+
+, k)
+
+(6.14)
+
+and denote this pixel as skin if P r(w = 1|x) > 0.5. Figure 6.6 shows the result of applying this model at each pixel independently in the image. Note that the classiﬁcation is not perfect: there is genuinely an overlap between the skin- and non-skin distributions and this inevitably results in misclassiﬁed pixels. The results could be improved by exploiting the fact that skin areas tend to be contiguous regions without small holes. To do this, we must somehow connect together all of the per-pixel classiﬁers. This is the topic of chapters 11 and 12.
+We brieﬂy note that the RGB data are naturally discrete with xR, xG, xB ∈ {0, 1, . . . , 255}, and we could alternatively have based our skin detection model on this assumption. For example, modeling the three color channels independently, the likelihoods become
+
+P r(x|w = k) = CatxR [λRk ]CatxG [λGk ]CatxB [λBk ].
+
+(6.15)
+
+We refer to the assumption that the elements of the data vector are independent as na¨ıve Bayes. Of course, it is not necessarily valid in the real world. To model the joint distribution of the R,G, and B components, we might combine them to form one variable with 2563 entries and model this with a single categorical distribution. Unfortunately, this means we must learn 2563 parameters for each categorical distribution, and so it is more practical to quantize each channel to fewer levels (say 8) before combining them together.
+
+6.6.2 Background subtraction
+
+Problem 6.10
+
+A second application of the generative classiﬁcation model is for background sub-
+traction. Here, the goal is to infer a binary label wn ∈ {0, 1} which indicates whether the nth pixel in the image is part of a known background (w = 0) or
+whether a foreground object is occluding it (w = 1). As for the skin detection
+model, this is based on its RGB pixel data xn at that pixel. It is usual to have training data {xin}Ii=,N1,n=1 that consists of a number of empty
+scenes where all pixels are known to be background. However, it is not typical to
+have examples of the foreground objects which are highly variable in appearance.
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+6.6 Applications
+
+95
+
+
+
+
+
+
+
+Figure 6.7 Background subtraction. For each pixel we aim to infer a label w ∈ {0, 1} denoting the absence or presence of a foreground object. a) We learn a class conditional density model P r(x|w) for the background from training examples of an empty scene. The foreground model is treated as uniform. b) For a new image, we then compute the posterior distribution using Bayes’ rule. c) Posterior probability of being foreground P r(w = 1|x). Images from CAVIAR database.
+
+For this reason, we model the class conditional distribution of the background as a normal distribution
+
+P r(xn|w = 0) = Normxn [µn0, Σn0], but model the foreground class as a uniform distribution
+
+(6.16)
+
+P r(xn|w = 1) =
+
+1/2553 0
+
+0 < xRn , xGn , xBn < 255 otherwise
+
+,
+
+(6.17)
+
+and again model the prior as a Bernoulli variable.
+To compute the posterior distribution we once more apply Bayes’ rule. Typical results are shown in ﬁgure 6.7, which illustrates a common problem with this method: shadows are often misclassiﬁed as foreground. A simple way to remedy this is to classify pixels based on the hue alone.
+In some situations we need a more complex distribution to describe the background. For example, consider an outdoor scene in which trees are blowing in the wind (ﬁgure 6.8). Certain pixels may have bimodal distributions where one part of the foliage intermittently moves in front of another. It is clear that the unimodal normal likelihood cannot provide a good description of this data, and the resulting background segmentation result will be poor. We devote part of the next chapter to methods for describing more complex probability distributions of this type.
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+96 a)
+
+6 Learning and inference in vision b)
+
+Figure 6.8 Background subtraction in deforming scene. a) The foliage is blowing in the wind in the training images. b) The distribution of RGB values at the pixel indicated by the circle in (a) is now bimodal and not well described by a normal density function (red channel only shown). Images from video by Terry Boult.
+
+Summary
+In this chapter, we have provided an overview of how abstract vision problems can be solved using machine learning techniques. We have illustrated these ideas with some simple examples. We did not provide the implementation level details of the learning and inference algorithms; these are presented in subsequent chapters.
+
+Model P r(w|x) Model P r(x|w)
+
+Regression x ∈ [−∞, ∞], w ∈ [−∞, ∞]
+Classiﬁcation x ∈ [−∞, ∞], w ∈ {0, 1}
+
+Linear regression Logistic regression
+
+Linear regression Probability density function
+
+Table 6.1: Example models in this chapter. These can be categorized into those that are based on modeling probability density functions, those that are based on linear regression, and those that are based on logistic regression.
+
+The examples in this chapter are summarized in table 6.1, where it can be seen that there are three distinct types of model. First, there are those that depend on building probability density functions (describing the class conditional density functions P r(x|w = k)). In the following chapter, we investigate building complex probability density models. The second type of model is based on linear regression, and chapter 8 investigates a family of related algorithms. Finally, the third type of model discussed in this chapter was logistic regression. We will elaborate on the logistic regression model in chapter 9.
+
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+Notes
+
+97
+
+Notes
+
+The goal of this chapter was to give a very compact view of learning and inference in vision. Alternative views of this material which are not particularly aimed at vision can be found in Bishop (2006) and Duda et al. (2001) and many other texts.
+Skin Detection: Reviews of skin detection can be found in Kakumanu et al. (2007) and Vezhnevets et al. (2003). Pixel-based skin-segmentation algorithms have been variously used as the basis for face detection (Hsu et al. 2002), hand gesture analysis (Zhu et al. 2000) and ﬁltering of pornographic images (Jones & Rehg 2002).
+There are two main issues that aﬀect the quality of the ﬁnal results: the representation of the pixel color and the classiﬁcation algorithm. With regard to the latter issue, various generative approaches have been investigated, including methods based on normal distributions (Hsu et al. 2002), mixtures of normal distributions (Jones & Rehg 2002) and categorical distributions (Jones & Rehg 2002) as well as discriminative methods such as the multi-layer perceptron (Phung et al. 2005). There are several detailed empirical studies that compare the eﬃcacy of the color representation and classiﬁcation algorithm (Phung et al. 2005; Brand & Mason 2000; Schmugge et al. 2007)
+Background Subtraction: Reviews of background subtraction techniques can be found in Piccardi (2004), Bouwmans et al. (2010), and Elgammal (2011). Background subtraction is a common ﬁrst step in many vision systems as it quickly identiﬁes regions of the image that are of interest. Generative classiﬁcation systems have been built based on normal distributions (Wren et al. 1997), mixtures of normal distribution (Stauﬀer & Grimson 1999), and kernel density functions (Elgammal et al. 2000). Several systems (Friedman & Russell 1997; Horprasert et al. 2000) have incorporated an explicit label in the model to identify shadows.
+Most recent research in this area has addressed maintenance of the background model in changing environments. Many systems such as that of Stauﬀer & Grimson (1999) are adaptive and can incorporate new objects into the background model when the background changes. Other models compensate for lighting changes by exploiting the fact that all of the background pixels change together and describing this covariance with a subspace model (Oliver et al. 2000). It is also common now to abandon the per-pixel approach and to estimate the whole label ﬁeld simultaneously using a technique based on Markov random ﬁelds (e.g., Sun et al. 2006).
+
+Problems
+Problem 6.1 Consider the following problems.
+i Determining the gender of an image of a face. ii Determining the pose of the human body given an image of the body. iii Determining which suit a playing card belongs to based on an image of that card. iv Determining whether two images of faces match (face veriﬁcation). v Determining the 3D position of a point given the positions to which it projects in
+two cameras at diﬀerent positions in the world (stereo reconstruction).
+For each case, try to describe the contents of the world state w and the data x. Is each discrete or continuous? If discrete, then how many values can it take? Which are regression problems and which are classiﬁcation problems?
+Problem 6.2 Describe a classiﬁer that relates univariate discrete data x ∈ {1 . . . K} to a univariate discrete world state w ∈ {1 . . . M } for both discriminative and generative model types.
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+
+98
+
+6 Learning and inference in vision
+
+Problem 6.3 Describe a regression model that relates univariate binary discrete data x ∈ {0, 1} to a univariate continuous world state w ∈ [−∞, ∞]. Use a generative formulation in which P r(x|w) and P r(w) are modeled.
+Problem 6.4 Describe a discriminative regression model that relates a continuous world state w ∈ [0, 1] to univariate continuous data x ∈ [−∞, ∞]. Hint: Base your classiﬁer on the Beta distribution. Ensure that the constraints on the parameters are obeyed.
+Problem 6.5 Find expressions for the maximum likelihood estimates of the parameters in the discriminative linear regression model (section 6.3.1). In other words ﬁnd the parameters {φ0, φ1, σ2} that satisfy
+
+I
+
+φˆ0, φˆ1, σˆ2 = argmax
+
+P r(wi|xi, φ0, φ1, σ2)
+
+φ0,φ1,σ2 i=1
+
+I
+
+= argmax
+
+log P r(wi|xi, φ0, φ1, σ2)
+
+φ0,φ1,σ2 i=1
+
+I
+
+= argmax
+
+log Normw φ0 + φ1x, σ2 ,
+
+φ0,φ1,σ2 i=1
+
+where {wi, xi}Ii=1 are paired training examples.
+
+Problem 6.6 Consider a regression model that models the joint probability P r(x, w) between the world w and the data x as
+
+Pr
+
+wi xi
+
+= Norm[wi,xi]T
+
+µw µx
+
+,
+
+σw2 w σx2w
+
+σx2w σxx
+
+.
+
+Use the relation in section 5.5 to compute the posterior distribution P r(wi|xi). Show that it has the form
+
+P r(wi|xi) = Normwi [φ0 + φ1x, σ2],
+and compute expressions for φ0 and φ1 in terms of the training data {wi, xi}Ii=1 by substituting in explicit maximum likelihood estimates of the parameters {µw, µx, σw2 w, σx2w, σx2x}.
+Problem 6.7 For a two-class problem, the decision boundary is the locus of world values w where the posterior probability P r(w = 1|x) is equal to 0.5. In other words, it represents the boundary between regions that would be classiﬁed as w = 0 and w = 1. Consider the generative classiﬁer from section 6.4.2. Show that with equal priors P r(w = 0) = P r(w = 1) = 0.5 points on the decision boundary (the locus of points where P r(w = 0|x) = P r(w = 1|x)) obey a constraint of the form
+
+ax2 + bx + c = 0, where and {a, b, c} are scalars. Does the shape of the decision boundary for the logistic regression model from section 6.4.1 have the same form?
+Problem 6.8 Consider a generative classiﬁcation model for 1D data with likelihood terms
+
+P r(xi|wi = 0) = Normxi 0, σ2 P r(xi|wi = 1) = Normxi 0, 1.5σ2 .
+Copyright c 2011,2012 by Simon Prince; published by Cambridge University Press 2012. For personal use only, not for distribution.
+

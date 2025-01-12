@@ -1,0 +1,1126 @@
+
+
+    Home
+    About
+
+  Bartosz Milewski's Programming Cafe
+Category Theory, Haskell, Concurrency, C++
+
+October 28, 2014
+Category Theory for Programmers: The Preface
+Posted by Bartosz Milewski under C++ , Category Theory , Functional Programming , Haskell , Programming
+[160] Comments  
+ 
+ 
+ 
+ 
+ 
+ 
+i
+ 
+554 Votes
+
+
+Table of Contents
+Part One
+
+    Category: The Essence of Composition
+    Types and Functions
+    Categories Great and Small
+    Kleisli Categories
+    Products and Coproducts
+    Simple Algebraic Data Types
+    Functors
+    Functoriality
+    Function Types
+    Natural Transformations
+
+Part Two
+
+    Declarative Programming
+    Limits and Colimits
+    Free Monoids
+    Representable Functors
+    The Yoneda Lemma
+    Yoneda Embedding
+
+Part Three
+
+    It’s All About Morphisms
+    Adjunctions
+    Free/Forgetful Adjunctions
+    Monads: Programmer’s Definition
+    Monads and Effects
+    Monads Categorically
+    Comonads
+    F-Algebras
+    Algebras for Monads
+    Ends and Coends
+    Kan Extensions
+    Enriched Categories
+    Topoi
+    Lawvere Theories
+    Monads, Monoids, and Categories
+
+There is a free pdf version of this book with nicer typesetting available for download. You may order a hard-cover version with color illustrations at Blurb . Or you may watch me teaching this material to a live audience.
+Preface
+
+    For some time now I’ve been floating the idea of writing a book about category theory that would be targeted at programmers. Mind you, not computer scientists but programmers — engineers rather than scientists. I know this sounds crazy and I am properly scared. I can’t deny that there is a huge gap between science and engineering because I have worked on both sides of the divide. But I’ve always felt a very strong compulsion to explain things. I have tremendous admiration for Richard Feynman who was the master of simple explanations. I know I’m no Feynman, but I will try my best. I’m starting by publishing this preface — which is supposed to motivate the reader to learn category theory — in hopes of starting a discussion and soliciting feedback.
+
+I will attempt, in the space of a few paragraphs, to convince you that this book is written for you, and whatever objections you might have to learning one of the most abstract branches of mathematics in your “copious spare time” are totally unfounded.
+
+My optimism is based on several observations. First, category theory is a treasure trove of extremely useful programming ideas. Haskell programmers have been tapping this resource for a long time, and the ideas are slowly percolating into other languages, but this process is too slow. We need to speed it up.
+
+Second, there are many different kinds of math, and they appeal to different audiences. You might be allergic to calculus or algebra, but it doesn’t mean you won’t enjoy category theory. I would go as far as to argue that category theory is the kind of math that is particularly well suited for the minds of programmers. That’s because category theory — rather than dealing with particulars — deals with structure. It deals with the kind of structure that makes programs composable.
+
+Composition is at the very root of category theory — it’s part of the definition of the category itself. And I will argue strongly that composition is the essence of programming. We’ve been composing things forever, long before some great engineer came up with the idea of a subroutine. Some time ago the principles of structured programming revolutionized programming because they made blocks of code composable. Then came object oriented programming, which is all about composing objects. Functional programming is not only about composing functions and algebraic data structures — it makes concurrency composable — something that’s virtually impossible with other programming paradigms.
+
+Third, I have a secret weapon, a butcher’s knife, with which I will butcher math to make it more palatable to programmers. When you’re a professional mathematician, you have to be very careful to get all your assumptions straight, qualify every statement properly, and construct all your proofs rigorously. This makes mathematical papers and books extremely hard to read for an outsider. I’m a physicist by training, and in physics we made amazing advances using informal reasoning. Mathematicians laughed at the Dirac delta function, which was made up on the spot by the great physicist P. A. M. Dirac to solve some differential equations. They stopped laughing when they discovered a completely new branch of calculus called distribution theory that formalized Dirac’s insights.
+
+Of course when using hand-waving arguments you run the risk of saying something blatantly wrong, so I will try to make sure that there is solid mathematical theory behind informal arguments in this book. I do have a worn-out copy of Saunders Mac Lane’s Category Theory for the Working Mathematician on my nightstand.
+
+Since this is category theory for programmers I will illustrate all major concepts using computer code. You are probably aware that functional languages are closer to math than the more popular imperative languages. They also offer more abstracting power. So a natural temptation would be to say: You must learn Haskell before the bounty of category theory becomes available to you. But that would imply that category theory has no application outside of functional programming and that’s simply not true. So I will provide a lot of C++ examples. Granted, you’ll have to overcome some ugly syntax, the patterns might not stand out from the background of verbosity, and you might be forced to do some copy and paste in lieu of higher abstraction, but that’s just the lot of a C++ programmer.
+
+But you’re not off the hook as far as Haskell is concerned. You don’t have to become a Haskell programmer, but you need it as a language for sketching and documenting ideas to be implemented in C++. That’s exactly how I got started with Haskell. I found its terse syntax and powerful type system a great help in understanding and implementing C++ templates, data structures, and algorithms. But since I can’t expect the readers to already know Haskell, I will introduce it slowly and explain everything as I go.
+
+If you’re an experienced programmer, you might be asking yourself: I’ve been coding for so long without worrying about category theory or functional methods, so what’s changed? Surely you can’t help but notice that there’s been a steady stream of new functional features invading imperative languages. Even Java, the bastion of object-oriented programming, let the lambdas in C++ has recently been evolving at a frantic pace — a new standard every few years — trying to catch up with the changing world. All this activity is in preparation for a disruptive change or, as we physicist call it, a phase transition. If you keep heating water, it will eventually start boiling. We are now in the position of a frog that must decide if it should continue swimming in increasingly hot water, or start looking for some alternatives.
+
+IMG_1299
+
+One of the forces that are driving the big change is the multicore revolution. The prevailing programming paradigm, object oriented programming, doesn’t buy you anything in the realm of concurrency and parallelism, and instead encourages dangerous and buggy design. Data hiding, the basic premise of object orientation, when combined with sharing and mutation, becomes a recipe for data races. The idea of combining a mutex with the data it protects is nice but, unfortunately, locks don’t compose, and lock hiding makes deadlocks more likely and harder to debug.
+
+But even in the absence of concurrency, the growing complexity of software systems is testing the limits of scalability of the imperative paradigm. To put it simply, side effects are getting out of hand. Granted, functions that have side effects are often convenient and easy to write. Their effects can in principle be encoded in their names and in the comments. A function called SetPassword or WriteFile is obviously mutating some state and generating side effects, and we are used to dealing with that. It’s only when we start composing functions that have side effects on top of other functions that have side effects, and so on, that things start getting hairy. It’s not that side effects are inherently bad — it’s the fact that they are hidden from view that makes them impossible to manage at larger scales. Side effects don’t scale, and imperative programming is all about side effects.
+
+Changes in hardware and the growing complexity of software are forcing us to rethink the foundations of programming. Just like the builders of Europe’s great gothic cathedrals we’ve been honing our craft to the limits of material and structure. There is an unfinished gothic cathedral in Beauvais , France, that stands witness to this deeply human struggle with limitations. It was intended to beat all previous records of height and lightness, but it suffered a series of collapses. Ad hoc measures like iron rods and wooden supports keep it from disintegrating, but obviously a lot of things went wrong. From a modern perspective, it’s a miracle that so many gothic structures had been successfully completed without the help of modern material science, computer modelling, finite element analysis, and general math and physics. I hope future generations will be as admiring of the programming skills we’ve been displaying in building complex operating systems, web servers, and the internet infrastructure. And, frankly, they should, because we’ve done all this based on very flimsy theoretical foundations. We have to fix those foundations if we want to move forward.
+Ad hoc measures preventing the Beauvais cathedral from collapsing
+
+Ad hoc measures preventing the Beauvais cathedral from collapsing
+
+Next: Category: The Essence of Composition .
+Share this:
+
+    Reddit
+    More
+
+    Twitter
+    LinkedIn
+    Pocket
+    Facebook
+    Email
+
+Like this:
+Like Loading...
+Related
+
+Lawvere Theories In "Programming"
+
+Free Monoidal Functors, Categorically! In "Category Theory"
+
+Monads for the Curious Programmer, Part 1 In "C++"
+ 
+160 Responses to “Category Theory for Programmers: The Preface”
+
+    Enrico Says:
+
+    October 28, 2014 at 9:00 am
+
+    This is wonderful news! So looking forward to see the rest of the book. Thank you so much!
+    Andrew Says:
+
+    October 28, 2014 at 9:19 am
+
+    I will gladly pay a hefty sum for such a tome. In other words, I’m pumped!
+    channingwalton Says:
+
+    October 28, 2014 at 9:28 am
+
+    This book would be very welcome indeed. I really believe we are at a point where we need to recognise the difference between computer science and programming. Programmers need help applying computer science and books like this would help enormously.
+    Josh Says:
+
+    October 28, 2014 at 9:38 am
+
+    I’m “off the hook” as far as c++ is concerned. I mean seriously – besides diving into category theory I’ve got put up with arguably one of the ugliest programming language syntax out there? No way.
+    Kelly J. Rose Says:
+
+    October 28, 2014 at 9:48 am
+
+    This gentleman has been working on for CS majors for a while.
+
+     http://pages.cpsc.ucalgary.ca/~robin/class/617/webnotes.html Course Note / Text is here: http://pages.cpsc.ucalgary.ca/%7Erobin/class/617/notes.pdf  
+
+    Jay Kint Says:
+
+    October 28, 2014 at 10:12 am
+
+    Looking forward to reading it.
+
+    I presume you’re publishing this book serially or is it already published and this is just a reprint of its existing forward?
+    Ben Says:
+
+    October 28, 2014 at 10:27 am
+
+    Sounds like a really interesting project! How far have you gotten in thinking about how such a book would differ from, say, Pierce’s?
+
+    Of the monad tutorials I’ve read/watched I think Douglas Crockford does the best job of connecting with regular programmers’ concerns. You might consider following his lead and use JavaScript in your examples.
+
+    Though I’m pretty dang far from being a category theorist, I think a lot of writing about it from a programming perspective ends up badly burying the lead. Here’s my little essay about what I think that is:
+
+    http://cs.coloradocollege.edu/~bylvisaker/MonadMotivation/
+
+    Lastly, I agree that software engineering is in a major transitional phase related to concurrency. However of the two dimensions of concurrency — parallelism and interactivity — I think that interactivity is the more significant for most developers.
+    Bartosz Milewski Says:
+
+    October 28, 2014 at 10:40 am
+
+    It’s totally a work in progress. I’m currently in the middle of the first chapter. Defining a category, talking about types and functions, composition, etc. Also drawing some piggie diagrams 😉
+    Haitham Gad Says:
+
+    October 28, 2014 at 12:14 pm
+
+    Looking forward to getting my hands on it 🙂
+    Jason Strutz Says:
+
+    October 28, 2014 at 12:42 pm
+
+    I’ve considered writing a practical applications of category theory book myself — it is desperately needed. Its exciting to see far more capable hands undertake the effort! I’ll be first in line to buy it when it is released.
+    Dmz Says:
+
+    October 28, 2014 at 1:29 pm
+
+    awesome!
+    Jesse Says:
+
+    October 28, 2014 at 1:46 pm
+
+    I’m really looking forward to this! Thanks for doing it!
+    Francisco Lopes (@pepper_chico) Says:
+
+    October 28, 2014 at 1:47 pm
+
+    It would be nice if you wrote it with Early Access Program (or maybe just online on GitHub).
+    Matthew W Says:
+
+    October 28, 2014 at 1:50 pm
+
+    This sounds really awesome in all respects apart from C++ (unless you’re specifically aiming this at the C++ community, that is, in which case fair enough!)
+
+    If you’re aiming it at a general audience, I’d argue that relatively few programmers these days are familiar with C++ outside of certain performance-critical niches, and that learning category theory is hard enough without also having to learn C++ first ;). If you want a pragmatic “lowest common denominator” engineering language in which to illustrate the concepts without assuming knowledge of FP, hate to say it but maybe just pick Java?
+
+    Really though, I would have thought most of the target audience for this would be familiar enough with a functional programming language to cope with a presentation centered slightly more around FP, although agreed that examples in other languages would be advisable too. It seems FP is where most programmers first get a taste for category theory, though.
+
+    On another note, I think the hard sell for me as a programmer (as opposed to a maths geek — I’m sort of both) when it comes to category theory has always been that nagging feeling that the concepts are too abstract for the setting in which they’re used, that they’re being thrown around gratuitously by people (and I count myself one) who find them interesting. Phrasing a problem and its solution in highly abstract generalised language can sometimes obfuscate a solution more than it casts light on it, so it’s always a trade-off. Does the code re-use, genericity, sharing of insights and intuitions, truly merit the abstract setting and the abstract language? Do we close ourselves off needlessly from other engineers by indulging too much in this kind of programming style?
+
+    Rather than claim that this debate has been settled either way, I’d rather just say that I’d hope a book for engineers (as opposed to computer scientists) on this topic would very much engage with this debate and all the nuance of it. As an engineer I feel it’s healthy to always have that devil’s advocate in the back of your mind asking “is this abstraction worth it?”, and I’d hope the book would too, if that’s not too much of a challenge 🙂
+
+    Good luck with the project anyway, I’ll be really interested to see what emerges!
+    Category Theory for Programmers: The Preface « Another Word For It Says:
+
+    October 28, 2014 at 4:33 pm
+
+    […] Category Theory for Programmers: The Preface by Bartosz Milewski. […]
+    Nirmalya Sengupta Says:
+
+    October 28, 2014 at 10:47 pm
+
+    As an old hand in the game of professional programming, I am always willing to understand how ”Computer Science” can help people like me in writing better programs. Yours could be the right thing for me. Bravo!
+    David Barri Says:
+
+    October 29, 2014 at 6:32 am
+
+    Way back I started reading a few CT books but wasn’t able to think of useful ways to apply it to my programming. Your book would be welcome. Count me a first day buyer when it’s ready.
+    Bharat Karia Says:
+
+    October 29, 2014 at 8:44 am
+
+    This is one of the most effective prefaces for a programming book that I have read in a while. Looking forward to the rest of the book. Keep up the good work!
+    Gabor Says:
+
+    October 29, 2014 at 12:10 pm
+
+    Dicac -> Dirac
+    Shawn Martin Says:
+
+    October 29, 2014 at 1:44 pm
+
+    I’m intrigued and I’d like to say I would buy the book, but the C++ aspect is a big negative for me. I’d rather not learn C++ while learning category theory. I agree with Matthew that C# or Java would reach a much wider audience if you are looking to use a traditional imperative language. Haskell would work for me, too.
+    Jos Says:
+
+    October 29, 2014 at 4:28 pm
+
+    I was very enthusiastic when I saw this article, and immediately decided to buy the book. Alas, as soon as I read that code would be in C++, I gave up.
+    I’d rather see a kind of functional pseudocode than c++, but prefer Haskell, of course. For the same reason I didn’t buy “Functional programming in Scala” in spite of great reviews, because I think OO languages are totally unsuitable for learning FP concepts. As Josh said above – C++ – no way. Sorry.
+    Adi Says:
+
+    October 30, 2014 at 12:13 am
+
+    This sounds just like what I’m looking for!
+    Having tried going through several CT books, the ideas are usually too abstract to truly grok the ideas and see how they can be applied to one’s own domains.
+    Many CT concepts (e.g. Monads) are like design-patterns: (1) many people have rediscovered them in different context for solving similar problems – but have not necessarily seen the generic nature of the solution; (2) you don’t necessarily need to “implement” the concept as a concrete generic tool. If you grok the pattern/concept you “reify” it in your code for your domain. You use the insights provided by the more abstract and general understanding to make the solution more correct/testable/robust/generalizable etc.
+
+    There should be lots and lots of (“reified”) examples showing what stuff does, how it works and how it is helpful in different contexts. Lots of examples help reaching the craved “Aha! Moment”.
+
+    I, for one, am looking forward to reading it. If you need reviewers, sign me up 🙂
+    Bartosz Milewski Says:
+
+    October 30, 2014 at 12:41 am
+
+    Done!
+    Ivano Says:
+
+    October 30, 2014 at 1:43 am
+
+    Hi there, you’re undertaking a great endeavour for the programming community.
+    I’ve been searching for a book like this for some time now.
+    As other have said, I don’t feel C++ would be a choice supported by the general audience. If possible, I suggest you could switch to C#, which is not too far from C++ but I guess would be considered less cumbersome and be more acceptable for most people.
+    Anyway, good luck.
+
+    Do you intend to publish it “traditionally” or as a self-supported ebook (like on leanpub or similar platform)?
+    Jesse Says:
+
+    October 30, 2014 at 4:28 pm
+
+    I think modern C++ is a fantastic choice! Or, a variety of languages.
+    blytkerchan Says:
+
+    October 30, 2014 at 4:48 pm
+
+    I would definitely read that book!
+    I’ve been following your blog for a while now, so I look forward to the book and learning about category theory.
+    mbrodersen Says:
+
+    October 30, 2014 at 9:53 pm
+
+    Please use GitHub (or something similar) => the community can comment and give you pull requests to make it the best it can be.
+    fsharpn00b Says:
+
+    November 1, 2014 at 2:41 pm
+
+    You have a Feynmanesque gift for explaining and analogizing abstract things like monads so I am definitely looking forward to this.
+    Francisco Lopes (@pepper_chico) Says:
+
+    November 1, 2014 at 10:34 pm
+
+    Reference for writting an in-the-open book: “Living the Future of Technical Writing” https://medium.com/@chacon/living-the-future-of-technical-writing-2f368bd0a272
+
+    Particularly, I miss this kind of initiative in the C++ world.
+    Category: The Essence of Composition |   Bartosz Milewski's Programming Cafe Says:
+
+    November 4, 2014 at 9:25 am
+
+    […] was overwhelmed by the positive response to my previous post, the Preface to Category Theory for Programmers. At the same time, it scared the heck out of me because I realized what high expectations people […]
+    Nick Ogden Says:
+
+    November 6, 2014 at 1:31 pm
+
+    This sounds great. I’m very excited to read this when it’s available.
+
+    I wouldn’t worry about the choice of language. Modern C++ is a good pragmatic compromise for showing how things translate into the paradigm that most programmers are used to. Also, if the book is good, you’ll have an army of people lining up to translate the examples into their favourite language, myself included.
+
+    Good luck and above all, have fun writing.
+    Wu Yongwei Says:
+
+    November 20, 2014 at 10:24 am
+
+    Hi Jos, Scala is a functional language, right?
+    Wu Yongwei Says:
+
+    November 20, 2014 at 10:37 am
+
+    I fully support the idea of using C++ in this book. I think that alone sets this book apart, as no other books are doing so. Of course, using another language like Haskell is necessary in the meantime. Maybe you should use more than two to meet the biggest possible audience. I wouldn’t mind comparing Haskell, Scheme, and C++ code simultaneously. 🙂
+    Stuart Dootson (@studoot) Says:
+
+    November 20, 2014 at 1:51 pm
+
+    All sounds good to me – I’ve been learning Haskell for several years, trying to apply functional techniques in my C++ as well (resulting in (yet another) Either monad approximation recently), and a better understanding of category theory would go down very nicely…
+    Categories Great and Small |   Bartosz Milewski's Programming Cafe Says:
+
+    December 16, 2014 at 5:07 pm
+
+    […] In the previous installment of Category Theory for Programmers we talked about the category of types and functions. If you’re new to the series, here’s the link to the initial post. […]
+    Kleisli Categories |   Bartosz Milewski's Programming Cafe Says:
+
+    December 23, 2014 at 6:49 pm
+
+    […] In the previous installment of Categories for Programmers, Categories Great and Small, I gave a few examples of simple categories. In this installment we’ll work through a more advanced example. If you’re new to the series, you might want to start from the beginning. […]
+    overhastyman Says:
+
+    January 4, 2015 at 6:01 pm
+
+    I’m looking forward to it! I think it was really well written. I especially like the paragraph [But even in the absence of concurrency…all about side effects].
+    My only complaint would be, like many, using C++. I think a dynamic language like Python or Javascript or even pseudo-code would be the lowest common denominator for programmers. Thanks for writing this!!
+    mrange Says:
+
+    January 20, 2015 at 6:57 pm
+
+    Reblogged this on Mårten Rånge – Meta Programmer .
+    kranius Says:
+
+    January 20, 2015 at 8:13 pm
+
+    Thank you so much for this work !
+    sj Says:
+
+    February 4, 2015 at 7:52 am
+
+    I’m very glad you’re presenting the imperative side in C++. It may, as you note, not be the prettiest language, but I think that to effectively expose such abstract concepts as those found in category theory requires (or is greatly aided by) as much abstractive power as possible— and among the common tongues, C++ is second to none in that regard.
+    Andrés Sicard-Ramírez Says:
+
+    February 4, 2015 at 2:22 pm
+
+    I think the sentence “you may appreciate the thought that functions and algorithms from the Haskell standard library come with proofs of correctness” is not true. Where are the proofs of correctness?
+    Sean Spillane Says:
+
+    February 5, 2015 at 4:05 pm
+
+    Amazing work so far! I’m eager to keep reading, and I hope that you might convert this from a set of blog posts to an actual book (EPUB, PDF, TXT) that I could show people who don’t understand yet. Please, keep up the excellent work!
+    Down the Rabbit Hole | Backwards Incompatibilities Says:
+
+    February 11, 2015 at 7:11 am
+
+    […] I’m jumping down this rabbit hole, damn you Bartosz. It’s been a while since I’ve studied new math, should be interesting to see how much […]
+    Marek Says:
+
+    February 14, 2015 at 8:36 pm
+
+    This is exactly the article I have been waiting for. Can’t wait to read more !!
+    Jon Says:
+
+    February 19, 2015 at 11:52 am
+
+    I’m a Haskell baby, an engineer, find much of the language tough going and am hoping this article will give me another perspective. The little I’ve read so far gives me some hope
+    Ramayya Says:
+
+    March 29, 2015 at 7:52 am
+
+    May I suggest that a Concept Map that gives an overview of “Category Theory for Programmers” will be very helpful to get a good grasp of Category Theory?
+
+    The following website has quite a bit of information what Concept Maps are, how they help in encapsulating and passing knowledge, how they can be developed, and also has tool that can be used to develop Concept Maps–
+
+    http://cmap.ihmc.us .
+    finzic Says:
+
+    March 31, 2015 at 12:44 am
+
+    I have just read this one and I keep asking myself, “when is this book going to be printed? I need to have one copy of it, yes, for my nightstand also, and for my professional growth.”
+    Mike "Holy" Macro Says:
+
+    April 29, 2015 at 11:52 pm
+
+    Your style of writing is very lucid. I’m not the brightest pencil in the shed, but you have me interested because you may be able to help me understand it.
+    Ak-kiim Says:
+
+    April 30, 2015 at 7:49 am
+
+    I am very thankful about this stuff! is there a change you could compile an ebook etc. from these chapters? I would like to read this from kindle/paper.
+    Caminar hasta la casa de un amigo | ficcionrara: confesiones Says:
+
+    April 30, 2015 at 7:54 pm
+
+    […] “But even in the absence of concurrency, the growing complexity of software systems is testing the limits of scalability of the imperative paradigm.” dice Bartosz Milewski en https://bartoszmilewski.com/2014/10/28/category-theory-for-programmers-the-preface/ […]
+    Rik Jurriaans Says:
+
+    May 2, 2015 at 9:52 pm
+
+    Looks nice Bartosz!! I’m really exited about this. Will there be a physical book also?
+    sirinath Says:
+
+    May 8, 2015 at 3:38 am
+
+    Maybe you can do the book on Github so others can also contribute.
+
+    Looking forward to part 2.
+    sirinath Says:
+
+    May 8, 2015 at 3:39 am
+
+    Reblogged this on My Thoughts .
+    Adi Says:
+
+    May 10, 2015 at 10:14 am
+
+    Huh! I was just about to ask Bartosz to keep the book posts on GitHub for easy commenting and review. +1
+    Slava Says:
+
+    May 19, 2015 at 5:08 pm
+
+    Just came across this and this is absolutely great. Diving into the chapters already available. Thanks for Haskel && C++ combination. I think that is a great choice of language for the topic.
+    And yeah, do NOT put it on Github (or any other bitbucket) please..
+    MD Says:
+
+    June 26, 2015 at 1:15 pm
+
+    Seems like there’s been a pause in the articles. Hopefully it picks back up, I was really enjoying following along!
+    winterland1989 Says:
+
+    July 20, 2015 at 11:27 am
+
+    These are really great articles for someone like me who’s try to understand all the category stuff behind packages on hackage, say lens, i will keep watching your update!
+    konoron Says:
+
+    July 31, 2015 at 4:34 pm
+
+    I can’t believe this! Just yesterday, while thinking about the problems of understanding how the Haskell type system works, I thought “If only somebody wrote a book on Category Theory for programmers”. And here it is! Thank you for this effort.
+    Funktionale Programmierung in Javascript – das große Ganze Says:
+
+    August 13, 2015 at 11:13 am
+
+    […] den mathematischen Gesetzen, denen sie folgt. Ihre formale Basis ist das Lambda Calculus und die Kategorientheorie. In der Praxis werden Programmierer aber zum Glück vor allem mit elementarer Algebra […]
+    Monads are for mushing | Moses Supposes Says:
+
+    August 26, 2015 at 1:11 am
+
+    […] Inspiration and references. This post is inspired by Beckman’s Don’t Fear the Monad, a very beginner-friendly video which goes more thoroughly through monoids and monads as a tool for composition. Another wonderfully intuitive and thorough introduction to monads in programming is You Could Have Invented Monads! (And Maybe You Already Have). For more technical connectings of dots between ideas in category theory and ideas in Haskell, see Notions of Computations as Monoids and Category Theory for Programmers. […]
+    Stuff I Can Never Remember | witt3rd Says:
+
+    September 8, 2015 at 12:05 am
+
+    […] Category Theory for Programmers […]
+    esfandiar (@esfandiar_ra) Says:
+
+    October 22, 2015 at 5:31 pm
+
+    What a great read! I really enjoyed this and more than anything loved the gothic cathedrals as an example. Thank you.
+    Red-blooded programmers with deadlines and bosses | Mathematics without Apologies, by Michael Harris Says:
+
+    October 27, 2015 at 10:45 am
+
+    […] decided just over a year ago to write a book, apparently one online chapter at a time, entitled Category Theory for Programmers, even though functional programming has been using category theory for decades.  But it’s no […]
+    Benjamin Jones (@bluefiddleguy) Says:
+
+    November 12, 2015 at 9:35 am
+
+    I earnestly hope that the recent date of the last post means the monad post is coming soon! This looks great!
+    sestu Says:
+
+    November 25, 2015 at 1:28 pm
+
+    Hi, about that book on your night stand; is it accessible without a solid bqckground in group theory? Or is it something I should wait with
+    Bartosz Milewski Says:
+
+    November 30, 2015 at 10:33 am
+
+    @sestu: Mac Lane has examples from various branches of mathematics: vector spaces, groups, rings, etc., but these are not essential to understanding his main ideas. Having said that, it’s a book for a working mathematician, which means it’s written in a very terse style. Without some experience in reading math papers, it’s very hard to follow. As a more gentle introduction, I would suggest Lawvere and Schanuel, Conceptual Mathematics .
+    Denis Says:
+
+    January 26, 2016 at 8:49 am
+
+    psst, it’s Beauvais not Bauvais 🙂
+    Thanks for this wonderful serie.
+    Bartosz Milewski Says:
+
+    January 26, 2016 at 11:33 am
+
+    @Denis: Oops! In my defence, the spelling was correct under the picture.
+    Brent Faust Says:
+
+    February 6, 2016 at 7:59 am
+
+    @bartosz Agreed: Conceptual Mathematics is a far clearer presentation of beginning category theory and the best book widely available on the topic. Your book is another leap in clarity just as great as the gulf between these two books.
+
+    Excellent insight and enthusiasm. Have you considered the MEAP program? I’d purchase your work-in-progress today.
+    Volume Labs » Writing Better Software Says:
+
+    February 16, 2016 at 6:40 am
+
+    […] Category Theory for Programmers […]
+    0leksandr Says:
+
+    February 22, 2016 at 2:30 am
+
+    I wonder whether a print book be available. I’m ready to pay for it. Great job! I’m a professional programmer and a math hobbyist (mostly abstract algebra). I found this book very conceivable for a programmer. I’m now on Natural Transformations and can’t stop reading 🙂 Thank you, Bartosz.
+    Sajid Says:
+
+    April 17, 2016 at 8:14 am
+
+    Wow!, this really good. Thank you
+    David Banas Says:
+
+    May 12, 2016 at 6:49 pm
+
+    Hi Bartosz,
+
+    Thanks for this! It was the perfect next step, for me.
+    I’m struggling with Challenge 6 in your Functorality chapter: Make std::map profunctorial. I got rmap working, but I’m stuck on lmap. I wonder if you might have time to look at what I’ve done and comment:
+
+    https://htmlpreview.github.io/?https://github.com/capn-freako/Haskell_Misc/blob/master/Bartosz_Milewski_Functors.html
+
+    Thanks, in advance, for any time you can afford this!
+    -db
+    capnfreako Says:
+
+    May 25, 2016 at 6:13 pm
+
+    @BartoszMilewski, thanks for the great book!
+
+    I’m recording my responses to your challenges, in the form of an IHaskell notebook, which is viewable here:
+
+    https://htmlpreview.github.io/?https://github.com/capn-freako/Haskell_Misc/blob/master/Bartosz_Milewski_Functors.html
+
+    Cheers,
+    -db
+    A new kind of introduction to category theory | Gyre&Gimble Says:
+
+    June 30, 2016 at 8:57 am
+
+    […] Category theory for programmers, Bartosz Milewski. […]
+    Constantine Kharlamov Says:
+
+    July 28, 2016 at 2:03 am
+
+    @BartoszMilewski I’m wondering, how long it took you to learn all of that? Or were you born with that knowledge? =)
+
+    I must say, I’m struggling a bit with concepts, I’m reading aside books about the theory, returning to your posts, rethinking something… I see though that it’s useful, and I’m curious, how long it took for you to came to that level, and was it actually hard? What did you do in the absence of blog posts by Bartosz Milewski?
+    Bartosz Milewski Says:
+
+    July 28, 2016 at 8:33 am
+
+    @Constantine: It took me a very long time. Not so much category theory itself — that I started studying just a few years ago — but the general background in mathematics. I went to a high school with extended program in mathematics, where I learned the basics of logic, axiomatic theory, geometry and calculus. Then I studied physics, which involved a lot of higher math. I was taught calculus through Banach and Hilbert spaces, and algebra through group theory and fibre bundles. So I had a very strong background in math when I switched to programming.
+
+    Do I struggle reading math books and articles? You bet! But I just keep at it and don’t give up. The trick is not to think about the ultimate goal, but to enjoy the process of learning. This has become so much easier nowadays, with all the resources available through the internet.
+    amit handa Says:
+
+    August 10, 2016 at 11:14 am
+
+    Thank you very much. Wonderful trove of information. Would have wished if we could have had this course in our under grad! Thanks again for sharing.
+    Category Theory 1.1 « Another Word For It Says:
+
+    August 25, 2016 at 5:33 pm
+
+    […] Bartosz Milewski is the author of the category series: Category Theory for Programmers. […]
+    Category Theory 1.2 « Another Word For It Says:
+
+    August 30, 2016 at 11:59 am
+
+    […] try Category Theory for Programmers: The Preface, also by Bartosz […]
+    Nemo Says:
+
+    September 6, 2016 at 9:12 am
+
+    Very interesting. I’m looking forward to reading the body of the book. As for your “butcher knife”, the history of thought is replete with sharp instruments: natural scientists use Ockham’s Razor, and philosophers are familiar with Hume’s Guillotine. Perhaps we hackers will come to speak of Milewski’s Cleaver.
+    No Properties/No Structure – But, Subject Identity « Another Word For It Says:
+
+    September 8, 2016 at 6:08 pm
+
+    […] of that, I have been watching Bartosz Milewski’s lectures on category theory, reading his blog, […]
+    eraserhd Says:
+
+    October 29, 2016 at 8:08 am
+
+    You have “keep if from disintegrating” instead of “keep it from”…
+    (And thanks a lot for this!)
+    Bartosz Milewski Says:
+
+    October 29, 2016 at 9:46 am
+
+    Done, Thanks!
+    Теория категорий на JavaScript. Часть 1. Категория множеств - itfm.pro Says:
+
+    October 31, 2016 at 8:38 am
+
+    […] цикл статей «Теория категорий для программистов» (оригинал — Bartosz Milewski), но, на мой взгляд, он ориентирован преимущественно на […]
+    A slow introduction to category theory | Gyre&Gimble Says:
+
+    November 4, 2016 at 1:25 pm
+
+    […] Category theory for programmers, Bartosz Milewski. […]
+    hericherbenoit Says:
+
+    December 2, 2016 at 11:50 pm
+
+    The most valuable posts about category theory : very clear and I learn alot!
+    Thank you
+    A first post, maybe? | vhsven Says:
+
+    December 11, 2016 at 2:50 pm
+
+    […] interested reader is encouraged to research this topic in more detail. Bartosz Milewski is writing a fascinating series of blog posts concerning this […]
+    Peter Says:
+
+    December 20, 2016 at 5:37 am
+
+    Thank you for all your excellent material on category theory, I am really looking forward to the book! I was wondering whether you are planning to cover anything related to “zip” and “zipWith” from a category theory perspective? I am a programmer and – mainly thanks to your blog – I have developed an interest in category theory. In programming zips are very common, and n-ary zips can be defined in a quite general way. I am thinking something like Hoogendijk’s “A generic theory of datatypes”, specifically “Chapter 5 – A Class of Commuting Relators”. Unfortunately, the text is not nearly as accessible as your material. Anyway, I just thought I’d leave it here as a suggestion. Keep up the great work!
+    /burger/dev » Mid-term Evaluation of New Language Thursday Says:
+
+    January 19, 2017 at 1:48 pm
+
+    […] I’m pretty scared, let’s postpone this. But Bartosz Milewski does a pretty good job sparking my […]
+    Ali Ghanbari Says:
+
+    January 23, 2017 at 5:17 pm
+
+    Dear doctor Milewski, I read the material on your website and follow your lectures on YouTube. You are a good lecturer and, also, a prefect writer. Thank you for your efforts in simplifying things! I just wanted to say that I think there is a typo in this page: “in. C++” should be replaced with “in C++.” Thank you again.
+    Bartosz Milewski Says:
+
+    January 23, 2017 at 5:53 pm
+
+    @Ali Ghanbari: Thank you! And fixed!
+    Klaus Reller Says:
+
+    February 9, 2017 at 12:13 am
+
+    Hi Bartosz,
+    I am one of your “fans”. 🙂 This Haskell and Category Theory “stuff” is the best I have seen in 30 years of profession and another 26 in childhood education.
+    I have read this blog several times. I love your youtube lessons, too.
+    We need to translate it into other languages (german first, please).
+    How do we deal with copyright issues?
+    Regards, Klaus
+    Neko Wikibookian Says:
+
+    March 1, 2017 at 11:59 am
+
+    Just throwing this idea out for your consideration: have you thought about opensourcing your book and moving it over to Wikibooks.org?
+
+    Wikibookifying will allow others to contribute to your book, translate it into multiple languages, and maintain your book in the event that you shut down your blog.
+    Functional Programming Jargon – ideacodedesign Says:
+
+    March 13, 2017 at 9:45 pm
+
+    […] Category Theory for Programmers […]
+    Category Theory 9.1: Natural transformations | Math Online Tom Circle Says:
+
+    March 18, 2017 at 12:31 pm
+
+    […] Reading: chap 10 […]
+    BM Category Theory 10: Monad & Monoid | Math Online Tom Circle Says:
+
+    March 21, 2017 at 9:41 am
+
+    […] Ref Book :  […]
+    Functors & Monads: An Introduction – λ ∧ ¬λ Says:
+
+    March 27, 2017 at 2:08 am
+
+    […] and mechanisms only go so far: a lot of the benefits are to be reaped from its concepts, its ontology, its systematic approach to understanding and describing the world and programming […]
+    Dame Jovanoski Says:
+
+    March 30, 2017 at 1:45 am
+
+    Hello Bartosz, I really like your blog and your videos, I just wanted to ask you if it is possible to have a pdf version of your posts?
+    Bartosz Milewski Says:
+
+    March 30, 2017 at 10:45 am
+
+    @Dame, Unfortunately, I don’t have a PDF version of my post. I write them directly in HTML.
+    Category Theory for Programmers: The Preface | ExtendTree Says:
+
+    April 3, 2017 at 3:01 pm
+
+    […] Read Full Story […]
+    Darian Boggs Says:
+
+    April 25, 2017 at 12:35 pm
+
+    Bartosz, I add my praise to all the other praise you have received already. Like you, I am a theoretical physicist working in computing with a love for the mathematics underlying both physics and computer science. Have you considered self-publishing? You could use a crowdfunding site like Kickstarter or Indiegogo to raise money for the book with some sort of premium to funders (like a free ebook). I would be willing to contribute, and it sounds like others would as well.
+    Bartosz Milewski Says:
+
+    April 25, 2017 at 2:34 pm
+
+    Thank you! It’s not a problem of money but of time. Writing a book is a very time-consuming process.
+    Category theory | 江苏荣华投资公司 Says:
+
+    May 24, 2017 at 7:46 pm
+
+    […] Category Theory for Programmers A book in blog form explaining category theory for computer programmers. […]
+    Contracts and Category Theory - Hey There Buddo! Says:
+
+    May 26, 2017 at 4:29 am
+
+    […] my language of greatest comfort a couple years ago and I would have loved this. I absolutely loved Bartosz Milewski’s Category Theory for Programmer’s series. There is a crap-ton of line noise  that kind of muddies the waters though in javascript. I […]
+    joco42 Says:
+
+    June 23, 2017 at 2:08 pm
+
+    what is the order parameter in the phase transition ?
+    Теория категорий для программистов (перевод глав книги Б. Милевски) — Переводной календарь Says:
+
+    July 22, 2017 at 10:10 am
+
+    […] Исходный авторский текст расположен по адресу: https://bartoszmilewski.com/2014/10/28/category-theory-for-programmers-the-preface/ […]
+    JavaScript 函数式编程术语大全 – WEB前端开发 - 专注前端开发，关注用户体验 Says:
+
+    August 30, 2017 at 4:35 pm
+
+    […] Category Theory for Programmers […]
+    Quantum questions about modern math and IT. – giuliohome Says:
+
+    September 3, 2017 at 3:31 am
+
+    […] comment link […]
+    Brett Wines Says:
+
+    September 9, 2017 at 10:42 pm
+
+    Hi, Bartosz,
+
+    Just chiming in to say that your explanations are of top-notch quality. I loved your example of how the list functor isn’t representable in one of your posts on the Yoneda lemma. Thanks so much for your hard work in making this content, and for making it available to the public!
+    2017年最新的 元素指南-阳异 Says:
+
+    September 10, 2017 at 7:56 am
+
+    […] Category Theory for Programmers […]
+    Stephen Barrett Says:
+
+    September 11, 2017 at 2:35 pm
+
+    Typo page 6 on mobi edition. Even java….let the lambdas in [missing ‘.’] C++ …..
+    Category Theory for Programmers | Moonlight Says:
+
+    September 14, 2017 at 2:55 pm
+
+    […] Category Theory for Programmers: The Preface […]
+    cha drume Says:
+
+    September 25, 2017 at 3:25 am
+
+    Sad face when I saw C++ was going to be used!
+    Hi-Angel Says:
+
+    September 25, 2017 at 1:18 pm
+
+        Sad face when I saw C++ was going to be used!
+
+    I think it’s justified. If you expected a functional language, like Haskell — then there’s no reason in this blog series. Because Haskell advertises Category Theory, there’s no way you know Haskell, and never read anything about that.
+    Explaining monads | Ouarzy's Blog Says:
+
+    September 27, 2017 at 2:12 am
+
+    […] References: If you feel frustrated and want to go further, I recommand you the excellent Category Theory for Beginners, and the even better (but harder) Category Theory for Programmers. […]
+    Igal Tabachnik (@hmemcpy) Says:
+
+    September 30, 2017 at 7:32 am
+
+    I made this epic book into a PDF! You can download it (+ LaTeX sources) here: https://github.com/hmemcpy/milewski-ctfp-pdf
+    Yongwei Wu Says:
+
+    September 30, 2017 at 7:27 pm
+
+    Wow, the PDF is super-nice! It seems Bartosz is happy about this work too. Great job!
+    cenkozan Says:
+
+    October 6, 2017 at 2:43 pm
+
+    Thank you so much for your awesome work sir! Like you said I completely forgot about math – hope you will be gentle – I am just starting!
+    Ep 23 – 10 Oct 2017 – ….attack of the dolphins… – Breakpoint Radio Says:
+
+    October 12, 2017 at 3:45 am
+
+    […] Cat theory for coders: https://bartoszmilewski.com/2014/10/28/category-theory-for-programmers-the-preface/ […]
+    Robert Peszek Says:
+
+    November 12, 2017 at 3:53 pm
+
+    Bartosz,
+
+    I am rereading your book and I am dedicating some time to finding (or coming up with) more code examples. I created a project https://github.com/rpeszek/notes-milewski-ctfp-hs
+    that uses literate Haskell and that is converted to markdown and published on project wiki pages
+    https://github.com/rpeszek/notes-milewski-ctfp-hs/wiki
+    I hope to expand on the format in the future and maybe have some executable part to it too.
+
+    I started by wanting to write about Natural Transformations but ended up backpedaling a bit coding Functor Composition (Ch 7) (now ready for public viewing with some minor TODOs left).
+
+    I decided to think hard, every step of the way, about more code examples and practical code examples.
+    Many of the concepts are really foundational to understanding of what is coming next but being able to see more code examples or a practical application of something like Functor Composition is very gratifying. At least it is to me.
+
+    It will probably take me a lot of time (year++ ?) to finish this project. I welcome any comments you might have about my project and examples.
+
+    Thanks for this wonderful work.
+    Robert Peszek
+    Functional Programming: Links, News And Resources (22) | Angel "Java" Lopez on Blog Says:
+
+    November 20, 2017 at 6:06 am
+
+    […] Category Theory for Programmers: The Preface https://bartoszmilewski.com/2014/10/28/category-theory-for-programmers-the-preface/ […]
+    Functional exceptionless error-handling with optional and expected | Digitators Says:
+
+    December 3, 2017 at 3:47 pm
+
+    […] I didn’t make up map and and_then off the top of my head; other languages have had equivalent features for a long time, and the theoretical concepts are common subjects in Category Theory. […]
+    Reflecting on Haskell in 2017 | Digitators Says:
+
+    December 4, 2017 at 8:46 am
+
+    […] Milewski finished writing Category Theory for Programmers which is freely available and also generated as […]
+    klaasvanschelven Says:
+
+    December 13, 2017 at 2:42 am
+
+    Hello mr. Milewski,
+
+    I’m part of a group of programmers in Amsterdam that are taking your book/blog as a guide to understanding category theory.
+
+    Personally, I’m having a much easier time understanding the material than I had expected. It may help that I’ve watched your videos first, before reading the blog. Thanks very much!
+
+    Our first meeting (in which we did chapters 1 & 2) was a bit confused; I thought it could be helpful to mention some of the confusion here — assuming you’re still editing the material to make it into a full-blown book.
+
+    From the present chapter, I think the biggest source of confusion was a lack of distinction in the minds of some of our members between categories in the abstract on the one hand, and the particular categories Set and Hask on the other.
+
+    As an example: what to call the arrows (arrows, morphisms, or functions) was not clear to everyone. (i.e. the fact that the answer depends on the level of abstraction)
+
+    Something else that stood out to me: the basic laws of categories were not clear to all of us. Some examples:
+
+    The fact that equality is defined for morphisms (this is implicit in the other laws, which make use of that, but not elsewhere).
+    The fact that there may be multiple arrows from an object to itself.
+    The fact that composition is not optional (this one is written in the article, but somehow not clear enough to some)
+
+    If I may be so bold to propose a slight reorganization of the material: either first talk about categories and their laws in the abstract, and then follow up with the link to the category Set, or vice versa.
+    Bruce Says:
+
+    December 26, 2017 at 6:52 pm
+
+    I have only read Part One, but it is damn good, so far. You should make a dead tree version.
+
+    I came to the book with a basic understanding of Category Theory but still struggle with its use in Haskell and Scala. There’s a big gap that isn’t filled by any other book that I’ve found, but you’re doing a good job of filling it.
+
+    Bonus: It’ s nice intro to Haskell.
+
+    I don’t find the C++ examples very illuminating, though, I just skip them. I also wish there was a section on Free Monads.
+    Bartosz Milewski Says:
+
+    December 27, 2017 at 2:37 am
+
+    You’re in luck. There is a paper version available on lulu.com for less than $20 plus shipping.
+    Bruce Says:
+
+    December 27, 2017 at 5:21 am
+
+    Sold! 🙂
+    Ramayya Says:
+
+    January 17, 2018 at 7:44 pm
+
+    May I suggest that you include a Concept Map to show the relationships among the various aspects of Category Theory as it relates to various aspects of Computer Programming Paradigms (functional, object-oriented etc.) The following link takes you a free Concept Mapping Software tool and papers on how Concept Maps help in communicating knowledge — https://cmap.ihmc.us .
+    Ramayya Says:
+
+    February 1, 2018 at 4:15 pm
+
+    Is there a possibility of getting your YouTube Videos as DVD to accompany the book that is available from LULU.COM?
+
+    Perhaps you may want consider making a version of your book with videos using Apple’s iBook Author and selling it on Apple’s iBook Store –
+
+    https://itunes.apple.com/us/app/ibooks/id364709193?mt=8/
+    Ramayya Says:
+
+    February 1, 2018 at 4:17 pm
+
+    Thanks for making Category Theory understandable through your videos on YouTube!!!
+    Ramayya Says:
+
+    February 8, 2018 at 11:25 am
+
+    I was watching your video “F9by) 2017 – A Crash Course in Category Theory”, and you said that somebody came up with “Zero”. The use of Zero was invented in India https://www.scientificamerican.com/article/history-of-zero/
+    Ramayya Says:
+
+    February 8, 2018 at 11:34 am
+
+    Here is another more detailed history of Zero in Mathematics —
+
+    https://en.wikipedia.org/wiki/0
+    Subra Says:
+
+    March 18, 2018 at 7:00 pm
+
+    your lectures are awesome. Instead of, or in addition to C++, would it be possible to add C examples. I think the C is much more close to functional programming than C++.
+    Philip Schwarz (@philip_schwarz) Says:
+
+    March 31, 2018 at 2:52 am
+
+    Hello Bartosz.
+
+    I can’t express how useful I am finding all the material you make available on Category Theory. Thanks!
+
+    When you say “Some time ago the principles of structural programming revolutionized programming because they made blocks of code composable”, do you mean ‘structured programming?
+    as in the following:
+
+    Thanks,
+
+    Philip
+    Bartosz Milewski Says:
+
+    March 31, 2018 at 7:48 am
+
+    Yes, indeed. I fixed the wording.
+    函数式编程在Redux/React中的应用 | 若谷学院 Says:
+
+    April 2, 2018 at 10:07 am
+
+    […] Category Theory for Programmers. […]
+    skac76 Says:
+
+    July 22, 2018 at 5:32 pm
+
+    Wielkie dzięki za tę książkę! Dotychczas próbowałem dotrzeć do teorii kategorii od strony czystej matematyki (np. The Joy of Cats) i trochę stykałem się od strony praktyki ucząc się Haskella i próbując programować funkcyjnie w Scali, ale brakowało mi takiej książki, która porządnie przybliży teorię, ale nie będzie składać się z samych równań i zdań strawnych tylko dla zawodowych matematyków. Świetna robota!
+    Uma abordagem para lidar com o fluxo de seus dados - BrazilJS Says:
+
+    August 17, 2018 at 8:47 am
+
+    […] Category theory for programmers […]
+    Lex Huang Says:
+
+    September 18, 2018 at 8:35 am
+
+    It would be better if you write the meaning of each part of your book in the preface so the ordering of the chapters can be more expressive
+    Bartosz Milewski Says:
+
+    September 18, 2018 at 9:42 pm
+
+    @Lex Huang: This would be very difficult, since each chapter builds on the previous knowledge. So how would I explain the meaning of the Yoneda lemma or an end or a topos without the context of previous chapters?
+    Kharlamov Konstantin Says:
+
+    September 18, 2018 at 11:42 pm
+
+        how would I explain the meaning of the Yoneda lemma or an end or a topos without the context of previous chapters?
+
+    Well, for an overview, I imagine, example applications of the concept would work.
+    Functors, Variance [WIP] – jasna Says:
+
+    October 12, 2018 at 5:21 pm
+
+    […] Category Theory for Programmers […]
+    Alan Longley Says:
+
+    October 21, 2018 at 12:02 pm
+
+    In your category theory video 1.2 you define a left identity on an arrow f that has a as the source and b as the target. You say that id b after f equals f. If the range of f does not cover the full codomain, Id b must select from the codomain to arrive at the range of f. Is this what you intend, or does the left identity only work when the range covers the codomain?
+    N. Shimono Says:
+
+    November 5, 2018 at 6:16 pm
+
+    Dear Professor Bartosz Milewski, we are a science publisher in Japan and we are interested in publishing the Japanese edition of “Category Theory for Programmers”. If possible, please kindly send an e-mail to my address. Thank you for reading it.
+    Scala-дайджест #9 (5 сентября – 16 ноября) – Scala News Says:
+
+    November 15, 2018 at 12:32 am
+
+    […] и еще 27 контрибьюторов собрали все записи из блога Bartosz Milewski, объединив их в цельную книгу. Ссылку на заказ […]
+    What is the main difference between Free Monoid and Monoid? | Developer FAQs Says:
+
+    January 15, 2019 at 10:26 pm
+
+    […] context, I usually translate free monoid to [a]. In his excellent series of articles about category theory for programmers, Bartosz Milewski describes free monoids in Haskell as the list […]
+    Intro to Category Theory for Functional Programmers – jasna Says:
+
+    January 25, 2019 at 7:18 pm
+
+    […] Bartosz Milewski: Category Theory for Programmers […]
+    xtofl Says:
+
+    February 10, 2019 at 7:13 am
+
+    Needless to add even more praise. Unless it would be to say that this series inspired me to create a presentation for the BeCpp meeting – https://github.com/xtofl/articles/blob/v2019.02.10-monoids_cpp_v1.3/monoid/monoid.md . Thanks a million!
+    Fabricio Olivetti de França Says:
+
+    February 18, 2019 at 2:29 am
+
+    Is it ok to make a series of posts strongly based in your book (with all credits given, of course) in Portuguese? It won’t be a straight translation, but more like a summary of your content with added notes, few more examples and codes.
+    Bartosz Milewski Says:
+
+    February 18, 2019 at 9:09 am
+
+    Please go ahead.
+    Монады с точки зрения программистов (и немного теории категорий) – CHEPA website Says:
+
+    March 27, 2019 at 11:13 am
+
+    […] для программистов”, которая создавалась как серия блогпостов, доступна в PDF, а недавно вышла в […]
+    Монады с точки зрения программистов (и немного теории категорий) — Malanris.ru Says:
+
+    March 27, 2019 at 11:53 am
+
+    […] для программистов», которая создавалась как серия блогпостов, доступна в PDF, а недавно вышла в […]
+    Монады с точки зрения программистов (и немного теории категорий) - Дорвеи и Сателлиты Says:
+
+    March 27, 2019 at 3:47 pm
+
+    […] для программистов», которая создавалась как серия блогпостов, доступна в PDF, а недавно вышла в […]
+    Монады с точки зрения программистов (и немного теории категорий) / Хабр Says:
+
+    May 8, 2019 at 12:44 pm
+
+    […] для программистов", которая создавалась как серия блогпостов, доступна в PDF, а недавно вышла в […]
+    Good Math/Bad Math Says:
+
+    June 7, 2019 at 9:14 am
+
+    […] Category Theory for Programmers, by Bartosz Milewski. […]
+    写给程序猿的范畴论 · 序 _ 脚本宝典 Says:
+
+    June 13, 2019 at 1:18 pm
+
+    […] 原文见 https://bartoszmilewski.com/20 … […]
+    Category Theory with Bartosz Milewski - CoRecursive Podcast Says:
+
+    August 15, 2019 at 4:36 am
+
+    […] Website Blog Series Book Lecture […]
+    Category Theory: the Video Lectures – 36 Chambers – The Legendary Journeys: Execution to the max! Says:
+
+    September 10, 2019 at 6:47 am
+
+    […] further reading, Milewski has a blog full of posts on the topic and a group has (with permission) turned his posts into a book. There are also two more courses on […]
+    Richard Owen Says:
+
+    January 26, 2020 at 9:32 am
+
+    I think your lectures on catagory theory are superb. In one you struggled to find an example of a set that is a member of itself. How about ‘the set of ideas’ which is itself an idea.
+
+Leave a Reply Cancel reply
+Enter your comment here...
+
+Fill in your details below or click an icon to log in:
+
+Gravatar
+Email (required) (Address never made public)
+Name (required)
+Website
+WordPress.com Logo
+
+You are commenting using your WordPress.com account. (  Log Out  /  Change  )
+Google photo
+
+You are commenting using your Google account. (  Log Out  /  Change  )
+Twitter picture
+
+You are commenting using your Twitter account. (  Log Out  /  Change  )
+Facebook photo
+
+You are commenting using your Facebook account. (  Log Out  /  Change  )
+Cancel
+
+Connecting to %s
+
+Notify me of new comments via email.
+
+Notify me of new posts via email.
+
+This site uses Akismet to reduce spam. Learn how your comment data is processed .
+
+Archived Entry
+
+    Post Date :
+    October 28, 2014 at 7:57 am
+    Category :
+    C++ , Category Theory , Functional Programming , Haskell , Programming
+    Do More :
+    You can leave a response , or trackback from your own site.
+
+Blog at WordPress.com.
+Post to
+Cancel
+%d bloggers like this:
+
+    Follow
+          Bartosz Milewski's Programming Cafe
+        Customize
+        Follow
+        Sign up
+        Log in
+        Copy shortlink
+        Report this content
+        Manage subscriptions
+        Collapse this bar
+
+Send to Email Address Your Name Your Email Address
+loading Cancel
+Post was not sent - check your email addresses!
+Email check failed, please try again
+Sorry, your blog cannot share posts by email.
+:)

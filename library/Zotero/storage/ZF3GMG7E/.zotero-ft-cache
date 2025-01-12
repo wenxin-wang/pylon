@@ -1,0 +1,232 @@
+
+
+    Skip to main content
+    Skip to sidebar
+
+ν42
+
+    Home
+    ToC
+    Feed
+    About
+
+An Excellent Optimization Story
+A. Sinan Unur
+January 15, 2016
+
+This is a story of how I was able shave about 95% from the running time of a long running program searching through large sets of integers. While the particular problem might sound esoteric, this type of thing pops up in many scientific and financial contexts where multi-precision arithmetic libraries tend to be heavily utilized.
+
+The basic insight is nothing more than dropping GNU MP in favor of builtin data types. While there are no great alternatives to GMP in cases where one must use a multi-precision arithmetic library, it may have too much overhead when you need no more than 128 bits.
+The search for large excellent numbers
+
+First, some background …
+
+brian d foy and I have been communicating about his search for excellent numbers in progressively larger spaces for a while now. I must admit, up to this point, I was not one to be interested in things like finding another digit of π or finding another prime. But, as usual, brian made it a whole lot more interesting.
+
+A positive integer n is said to be an excellent number if there exist two positive integers a and b such that:
+
+b 2 - a 2 = aK + b ≡ n
+
+where a and b has the same number of digits d and K is 10 d/2 .
+
+For example, 48 is an excellent number because it is equal to 8 2 - 4 2 . On the other hand 24 is not because 4 2 - 2 2 is 12.
+
+brian explores various facts about excellent numbers . He also wrote programs in several languages to search for such numbers.
+
+The problem sounds straightforward at first, but as one graduates from numbers with 10 digits to numbers with 20 and beyond, it becomes progressively harder.
+
+As Mark Jason Dominus pointed out almost ten years ago, one can save a substantial amount of work by not searching the entire d-digit space, but, instead going through the d/2-digit space looking for a for which we can find a b which makes the concatenation ab and excellent number.
+
+brian did additional work finding upper bounds for a such that no candidate b with the same number of digits can be found.
+
+These and a couple of other techniques minimize the work involved. But, one must contend with the magnitudes involved. You don't want to have to account for floating point errors while handling very large numbers now, do you?
+
+Perl with Math::GMP was too slow, so brian switched to using C, and wrote a program using GNU MP .
+
+He got the following timings on a MacBook Air running an 1.8GHz Intel Core i5:
+	Processor time
+Digits 	GMP
+2 	5 ms
+4 	5 ms
+6 	5 ms
+8 	5 ms
+10 	15 ms
+12 	110 ms
+14 	1 s
+16 	11 s
+18 	130 s
+20 	20 min
+22 	3.5 hours
+24 	1.5 days
+26 	15 days
+28 	150 days
+30 	4 years
+32 	
+34 	
+36 	
+
+Given these timings, brian equipped his program with some niceties so that the program could provide regular progress reports, terminate cleanly by reporting how much progress it had made, and restart the search from a given point etc.
+
+At this point, while the discovery of all 30-digit excellent numbers seemed within grasp by running many instances on a machine with tens of cores, it was clear that making even a small dent in the 32-digit space would either take a whole lotta cores, or a significant development.
+A flash of intuition
+
+After our conversation, my interest was rekindled. At first, I tried my hardest to recall at least a bit of the abstract algebra and algebraic topology I studied about two decades ago to see if I could figure out a way to even marginally improve on the restrictions on the search space.
+
+While I was going nowhere with that, a thought popped in my head: How many bits does it take to store a 16-digit integer? Easy peasy: 16×log~2~ 10 is approximately 53.15, so a tad over 53 bits is enough to store each half of a 32-digit integer.
+
+It takes fewer than 60 bits to store an 18-digit integer, so, if I can just do integer math rather than relying on GMP, there might be some significant speed gains for up to 36 digit numbers.
+
+Now, given a d/2-digit integer a, calculating a candidate b involves solving:
+
+b 2 - a 2 = aK + b
+b×(b - 1) = aK + a 2 .
+
+As MJD notes, the ceiling of sqrt(b×(b - 1)) is b.
+
+Therefore, given a, we can estimate a candidate b by computing:
+
+b * = int(1 + sqrt(a×10 d/2 + a 2 ))
+
+There are two instances of two 64-bit numbers being multiplied with each other in that sqrt . We'd need 128 bits to hold the intermediate values, and we'd end up casting a 128-bit integer to a double.
+
+That is a problem.
+
+I decided to take a 2 out of the square root, thereby yielding:
+
+b * = int(1 + a×sqrt(10 d/2 /a + 1))
+
+This avoids dealing with 128-bit intermediate values. By definition, a ranges from 10 (d/2 - 1) to 10 d/2 . The numerator and denominator of the division inside the square root are therefore like magnitudes, which should reduce the floating point error from casting 64-bit integers to double and dividing them, but I must confess, I haven't sat down and calculated error bounds.
+
+For what it is worth, we could just use 80-bit long doubles.
+
+Once we have a candidate b for a given a, we go back and check if the definition of an excellent number is satisfied, as brian was already doing in his GMP based program. Of course, this actually involves multiplying two 64-bit integers a few times.
+
+I was on my Windows clunker when I got thinking about this, so my first attempt was written using the 128 integer operations provided by the C compiler that comes with Visual Studio 2015.
+
+Note that this compiler does not support a 128 bit integer type, but it does provide an UnsignedMultiply128 function no matter how cumbersome it is:
+
+ # include <math.h> # include <stdint.h> # include <stdio.h> # include <stdlib.h> # include <windows.h> const uint64_t powers_of_10[] = { 1 , 10 , 100 , 1000 , 10000 , 100000 , 1000000 , 10000000 , 100000000 , 1000000000 , 10000000000 i64, 100000000000 i64, 1000000000000 i64, 10000000000000 i64, 100000000000000 i64, 1000000000000000 i64, 10000000000000000 i64, 100000000000000000 i64, 1000000000000000000 i64, }; int main ( int argc, char *argv[ 1 ]) { int d, k; uint64_t K, start, front, back, last_digit, count = 0 ; uint64_t lhs[ 2 ], rhs[ 2 ], frontsq[ 2 ]; if (argc < 2 ) { fputs ( "Need number of digits" , stderr ); exit ( 1 ); } d = atoi(argv[ 1 ]); if (!d) { d = 2 ; } if (d % 2 ) { d *= 2 ; } k = d/ 2 ; if (k >= sizeof (powers_of_10)/ sizeof (powers_of_10[ 0 ])) { fputs ( "Too many digits" , stderr ); exit ( 1 ); } K = powers_of_10[ k ]; start = powers_of_10[ k - 1 ]; for (front = start; front < 7 * start; front += 1 ) { last_digit = (front % 10 ); if ( (last_digit != 0 ) && (last_digit != 4 ) && (last_digit != 6 )) { continue ; } back = ( uint64_t ) ( 1.0 + front * sqrt ( 1 + (( double ) K) / front)); if (back >= K) { break ; } lhs[ 0 ] = lhs[ 1 ] = rhs[ 0 ] = rhs[ 1 ] = frontsq[ 0 ] = frontsq[ 1 ] = 0 ; lhs[ 0 ] = UnsignedMultiply128(back, back - 1 , lhs + 1 ); rhs[ 0 ] = UnsignedMultiply128(front, K, rhs + 1 ); frontsq[ 0 ] = UnsignedMultiply128(front, front, frontsq + 1 ); rhs[ 0 ] += frontsq[ 0 ]; rhs[ 1 ] += frontsq[ 1 ]; if (rhs[ 0 ] < frontsq[ 0 ]) { rhs[ 1 ] += 1 ; } if ((lhs[ 1 ] == rhs[ 1 ]) && (lhs[ 0 ] == rhs[ 0 ])) { count += 1 ; printf ( "%I64d%I64d\n" , front, back); } } printf ( "%I64d excellent numbers with %d digits\n" , count, d); return 0 ; }  
+
+Note that this program incorporates a very coarse space reduction strategy compared to the rather tight bounds brian calculated, so it is going to waste time wandering around in the weeds. It also checks consecutive a values instead of using a jump table etc.
+
+I first checked it with eight digit numbers. Its output matched the numbers brian had found, so I skipped ahead to 14 digit numbers:
+
+ C: \ . .. \ Temp > timethis xx 14 33333346666668 48484848484848 2 excellent numbers with 14 digits TimeThis : Elapsed Time : 00:00:00.166  
+
+The CPU on this thing is a rather dated Intel Core 2 Duo T7600 @ 2.33 GHz compared to the 1.8 GHz i5 which brian used to estimate timings with his GMP program.
+
+Yet, his took about a second to go through the 14-digit space whereas this clumsy little thing took less than 1/5 of that time.
+
+So, I tried 18-digits:
+
+ C: \ . .. \ Temp > timethis xx 18 115220484358463728 134171310390093900 139601140398860400 140400140400140400 146198830409356725 168654484443958128 189525190474810476 190476190476190476 215488216511784513 216513216513216513 225789700526090001 241951680548171776 271851166588008693 299376300623700625 300625300625300625 332001666665001333 333333334666666668 334668334668334668 344329484680361873 415233416766584768 416768416768416768 468197520829099776 483153484846516848 484848484848484848 529100530899470901 530901530901530901 572945416949321793 28 excellent numbers with 18 digits TimeThis : Elapsed Time : 00:00:10.294  
+
+10.3 seconds compared to 130 on inferior hardware.
+
+Next came the 20 digit space:
+
+ C: \ . .. \ Temp > timethis xx 20 21733880705143685100 22847252005297850625 23037747345324014028 23921499005444619376 24981063345587629068 26396551105776186476 31698125906461101900 33333333346666666668 34683468346834683468 35020266906876369525 36160444847016852753 36412684107047802476 46399675808241903600 46401324208242096401 48179452108449381525 15 excellent numbers with 20 digits TimeThis : Elapsed Time : 00:01:40.136  
+
+Less than two minutes compared to 20 minutes!
+
+Then I ran through the 22-digit space in about 17 minutes and five seconds compared to the 3.5 hours which the GMP based program took. Finally, I tried the 24-digit space, and it took only two hours and 49 minutes. For comparison, the GMP-based program took 36 hours.
+
+I was ecstatic and contacted brian with the good news. This meant that going beyond the 30-digit space was finally feasible without a huge breakthrough in our understanding of the algebraic structure of these numbers.
+Enter gcc
+
+There is, of course, not much of a reason to stick with Visual Studio specific functions given that the long running tasks are executed on a multi-core computer running Linux.
+
+Luckily, gcc actually provides a builtin __int128 type which makes everything much less cluttered. I adapted brian's gcc based program to use just basic types, and fired it off, looking forward to more excellent results. Here is the multiplication routine:
+
+ excellent_full_t multiply_halves( const excellent_half_t x, const excellent_half_t y ) { excellent_full_t z = (( excellent_full_t ) x) * (( excellent_full_t ) y); return z; }  
+
+And, here's routine that tests for an excellent number:
+
+ void check_excellent ( excellent_half_t a, excellent_half_t K) { excellent_half_t b = 1.0 + a * sqrt ( 1 + (( excellent_float_t ) K)/ a); excellent_full_t lhs = multiply_halves(b, b - 1 ); excellent_full_t rhs = multiply_halves(a, K) + multiply_halves(a, a); if ( lhs == rhs ) { print_excellent_number(a, b); } return ; }  
+
+My heart sank when the program ran at a sloth's pace.
+
+Then I realized what was going on: brian's program installed signal handlers to provide stats on demand and graceful exit in response to a CTRL-C. The signal handlers set global flags of type volatile sig_atomic_t to indicate to the inner loop that a signal had been received. The GMP based program was slow enough that checking those flags at every iteration did not produce a noticable slow down.
+
+However, using the builtins, on the same hardware, my program was able to churn through orders of magnitude more candidate numbers, so the number of checks per second also ballooned. Just FYI, checking the value of a volatile sig_atomic_t variable is an expensive operation.
+
+So, I adapted the program to only check for signals at a configurable interval. The program uses the the number of iterations per second it is capable of performing to adjust how often it checks the flags. None of this is very exact, but it doesn't matter that much. We just want the program to be able to respond to signals in a reasonable manner without distracting too much from its main task.
+
+Further optimizations included building with the -O2 -march=native -ffinite-math-only -fno-math-errno to provide a little more performance.
+
+FWIW, some of these options do not seem to be available using clang on OSX, and the GMP version doesn't seem to improve with the -O2 and -march=native when built with clang.
+
+In fact, the same program built with gcc in an ArchLinux VM runs faster in the VM on the same Mac than the native version built with clang.
+
+I wanted to compare the GMP based program versus the one using builtins on equal terms.
+
+For this, I used an ASUS laptop with a Core i3 Broadwell CPU @2.1Ghz. I haven't had a chance to install ArchLinux on this machine yet, so Cygwin 's gcc 4.9.3 will have to do.
+
+To be fair, I removed the signal checking code from the inner loops of both programs for the purpose of this comparison. It doesn't make much difference for my program as the signal check default is once every two seconds, but it makes the GMP based program go a tad faster. Here is the side by side comparison:
+Digits 	Processor time
+	GMP 	int128 & double
+2 	4 ms 	4 ms
+4 	4 ms 	4 ms
+6 	4 ms 	4 ms
+8 	4 ms 	4 ms
+10 	4 ms 	4 ms
+12 	8 ms 	4 ms
+14 	0.4 s 	6 ms
+16 	3.6 s 	0.22 s
+18 	36 s 	1.8 s
+20 	470 s 	18 s
+22 	81 min 	175 s
+24 	≈ 13 hrs? 	30 min
+
+Do you have any jobs that take half a day to run? How happy would it make you if they instead ran under half an hour?
+
+Calculating the square root using doubles should be acceptable for 32 digit numbers, and might even be OK for 34 digit numbers.
+
+For what might be obvious reasons, I would love for us to be able to find all 42 digit excellent numbers ;-) We need 70 bits for each half of such a number. We can use Steven Fuerst's 256-bit integer multiplication routines coupled with gcc's libquadmath to get there, but sqrtq is quite a bit slower (although, not as slow as using GMP).
+Conclusion
+
+GMP is a lifesaver when you need it. However, thanks to 64-bit computing, you may be able to avoid GMP entirely if your numbers fit in about 128 or even 256 bits.
+
+Going this route can save not just a significant time during runs, but also during the development process as you can avoid interacting with a complex library.
+
+PS: You can comment on this post on r/programming .
+
+Related Sites
+
+Mastering Perl
+
+Effective Perl
+
+Perl Tricks
+
+Perl Maven
+
+Perl Weekly
+
+Learning Perl 6
+Support ν42
+If you've enjoyed reading this post, please consider supporting my blog:
+
+Subscribe with Kindle
+VPS Providers
+
+Linode messed up with my uptime
+
+Linode keeps on being wonderful
+
+Linode rocks
+
+Sign up for Linode
+
+RamNode
+
+SSD Nodes
+
+Copyright © 2018 A. Sinan Unur
+
+Terms
+
+    ✉
+    @
+    +
+

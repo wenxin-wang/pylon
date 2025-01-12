@@ -1,0 +1,568 @@
+See discussions, stats, and author profiles for this publication at: https://www.researchgate.net/publication/284173210
+Designing for Expertise
+Chapter · January 2007
+
+CITATIONS
+0
+1 author: David D Woods The Ohio State University 399 PUBLICATIONS 19,289 CITATIONS
+SEE PROFILE
+
+READS
+596
+
+Some of the authors of this publication are also working on these related projects: CSE classics (well old papers) View project Resilience in the middle of a pandemic View project
+
+All content following this page was uploaded by David D Woods on 19 November 2015.
+The user has requested enhancement of the downloaded file.
+
+8 DESIGNING FOR EXPERTISE
+AXEL ROESLER
+University of Washington, Seattle, WA, USA
+DAVID WOODS
+The Ohio State University, Columbus, OH, USA
+
+1. INTRODUCTION
+Designers are often surprised when innovative new systems are introduced to the ﬁeld. Suddenly, the new products or systems encounter people, and with them practices and operations that have been established before the design of a new product was envisioned. As the new designs are ﬁelded, users are confronted with the new products and wonder how they afford new possibilities and how they can be integrated into current activities.
+How artifacts are put to use depends in large part on the perspectives, initiatives, and inquiries of these users. The people who will engage in the application of the new products are in many instances more than users; they are practitioners of trained skills. They are professionals who contribute their knowledge to the application of the new products and systems as they utilize these in order to accomplish their goals. Practitioners utilize products and systems with purposes in mind. Do the practitioners consider a product useful? Can they use it to advance their goals? Does it make sense to them in terms of how it inﬂuences or changes their activity?
+As designers, we have learned to study design challenges from the perspectives of the people who will put the new designs to use: How do practitioners know what to do with the new design? What are the intentions and judgments that guide operations? How do practitioners anticipate what will likely happen next as they engage in a particular operation with a new product? How can we – as designers – design artifacts and systems that support practitioners, so that they excel in what they are already good at? How can we integrate technologies by design to support the expertise of others or to help create new forms of expert activity?
+Understanding how practitioners make decisions and formulate plans for action is a prerequisite for designing systems that facilitate domain expertise in context. We will illustrate in this chapter that expertise is comprised of many factors, and relies on the training and experience of practitioners in their domain. Expertise represents a convergence of
+
+Product Experience Copyright © 2007 Elsevier Ltd.
+
+215
+
+CH008.indd 215
+
+9/27/07 6:26:42 PM
+
+216
+
+Product Experience
+
+knowledge, skills, and experience that results in competence – the ability to make appropriate decisions and assessments with regard to the situations at hand.
+Experts operate in a variety of domains. We ﬁnd them in serious domains where they act in high-stakes functions as surgeons, pilots, judges, commanders, and high-level decision makers. Many of us are experts in everyday environments, where we converge special understanding and particular skills as technicians, designers, cooks, musicians, wine connoisseurs, and athletes (Hoffman, 1992).
+Can just anyone who is particularly knowledgeable in a speciﬁc domain of human activity be considered an expert by others who depend on the consequences of these decisions or actions? On a day-to-day basis, we use the label ‘expert’ both as an indicator for a high level of proﬁciency, training, and knowledge that is generally associated with extended practical experience, and as a social construct, where a group of stakeholders identify those who are more expert among them.
+As more radical innovations in the form of technology-intense systems, softwaredriven products and digital services continue to transform our daily lives, being expert has acquired a new meaning. Those among us who manage to cope with novelty can learn and adapt to be able to catch up with the continuous series of iterations, updates and improvements in a continuously changing environment. In contrast we often ﬁnd lab researchers and developers speaking of novice and expert users; in other words, acting as if one could divide the audience of new technological artifacts into those who are in the know, and those who do not know. This has always been a distortion as expertise is tied to a context and depends on more than just cumulative experience.
+What is it that experts know and how is it relevant to design? Expertise is rooted in a particularly deep-level understanding of a domain of practice. This understanding utilizes explanations and reasoning strategies that are extracted from a conceptual model of the domain, constructed and continuously consulted, tested, and updated by the domain expert in the course of practicing in the domain by engaging in activities in order to achieve goals. The conceptual model takes the form of an abstract representation (Rappaport, 1997; Heiser and Tversky, 2005).
+Brieﬂy, a conceptual model is composed of functional and physical relationships in the domain that were identiﬁed by the expert and that allow him or her to simulate what is likely to happen next (Klein and Crandall, 1995). The conceptual model assists the expert in ﬁnding explanations for observations. The expert has constructed this conceptual model in the course of exploring the domain along various storylines and getting feedback about the different events that follow in various situations. Conceptual models as mental representations serve as structures for reasoning strategies that utilize actual observations in the course of sense-making (Klein et al., 2006).
+Design inﬂuences the acquisition of these mental conceptual models by providing external representations that inﬂuence how people see the world and obtain feedback about the world. Design inﬂuences the use of these mental conceptual models by changing the mental workload (memory and attentional loads) associated with making sense of situations and planning how to act. These external representations mediate the user’s cognitive work to develop and use conceptual models to make sense of the world accessed through the external devices and displays.
+Research on expertise is concerned with issues that arise in the course of work with representations in real settings – where people trained to different levels of proﬁciency work at tasks to different levels of skill. We will, in the following, focus on factors that determine the knowledge and performance of experts – in roles as operators of artifacts and systems, and as stakeholders that face the complexities posed by novel technology. Expert operators and decision-makers form intentions – what needs to accomplished,
+
+CH008.indd 216
+
+9/27/07 6:26:43 PM
+
+Designing for expertise
+
+217
+
+transform these intentions into plans and actions, recognize disruptions to these plans, cope with complexities and adapt their activities to achieve goals.
+Note that we replace the common terminology of ‘user’ with the label practitioner. We use the latter term to emphasize that people are not passive recipients of products designed for them or passive rule followers. Au contraire – people actively make things into tools and adapt plans to achieve goals as conditions and environments change. Practitioners will modify unsatisfactory design, devise workarounds, or simply abandon artifacts that do not enable their purposes.
+Our objective as designers is to support the work of practitioners in context by utilizing innovative technologies that are useful, usable, and easily understood. Only if designers understand the role and nature of expertise can this integration be possible and successful (Ericsson et al., 2006).
+
+2. PERSPECTIVES ON EXPERTISE
+The designer’s focus is on how technological novelty can affect people. By envisioning how new technologies could take shape in the form of artifacts, systems and environments, designers mediate technological possibilities with what future practitioners identify as useful, useable, and understandable. As human-centered design, this perspective on design practice dates back to the formation of work studies in human factors engineering and industrial psychology after World War II (Dreyfus, 1955).
+The initial application of human-centered design techniques in aviation, in industrial manufacturing, and on the battleﬁeld illustrates that the focus of the practitionercentered view in design has originated in domains where things can go wrong with serious consequences when designers have solved the wrong problems even when using the right techniques (Woods et al., 1994, chapter 5). To avoid these design failures, designers have learned to study the prospective users of the proposed design: Who are these practitioners, what are their expectations, and what do they know?
+As we move into more advanced work domains that encompass considerably complex technological environments, we deal with highly trained and knowledgeable practitioners who perform as experts in their domain. In order to design from their perspective, we need to understand what identiﬁes their expertise. Plus, technology advances are making more everyday activities considerably complex environments that place increasing demands on people’s expertise – often expertise in working with poor interface designs.
+Common to all design process models is that they demand that designers understand the domain of human activity before they can be able to integrate useful design innovation into existing contexts (Bayazit, 2004). The question is: If the domain relies on the performance of expert practitioners, do the designers have to become experts in that domain before they can understand the needs of practitioners and thus create appropriate design support? On one hand it simply requires too much time to become a domain expert. But besides the time constraint, it is quite ambitious for a designer to presume that he or she could become an expert surgeon, a pilot, or an intelligence analyst at all. Such achievement could take long training periods, extended apprenticeships, and extensive experience with difﬁcult situations. And expertise at design may have little in common with the kinds of knowledge or skills that experts possess in other domains of human activity. What does it take to become an expert? Is there a fast lane for designers to understand the expertise of practitioners so that they can apply human-centered design techniques that do not fall prey to oversimpliﬁcations about what experts in different domains do?
+
+CH008.indd 217
+
+9/27/07 6:26:43 PM
+
+218
+
+Product Experience
+
+Being an expert, on the other hand, can hinder design work where it comes to rethinking existing products. The expert might not be able to see why a routine activity from his or her point of view may pose a challenge to practitioners who perform at different levels of proﬁciency. Expert may be biased by how things are done today when evaluating diverse alternative strategies and design concepts that would change how things would be done tomorrow. Doing design work in expert domains, designers face the Ethnographer’s Challenge: in order to make interesting observations, they have to be, in part, insiders in the setting they are observing, while remaining, in part, outside the domain in order to have insights about how practice works, how practice fails and how it could work better given future change. Design observations in the ﬁeld of practice, where designers watch experts doing cognitive work, relies on being prepared to be surprised in order to distinguish unexpected behaviors that reveal how expertise works and how these experts work (Woods and Hollnagel, 2006).
+We have encountered examples where user analyses in interaction design contexts mystify rather than clarify domain expertise. It is very difﬁcult to characterize expertise of people in the cost- and time-pressured setting of usability testing environments. It is easy to oversimplify the role of expertise, especially when there are limits on access or high costs to contact with actual practitioners. For example, the need for rapid design input might lead to situations where one might ask software specialists to evaluate the usability of a piece of software designed by other software experts.
+Dangers like this often lead to the formation of interdisciplinary design teams. But simply juxtaposing specialists from different backgrounds does not make an expert design team. When working in such teams on products for experts, designers in interaction design, industrial design, and visual communication design often feel unprepared to assess complexity in technical domains. They may even feel intimidated by the excessive detail in speciﬁcations and the complex nature of underlying processes. Visual designers often state that good solutions need to be simple solutions. Systems engineers, on the other hand know that only complexity can cope with complexity; that often, there cannot be a simple solution to a complex problem – the problem is complex because an appropriate response can take many forms. Confronting the open possibilities and the critical uncertainties, designers draw, build and explore where in contrast engineers tend to simulate, analyze, and plot results. Both model but in completely different ways. Design builds tangible models people can play off as they envision future possibilities; engineers model how processes work fundamentally in order to run simulations that would predict exactly how things would work under postulated different, that is, future, conditions. For the former, design is discovering new possibilities (and this requires generating a wide range of novel approaches and combinations); for the latter, design is applying a set of constraints on what is a solution to narrow in on a solution provided directly once one has the results from the right series of analyses or simulations.
+Working only besides each other these two perspectives are both needed and are both incomplete. Simplicity cannot be designed without confronting complexity (e.g. there are limits to using techniques like out-of-the-box testing where the designer assumes the role of the outsider, the non-specialist, and the novice that walks up to an artifact and is assumed to operate it without prior instruction). Analysis alone cannot guide how people adapt new capabilities into real tools and in this process transform roles, processes, decisions, difﬁculties and even what is expertise.
+One challenge that transcends traditional design and engineering perspectives is that new technology changes what it means to be a practitioner. The future practitioner will not be the same in terms of knowledge, skill, expertise, and collaborative interplay as technology changes (Mark et al., 2005). To understand and guide the process of how
+
+CH008.indd 218
+
+9/27/07 6:26:43 PM
+
+Designing for expertise
+
+219
+
+new technology and new designs change what people need to learn and do to be experts, various other experts need to collaborate and transcend their individual areas of knowledge. This collaboration over different kinds of experts is targeted at enhancing the expertise in action in particular domains of human activity.
+But the targets of the design have a role and a stake in terms of how new products affect their abilities, their roles and their goals. Participatory design is more than generating collaboration across different specialists in design. The practitioner also participates in design. Practitioners are the experts at applying information to make decisions for actions that will affect states and behaviors in their environment – they are the experts in the use of artifacts. Designers, on the other hand, are experts in the design decisions that steer the development of products to support the decision making of practitioners (Woods, 1995). Ultimately, in participatory design processes practitioners, technologists, and innovators co-mingle each with critical but incomplete roles as designer (Roesler, Woods and Feil, 2005).
+The questions that surround the nature and acquisition of the expertise are central to understanding design, both the mixture of experts who contribute to product designs and the expertise in context as people use new devices to do things in the world.
+The following sections are explorations into the nature of expertise: observations of expertise in action, how we discover or elicit the knowledge organizations behind expert performance, and how the design of new products affects the ability to acquire and demonstrate expertise.
+
+2.1. A history of the study of expertise
+Practitioners base their reasoning strategies on creating and interpreting artifacts as a form of external knowledge representation. Designers support practitioners in choosing, structuring, and using these representations rather than relying totally on basic individual mental capabilities without any external tools. Depending on their expertise in a task, area, or ﬁeld, practitioners will engage in activities differently from what the designers expect them to do, and may or may not arrive at anticipated outcomes used to justify the investment in the development project. This makes expertise an important issue to consider in design, where patterns of interaction between practitioners, artifacts, and the world vary with different degrees and kinds of expertise.
+The study of expertise has a long history that reaches back to performance evaluations conducted by experimental psychologists in World War I-era studies of skilled machinists (Hoffman, 1992). The methods applied in these observations date back into the 1890s and focus basically on the timing of observable actions in the course of given tasks.
+Binet’s work at the beginning of the 20th century set virtually all of the standards that would be applied by post-1950s studies of expertise. Typically the researcher would identify a task – for example, the selection, lifting, and alignment of a part in a machining task – and identify a typical begin and end state of the task. The researcher then would time a worker while engaging in the process necessary to complete the task from its beginning to end. The hypothesis was typically that the more experienced worker can accomplish the task faster or can engage in more tasks in parallel, given time pressure. In favoring the duration and number of tasks as central measures, these studies fall short in capturing, discussing, and exploring the nature of the individual differences among subjects, the situation that has preceded the test observation, and the context (such as motivations and social structure).
+These broader factors were initially considered distortions, and by transporting the work task into a controlled laboratory, the researcher could exclude (control) the
+
+CH008.indd 219
+
+9/27/07 6:26:44 PM
+
+220
+
+Product Experience
+
+unwanted contextual circumstances in order to obtain objective results. It soon became apparent that time measures of performance provided a quite limited view into the nature of expertise. Measuring performance times in isolated sub-tasks soon evolved into observing related activities, and in the course of this shift in focus, it emerged that many aspects of expert decision making reside in the context, social structure, and demands posed by different situations. In addition, it was evident that individual differences and training played a central role in the trade of experts.
+Cognitive psychologists began to study cognition and reasoning in ﬁeld settings. One of the ﬁrst subjects studied was the expertise of chess masters (De Groot, 1946). The reason why chess was a good subject for the study of expertise was that metrics for the determination of chess proﬁciency were already in place (Ericsson and Smith, 1991). Furthermore, the chess board and conﬁguration of chess pieces serve as both physical representation of states on the board and abstract representation in the chess player’s conceptual model of possible – and best – next moves that would affect the constellations of chess pieces on the board.
+Simon and Chase’s classic study on expert chess players (1973) found that chess masters can quickly detect meaningful patterns or conﬁgurations of chess piece and can remember a very large number of conﬁgurations if they form meaningful patterns relative to different situations that confront the experienced chess player. To demonstrate some of De Groot’s observations about the capabilities of experts, Simon and Chase tested players’ ability to recognize and memorize chess positions. They presented players either with game-meaningful conﬁgurations of pieces or with random conﬁgurations of pieces. They found that expert players were capable of memorizing and hence planning ahead a greater number of proper conﬁgurations than chess novices. When presented with random chess piece conﬁgurations, however, the chess experts did not perform signiﬁcantly better than the novices.
+According to Simon and Chase, chess masters differ from players at lower degrees of proﬁciency in that they can recall a much higher number of game-meaningful conﬁgurations. This allows them to plan further ahead, given that a signiﬁcant constellation forms the starting point. Compared to other chess players, the experts can assess the consequences of many different options for moves from a current constellation in parallel. Simon and Chase have shown that chess masters apply pattern recognition strategies in their assessment of what to do next. They can do this not because of superior memory for elements (each piece) but because they have a different knowledge organization based on relationships that connect pieces into conﬁgurations and connect conﬁgurations into tactical and strategic sequences of action and counter-action.
+The paradigm shift from studying behavior to studying cognition in American psychology was stimulated and grew along with the introduction and growth of computerized systems into more and more realms of human activity. The development of computer applications quickly grew through attempts to reproduce human decision making or to create computers that could make decisions on their own (called expert systems). Optimistically, these researchers thought they would be able to replace human cognition with computerized expert systems. While this agenda has repeatedly failed (and been repeated and failed several more times), the goal of autonomous computers required intense study of human expertise.
+Deployment of these expert computer systems quickly led to situations where the computerized expert and the human expert were both present in the actual decision situation. The developers expected that the computer expert system would improve the decisions of the human practitioner – hence they would be decision support systems. However, providing decision support and building team work between human and machine agents turned out to be a much more sophisticated topic and the early computer expert systems turned out to be very poor team players. It was found that sophisticated decision support
+
+CH008.indd 220
+
+9/27/07 6:26:44 PM
+
+Designing for expertise
+
+221
+
+systems often had ended up being underutilized or unused by experts during their ﬁrsthand reasoning (Woods and Roth, 1990; Shanteau, 1992; Hollnagel and Woods, 2005; Woods and Hollnagel, 2006). The reasons for this are many – computer expert systems are inherently brittle, non-cooperative, opaque, disembodied, and designed based on erroneous models of expert knowledge (Hoffman, Feltovitch, and Ford, 1997).
+The original attempt to understand expertise in production measures of isolated subtasks had failed; the much later attempt to put expertise into a computer system and use that system to replace people as an isolated component also failed. A third line of work focused on studying the reasoning strategies behind expert decisions usually with a goal of developing new training systems to speed up the acquisition of expertise as people moved from novice to journeyman to expert.
+Simon and Chase (1973) have shown that valuable insight on expert decision making can be collected by techniques such as think-aloud verbal protocols. Hoffman (1987) reminds us that using this and other knowledge elicitation techniques to study expert reasoning is time consuming and leaves out important factors. Variations on think-aloud protocols have been developed such as critical incident analysis and cognitive task analysis. Today there is a wide and rich range of techniques that can be used to gain insight about the basis of expertise in particular domains of human activity (Christoffersen et al., 2007). By using a broad array of techniques researchers were able to see how social constructs and organizational factors affected expertise (Wright and Bolger, 1992; Hoffman, et al., 1997; Klein, 1997).
+One of the new lines of inquiry on expertise is called naturalistic decision making (NDM). NDM is the way people use their experience to make decisions in ﬁeld settings, or, in a more comprehensive description, the study of NDM asks how experienced people, working as individuals or groups in dynamic, uncertain, and often fast-paced environments, identify and assess their situation, make decisions and take actions whose consequences are meaningful to them and to the larger organization in which they operate (Zsambok and Klein, 1997; Klein, 1998). Naturalistic decision making research underlines the role of context, social organization, and domain-speciﬁc knowledge in the decision making of experts. NDM directs decision making in high-stake domains such as ﬁre ﬁghting, military command and control, mission control, aviation, and planning.
+One of the key results is that expertise uses external artifacts to support the processes that contribute to expert performance – expertise is not all in the head, rather it is distributed over a person and the artifacts they use and over the other agents they interact with as they carry out activities, avoid failure, cope with complexity, and adapt to disruptions and change. For an illustration on how found characteristics in the environment become cognitive artifacts by being associated with cognitive tasks, see Edwin Hutchins’ observations of Micronesian and Western navigation (Hutchins, 1995a).
+Another key ﬁnding is the role of context (Woods et al., 2002). Hoffman, Feltovitch, [AU1] and Ford (1997) describe context as composed of:
+• The analyst’s purposes and goals. • The analyst’s views, assumptions, and theories. • The analyst’s methods.
+What data people regard as meaningful depends on these kind of contextual factors. Experts are very sensitive to context shifts and how these shifts change what knowledge and what mental conceptual models are relevant to the task at hand (Feltovich et al., 1997). Context cannot be neglected in the study of decision making, expertise, and innovation.
+This has led to the macro-cognitive view on cognitive work (Klein et al., 2003), and with it an extended focus in the study of expertise – one that incorporates context,
+
+CH008.indd 221
+
+9/27/07 6:26:44 PM
+
+222
+
+Product Experience
+
+[AU2]
+
+the nature of the tasks, and the social and organizational factors that identify experts. Macro-cognition addresses the study of decision making and expertise in context and looks at activities that are unfolding in organizations, situated in the environment of real tasks (Hoffman, 2003; and see Woods and Roesler, in Chapter 7 of this volume). [AU3] Expertise is situated in real work settings where practitioners have experience with variations on routine performance and can access a rich set of cues that help them anticipate what could happen next. Expert reasoning is more than a specialized algorithm which could be captured in a computer system; expertise adapts reasoning strategies, plans and actions in the face of changing conditions in the environment in order to achieve goals (Woods and Hollnagel, 2006).
+Overall, expertise does not reside simply in a single individual, but is situated in the relationships between practitioner, task, environment and the organizational characteristics that direct and constrain practice in the domain.
+
+2.2. What is expertise?
+A ﬁrst assessment of expertise considers a person’s levels of proﬁciency at a task. Research then asks the question how do people move from one level of proﬁciency to another. A basic answer is that more knowledge about the task and associated context supports greater expertise. But this view of expertise as more extensive and better organized knowledge does not take into account the role of hands on practice. Donald Schön’s (1983) work on the intersections of knowledge and practice extends the expertise-as-knowledge position. He focuses on the role of reﬂection-in-action that occurs when knowledge is put into practice. In his view, expertise is acquired by combining exposure to task-relevant reasoning with task-speciﬁc knowledge. Proﬁciency in domains such as law, medicine, and design is the integration and mutual reﬁnement of knowledge, skill, and experience that can only occur through doing.
+The traditional assumption in psychology is that expertise is a phenomenon that can be accounted for in terms of the quantity, quality, and organization of the domainspeciﬁc knowledge of experts. In this view, ‘expert knowledge is based on deep reﬂection, allowing experts to do well because they know more, know better, and know in a more useable way’ (Hoffman et al., 1997). Hoffman et al. continue to question this position by reminding us that knowledge and meaning can be seen as extra-personal, and is located in the community rather than just inside a person. This leads us back to context, to addressing the differences between different domains, where knowledge is constructed and maintained in different communities. Expertise, from this angle, can be read as a repository of strategies for applying knowledge to context by taking into account the nature of the task and the social aspects surrounding the task. This view leads us to three characteristics of expertise:
+1. First, expertise is domain-speciﬁc. 2. Second, experts adapt to changes in their environment. 3. Third, experts rarely act as isolated individuals.
+Summarizing various studies of expertise in the agricultural, medical, weather forecasting, and law sectors, Shanteau (1992) identiﬁes ﬁve psychological strategies that help experts in making decisions:
+1. Expert judgment shows a willingness to make continuous adjustments in initial decisions.
+2. Experts get help from others in order to make better decisions when coping with uncertainty. They can identify the experts in sub-domains.
+
+CH008.indd 222
+
+9/27/07 6:26:45 PM
+
+Designing for expertise
+
+223
+
+3. Experts make use of both formal and informal external decision aids. 4. Even though experts may make small errors in judgment, they avoid making
+large mistakes. ‘The focus is not on being exactly right, but on avoiding making bad decisions.’ To do this, experts ﬁrst conduct a broad estimate of a problem situation and then conduct a more careful analysis of components in the situation that were identiﬁed as more critical in the ﬁrst pass. 5. Experts decompose complex situations into manageable chunks and can then re-construct the larger situation from its individual aspects.
+These ﬁve strategies indicate that experts have access to a quite reﬁned conceptual model of their domain of expertise to identify functional relationships, dependencies, and likely outcomes. This model of the domain includes scenarios of what not to do (Minsky, 1997). The expert’s conceptual model also includes an understanding of relationships of their domain with sub-domains that are part of the challenges ahead. Experts know who the experts are in these sub-domains, and when to consult them.
+Expertise forms a decision making capacity in the neighborhood of other forces. Hoffman, Feltovitch and Ford illustrate that expertise entails context as a set of other factors that surround and direct expertise with their TEMPEST model (Figure 8.1).
+The tempest model has evolved from previous models as new research results have accumulated. The original base is James Jenkins’ (1979) tetrahedron model that captured [AU4] results from learning research. Honeck and Temple (1992) adapted a version to incorporate new results on the cognitive underpinnings of expertise. Building on these models, the TEMPEST model maps expertise as the tetrahedral set of relationships between the expert’s strategies, goals, background experience, and materials used as decision support.
+
+the ‘wind’
+
+materials
+
+driving forces
+
+data, tools used in
+
+societal needs and expectations, the familiar tasks
+
+personal motives
+
+the ‘kite’
+the expert
+cognition, perception
+strategies
+used in familiar tasks
+
+goals
+of the familiar tasks
+
+background experience
+knowledge and skills
+the ‘line’
+controlling forces
+lawfulness in the world, practical constraints,
+accountability mechanisms and performance expectations
+
+the ‘tail’
+stabilizing forces
+selection criteria, training methods, professional standards
+
+FIGURE 8.1 TEMPEST model of expertise in context (modiﬁed from Hoffman, Feltovitch and Ford, 1997).
+
+CH008.indd 223
+
+9/27/07 6:26:45 PM
+
+224
+
+Product Experience
+
+As a diagram, the two-dimensional tetrahedron resembles a kite, and represents the expert. In taking the kite analogy further, Hoffman et al. illustrate the context of expertise in showing that it takes more to ﬂy a kite than the kite alone.
+• The wind carries the kite – in the TEMPEST model, the wind resembles the driving forces on expertise, rooted in societal needs and expectations and personal motives.
+• The kite is steered by the line – controlling forces on expertise that are institutionalized by lawfulness in the world, practical constraints, accountability mechanisms and performance expectations.
+• The kite is stabilized in the wind by its tail – the stabilizing forces of expertise are selection criteria, training methods, and professional standards for experts.
+• Tail and line make sure the kite stays stable in the wind and can be controlled. • Together with the wind as the driving force, they form the context of expertise,
+and if we look at the labels of the contextual forces, we encounter many of the sociological parameters that identify expertise.
+Note how it takes the interactions between all factors in the diagram to constitute, identify, and steer expertise, and how the four subsystems (kite, wind, line, and tail) can partially compensate for deﬁciencies in other aspects. If the kite, for example becomes unstable due to a tail that is too short, more reactive steering with the line is required to keep the kite in the air.
+The TEMPEST model illustrates expertise as a macro-cognitive system of interrelated factors of organizational structure, environmental conditions, decision making, knowledge, and planning ahead. Characteristic of this macro-cognitive representation of expertise is that experts balance multiple factors in parallel, and that all factors represent diversity and contrasting forces that mutually reinforce another. Growing expertise to act effectively requires orchestrating the interplay over this set of factors and driving forces.
+
+2.3. Who are the experts?
+Expertise is both a social construct and the context-speciﬁc application and adaptation of knowledge. Studies on the quality of expert decisions have shown that experts do not generally make better decisions than do non-experts (Shanteau, 1992). This contrasts with the general perception that experts can be identiﬁed by their outstanding performance, and hints at a social dimension behind the identiﬁcation of experts. In virtually every organization, certain people are known as the best ones to consult for speciﬁc types of problems.
+Though experts do not always make the best decisions in a given situation, they have been shown to avoid making decisions that they expect to have particularly negative consequences (Shanteau, 1992). Expert decision making seems to be driven by appropriateness, not necessarily by correctness. Non-experts in similar situations are prone to making wrong decisions, because often, they cannot assess the repercussions of alternative decisions. Experts will likely avoid making wrong decisions, but will opt for a solution with the least trade-off if they do not see the possibility for an optimal solution. Since experts have a conceptual model of their domain, they know what not to do (how to avoid errors of over-control of complex dynamic processes).
+Societal institutions play a role in the accreditation of experts. While some experts have been identiﬁed by peers for their remarkable performance in a number of situations, other specialists are accredited through licensing systems such as university degrees and academic titles. Certiﬁcates document that an expert has access to an agreed-upon body
+
+CH008.indd 224
+
+9/27/07 6:26:46 PM
+
+Designing for expertise
+
+225
+
+of knowledge and that he or she has demonstrated performance in a number of practice situations, as well as passed examinations of expected performance.
+Knowing who the experts are in a domain can be a challenge. While domain practitioners seem to have no problem in identifying the experts among themselves, outsiders have difﬁculties identifying who the experts are in a particular domain (Sternberg, 1997).
+Utilizing insights from the study of expertise, let us refer to a list of nine characteristics that identify an expert (Shanteau, 1992). Experts have access to a vast body of up-to-date content knowledge; as a basis for judgment, this deep level understanding of their domain is characterized by:
+• Highly developed perceptual/attention abilities: Experts can extract information in their domain that non-experts miss (Fiore and Hoffman, 2007).
+• Case-based reasoning in context: Experts have a sense of what is relevant when they are making decisions. Where novices often get sidetracked by irrelevant data, experts base their decisions on less information, but ensure that their judgment rests on relevant information.
+• The ability to simplify complex problems: Experts have developed strategies to decompose complicated situations in their domain into smaller chunks. While novices attempt decomposition, they often fall into making oversimpliﬁcations. This is not true for experts, because they know that their domain is composed of several sub-domains. The ability to decompose complicated context is guided by a conceptual model of the domain that the expert has constructed (Feltovich et al., 1997).
+• The ability to communicate expertise: Experts have no problem communicating information in the areas where they are experts. They assume that their assessments should be preferred over those of others. This outspoken expertise goes hand-in-hand with the social construction of expertise: that conﬁdence in claiming oneself as an expert can accredit a person as expert. Let us keep in mind that this statement is put to the test until our expert unites all nine characteristics in this list.
+• The ability to handle diversity more successfully than non-experts: Experts continue to make effective decisions even when things are not going well. This characteristic is again supported by the expert’s comprehensive conceptual model of his or her domain. This model does not only include best case scenarios, but also includes forks in the road where things can go wrong, together with scenarios of how not-so-optimal sequences will play out and how to recover from them.
+• The ability to identify and adapt to exceptions: Experts are not likely to walk down ‘garden paths.’ They can identify when an expected situation deviates from the expectation.
+• Knowing how and when to adapt their decision strategies to changing task conditions: Experts detect when changes in the context of the task demand adapted reasoning strategies. This is possible because experts have access to many alternative response strategies and understand that different situations cannot all be approached with the same strategy.
+• Strong self-conﬁdence: Experts trust their decisions. • A strong sense of responsibility: Experts can assess how situations will likely play out. They understand their role as expert decision-makers and are aware of the consequences of a wrong decision. In any case, experts know that they must make decisions because they can control the situation at hand.
+Naturally, these characteristics of expertise make experts difﬁcult people to work with. They are conﬁdent in their expertise, and they can assess the expertise of others in their domain. This makes expertise an interesting topic from the training and learning
+
+CH008.indd 225
+
+9/27/07 6:26:46 PM
+
+226
+
+Product Experience
+
+perspective, where domain experts help novices in eliciting domain knowledge to eventually become experts themselves.
+
+2.4. How expertise is acquired
+Dreyfus and Dreyfus (1986, 1997) have identiﬁed ﬁve stages in the acquisition of expertise, where a novice starts at a beginner level, moves continually through levels of competence and proﬁciency, and ﬁnally arrives at the expert level. The ﬁve stages illustrate increasing levels of proﬁciency in performance as well as the role of context-free rules, the realization of patterns in context, and the hierarchical organization of task-relevant clues for decision making or intuitive response.
+Stage 1: Novice – The beginner engages in an instruction sequence where he or she learns context-free features of the domain that can be recognized without experience in the domain. Beginners in chess, for example, learn a numeric value for each type of piece regardless of its playing value. They also learn a rule that is associated with the piece, as well as the positioning constraints on the piece. Beginners are slow performers during this stage because they need to remember and recall the rules that guide their actions.
+Stage 2: Advanced beginner – At this stage, the beginner is pointed to speciﬁc features that provide situational aspects of the activity. He or she begins to see patterns in the context of the task that provide additional information in support of the rules.
+Stage 3: Competence – At the competent level, the student continues to identify more task-relevant features in the context of the activity. This eventually results in a large number of patterns that he or she recognizes, culminating in the sheer overload of potentially task-relevant data. To cope with complexity, the student begins to structure patterns and strategies by installing hierarchical reasoning sequences. The competent performer can address a broad spectrum of situations. Performance is slow and depends on the student’s seeking new rules and reasoning strategies in order to devise a plan or take a perspective.
+Stage 4: Proﬁcient – In the proﬁcient stage, intuitive engagement in the activities continually replaces reasoned responses. Instead of being rule-based, the reasoning strategies of the performer are driven by adapting decision support structures to the current context of a situation. The performer simply knows what to do instead of deciding in the course of a calculative response.
+Stage 5: Expertise – While the proﬁcient performer sees what needs to be done and decides to do it, the expert performer not only knows what needs to be done, but also knows how to achieve the desired state. This allows the immediate response to a clearly identiﬁed situation. This immediate and appropriate response is characteristic of expertise.
+Dreyfus and Dreyfus’ ﬁve stages in acquiring expertise focus on the student’s journey. If the student were required to rely solely on his or her individual experience, the extent of lessons learned would depend on the variety of failures that confronted the student, so that limitations would have to be overcome by practice. Ericsson and Charness (1997) point out the importance of deliberate practice in the acquisition of expertise. In deliberative practice, students work with a teacher or coach whose job is to identify individual weaknesses and to design training programs that repeatedly confront students with the weak aspects of their performance. The continuous confrontation engages the student in developing response strategies for overcoming individual weakness.
+In their study of the training and development of expertise in outstanding musical performers and athletes, Ericsson and Charness identify four developmental stages, from the novice stage to that of eminent expert. Particularly interesting in their observations
+
+CH008.indd 226
+
+9/27/07 6:26:46 PM
+
+Designing for expertise
+
+227
+
+is that they look at an extended temporal frame of expert development, encompassing the three to ﬁve decades spanning acquisition of knowledge, skill, and endurance in the development from the beginner stage towards the highest level of expertise.
+The extremely long training period required to achieve the mastery of musical performance or world class competition level in a sport is necessary to provide for the mutual adaptation between the performer’s or athlete’s physical capabilities, and the advancement of expertise and endurance during practice.
+In the course of their classic study on chess, Simon and Chase (1973) have identiﬁed that it typically takes ten years of intensive deliberative practice to arrive at an expert level of performance in chess. Studies in other domains (Ericsson, Krampe and TeschRömer, 1993) have conﬁrmed this estimate. Ericsson and Charness’ four phases in the [AU5] course of becoming an eminent expert pass through the following proﬁciency levels:
+1. In Phase one, musical performers and athletes, at a young age, engage in playful activities in the domain. This phase ends with the identiﬁcation of potential in the performer, indicating that he or she can move the acquired skills into the next level.
+2. Phase two is an extended preparation. It ends with the commitment of engaging in practice full-time. Usually, this phase entails the consultation of specialized trainers or coaches, and often, even requires moving into another geographic region where the required training with an advanced teacher or coach is available.
+3. In Phase three, the performer makes a commitment to full-time engagement in the training and practice of the skill. This phase ends either with the performer being able to make a living as a professional, or with the complete termination of the full-time activity (Bloom, 1985). At this stage, the performer is practicing or training with an expert teacher or coach. During the ﬁrst three stages, students integrate the knowledge and skill that master teachers and coaches can convey (Ericsson and Charness, 1997).
+4. To achieve the highest level of expertise – the fourth phase – performers must attain a level of performance where they make an original contribution to the domain of their expertise. In this phase, they reach a level of proﬁciency that goes beyond that of their teachers. At the eminent level, where the highest level of expertise is innovation, empirical studies of these original contributions have been sparse. This is attributed to the fact that the moment at which the contribution will occur is hard to predict. Ideas, conditions, and decisions that have led to major breakthroughs in thinking and practice can be traced by retrospective process tracing methods (Gruber, 1981; Wallace and Gruber, 1989).
+
+3. INNOVATION AND THE EMINENT LEVEL OF EXPERTISE
+Ericsson and Charness’ (1997) observation that innovation is an indicator of an eminent state of expertise draws parallels to the difﬁculties that grip the concept of innovation in design circles. As practitioners designers tend to know what innovation is, yet a comprehensive description of innovation in design is still largely missing. Like important discoveries by scientists and creative leaps by artists and performers, innovation in design can often only be studied in retrospect, since it is difﬁcult to experimentally set up the conditions that would allow an innovative breakthrough to be observed as it unfolds. Such staging techniques would be more than desirable to designers. Perhaps design methods could be considered as a direction in the quest to demystify innovation; a methodic design approach enables designers to observe, provide, and steer environments and design conditions so that they provide fertile grounds for innovations to ‘happen’.
+
+CH008.indd 227
+
+9/27/07 6:26:47 PM
+
+228
+
+Product Experience
+
+The design process is the structuring of resource pools that enables designers to envision promising design responses for future iterations of a product or system, based on observations of the performance of current design solutions for that product or system in the ﬁeld. These observations eventually result in a domain understanding for the designer. In its sequence of formation, this development of insight shows many parallels to the sequence of acquiring expert understanding. Although the sequence of learning from observations plays out in a much shorter timeframe and is conducted from an emic perspective of the designer (from a view inside the culture of design), the insight won by designers makes it possible for them to create novel interventions relative to the target domain of the expert practitioner.
+As a consequence of the shorter time frame spent in the expert domain, the insight won by the designers is much less comprehensive than the deep level domain understanding acquired by an expert over a span of many years. One possible explanation of these limitations is that the designers are limited to observations and often cannot practice the observed operations of use, since they are not sufﬁciently prepared. Knowing this restriction, the challenge for designers is in knowing how observations in the ﬁeld can be linked to the design of concepts that respond to identiﬁed problems or needs in the domain of practice.
+In the design process, the acquisition of expertise can be viewed as an iterative cycle of feedback, concept generation, and selection. In the cycle, observations are intertwined with modeling of a conceptual representation of the ﬁeld of practice under observation; conceptual representations with actions to create objects that can ﬁelded. Figures 8.2A and B illustrate a cyclical framework that can be used to chart these design process, the de:cycle model (Roesler and Woods, 2005).
+Design activity, to be able to respond to the challenges provided by the call for novelty balanced with pressures on realizablity, coordinates expertise from three perspectives – observe, explore, create. These provide linkage points between three broad roles that draw on pools of experience – pools of research patterns, technological possibilities, and experience in the ﬁeld. Each of these roles provides their knowledge, processes, and artifacts with respect to the future under design: practitioner – how they adapt to complexity, innovator – how they envision what would be useful, and technologist – how they bring the anticipated change into the world of practice. The three roles intersect, and design activity within them is conducted in parallel – which provides for numerous interactions across the center of the de:cycle.
+In a typical design project, design activity begins with observations in the ﬁeld of practice where practitioners identify limitations of previously ﬁelded objects. In the de:cycle graphic, this point of departure is located at the 4 o’clock position: design intent is represented in clockwise movements; design effects are projected in counterclockwise rotation.
+Moving counterclockwise for exposition purposes, in the observation arc (northeast section), design researchers plan studies, collect data records from protocols, cognitive task analyses, and other process tracing techniques. Functional syntheses based on the data and observations leads to abstract models that capture patterns, provide explanations, and lead to propose alternative directions. For example, researchers may design observations to reveal how practitioners have adapted products to work for them in ways different from the designer’s model (design intent is represented in clockwise movements). Different explanations and characterizations of the basis for these adaptations then become seeds for exploring possible new design directions.
+In the exploration arc (northwest section), there is movement from the models, patterns and data of research to design seeds that capture promising concepts hypothesized
+
+CH008.indd 228
+
+9/27/07 6:26:47 PM
+
+Designing for expertise
+
+innovator: pools of research patterns
+
+concep xplore
+
+tualize
+
+(
+
+229
+
+design (hypothesis) e
+ghts bjecreserved. t )
+
+m odel) observe
+
+technologist: pools of technological possibilities
+
+create
+
+im plem ent (o © 2004 byAxel Roesler andDavidWoods, all ri
+
+practitioner: pools of experience in the field
+
+abstract model explanations
+
+leverage points
+
+abstracted patterns
+
+developing concepts
+
+developing scenarios
+
+affordances
+
+representation techniques design seeds hypotheses of what is useful
+
+explore conceptualize (
+
+observations of adaptations stories of use protocols
+
+animock
+
+data records
+
+design (hypothesis) ghts je c treserved.)
+
+model) observe
+
+building prototypes
+
+listening to stories
+
+model of the ideal design
+
+suggestions for improvement unsatisfactory product
+
+final design model design documentation
+
+create
+
+im ple m e nt (ob © 2004 by Axel Roesler and David Woods, all ri
+
+established field product
+in field revision 2 in field revision 1
+
+detailing for production
+reproduction model
+
+adjusted final release
+tooling test realese deployment into the field
+
+plans and documentation
+
+FIGURE 8.2 (A) The de:cycle – The three roles in design and their respective interests and expertise. Counterclockwise moves represent design synthesis, as objects are created. Clockwise moves represent the analysis of design that identiﬁes the origins, basis, and expectations associated with design decisions. (B) Handover marks and design process products make design activity tangible and allow designers to plan for deadlines and coordinate with other stakeholders.
+
+to lead to useful change in the target ﬁeld of practice. We refer to this arc in the de:cycle as the ‘Northwest Passage’ as the processes of innovation and ideation are not supported systematically, but rather have tended to be supported or marked by design artifacts personal to speciﬁc designers or teams (at least as compared to the more formal artifacts produced by design in the realization process, e.g. those that mark software development). In the Northwest Passage, ideation mediates between research insights about the situation under design (rotating clockwise) and technological capacity for change (rotating counter-clockwise) as related to judgments about desired improvements form the point of view of practitioners (cutting across the center of the cycle from left to right).
+
+CH008.indd 229
+
+9/27/07 6:26:47 PM
+
+230
+
+Product Experience
+
+The techniques of those proﬁcient in innovation generate insights to generate promising concepts that can be turned into prototype demonstrations that support commitment of resources for realizing these concepts in ﬁeldable forms.
+In the implementation arc (southern section), technologists choose from a pool of available technologies those that are appropriate for the realization of selected design concepts. The appropriateness of applied technologies is evaluated against factors of functionality, reliability, feasibility, safety, and economic feasibility – and how necessary modiﬁcations will reﬂect on the original design program.
+Figure 8.2B shows how handovers across the roles serve as demarcations and how products produced in the process of design, such as scenarios, sketches, mock-ups and prototypes, make these processes tangible helping designers reﬂect on their progress and share ideas with other stakeholders in the design process.
+To processes of design, focusing on the need to create innovations, can be seen as a type of expertise that demonstrates the same regularities as have been summarized in the preceding sections of the chapter. As designers become acquainted with a situation under design they incrementally attain a deeper level understanding of the design domain. A deepening understanding facilitates the quest for innovation as in the deﬁnition of the eminent level of expertise. Figure 8.3 shows the cycle of expertise acquisition and domain change, overlaid on the de:cycle framework.
+In design, one moves from novice, relative to the target ﬁeld of practice, to greater expertise, relative to how that domain could function. The design process meets the criteria for eminent expertise with the generation of innovative concepts, though these will turn out to have surprising effects when ﬁelded which will release a new round of adaptation through use.
+In the observation arc, designers who had entered the design situation as novices have moved through stages of advanced beginner, competence, and proﬁciency. Starting at the stage of proﬁciency, they have begun building a conceptual representation around the acquired knowledge of the domain as research ﬁndings. While the evolving
+
+identifying what’s promising (reasoning forward)
+expert
+testing hypotheses
+
+proficient extracting What’s interesting (reasoning backward)
+
+conceptualize xplore
+
+(
+
+conceptual
+
+competent directing observations
+
+design (hypothesis) e
+erct i andc Davide)Woods, all rights reserved.
+
+model) observe
+
+eminent expert
+
+create
+
+applied
+implement (pra © 2006 by Axel Roesl
+
+detailling responses novice
+
+implementing change advanced beginner
+
+FIGURE 8.3 The cyclical model of the acquisition of expertise is overlaid on the de:cycle, a cyclical model of the design process. The overlay illustrates how innovation as a result of the build up to eminent stage of expertise produces change that leads to effects that require the growth of new expertise.
+
+CH008.indd 230
+
+9/27/07 6:26:48 PM
+
+Designing for expertise
+
+231
+
+conceptual model provides the proﬁcient designer with explanations for what has been observed, it allows the capacity to make predictions by simulating the outcomes of proposed changes that would be part of new products.
+Because the conceptual model is a representation of the relationship, dependencies, and causal sequences identiﬁed during observations in the ﬁeld, it allows experts to reason forward by manipulating variables in the model. Moving counter-clockwise is a process of projecting ahead toward future states. These predictions form hypotheses about how investments in additional design work will produce change in the target ﬁeld of human activity. These hypotheses are tentative and open to revision as evidence comes in about the likely impact of the proposed changes. One difﬁculty is that getting this evidence usually requires movement into activities that make design ideas tangible in the form of sketches, mock-ups, and reﬁned prototypes. These types of design representations allow designers to share their observations with the domain practitioners and design clients.
+Taking this as a starting point, let us return to the nature of expertise in a more general frame of reference. Practice is characterized by an experimental component, where the expert follows through with promising actions based on decisions that were supported by simulations performed in the framework of relationships of the conceptual model. Activities are subsequently evaluated in the context of the real situation before being adapted to unanticipated conditions and modiﬁed in a later iteration. Any expert is designing response strategies based on a hard-won conceptual understanding of the situation at hand.
+The eminent expert knows that in order to identify the boundaries of their understanding, they have to manipulate the situation at hand. This alteration of existing conditions is done responsibly, as he or she can identify manipulations that would lead to unmanageable outcomes. The eminent expert also knows the scope and possible results of unmanageable states, and will avoid losing control of the situation.
+The stage of eminent expertise is characterized by innovation that had originated in the course of many previous observations of such experiments. These previous experiments do not need to be repeated for the current decision task. The past outcome of the original experiment or practice is sufﬁcient for making the current decision.
+The eminent expert recycles past insight, accessing and applying patterns from a knowledge base of past storylines. The expert has learned to calibrate projections, based on appropriate interventions that conform to the constraint space identiﬁed as boundary conditions. Yet the eminent expert carries out an intervention to provide more insight into the situation at hand and does not rely completely on his or her knowledge of the relevant constraint space. This is the process of envisioning innovation.
+Eminent expertise is characterized by the continual reﬁnement of a conceptual model of the expert’s domain. This occurs by directing observations with the intent to actively manipulate conditions in the domain in order to arrive at innovative new outcomes from given and known situations. The eminent expert does this repeatedly, as he or she purposefully steers activity away from routine. The eminent expert knows about the limits of routines and knows how to apply slight changes to the repeated activity in order to scope new boundaries. As he or she initiates new conditions in the known ﬁeld, the expert will eventually ﬁnd him/herself in new terrain, hence being less than an eminent expert in the newly created domain area. In a cyclical conﬁguration of gathering understanding and generating novelty by applying the new understanding, the knowledge base of the domain expert grows with each iteration of change.
+As with designers who ﬁrst need to learn about the domain under design before being able to initiate change, the eminent expert explores the boundaries of the current
+
+CH008.indd 231
+
+9/27/07 6:26:48 PM
+
+232
+
+Product Experience
+
+conceptual models by purposefully manipulating conditions in his or her domain. Designing – the act of manipulating representations – is necessary in order to arrive at reﬁned representations. Eminent expertise thus is not the mastery of analytic deductions in the found domain, but instead incorporates steering the domain by changing it. The original contribution of the eminent expert is a necessity in this process of gathering advanced understanding to correlate actual results with anticipated outcomes. This process is the engagement of the expert in reﬂective practice (Schön, 1983) where strategies for activities, as well as the activities themselves, are subject to adaptations in the face of a changing environment.
+Domain experts have gone through many iterations of reﬂection upon action, initiated by changes in the conditions within the domain environment and driven by results and problems that arise from these changes. These iterations are necessary to reinforce mutual dependencies between conceptual assessment and practical application on the basis of a series of interventions into ongoing activities. The eminent expert’s conceptual model of the domain has reached a level that it can represent the patterns of change that steer the adaptation of response strategies to the changing context of the situation.
+
+4. THE IMPLICATIONS OF DIFFERENCES IN USER EXPERTISE FOR PRODUCT DESIGN
+Expert decision making is driven by context. From the perspective of the designer who faces the challenges of designing artifacts as decision support, this has many implications.
+First, the nature of expertise is rooted in the social structure of the domain and is driven by the changing nature of the domain context as captured in the TEMPEST model of expertise as a kite in the wind (Figure 8.1). Expertise is generally instantiated as an interpersonal collaboration where designers can identify experts in certain stages of the activities, while expert roles may change during different stages of tasks. This same pattern is relevant to the design process, where the lead expert roles shift between practitioners, innovators and technologists (Roesler et al., 2005). In order to conduct the design process, all three pools of expertise are necessary in parallel. No person can play all roles; designers cannot completely put themselves into the seat of practitioners, practitioners cannot take over design work, and technologists cannot replace designers – nor can they take on the role of practitioner. Problems arise in the design process when one pool of expertise attempts to stand in for others on the basis of inferences from a distance. Key to an understanding of expertise in design is coordinating the convergence of these different types of expertise as a particular product development cycle matures and restarts.
+There are many examples where the handover of role-speciﬁc expertise is central. Consider, for example, the changing meanings of artifacts in the course of cognitive work with the model of a door key. While a technologist is primarily concerned with designing a secure key that can reliably lock and unlock a door, the innovator might question the concept of a key to lock a door at all. The question might not stop at this point. Why a door at all, what is it for? What are other possibilities for the concept of a key? From the perspective of a practitioner, the existence of the key becomes meaningful only as speciﬁc episodes arise during the execution of tasks. On the way to the site of a task, the practitioner encounters a locked door. Unlocking the door is not the central task for the practitioner – getting to the other side of the door where the task is located is the central task.
+
+CH008.indd 232
+
+9/27/07 6:26:49 PM
+
+Designing for expertise
+
+233
+
+Let’s put this apparently simple issue in a context: during an emergency at a power plant a pump that should provide a critical function to maintain safe conditions fails to start. The person on the scene is inexperienced and is unable to start the pump; the experienced person is in a different location in the plant (the control room) and attempts to get to the failed pump to perform the restart. However, during an emergency for security reasons physical access from one part of the plant to another is restricted. The key expert is blocked from reaching the critical location; if the pump is not restarted an extreme and untried safety procedure must be started. Can the expert ﬁnd a way through the blocked doors in time to restart the critical pump in time? (He did in the actual nuclear power plant emergency in 1985 that is the basis for this example.)
+This unique event captures a general tradeoff between security and collaboration – blocking access when it is undesirable or blocking some groups access versus enabling collaboration and connection to enhance performance – that is a central dilemma in current debates about computer security in a world of web-based interactions at a distance. One pool of expertise is about different ways to block access; another pool of expertise is about ways to enable more collaboration at a distance. Without coordinating the two, cycles of mal-adaptation develop where for security reasons access is hobbled or blocked and people who can take advantage of the connection devise workarounds to communicate.
+In reverse, we can deduct levels of expertise from artifact characteristics in the work environments of experts. The expert work of aircraft pilots is mapped into the complex structure of the aviation cockpit (which in turn is a representation of the complexities underlying the task of ﬂying a plane – a representation of the joint system of different people and devices that underlies ﬂying; see Hutchins 1995b). There is a link between expertise and the complexity of technology applications. Alexander (1964) has argued that for emerging specializations, the emergence of experts is the consequence of technological advances and part of the formation of new domains.
+Understanding the context-dependent nature of expertise is a prerequisite for designing artifacts that support decision making – that allow people to become familiar with patterns of use and that support identifying constraints necessary to detect and resolve irregularities in the course of action. From the cognitive systems design perspective, the level of expertise of domain practitioners directs how much of the guidance for use must be built into the artifacts of a system, since the training of experts may serve as a substitute in the absence of self-explanatory clues in expert environments. As an example, compare a pilot with the everyday driver of an automobile. For the former, ﬂight training typically takes a few hundred hours, with frequent deliberate refresher sessions in the ﬂight simulator. As a consequence, the pilot has an extensive conceptual representation of the plane as a system of artifacts, and of the plane’s boundaries of performance in the face of environmental condition changes and other events. This expertise acts as a source of resilience to overcome design deﬁciencies such as mode confusions so that they rarely turn in to plane crashes (but see the mode confusion issue in, for example, Woods et al., 1994).
+Now consider the car example. Driver training is much less elaborate and consists of a rough understanding of trafﬁc rules, performance of the vehicle, and control of the vehicle. The domain of driving a car in roadway trafﬁc is less complex than that of ﬂying an airplane in air trafﬁc. Compared to the domain of ﬂying a plane, the driving domain consists of factors such as slower speed and simpler degree of technology in the groundbound vehicle, greater visibility of trafﬁc and obstacles, and a greater proximity margin of other trafﬁc participants.
+In contrast, the airplane pilot must think further ahead, due to the higher speed of the plane, and must cope with the complex technology of a vehicle that cannot stop
+
+CH008.indd 233
+
+9/27/07 6:26:49 PM
+
+234
+
+Product Experience
+
+without losing aerodynamic lift. In addition, the pilot is a participant in a larger collaborative organization consisting of cockpit crew, airport crew, and air trafﬁc controller – all in different roles – where limited ﬂight, take-off, and landing pathways must be shared with other planes within very tight schedules. Add to this complex organizational conglomerate automated on-board systems, replanning due to delays, invisible ﬂight routes, and eventual technical problems, and it’s easy to assess why pilots are experts.
+We have learned how difﬁcult the assessment of typical practitioner expertise is. Expert users can draw resources for interpretation of gaps from their individual knowledge, while novice users rely on knowledge in the world that is provided by the design of the task environment (Norman, 1986).
+While providing an extended range of performance, advanced technological applications introduce new forms of complexity, and with them new possible failures. During the past thirty years, advanced computerized systems in high-stakes domains have demonstrated the new realities of increased sophistication in the form of new possibilities. Unfortunately, they also have demonstrated the new realities of increased complexities that have contributed to new types of incidents and accidents in aviation, process control, monitoring, medicine, mission control, and military applications (Woods and Hollnagel, 2006).
+Due to the public consequences of failures, extensive studies about the nature of expertise in the monitoring and design of technology have generated invaluable insight into the relationship between domain knowledge, training, and design. In all instances, highly trained experts are paired with advanced computerized technology in joint systems (Hollnagel and Woods, 2006). In facing the challenges of designing for these expert domains, it is essential that designers realize that their objective is not to design for users, but to support experts by design.
+Learning how to reinforce innovation is a form of cognitive work as reﬂectionin-action. Design requires understanding, exploration, and experimentation; during ideation phases in design projects, this cognitive work leads to novel artifacts and new approaches of doing things, always coupled with the initiation of change. New technological artifacts will change the nature of practice (Winograd and Flores, 1986). Novel artifacts will require practitioners to engage in new types of operations that need to be learned. In the long run, innovation will form new types of expertise, while experts will make contributions that lead to new inventions (Woods and Dekker, 2000).
+Designers are confronted with the challenge of understanding the expertise in the domain under design; this does not require that they become experts in the domain themselves. Studies of expertise in various ﬁelds of practice, conducted during the past 50 years – among them studies on the expertise of designers by Cross (2003) – illustrate the nature of expertise as a characteristic feature in cognitive work that is tightly coupled with the nature of the ﬁeld of practice. The most recent view on expertise is that it exists in the context of a speciﬁc domain and encompasses the social structure of the ﬁeld, individual differences, training, and personal experience.
+Another important ﬁnding is that expertise is subject to continuous change. As technologies advance, they transform the ﬁeld of practice and confront experts with the necessity of keeping their knowledge updated.
+In the face of these characteristics of expertise, it seems quite illusionary that designers could become experts in a ﬁeld they encounter during a design assignment. However, designers may ﬁnd it helpful to become familiar with the patterns of knowledge elicitation and work practice that instantiate expertise at work (see the earlier section on ‘What is expertise’). By designing support for expert reasoning strategies in collaboration with practitioners and technology developers, designers make their contribution to
+
+CH008.indd 234
+
+9/27/07 6:26:50 PM
+
+Designing for expertise
+
+235
+
+expert work. Key to the design of systems that support practitioners in being experts is a design process model that allows the convergence of the perspectives of practitioners, innovators and technologists.
+
+5. SUMMARY AND CONCLUSION
+After excursions through the nature, study of, and various views on expertise; through the implications of expertise research on design; and through the strategies for a design process that addresses the introduction of novelty into the domains of experts, we can now summarize expertise in a few sentences to illustrate how aspects of expert practice, decision making, and innovation-building affect designers.
+Our view on expertise enables designers to design with the objective of supporting the work of experts and acquiring expertise. Expertise as a focus for design presents an interesting though somewhat moving target for design activity, since expertise is driven by the context and social structure of the domain. One of the consequences of this is that expertise continuously re-invents itself in a sequence of adaptations to a changing environment. At the same time, events that drive these changes are, in part, outcomes of expert practice.
+We summarize expertise as follows:
+• Experts have observed, learned and practiced in their domain for a long time. Their expertise is domain-speciﬁc, driven by the context of the domain, and instantiated in the social structure of the domain.
+• Expertise is both knowledge and skill in the adaptation of understanding to observations in the context of a situation.
+• Expert practitioners capture and model their domain understanding and approach strategies in representations that they reﬁne while eliciting the knowledge required to practice as experts in their domain.
+• Expertise changes; the agreed-upon standards of outstanding performance are subject to continuous improvement. Improvements may include reﬁned reasoning strategies, better decision support representations, or more advanced adaptations to the changing nature of practice. In addition, social standards on how to assess expertise may change.
+• Expertise is a form of contextual understanding that guides the formation of strategies in making sense of observations in a given context.
+• Expertise is limited by the perspective of the expert. Complex decision making tasks, such as designing, require reasoning strategies that utilize methods of coordination between the different types of expertise of design stakeholders. It is not only advisable to consult other perspectives, it is necessary (Klein, 1997).
+• At the eminent of level of expertise, an expert generates an original contribution to the standards of the domain. As innovators, experts shape the future of succeeding experts in their ﬁeld. In the course of learning to understand their domain, the eminent experts change their domain, and the changed domain requires and forms a new generation of experts, often trained by the eminent experts, and a product of the new conditions. This eminent level shows parallels to the key challenge in design work: the generation and creation of novelty, and the responsibilities to steer the changed conditions.
+Expertise, in conclusion, evolves as a consequence of adaptations in a changing environment. In parallel, expertise forms the basis from where practitioners and designers envision and implement changes in the form of novelty into the domain. Novel technologies, in turn, will initiate new forms of expertise. Innovation and expertise are mutually interrelated.
+
+CH008.indd 235
+
+9/27/07 6:26:50 PM
+
+236
+
+Product Experience
+
+Assessing the expertise of future practitioners is both a requirement and an outcome of design support. Expertise does not reside in artifacts or people, but is the result of cognitive work by practitioners who build a correspondence across artifacts with their goals, their environment, the perspectives of others in their ﬁeld of practice, and the stakeholders who depend on the outcomes produced.
+
+REFERENCES
+
+[AU6] [AU7]
+
+Alexander, C. (1964). Notes on the synthesis of form. Cambridge, MA: Harvard University Press. Bayazit, N. (2004). Investigating design: A review of forty years of design research. Design Issues, 20(1),
+16–29. Bloom, B. S. (Ed.) (1985). Developing talent in young people. New York: Ballentine Books. Christoffersen, K., Woods, D. D. and Blike, G. T. (2007). Discovering the events expert practitioners extract
+from dynamic data streams: The mUMP technique. Cognition, Technology, and Work, 9 (in press). Cross, N. (2003) The expertise of exceptional designers. In: N. Cross and E. Edmonds (Eds.) (2003). Expertise
+in design, creativity and cognition, pp. 23–35. Sydney: University of Technology. De Groot, A. D. (1978). Thought and choice in chess. The Hague, Netherlands: Mouton. (Original work pub-
+lished 1946.) Dreyfus, H. L. and Dreyfus, S. E. (1986). Mind over machine. New York: Free Press. Dreyfus, H. L. (1997). Intuitive, deliberative, and calculative models of expert performance. In:
+C. E. Zsambok and G. Klein (Eds.) Naturalistic decision making. Mahwah, NJ: Lawrence Erlbaum. Dreyfus, H. (1955, 1967). Designing for people. New York: Allworth Press. Dunbar, K. (1999). How scientists build models: In vivo science as a window on the scientiﬁc mind.
+In: L. Magnani, N. Nersessian and P. Thagard. Model-based reasoning in scientiﬁc discovery, pp. 89–98. NY: Plenum Press. Ericsson, K. A. and Smith, J. (Eds.) (1991). Toward a general theory of expertise. Cambridge: Cambridge University Press. Ericsson, K. A. and Charness, N. (1997). Cognitive and developmental factors in expert performance. In: P. J. Feltovitch, K. M. Ford, R. R Hoffmann (Eds.) Expertise in context: Human and machine. Cambridge, MA: MIT Press. Ericsson, K. A., Charness, N., Hoffman, R. R. and Feltovitch, P. J. (Eds.) (2006). The Cambridge handbook on expertise and expert performance. Cambridge: Cambridge University Press. Feltovitch, P. J., Ford, K. M. and Hoffmann, R. R. (Eds.) (1997). Expertise in context: Human and machine. Cambridge, MA: MIT Press. Fiore, S. F. and Hoffman, R. R. (2007). Perceptual (Re)learning: A leverage point for human-centered computing. IEEE Intelligent Systems, 22(3), (in press). Gruber, H. E. (1981). Darwin on man: A psychological study of scientiﬁc creativity (2nd Ed.) Chicago: Chicago University Press. Heiser, J. and Tversky, B. (2005). Characterizing diagrams produced by individuals and dyads. In: T. Barkowsky (Ed.) (2005). Spatial cognition: Reasoning, action, interaction, pp. 214–223. Berlin: Springer-Verlag. Hoffman, R. R. (1987). The problem of extracting the knowledge of experts from the perspective of experimental psychology. The AI Magazine, 8(2), 53–66. Hoffman, R. R. (Ed.) (1992). The psychology of expertise: Cognitive research and empirical AI. New York: Springer Verlag. Hoffman, R. R., Feltovitch, P. J. and Ford, K. M. (1997). A general conceptual framework for conceiving of expertise and expert systems. In: P. J. Feltovitch, K. M. Ford, R. R. Hoffmann (Eds.) Expertise in context: Human and machine. Cambridge, MA: MIT Press. Hollnagel, E. and Woods, D. D. (2005). Joint cognitive systems: Foundations of cognitive systems engineering. Boca Raton, FL: Taylor and Francis. Hutchins, E. (1995a). Cognition in the wild. Cambridge, MA: MIT Press. Hutchins, E. (1995b). How a cockpit remembers its speeds. Cognitive Science, 19, 265–288. Klein, G. A. and Crandall, B. W. (1995). The role of mental simulation in naturalistic decision making. In: P. Hancock, J. Flach, J. Caird and K. Vicente (Eds.) Local applications of the ecological approach to human-machine systems, Vol. 2, pp. 324–358. Mahwah, NJ: Lawrence Erlbaum Associates. Klein, G. (1997). An overview of naturalistic decision making applications. In: C. E. Zsambok and G. Klein (Eds.) Naturalistic decision making. Mahwah, NJ: Lawrence Erlbaum.
+
+CH008.indd 236
+
+9/27/07 6:26:50 PM
+
+Designing for expertise
+
+237
+
+Klein, G. (1998). Sources of power: How people make decisions. Cambridge, MA: MIT Press. Klein, G. A., Ross, K. G., Moon, B. M., et al. (2003). Macrocognition. IEEE Intelligent Systems, 18(3), 81–85. Klein, G. A., Moon, B. and Hoffman, R. R. (2006a). Making sense of sensemaking. 1: Alternative perspectives.
+IEEE Intelligent Systems, 21(4), 22–25. Mark, G., Gonzalez, V. M. and Harris, J. (2005). No task left behind? Examining the nature of fragmented
+work. Proceedings of CHI 2005, pp. 321–330, ACM, Portland OR, April 2–7, 2005. Minsky, M. (1997). Negative expertise. In: P. J. Feltovitch, K. M Ford, R. R. Hoffmann (Eds.) Expertise in
+context: Human and machine. Cambridge, MA: MIT Press. Norman, D. (1986). The design of everyday things. New York: Doubleday. Rappaport, A. T. (1997). Context, cognition, and the future of intelligent infostructures. In: P. J. Feltovitch,
+K. M. Ford, R. R. Hoffmann (Eds.) Expertise in context: Human and machine. Cambridge, MA: MIT Press. Roesler, A. and Woods, D. D. (2005). Inventing the future of cognitive work, Proceedings of the 6th international conference of the European Academy of Design. University of the Arts, Bremen, Germany, March 29–31 2005. Schön, D. (1983). The reﬂective practitioner. New York: Basic Books. Shanteau, J. (1992). The psychology of experts: An alternative view. In: G. Wright and F. Bolger (Eds.) (1992). Expertise and decision support. London: Plenum Press. Simon, H. A. and Chase, W. G. (1973). Skill in chess. American Scientist, 61, 394–403. Sternberg, R. J. (1997). Cognitive conceptions of expertise. In: P. J. Feltovitch, K. M. Ford, R. R. Hoffmann (Eds.) Expertise in context: Human and machine. Cambridge, MA: MIT Press. Wallace, D. B. and Gruber, H. E. (Eds.) (1989). Creative people at work. New York: Oxford University Press. Winograd, T. and Flores, F. (1986). Understanding computers and cognition. Norwood, NJ: Ablex Publishing Corporation. Woods, D. D., Roth, E. M. and Bennett, K. B. (1990). Explorations in joint human-machine cognitive systems. In S. Robertson, W. Zachary and J. Black (Eds). Cognition, computing and cooperation. Norwood, NJ: Ablex Publishing. Woods, D. D., Johannesen, L., Cook, R. I. and Sarter, N. (1994). Behind human error: Cognitive systems, computers and hindsight. Human Systems Integration Information and Analysis Center, WPAFB, Dayton OH. (available at http://www.hsiiac.org/hsi/products.do?actionϭdetailandcodeϭHS-1994-2). Woods, D. D. (1995). Towards a theoretical base for representation design in the computer medium: Ecological perception and aiding human cognition. In: J. Flach, P. Hancock, J. Caird and K. Vicente (Eds.) An ecological approach to human machine systems I: A global perspective. Mahwah, NJ: Lawrence Erlbaum. Woods, D. D. and Dekker, S. W. A. (2000). Anticipating the effects of technological change: A new era of dynamics for human factors. Theoretical Issues in Ergonomic Science, 1(3), 272–282. Woods, D. D. and Hollnagel, E. (2006). Joint cognitive systems: Patterns in cognitive systems engineering. Boca Raton, FL: Taylor and Francis. Wright, G. and Bolger, F. (Eds.) (1992). Expertise and decision support. London: Plenum Press. Zsambok, C. E. and Klein, G. (Eds.) (1997). Naturalistic decision making. Mahwah, NJ: Lawrence Erlbaum.
+
+CH008.indd 237
+
+9/27/07 6:26:50 PM
+
+***Author query **
+[AU1]AU: Woods et al., 2002 not in refs. Pl provide details [AU2]AU: Hoffman 2003 not in refs. Pl provide details [AU3]AU: Chapter Xref OK? [AU4]AU: Jenkins 1979 not in refs. Pl provide details [AU5]AU: Ericsson et al. 1993 not in refs. Pl provide details [AU6]AU: Published yet? Please give page nos. [AU7]AU: Published yet? Please give page nos.
+
+CH008.indd 238
+View publication stats
+
+9/27/07 6:26:51 PM
+

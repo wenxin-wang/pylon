@@ -1,0 +1,229 @@
+
+Press J to jump to the feed. Press question mark to learn the rest of the keyboard shortcuts
+Jump to content
+r/ haskell Subreddit Icon
+1
+Get Coins
+stieizc 1 karma User account menu
+r/ haskell
+Posts
+3
+Posted by
+u/asoiafthrowaw
+3 years ago
+Archived
+Polling on sockets
+
+I understand that the RTS is using kqueue and epoll for various things internally - but how is this mechanism exposed to users?
+
+Here is a scenario: picture a server that has to keep N open TCP connections that occasionally receive data. What would be the way to go? Would issuing a forkIO call coupled with a blocking read internally translate to adding the socket file descriptor to the kqueue / epoll queues? Or what is the correct solution of the "10k problem" in Haskell? Note that this is not a HTTP 1.1 server that closes the connection after providing a reply.
+
+Also, if I understand things correctly, the System.Event module that was doing this was renamed to GHC.Event and marked as internal, therefore it shall not be used directly by applications.
+8 comments
+Give Award
+share
+save hide report
+100% Upvoted
+This thread is archived
+New comments cannot be posted and votes cannot be cast
+Sort by
+best
+level 1
+erebe
+3 points · 3 years ago
+
+Yes, you don't have to use epoll directly as you would normally do in C/C++. Just spawn with forkIO one greenthread for "reading" on the socket and another one for "writing" on it.
+
+The haskell RTS will handle the rest for you and it will be performant. So relax and enjoy :)
+
+P.s: One major pain will be how you choose to comunicate with those threads. Think carefully before rushing to a solution
+Give Award
+share
+Report Save
+level 2
+asoiafthrowaw
+Original Poster 1 point · 3 years ago
+
+I guess the need for two separate threads stems from the way you communicate - if the thread is doing just some reading and writing to a different network node, you don't need two separate green threads. Or is there some reason for sticking to one file descriptor per green thread? (Like some sort of a design pattern that Haskell's RTS recognises).
+Give Award
+share
+Report Save
+level 3
+Vulpyne
+1 point · 3 years ago
+
+I don't think you need a separate thread for each connection unless you basically want to emulate non-blocking writes or catch write exceptions on a separate thread for whatever reason.
+Give Award
+share
+Report Save
+level 4
+farnoy
+1 point · 3 years ago
+
+Just curious, how would you wait for events on multiple fds in a single thread?
+Give Award
+share
+Report Save
+level 5
+Vulpyne
+1 point · 3 years ago
+
+You normally wouldn't do that — you'd just forkIO a thread for doing your blocking operations and if you wanted to actually handle events in a single place then you'd push the events into a channel or something similar.
+
+However, there are bindings to kqueue, poll, epoll, and even libev if you really want to handle the IO multiplexing manually. Seems like some of those are fairly old so I'm not sure how well maintained they are.
+Give Award
+share
+Report Save
+level 1
+WarDaft
+2 points · 3 years ago
+
+Essentially yes. This would be more like solving the 100k problem though, on most hardware.
+Give Award
+share
+Report Save
+level 2
+asoiafthrowaw
+Original Poster 1 point · 3 years ago
+
+Fascinating. There must be quite some logic going on to translate the forkIO + read to a kqueue call.
+Give Award
+share
+Report Save
+level 3
+tathougies
+20 points · 3 years ago · edited 3 years ago
+Gold
+
+    There must be quite some logic going on to translate the forkIO + read to a kqueue call.
+
+Not really. It's a green threads implementation. Basically forkIO adds a new IO action to a list of active threads the RTS keeps somewhere, and continues on with the calling IO action. When a blocking IO call comes in on the current thread, the current IO continuation is added to a queue of threads that have been suspended pending some event. Then, the RTS looks through all suspended threads and resumes the ones that have had their resume event occur. It does the check via kqueue, select, epoll, etc. The RTS resumes the thread by adding the thread back into the active thread queue. Then the RTS pops off the next active thread from the active thread queue and invokes the continuation.
+
+Of course, some threads don't do any IO, and under the scheme I described, these threads could potentially block all the other threads. To counter this, GHC adds checks at every memory allocation point. If the rts decides that the thread has run too long, its current continuation is added to the end of the active thread queue and the next active thread continuation is invoked, thus ensuring that each thread gets some time to run.
+
+To see how this all works you can examine the GHC sources. I'm not a GHC dev, so this is all new to me, but I think the GHC source is quite approachable.
+
+I know we're looking for a scheduling system in the run-time system, so the rts folder seems to be the place to start. Aha! There's a file called Schedule.c .. let's see what that contains.
+
+rts/Schedule.c seems to contain the active/blocked thread queues, as well as C functions to manage these. The entire scheduling logic 'loop' seems to be implemented in the schedule function here. It appears to loop forever trying to find a thread that it can run via the scheduleFindWork function (line 271). When it finds one, it seems to run it according to what kind of thread it is (compiled code or interpreted). This seems to happen on line 445, in the call to traceEventRunThread . At some point, the thread either yields (via memory allocation or call to yield) or calls a blocking call. Compiled threads seem to return this status in StgRegTable 's rRet field. If a thread yielded, the value would be ThreadYielding . For a blocking call, ThreadBlocked . It may also be finished ( ThreadFinished ) or an error ( StackOverflow or HeapOverflow ).
+
+The scheduleHandleYield function seems to do what I described for long-running threads -- adds the current thread to the back of the active queue and runs the next available thread. scheduleHandleThreadBlocked seems to be invoked for threads that made a blocking call, but it seems to assume that the thread has already managed putting itself on the wait queue. Let's see if we can figure out how that works.
+
+Looking through the base library, I see that there are source files for a GHC.IO module. This seems like a place to start. I think the hGetChar function ought to be a blocking call, since we're waiting for data from disk, so I look for that and find it in GHC.IO.Handle.Text . It seems to make sure the handle is readable, and then tries to read bytes out of an internal buffer. If the buffer is empty, it seems to call readTextDevice , which is defined in GHC.IO.Handle.Internals . This function seems to call GHC.IO.BufferedIO.fillReadBuffer to actually read the bytes from the device. If we look at GHC.IO.BufferedIO , it looks like this function is part of a type class. According to the comment, the implementations of this function are what does the blocking! So close, but we just have to find the instance that's being used for a regular file.
+
+If we search for instance BufferedIO , it looks like there's an instance for BufferedIO FD in GHC.IO.FD . Perhaps this is what is going to do our blocking! The implementation for fillReadBuffer here seems to eventually call readBuf . This is again defined in GHC.IO.BufferedIO , and seems to call GHC.IO.Device.read , which again is a class function of GHC.IO.Device.RawIO , so now we need to find the instance for RawIO FD . Luckily this is in GHC.IO.FD ! The implementation of read here calls fdRead which calls readRawBufferPtr . This function seems to check if we ought to block, and if so, it calls threadWaitRead , passing in the file descriptor to wait on. Aha! This might be it.
+
+It looks like the threadWaitRead function is implemented in GHC.Conc.IO . This function gets into the nitty-gritty details of the IO monad but seems to call waitRead# with the file descriptor. waitRead# has the magic hash, so it's probably some kind of built-in.
+
+Searching for waitRead# leads us to the primops file . It also leeds us to the C-- implementation of the primops in rts/PrimOps.cmm , where we find a definition for stg_waitReadzh . That's close enough, so I'll take it!
+
+This seems to implement the logic of a blocking call I described above. First, it makes sure the current thread is not blocked. I think CurrentTSO here is probably a pointer to a structure containing information on the current thread state. Next, it sets the blocking reason to BlockedOnRead and stores the file descriptor in the thread state. Finally it appends the current thread to the blocked queue, and jumps to stg_block_noregs .
+
+stg_block_noregs is defined in rts/HeapStackCheck.cmm , and invokes the BLOCK_GENERIC macro, which seems to set the thread status to ThreadBlocked and calls a function to return control back to the scheduler.
+
+So now, we've traced a call from hGetChar until the time the thread suspends itself as a blocked thread waiting for a read and returns control to the scheduler. How does the scheduler restart the thread when the read is ready? I search for the BlockedOnRead symbol, since I figure something needs to handle that to actually implement the blocking. Sure enough, the results contain a reference to rts/Posix/Select.c . Perhaps this is what eventually calls select . Looking for BlockedOnRead in this file, it seems that it is indeed checked in the awaitEvent function. This function seems to go through all blocked threads and update the select data structures according to the event being waited on. It then calls select on line 330. So it sounds like whatever is waking up our threads ought to be calling this function.
+
+So now I go back to the schedule function in rts/Schedule.c and look for awaitEvent . Sure enough, it's called in the scheduleCheckedBlockedThreads function, which is called from the scheduleFindWork function. But wait! That's the function the scheduler used to find which thread to run next.
+
+So the basic workflow for a blocking call goes like this:
+
+    A blocking function is called, the thread is updated and pushed to a waiting queue
+
+    Control is returned to the scheduler which runs the next piece of work available
+
+    At some point, due to another blocking call or an implicit or explicit yield, control is transferred back to the scheduler which calls scheduleFindWork , which eventually calls select (or kqueue or whatever).
+
+    If select says the condition has been fulfilled, the blocked thread is added back to the active queue
+
+    Since it's in the active queue, the schedule function will invoke it at some point in the future.
+
+A long call chain for sure, but straightforward when you get down to it. Hope that helps!
+
+EDIT: For completeness's sake, forkIO is defined in GHC.Conc.Sync , and invokes the fork# primop, defined as stg_forkzh in rts/PrimOps.cmm . The implementation creates a new thread with the supplied parallel action and calls scheduleThread in rts/Schedule.c . This function simply appends the new TSO object to the run queue.
+Give Award
+share
+Report Save
+About Community
+r/haskell
+r/haskell
+The Haskell programming language community. Daily news and info about all things Haskell related: practical stuff, theory, types, libraries, jobs, patches, releases, events and conferences and more...
+54.1k
+
+Members
+176
+
+Online
+Created Jan 25, 2008
+Join Create post
+Community options
+Sidebar
+
+Community Guidelines
+Useful links
+
+    Download Haskell
+    Try Haskell in your browser
+    Haskell.org status
+
+Other communities
+
+    #haskell IRC channel
+    Haskell Community Discourse
+    Planet Haskell blog aggregator
+    Follow Haskell on Twitter
+    Haskell mailing lists
+    NYC Haskell Meetup videos
+    Haskell Discord Channel
+
+Professional resources
+
+    The Industrial Haskell Group
+    Hire Haskell programmers
+    The Commercial Users of FP
+
+Learning material
+
+    Ask a question on Haskell Stack Overflow
+    Learn You a Haskell
+    Real World Haskell
+    School of Haskell
+    Haskell Wikibook
+
+Haskell development
+
+    Hackage: Haskell Libraries
+
+Other subreddits
+r/haskellquestions
+
+4,698 members
+Join
+r/haskelltil
+
+1,330 members
+Join
+r/haskell_proposals
+
+1,161 members
+Join
+r/haskellgamedev
+
+1,467 members
+Join
+r/haskell_jp
+
+361 members
+Join
+Moderators
+u/dons
+u/jfredett
+u/edwardkmett
+u/taylorfausak
+u/Iceland_jack
+u/BoteboTsebo
+u/AutoModerator
+View All Moderators
+help Reddit App Reddit coins Reddit premium Reddit gifts
+about careers press advertise blog Terms Content policy Privacy policy Mod policy
+Reddit Inc © 2020. All rights reserved
+Back to top

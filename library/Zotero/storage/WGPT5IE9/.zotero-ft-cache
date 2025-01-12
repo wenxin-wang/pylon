@@ -1,0 +1,392 @@
+See discussions, stats, and author profiles for this publication at: https://www.researchgate.net/publication/236984314
+Afﬁnity-Based Network Interfaces for Efﬁcient Communication on Multicore Architectures
+Article in Journal of Computer Science and Technology · May 2013
+DOI: 10.1007/s11390-013-1352-2
+
+CITATIONS
+6
+4 authors: Andrés Ortiz University of Malaga 149 PUBLICATIONS 1,400 CITATIONS
+SEE PROFILE
+Antonio F. Díaz University of Granada 142 PUBLICATIONS 2,683 CITATIONS
+SEE PROFILE
+
+READS
+1,757
+Julio Ortega University of Granada 253 PUBLICATIONS 2,958 CITATIONS
+SEE PROFILE
+Alberto Prieto University of Granada 290 PUBLICATIONS 3,696 CITATIONS
+SEE PROFILE
+
+Some of the authors of this publication are also working on these related projects: Energy-aware High Performance Multi-objective Optimization in Heterogeneous Computer Architectures. Applications on Biomedical Engineering View project LAGRANGE - Multimodal and longitudinal biomarker analysis for diagnosis and prediction of Alzheimer's and Parkinson's View project
+
+All content following this page was uploaded by Andrés Ortiz on 10 March 2014.
+The user has requested enhancement of the downloaded file.
+
+Ortiz A, Ortega J, D´ıaz AF et al. Aﬃnity-based network interfaces for eﬃcient communication on multicore architectures. JOURNAL OF COMPUTER SCIENCE AND TECHNOLOGY 28(3): 508–524 May 2013. DOI 10.1007/s11390-013-1352-2
+
+Aﬃnity-Based Network Interfaces for Eﬃcient Communication on Multicore Architectures
+Andr´es Ortiz1, Julio Ortega2, Senior Member, IEEE, Antonio F. D´ıaz2, and Alberto Prieto2, Senior Member, IEEE
+1Department of Communications Engineering, University of M´alaga, M´alaga 29071, Spain 2Department of Computer Architecture and Technology/CITIC, University of Granada, Granada 18071, Spain
+E-mail: aortiz@ic.uma.es; {julio, afdiaz}@atc.ugr.es; aprieto@ugr.es
+Received January 30, 2012; revised December 11, 2012.
+Abstract Improving the network interface performance is needed by the demand of applications with high communication requirements (for example, some multimedia, real-time, and high-performance computing applications), and the availability of network links providing multiple gigabits per second bandwidths that could require many processor cycles for communication tasks. Multicore architectures, the current trend in the microprocessor development to cope with the diﬃculties to further increase clock frequencies and microarchitecture eﬃciencies, provide new opportunities to exploit the parallelism available in the nodes for designing eﬃcient communication architectures. Nevertheless, although present OS network stacks include multiple threads that make it possible to execute network tasks concurrently in the kernel, the implementations of packet-based or connection-based parallelism are not trivial as they have to take into account issues related with the cost of synchronization in the access to shared resources and the eﬃcient use of caches. Therefore, a common trend in many recent researches on this topic is to assign network interrupts and the corresponding protocol and network application processing to the same core, as with this aﬃnity scheduling it would be possible to reduce the contention for shared resources and the cache misses. In this paper we propose and analyze several conﬁgurations to distribute the network interface among the diﬀerent cores available in the server. These alternatives have been devised according to the aﬃnity of the corresponding communication tasks with the location (proximity to the memories where the diﬀerent data structures are stored) and characteristics of the processing core. As this approach uses several cores to accelerate the communication path of a given connection, it can be seen as complementary to those that consider several cores to simultaneously process packets belonging to either the same or diﬀerent connections. Message passing interface (MPI) workloads and dynamic web servers have been considered as applications to evaluate and compare the communication performance of these alternatives. In our experiments, performed by full-system simulation, improvements of up to 35% in the throughput and up to 23% in the latency have been observed in MPI workloads, and up to 100% in the throughput, up to 500% in the response time, and up to 82% in the requests attended per second have been measured in dynamic web servers.
+Keywords interrupt aﬃnity, processor aﬃnity, network interface, oﬄoading, SIMICS
+
+1 Introduction
+The availability of high bandwidth links (multigigabit Ethernet, Inﬁniband, etc.)[1], along with the rate of link bandwidth improvements can shift the communication bottleneck towards the servers. Thus, the network interface (NI) of the server is an important element in the communication path, and optimized NI architectures to reduce the corresponding communication overhead due to context switching, multiple data copies, and interrupt mechanisms have constituted a relevant researching line in the years. After ﬁrst approaches such as light communication protocols and user-level network interfaces[2], the presence of multiple processors in
+
+the computing nodes, including the emergence of multicore processor, motivated proposals towards dedicating some processors of the node to executing the communication tasks, such as the previously proposed protocol oﬄoading and onloading approaches[3-6], and network stack parallelization strategies to simultaneously process packets from the same or diﬀerent connections[7-8]. Oﬄoading consists in the use of processors included in the network interface cards (NICs) for protocol processing. In this case, the NIC can directly interact with the network without the host CPU participation, thus allowing not only to decrease the CPU overhead for interrupt processing, but also a protocol latency reduction for short control messages (such as ACKs) that, in this
+
+Regular Paper This work was partly supported by the Ministry of Science and Innovation of Spain under Grant Nos. SAF2010-20558, TIN201232039 and IPT2011-1728-430000.
+2013 Springer Science + Business Media, LLC & Science Press, China
+
+Andr´es Ortiz et al.: Multicore Aﬃnity Network Interfaces
+
+509
+
+way, they would not have to go to the main memory through the I/O bus. This I/O traﬃc reduction contributes to avoiding the bus contention and it is also possible to improve the eﬃciency of the direct memory access (DMA) from the NIC, whenever short messages are assembled to generate less DMA transferences. Nevertheless, some work[9] argued that protocol oﬄoading does not clearly beneﬁt the communication performance of the applications because 1) the NIC CPU speed must be high enough to process the protocol as fast as not to become a communication bottleneck, and moreover, 2) the API for communicating the NIC (that executes the oﬄoaded protocol) and the host CPU (that executes the OS, the application and the API), could be very complex, specially for the TCP stack[9]. Another proposed alternative to release host CPU cycles is the so-called protocol onloading or, more specifically, TCP onloading[10]. This technique proposes the use of a general-purpose processor in a multicore microprocessor, or in an symmetric multi-processor (SMP), for protocol processing. With onloading, the processor that executes the communication software usually has the same speed and characteristics as the host CPU, and it can access the main memory with the same rights as the host CPU. Although this alternative exploits the current trend towards multicore architectures or multiprocessor nodes, onloading the communication tasks in a multicore platform could result in an overload on memory access subsystem during intensive communication workloads, thus degrading the overall application performance. There are some papers that compare both techniques [11] and show that the relative improvement on peak throughput oﬀered by oﬄoading and onloading depends on the rate of application workload to communication overhead, the message sizes, and other characteristics of system architecture, such as the I/O bandwidths and the way the NIC is connected to the system processor and memory. Moreover, improvements such as the reduction in the number of interrupts, the DMA transfer optimizations, and the use of mechanisms to avoid bottlenecks in the receiverside such as split headers, asynchronous copy by using DMA, and multiple receive queues[13] could be implemented by both onloaded or oﬄoaded approaches. Presently, the availability of multicore processors with more than four cores has opened new possibilities. More recent work on network interface optimization[8,12-14] has been focused on simultaneous processing of packets
+
+(or messages) from the same or diﬀerent connections (or ﬂows) rather than on improving the throughput and latency of individual connections. Indeed, early work[7,15] tried to improve performance using parallelization. Nevertheless, the parallel execution of stateful protocols, such as TCP/IP, shows diﬃculties related with contention and synchronization costs, and cache eﬃciency[8,12,14]. The coordinated scheduling of protocol processing and network applications on the same cores has been proposed to decrease these overheads. This strategy implies the aﬃnity of interrupts, ﬂows, and network data[14] that means to steer network interrupts, packet processing and received data to the same core where the corresponding network application is been executed. Two main complementary trends for allowing aﬃnity-based network interfaces can be identiﬁed: NIC technologies[16-18] and OS software technologies[8,12-13]. While the NIC technologies implement features at the NIC to assign packets to their corresponding ﬂow, distribute them among diﬀerent receive queues, and steer packets to the cores on which the corresponding network application resides, the OS software technologies try to use a core (or several ones) in the multicore microprocessor to steer the incoming
+packets to other cores . The work here presented contributes to the approach of OS software technologies as we have devised an approach that distributes the communication tasks of the network interface among the diﬀerent processors/cores in the node according to their aﬃnity (proximity between the processors/cores where the work is done and the memory where the corresponding data structures are stored), thus trying to improve the performance in latency and bandwidth of the communication path that a given connection uses. Therefore, the existence of heavy loaded cores, that execute not only the network application but also the communication processing, is avoided by distributing these tasks among diﬀerent cores whilst the locality of data accesses is kept through a suitable aﬃnity scheduling. Although our approach allows the performance improvement of individual connections, it could also be applied to take advantage of either packet-based, or connection-based parallelism in the same way as recent Receive Packet
+Steering (RPS) and Receive Flow Steering (RFS) technologies.
+In what follows, Section 2 describes the characteristics of our aﬃnity-based network interface. Section 3 provides our experimental set up, and the performance
+
+IRQ aﬃnity documentation. Linux source code. http://www.kernel.org, October 2012. Intel Corporation. Intel VNDq technology. http://www.intel.com/content/www/us/en/ethernet-controllers/82598-10-gbecontroller-datasheet.html, November 2012. Corbet, J. Receive packet steering. http://lwn.net/Articles/362339/, September 2012. Edge, J. Receive ﬂow steering. http://lwn.net/Articles/382428/, September 2012.
+
+510
+
+J. Comput. Sci. & Technol., May 2013, Vol.28, No.3
+
+evaluation of dynamic web servers and MPI workloads, while diﬀerent network interface alternatives are implemented. Finally, the previous work on this area is brieﬂy described in Section 4, and the conclusions are given in Section 5.
+2 Aﬃnity-Based Network Interface
+In this section we describe a multicore-aware network interface (NI) that takes into account aﬃnity concepts (AbNI, Aﬃnity-Based NI). This network interface is able to improve the communication performance of individual connections by distributing the communication path among diﬀerent cores/processors in the node. Thus it could take advantage of previously proposed onloading strategies and, in some speciﬁc NIC architectures, oﬄoading strategies thus avoiding their respective drawbacks. It is important to note that the proposed AbNI improves the performance of communications subsystem through an adequate distribution of the communication workload, and does not imply any modiﬁcation in the TCP/IP stack. In fact, a TCP/IP implementation on Linux Kernel 2.6 has been used.
+2.1 Packet Receive Processing with AbNI
+Fig.1 shows the main steps for packet reception in a network interface where the communication protocols are running in the same core as the application and the OS, and thus no speciﬁc optimization stra-
+
+tegy has been implemented. We assume that our NIC supports NAPI[19] and that the device driver uses a polling method to use interrupt mitigation techniques which aims to reduce the network processing overhead on packet receiving. Throughout this paper, we call it base network interface as it is used as a reference to evaluate the improvements provided by our new interface proposals. In Fig.1, after a new packet reaches the NIC, ( ), it is copied by DMA from the NICs memory to a given DMA area located in the main memory ( ). This area is called ring buﬀer, consists of a set of packet descriptors maintained by the NIC driver, and contains the pointers to the buﬀers and some status bits (e.g., packet received OK, CRC error). To receive a packet, each packet descriptor has to be initialized and pre-allocated with an empty socket buﬀer (sk buﬀ) structure, used in the Linux to store the incoming packets. An sk buﬀ structure containing 240 bytes to store a packet metadata corresponding to the protocols used in the higher layers, for example TCP, and 2 KB to store the packet itself. The size of the receive ring buﬀer depends on the MTU (maximum transfer unit), and it is set to 1 500 bytes by default, although in our case we set the MTU to 9 000 bytes which is the size of Jumbo frames, in order to reduce the interrupt rate. Each packet descriptor is mapped into the address space accessible by the NIC that, before copying the packets in the DMA area, has also to read packet descriptors which are ready to receive in order to know
+
+Fig.1. Packet reception in the base network interface: Kernel functions involved in the process (a Linux kernel with an NAPI device driver is supposed).
+
+Andr´es Ortiz et al.: Multicore Aﬃnity Network Interfaces
+
+511
+
+the memory addresses where the received packets have to be placed. Thus, after , once the ring buﬀer is full or a timeout expires (no more packets received), the NIC updates the corresponding descriptors with packet lengths, marks them as used, and sends a hardware interrupt to the system CPU0, through the APIC (advanced programmable interrupt controller), to inform that new packets are available to be processed ( ). Once CPU0 receives the interrupt, the interrupt handler deﬁned in the NIC driver is started ( ). It checks the cause of the interrupt by reading the corresponding NIC register, determines the address and lengths of the packets and maps the sk buﬀ structures, to make them accessible to the protocol stack ( ). In our implementation, this mapping is made by means of pointers to the packets on the ring buﬀer as explained later on. Once the sk buﬀ is allocated and the packets coming from the ring buﬀer can be accessed, the function netif rx schedule() is called by CPU0 to include the device into the CPU poll list ( ). The rest of the packet processing is done in the softirq[19], which is scheduled by the OS for protocol (IP and TCP/UDP) processing. The softirq is marked for execution (i.e., enqueued for execution) by using the function cpu raise softirq() ( ). Then, the function do softirq(), through softirq pending(), enqueues the marked softirq and, at the same time, the function softirq pending() returns a 32 bit mask indicating the status of the pending softirq routines, which are pointed by the pointer softirq vec. Hereafter, the packet stored in the sk buﬀer starts to be processed by higher layers through the function netif receive skb() ( ). Then, once the softirq has processed the protocols, the data are mapped by CPU0 from the sk buﬀ (socket buﬀers) to the application buﬀers at the user memory space, thus being available for the application ( ). Network applications usually involve many pro-
+
+cesses. For example, web applications include the web server (i.e., Apache web server processes), that extracts the necessary data from the disk or memory and performs some calculations to compose the response to client processes, network stack processes, and operating system processes. In this way, when the server is overloaded due to a large number of concurrent connections and complex data computation, the architecture of the system becomes crucial for the overall performance. In Linux kernel versions previous to 2.4, packet processing was performed in the bottom half context. The main limitation of this mechanism is that bottom half cannot run concurrently, even when several CPUs are available, which is a limitation on SMP scalability. This makes the bottom half mechanism not suitable for high bandwidth network links, in which the packets per second that have to be processed is very high. Thus, the softirq mechanism, available from Linux Kernel 2.5, makes it possible to replace the bottom half mechanism thus allowing the execution of deferrable functions for the corresponding software event[19-20]. Although softirqs of the same type (i.e., network receiving softirq) cannot run concurrently over the same CPU, this can be achieved if several CPUs are available in the system. Consequently, diﬀerent softirqs can be dispatched to diﬀerent processors and several TCP/IP processing threads can run in parallel on these processors.
+Fig.2 shows the way our AbNI receives packets. The implementation of this new network interface, AbNI, requires some modiﬁcations in the kernel code along with the use of some functions of the SMP kernel that makes it possible to take advantage of interrupt aﬃnity. Thus, in the packet reception, interruptions coming from the NIC have to be redirected to the CPU1 as shown in Fig.2. This is addressed by the smp aﬃnity facility of the Linux Kernel 2.6. On the other hand, it is necessary to start the softirqs in a CPU diﬀerent to the one that
+
+Fig.2. Packet reception in the Aﬃnity-Based Network Interface, AbNI (modiﬁed kernel functions are highlighted in bold characters).
+
+512
+
+J. Comput. Sci. & Technol., May 2013, Vol.28, No.3
+
+executes the interrupt service routine (ISR) corresponding to the NIC IRQ. In the following, we summarize the main modiﬁcations on the kernel code and the interrupt delivering mechanism that modiﬁes its default behaviour for packet reception.
+Once a frame has been retrieved from the network ( ), the NIC transfers the packet to the ring buﬀer by DMA ( ). Once the DMA transference ﬁnishes, the NIC interrupts the CPU (CPU1 in Fig.2) ( ). As it is shown in Fig.2, it is necessary to modify the default interrupt scheme at this point. By default, the APIC, which is responsible for hardware interrupt delivery, sends all the interrupts to CPU0 (including the eth0 interrupts from the NIC). In this way, under high packet reception rates, such as those provided by multigigabit links, a high number of interrupts per second are generated. This situation could be overcome by means of the smp aﬃnity mask, that allows IRQ balancing by distributing the IRQs among the CPUs in the system: the interruptions from the NIC can be redirected to CPU1 ( ), while the other ones in the node interrupt CPU0. This has been accomplished through the /proc/irq virtual ﬁlesystem, by modifying the aﬃnity mask and by conﬁguring the APIC in such a way that the NIC exclusively interrupts CPU1. After accepting the interruption, CPU1 starts the driver ISR ( ), which maps the packets stored in the ring buﬀer to sk buﬀer structures ( ), calls the function netif rx schedule() and includes the unprocessed sk buﬀers into a list ( ), and the device into the CPU1 poll list ( ). All the functions listed above are executed by the interrupted CPU (CPU1). By this means incoming packets are stored in the memory addressed by CPU1. Moreover, the sk buﬀ structures housing the incoming packets are mapped by CPU1 (that executes the interrupt handler) and sk buﬀ handoﬀ is necessary to allow packet processing by other CPUs in the node, under a softirq context. This is implemented by the per-CPU variables[19-20]. These variables make it possible that each CPU on the system can own its copy of per-CPU variable. At the same time, these per-CPU variables can remain in their respective CPU caches, thus trying to minimize the trafﬁc on the system bus due to updates (although some traﬃc to keep cache coherence should appear). This is the case of the softnet data structures. In fact, a per-CPU softnet data structure is deﬁned in function netif rx schedule(). As it has been indicated, the received packets are added to an sk buﬀer list which can be sent to a speciﬁc CPU for processing. However, raising the softirq in a CPU diﬀerent from the CPU1 ( ), that, as it has been said, executes the ISR corresponding to the NIC IRQ, requires modiﬁcations in the function netif rx schedule(), called by
+
+the NAPI interface under the softirq. As it has been said, packet processing is done by the softirq. Although the interrupted CPU1 is responsible for polling the device, the softirq should be executed in the same CPU that executes the application (CPU2 in Fig.2). This strategy tries to avoid cache misses due to incoming data shared by processes/threads running in diﬀerent CPUs. The ISR code included in the NICs driver, also marks a softirq as pending for execution (i.e., inserts it in the softirq execution queue) and sets the initial conditions for executing the softirq by using raise softirq() (i.e., NET RX SOFTIRQ for packet receiving) ( ). We have modiﬁed raise softirq() to
+Ç make it possible to execute the softirq, through the
+ksoftirqd corresponding to a speciﬁc CPU (10). The use of ksoftirq kernel threads, introduced from Kernel 2.6, avoids the need for checking pending softirqs continuously, which involves the do softirq() execution in an endless loop causing user threads starvation. Nevertheless, the use of kernel threads for executing network softirqs is a trade-oﬀ solution, as ksoftirqd threads (also called ksoftirqd CPUX) are low priority threads (i.e., user threads have higher priority). Then, after the ﬁrst execution of do softirq() for processing the netdev max backlog number of packets, the next incoming packets will not be processed until ksoftirqd gets CPU time, and user threads will be processed with a higher priority. As our purpose is to use a speciﬁc core for packet processing, we have increased the priority of the ksoftirqd running on that core for the NET RX SOFTIRQ softirq execution. This has been achieved by means of the modiﬁcations made in the function ksoftirqd (in /linux/kernel/softirq.c). Once the packet stored in the sk buﬀer structure has been processed at lower layers, the routine netif receive skb() makes it possible the packet to be processed by upper layers (i.e., IP), the data are copied by CPU2 from the sk buﬀ (socket buﬀers) to the application socket
+Ç buﬀer mapped at the user memory space (11 ) thus beÇ ing available for the application ( 12 ).
+Algorithm 1 describes the device driver operation after a packet is received in the NIC and the functions involved in the interrupt service routine (ISR) and the software interrupt mechanism according to the previous comments regarding our implementation. Further details of the functions can be found in [19-21].
+2.2 Aﬃnity and Data Locality Issues
+In this network interface AbNI, the processor CPU1 executes the driver in the same way as an onloaded network interface could do. Moreover, CPU1 is also able to execute other tasks such as system calls for copying the data from the sk buﬀ sockets to the application
+
+Andr´es Ortiz et al.: Multicore Aﬃnity Network Interfaces
+
+513
+
+Algorithm 1. Packet Receiving Process with Kernel Mo-
+diﬁcations
+1. Packet is received from the network to the NIC.
+2. After DMA transfer to ring buﬀer in main memory IRQ is delivered to CPUi
+3. dev alloc skb() function allocates sk buﬀ to map packets from the ring buﬀer.
+4. netif rx schedule() function starts higher layer packet processing.
+4.1 skb queue tail () queues sk buﬀ structures to be processed (softirq context: packet processing) and sk buﬀ hand oﬀ to CPUj is performed
+4.2 NIC is included in the CPUj poll list (dev → poll()).
+4.3 raise softirq irqoﬀ(NET RX SOFTIRQ) function is executed on CPUj to set the NET RX SOFTIRQ ﬂag (softirq pending).
+4.4 net rx action() executes the softirq.
+4.5 netif receive skb() function continues processing the packets to upper layers (i.e., IP).
+5. Application takes the data from the sk buﬀ in the user space.
+buﬀers. The interrupts are received by CPU1, which also executes the driver as in the onloading strategy. As it can be seen from Fig.2, AbNI distributes the packet processing among CPU1 and CPU2, and it does not disturb CPU0 while receiving data. By this means, besides processing the OS parts not involved in the network interface, CPU0 could also be used for executing the application that consumes the packets, thus providing a whole distribution of the workload associated with the network application among CPU0, CPU1, and CPU2. By distributing the application processes in order to assign the protocol stack processing to a diﬀerent CPU, it would be possible to leverage the communication performance of the node. Nevertheless, as stated in [5, 13, 22-23], the overall performance of a node depends not only on architectural factors but also on a software distribution that releases CPU cycles for application processing and reduces memory accesses. Data movement reduction is accomplished by less memory accesses and less cache misses, as well as a reduction in the number of system calls, thus providing more CPU cycles available for the application. However, an important question has to be considered in the approaches that bind most of the network processing workload to a single core, while the corresponding network application processes run on other cores present in the node. In this case, data to be processed by the protocol stack could be located on an L1 or L2 cache diﬀerent from those corresponding to the processor that executes the application. This
+
+is an important issue in shared memory machines in which, due to cache misses, accessing to an uncached data usually spends a lot of CPU cycles, and consequently degrades the performance[7,24]. To analyze this problem, in this paper we consider the use of diﬀerent cache layouts as well as the aﬃnity issues related with the distribution of processes and interrupts among the available cores/processors to increase the rate of accesses to local data accesses. In our proposed AbNI, process aﬃnity has been performed by taking advan-
+tage of the sched aﬃnity() system call , provided by Linux 2.6 Kernel, which allows the migration of threads between CPUs. This system call can be used to set the process aﬃnity mask, which determines the CPU that will execute a speciﬁc thread. Thus, the sched aﬃnity() system call makes it possible to avoid unnecessary process migration among diﬀerent processors in order to reduce cache misses and system calls related with these migrations. In practice, this strategy allows overriding the scheduler default behaviour, and makes it possible to bind processes or threads to speciﬁc CPUs. The way to execute the NIC driver on a speciﬁc CPU has been allowed by binding the interrupt request mechanism to a speciﬁc CPU. This has been implemented by using the interrupt aﬃnity provided by the Linux 2.6 Kernel through smp aﬃnity, which contains the interrupt mask table for APIC programming. It makes it possible to dispatch IRQs to a speciﬁc processor which will run the NICs driver and the protocol stack. Although there are other approaches for IRQ dynamic distribu-
+tion, such as the irqbalance daemon , our goal is to keep the IRQs to be dispatched to the same CPU where the softirq is going to be enqueued. In the same way, there are alternatives such as [25] that allow dispatching user-level threads to diﬀerent cores on a multicore system.
+Figs. 3 and 4 show two diﬀerent alternative multiprocessor architectures to analyze the corresponding aﬃnity issues. These ﬁgures also show how the application processes have been distributed in order to balance the load among the CPUs in the node. In the alternative shown in Fig.3, called hybrid(1) (as it considers diﬀerent layouts for L1 and L2 caches), CPU0 and CPU1 share the L2 cache while CPU2 that, as it has been shown in Fig.2, executes the protocol stack and the application that consumes the packets, has its own cache memory. Thus, in Fig.3, CPU2 is able to run the network applications (web servers processes or MPI tasks in this paper) along with the protocol stack. At the same time, interrupts are redirected to CPU1, which executes the driver of the NIC. This approach
+
+Cgroup documentation. http://www.kernel.org/doc/Documentation/cgroups/cgroups.txt, October 2012. Irqbalance daemon. GNU general public license (GPL) version 2, http://irqbalance.org/, October 2012.
+
+514
+will potentially result in cache misses, and thus, in a large number of lost cycles when retrieving data from the main memory, especially when the server is under a high workload. The conﬁguration depicted in Fig.4 is called hybrid(2). It uses a diﬀerent cache layout for the CPUs that process the operating system and the server processes, respectively. The interrupts have been also redirected to CPU1 thus avoiding that the network interface interrupts the CPU that executes the application processes (CPU2). At the same time, a uniﬁed L2 cache has been implemented. This approach solves many cache locality problems, since the cache used by CPU2, that processes the protocol stack and the application processes, is shared with CPU1, thus resulting in less cache misses.
+
+J. Comput. Sci. & Technol., May 2013, Vol.28, No.3
+
+Fig.3. Distributed application processes workload (hybrid(1)).
+
+Fig.5. Cache layouts and workload distribution proﬁles.
+
+Fig.4. Distributed workload with cache locality improvement (hybrid(2)).
+Fig.5 illustrates the relation between cache eﬃciency and processor and interrupt aﬃnity issues, that could aﬀect diﬀerent conﬁgurations of cores/processors and memory hierarchies. Even though technologies such as
+
+Intel I/OAT or Intel MSI-X allow the use of several receiving queues, the Linux device driver performs a sequential polling among these queues that will assign a packet processing thread to a speciﬁc CPU. In practice, the context switches and the spinlocks needed to avoid a packet to be processed by two threads at the same time will degrade the performance of the system. Recent implementations of NAPI (new API), such as TNAPI
+(threaded NAPI) , allow the overcoming of some of these bottlenecks present on a standard implementation of NAPI. In this way, TNAPI assigns a receiving queue to each processor in the node, thus spawning one thread per queue, and there is no competition in
+
+Intel I/O acceleration technology. http://www.intel.com/technology/ioacceleration/index.htm, September 2012.
+Intel Gigabit and 10 Gigabit Ethernet controllers-optimized for multi-core intel processor-based servers. http://www.intel. com/network/connectivity/resources/technologies/optimized multicore.htm, October 2012.
+Multithreaded NAPI. http://www.ntop.org/products/pf ring/tnapi/, November 2012.
+
+Andr´es Ortiz et al.: Multicore Aﬃnity Network Interfaces
+
+515
+
+the thread assignment process. Nevertheless, as it has been said, processing a packet in a CPU diﬀerent from executing the application, causes cache misses and will degrade the performance of the application. Thus, it is important to take into account the distribution of processes among CPUs (when the spawning protocol is processing threads), especially under high application workloads. Fig.5(a) shows the situation in which the protocol processing thread is spawned on a CPU diﬀerent from the one that processes the application in case of local L2 caches. As the application data is not in the same cache memory, a main memory access may be necessary. On the other hand, Fig.5(b) corresponds to the same distribution of threads among processors as in Fig.5(a) although in Fig.5(b) both processors share the L2 cache. Fig.5(c) also corresponds to a system with a cache layout similar to that shown in Fig.5(b) and in Fig.4 (the hybrid(2) alternative). In this case, the protocol processing thread is spawned on the same CPU that executes the application, through the scheduling of a softirq on this CPU. Thus, the system of Fig.5(c) provides an adequate use of the shared L2 cache as accesses to main memory could be reduced since the data could be already cached in the local L2 cache. Moreover, since several softirqs may be queued on diﬀerent cores, the system is scalable as it is possible to execute diﬀerent network applications on diﬀerent CPUs or to exploit the systems resources with a multithreaded application, such as the Apache web server. In addition, diﬀerent hardware interrupts can be redirected to diﬀerent cores, avoiding the bottleneck imposed by the core that receives the hardware interrupts when more than one NIC are installed on the system. In this way, it is possible to assign the interrupts coming from an NIC to
+
+a speciﬁc core, and the network processing to another one, thus making the system more ﬂexible and able to exploit the available server resources according to their diﬀerent communication/computation proﬁles. In the description of the operation of our Aﬃnity-Based Network Interface (Fig.2), we have considered the lowest number or cores (CPU1 and CPU2) required to apply our approach. In the case of having more cores, which is common nowadays, our technique can be scaled by using more than one core for processing packets of different connections. Thus, through our proposal, interrupts could be redirected to diﬀerent cores depending on the network interface they are assigned to. This corresponds to the situation in which diﬀerent connections (from diﬀerent NICs in same cases) are used exclusively with diﬀerent applications. Therefore, although our experiments have been performed by using only one ﬂow of packets, the proposed AbNI can cope with several ﬂows coming from diﬀerent NICs by steering these ﬂows to diﬀerent CPUs. Fig.6 shows an example that considers two ﬂows from two diﬀerent NICs. In this case, interrupt aﬃnity is used to redirect the IRQs from different NICs holding diﬀerent ﬂows to diﬀerent CPUs. Further, the softirqs are executed in a diﬀerent CPU depending on the packet ﬂow and the application. Thus, a CPU is polling the NIC while the CPU executing the softirqs and the application that consumes the corresponding data ﬂow share at least one cache level, then reducing the number of cache misses and avoiding system bus overloading due to massive memory accesses.
+3 Experimental Setup and Results
+In this section we describe the experimental results
+
+Fig.6. Aﬃnity-based network interface (AbNI) with two NICs and two packet ﬂows.
+
+516
+
+J. Comput. Sci. & Technol., May 2013, Vol.28, No.3
+
+obtained by full-system simulation of diﬀerent scenarios, in order to show the improvements provided by the proposed AbNI. The experiments presented in Subsection 3.1 correspond to a dynamic web server that has to process both the server software and the network tasks. In the second case (Subsection 3.2), we have used a cluster conﬁguration in which the proposed alternatives to improve the network interfaces have been implemented in the nodes of the cluster. Thus, the performance of MPI over TCP is evaluated for diﬀerent message sizes and workloads in the nodes. The experimental results have been obtained by using the full-system simulator SIMICS[17]. As it is well known, this event-driven full-system simulator makes it possible to simulate not only the hardware details of the systems but also the OS and the applications running on it. The hardware of the interface conﬁgurations described in Section 2 has been modelled in SIMICS allowing the simulation at hardware level, and a Linux 2.6 operating system has been installed with the kernel modiﬁcations previously described to conﬁgure our network interface. Thus, experimental results have been obtained by simulating not only the hardware but also the software layer, which comprises the operating system and corresponding user applications. The SIMICS simulation model corresponding to the network interface proposed here is summarized in Fig.7. Although SIMICS allows an operating system to be installed on the machines modeled (Debian Linux with a 2.6 kernel in our case), using SIMICS for I/O simulation also requires implementing detailed timing models in order to provide accuracy and real behaviour. These timing
+
+models have been developed by us and could be connected to diﬀerent parts of the architecture to provide speciﬁc timing behaviours[43] as can be seen in Fig.7. As it was also done in [26], by enhancing SIMICS with the corresponding timing models, it has been possible to deﬁne adequate buses bandwidths and the other hardware characteristics required to conﬁgure a system able to work with 10 Gbps network bandwidths.
+We have built four diﬀerent SIMICS models for our simulations: a model of the base system, two models for oﬄoaded and onloaded network interfaces, respectively, and a model for our AbNI that has been suited to the diﬀerent alternatives shown in Figs. 3 and 4. In Fig.7, in the case of the simulated onloaded interface, CPU1 is used for network processing and CPU2 is not, and in the case of the considered oﬄoaded interface, the network processing is done by CPU2, which is included in the NIC (thus, CPU1 is the processor used for packet processing exclusively in the onloaded interface, and CPU2, simulated as a processor included NIC, is the only processor used for packet processing in the oﬄoaded interface)[17]. Techniques for improving the interrupt mechanisms, such as interrupt coalescing as well as NAPI[19-20] on the device driver packet processing framework, have been used in all cases (even for the base system). The characteristics of the system simulated for 10 Gbps links are similar to those of recent real systems (see for example [26]). Thus, in our SIMICS models, each simulated CPU is running at 2 GHz, and a model of a PCI-E bus is included to connect an SIMICS device module we have developed to model a 10 Gbps NIC. The simulation models also include two-
+
+Fig.7. Simulation model for the proposed aﬃnity-based network interface.
+
+Andr´es Ortiz et al.: Multicore Aﬃnity Network Interfaces
+
+517
+
+level cache layouts. The L1 cache has been divided into an instruction cache and a data cache, each with 256 lines of 64 bytes and a write-through policy. The L2 cache has 8 096 lines and 128 bytes per line, as in the L2 caches used by the IBM POWER7. We have also done some experiments with 64 bytes cache lines (the usual size in x86 processors) but no relevant performance diﬀerences have been observed. The associativity implemented in the L1 instruction cache, L1 data cache, and L2 caches are 2, 4 and 8 lines respectively. In all cases an LRU replacement policy and an MESI coherence protocol have been used.
+3.1 Experimental Results on Dynamic Web Servers
+In the experiments performed with dynamic web servers, we measure the eﬀective throughput as well as the number of requests per second the server can handle. As it is well known, slow NICs can become the bottleneck in the communication path[21]. Thus, in our present experiments, we have considered similar computing speeds for all the CPUs (including the CPU in the NIC). The experiments also take into account the rate of computing workload and communication overhead in the given application, since the bottlenecks in the application can change as computing workloads change. To denote this rate of computation to communication in a given application we use the parameter γ, called application ratio in [5], where this parameter is introduced along with LAWS, a simpliﬁed model to predict the eﬀect of oﬄoading in the network interfaces according to characteristics such as the computation and communication workloads, the technology of the NIC, the rate of the link bandwidth that the host can achieve before oﬄoading, and the structural characteristics of the network interface. An application ratio γ = 2 means that the application (in the base network interface) loads the CPU two times more for computing than for communication. In order to evaluate the memory latency inﬂuence on the performance, we have conducted experiments simulating diﬀerent memory access times. The results of these experiments are summarized on Fig.8, that shows inﬂuence of the memory latency on the performance of the conﬁguration hybrid(2). In Fig.8(a), the peak throughput provided by using 10 ns, 14 ns and 18 ns memory latencies is shown while the message size is increased in approximately 100 bytes for each test. Although there is a slight improvement using lower latencies in peak throughput, the average throughput is not signiﬁcantly improved.
+Fig.8(c) shows the peak throughput for all the alternatives considered in this work, including the base
+
+system, comparing the conﬁgurations hybrid(1) and hybrid(2) against previous onloaded and oﬄoaded implementations, and the base network interface. As it can be seen, hybrid(2) outperforms the bandwidth values provided by the rest of network interfaces. In the experiments performed to obtain Fig.8, the measured application to communication overhead ratio, γ, is 2.2.
+Fig.8. Throughput vs memory latency. (a) Peak throughput for the hybrid(2) approach. (b) Average throughput provided by hybrid(2) approach for all message sizes. (c) Peak throughput for several oﬄoading alternatives, memory latency = 10 ns.
+In the following, we describe diﬀerent experiments using a web server application. First of all, we evaluate the conﬁgurations hybrid(1) and hybrid(2), and compare them against oﬄoaded and onloaded network interfaces by using dynamic web applications. In [27], our conﬁguration hybrid(1) has been evaluated on static
+
+518
+
+J. Comput. Sci. & Technol., May 2013, Vol.28, No.3
+
+web servers and, depending on the number of user connections and page sizes, it shows bandwidth improvements from 22% to 83% and requests per second (requests/s) improvements from 24% to 80% (with respect to the base system). Nevertheless, the trend on web servers is to provide not only static contents, but also data depending on the user request. As the user requests could require database accesses or perform some calculations on the server, in the case of dynamic web servers, the application workload is considerably higher[21,28-29] and most time unpredictable[10,29-30]. In [29] an experimental evaluation of dynamic web servers is shown. This work shows that dynamic responses that generate more than 64 KB imply a high overhead, thus limiting the servers performance. This overhead is not only on the hardware layer (CPU, I/O subsystem, memory, etc.) but also on the web server software. Therefore, we have programmed a web page that includes embedded perl source code for generating a random response of a speciﬁc length. Data generation for the responses on a dynamic web server could come from perl or php scripts which reside on the web server or even are embedded in the html source code. These scripts perform operations on the server generating the data to be sent to the client. On the other hand, responses on a dynamic web server could come from operations involving database accesses. The main diﬀerence between these two methods for response generation resides on the diﬀerent server loadings. The ﬁrst one usually involves a higher CPU load due to the operating system and the operations performed by the script itself. The latter one also involves the ﬁle system and I/O accesses to the disks which usually supposes a bottleneck. The Apache server is well known for its scalability properties. However, it is necessary to tune its parameters in order to avoid software bottlenecks in the communication path. An example is the Apache memory bottleneck. This issue is related to the number of concurrent connections the server can handle, since these connections will start httpd processes. With regards to the Apache process managing model, we have used prefork MPM (multi-processing module) since it is better suited for multiprocessor systems and therefore, for our multiprocessor/multicore simulation models. The following results in this section (Figs. 9∼11) show the performances provided by AbNI on conﬁgurations hybrid(1) and hybrid(2), by using throughput, request per second and response time of the server with respect to the base system. The base system, as it has been said (Section 2, Fig.1), does not implement any oﬄoading or onloading technique and only uses one processor. On the other hand, the bandwidths of the buses, the
+
+memory, and the cache characteristics have been kept unmodiﬁed with respect to the systems that implement the diﬀerent improvements. Fig.9 shows the graphs of the throughput improvement (with respect to the base conﬁguration) provided by the distributed network interface. Fig.10 provides the improvements in the number of requests per second attended by the server, and Fig.11 gives the improvements in the response time. The results shown in Figs. 9, 10 and 11 have been obtained for 2 KB and 64 KB responses. Figs. 9 to 11 also compare the performance provided by the distributed network interface with the improvement provided by ofﬂoaded and onloaded network interfaces. Remind that, in these ﬁgures, hybrid(1) and hybrid(2) correspond to the alternative conﬁgurations presented in Figs. 3 and 4, respectively.
+Fig.9. Throughput for (a) 2 KB and (b) 64 K B dynamic responses.
+The changes with γ that can be seen in the improvements obtained by the conﬁgurations hybrid(1) and hybrid(2) (Figs. 9∼11) can be explained by taking into account the diﬀerent rates of computation workload and
+
+Apache documentation. http://httpd.apache.org/docs/2.2/en/, November 2012.
+
+Andr´es Ortiz et al.: Multicore Aﬃnity Network Interfaces
+
+519
+
+Fig.10. Requests per second for (a) 2 KB and (b) 64 KB dynamic responses.
+
+Fig.11. Response time for (a) 2 KB and (b) 64 KB dynamic responses.
+
+communication overheads expressed through the diﬀerent values of γ. As γ grows, the amount of computation workload increases with respect to the communication overhead. The proposed network interface conﬁgurations can decrease the computation cost, the communication cost, or both, by distributing them among the diﬀerent processors in the node. Thus, it is not easy to predict the resulting behavior with respect to the ﬁnal improvement achieved. Moreover, the performances obtained for 2 KB responses are higher since the computation layer does not impose a bottleneck in this case. On the other hand, when using 64 KB responses, the improvements provided by all the oﬄoading-based network interfaces diminish with respect to the improvements obtained with 2 KB responses. At the same time, another side eﬀect is that the performance improvement decreases as γ grows due to the increase of the computation workload. In general, if the relative amount of communication overhead decreases (and so γ grows), the eﬀect of the proposed AbNI would be less important, and a decrease in the performance improvement could
+
+be expected. This is the eﬀect observed for γ = 1.2 and γ = 1.6. For these values, hybrid(1) provides almost similar values in the improvements in the response time, requests/s and throughput, and hybrid(2) provides values that decrease from γ = 1.2 to γ = 1.6. Thus, for γ = 2.6, the distribution of processes among CPU0 and CPU1 in hybrid(1) contributes to reduce the computation cost and increases the improvements observed in Figs. 9∼11 for this conﬁguration. This behavior on the improvements is also observed for hybrid(2) due to the proposed cache hierarchy. Moreover, as it can be seen, better improvements are obtained in the case of hybrid(2). Therefore, the eﬀect of cache layouts that provide an eﬃcient management of the data distribution could be more important than processing capabilities, such as in the application here considered. On the other hand, as shown in Figs. 9, 10 and 11, the AbNI approaches (hybrid(1) and hybrid(2) conﬁgurations) provide better behaviors than other alternatives such as oﬄoading or onloading for high values of γ. Moreover, this fact is observed even for 64 KB responses.
+
+520
+
+J. Comput. Sci. & Technol., May 2013, Vol.28, No.3
+
+3.2 Results of MPI Workloads on Clusters
+In this subsection, we discuss the experimental results provided by our proposed distributed and parallel network interface when it is used in cluster environments. Thus, we consider the Message Passing Interface (MPI) library[31], which uses TCP as its underlying transport protocol and is frequently applied in parallel processing. In our experimental setups for this analysis, the nodes of the cluster implement the diﬀerent conﬁgurations for the network interface proposed on Section 2.
+Fig.12 shows the improvement provided by diﬀerent network interface conﬁgurations as a function of the application ratio, γ. Thus, for small messages (2 KB), Fig.12(a) and Fig.13(a) show a higher improvement as γ increases. Figs. 12(b) and Fig. 13(b) show the improvement in latency. In this case, the bottleneck is in the communication overhead. Since oﬄoading techniques increase the number of free CPU cycles and improve the interrupt mechanism, there are more CPU cycles available for protocol processing. As γ increases, the
+
+application overhead grows more than the communication overhead. In this case, the improvements on the network interface leave more CPU cycles available for application processing. For larger messages (64 KB), the bottleneck could move to the nodes internal buses, especially in medium-end nodes. Therefore, the improvement provided by oﬄoading diminishes as γ increases. Nevertheless, the hybrid(1) and hybrid(2) conﬁgurations that implement the proposed AbNI always provide a higher improvement in both throughput and latency than the other oﬄoading/onloading techniques and are less aﬀected by the increment of γ.
+4 Related Work
+There have been many researches on network interface optimization to reduce the communication overhead in the host CPUs that run applications. There are
+Ç many commercial devices, called TCP/IP Oﬄoad En-
+gines (TOEs) 11 ,[29], that oﬄoad diﬀerent parts of the TCP/IP protocol stack onto an NIC attached to the
+
+Fig.12. Throughput improvements for (a) 2 KB and (b) 64 KB MPI messages.
+
+Fig.13. Latency improvements for (a) 2 KB and (b) 64 KB MPI messages.
+Ç11 Broadcom. http://www.broadcom.com/, November 2012.
+
+Andr´es Ortiz et al.: Multicore Aﬃnity Network Interfaces
+
+521
+
+I/O bus. Other techniques related with protocol ofﬂoading are connection handoﬀ[32] that allows the ope-
+
+processing) where cache performance shows an important decrease. The parallelization of network protocols
+
+rating system to control the number of TCP connec-
+tions oﬄoaded to the NIC, and network interface data caching[33] that reduces traﬃc along the local buses by
+
+and the exploitation of parallelism in network interfaces have also been proposed and analyzed[7-8,15,38]. The diﬀerent strategies that can be used to parallelize pro-
+
+caching the frequently-requested data using on-board DRAM included in the programmable NIC. Onload-
+
+tocols are considered in [7], where it is shown that, although computer architectural trends can inﬂuence the
+
+ing has been commercially released through implemen- situation, the limited packet-level parallelism achieved
+
+Ç tations such as the Intel I/O acceleration technology
+(I/OAT) 12 ,[11,34], which include an onloaded protocol
+
+in a single TCP connection can be increased in case of multiple connections. In [39], one or more processors
+
+stack as one of its features, along with header split- or hardware threads, called packet processing engines
+
+ting, interrupt coalescing, and enhanced DMA transfers through asynchronous I/O copy[23]. There have been some proposals[27,35] that try to combine the beneﬁts of
+
+(PPEs), are dedicated to processing the network tasks, and asynchronous I/O (AIO) is used to communicate the PPE and the application. The interface between
+
+oﬄoading and onloading to accelerate the network pro- the application and the PPE uses the shared memory
+
+cessing by taking advantage of the existence of several through AIO, in order to avoid the operating system
+
+processors in the node (not only in the NIC). In [35], overheads associated with socket operations. Thus, a
+
+the network stack processing is not fully oﬄoaded to the user-level network interface was implemented to bypass
+
+NIC. Instead, the data processing is done by a speciﬁc the operating system in the network operations and re-
+
+hardware accelerator while the protocol control opera- duce data copies. In this approach, the PPEs substitute
+
+tions are implemented by software on a speciﬁc CPU as softirq by in-line function calls thus avoiding context
+
+in the onloading strategy. As the two main components switches and cache conﬂicts with the application. The
+
+of the interface exchange information asynchronously prototype evaluated in [39] by using the open source
+
+by using two queues, they are loosely coupled and avoid web server shows small beneﬁts that the authors mainly
+
+bottlenecks related to their interaction. The interac- relate with the use of the AIO and polling, and less with
+
+tion between multi-core architectures and 10-Gigabit the reduced cache misses. The proposals described here
+
+Ethernet networks is also considered in [36], where it is do not try to bypass the operating system but making
+
+demonstrated that adequate mappings of the processes an eﬃcient use of its characteristics. The TCP/IP stack
+
+of an application among diﬀerent cores and the NIC can implemented by the OS kernel is not modiﬁed although
+
+correct the imbalance created by the protocol stack processing, thus minimizing cache misses and improving
+
+adequate cache layouts are necessary to optimize the performance. However, many operating system fea-
+
+the overall performance. In [37] the main physical ob- tures and optimizations which allow the management of
+
+struction to scale the networking performance beyond the gigabits per second is the memory system due to
+
+the available resources have been used. This deals with modiﬁcations in the softirq Linux scheduling mecha-
+
+the scalability problem caused by the gap between the improvements on processor speed, link bandwidth, and
+
+nism and the network interface driver to implement a process scheduling scheme which is aware of cache loca-
+
+memory latency and bandwidth. That paper presented lity to leverage network performance. The eﬀect of aﬃ-
+
+a performance study of memory behaviour in a core TCP/IP suite with protocols implemented in the user
+
+nity in network processing has been considered in [8, 1214, 35-36, 40-43], where many researchers have demon-
+
+space because the authors could not access to the source strated that eﬃcient process scheduling and manage-
+
+code of the operating system used in the SGI platform ment of multiple cores as well as the cache locality can
+
+where the study was done. It was concluded that 1) in improve the throughput. These researches reveal that
+
+most scenarios instruction cache behaviour becomes de- processor aﬃnity and cache locality constitute critical
+
+cisive for the performance improvement, even for small factors for the network performance in multi-core sys-
+
+average packet sizes and zero-copy interfaces, and 2) tems. The experiments performed in [40] regarding the
+
+larger caches and higher associativity improve commu- advantages of using architectures which take care about
+
+nication performance (mainly for TCP communication) the data locality and aﬃnity issues, also have shown
+
+as many cache misses in packet processing are conﬂict that these architectures outperform both oﬄoaded and
+
+misses. Moreover, it was also indicated that network protocols should scale with clock speed except for cold
+
+onloaded network interfaces. Moreover, in applications that use several threads[13,35], important improvements
+
+caches (cases where caches do not store correct informa- can be also achieved by processor aﬃnity. In [13], a
+
+tion of data and instructions at the beginning of packet scheduling procedure is proposed to dynamically decide
+
+Ç12 Competitive comparison. Intel I/O acceleration technology vs. TCP oﬄoad engine. http://download.intel.com/support/ne-
+twork/sb/19127 lad competeguide r04.pdf, November 2012.
+
+522
+
+J. Comput. Sci. & Technol., May 2013, Vol.28, No.3
+
+the optimal core aﬃnity of networking processes for multiple network interfaces. It is implemented at the kernel level and takes into account the cache architecture, the communication characteristics, the interrupt aﬃnity, and the core loads to distribute the processes. The proposal shows improvements higher than a 60% in processor utilization and higher than a 30% in the
+
+performance. Moreover, besides MPI loads, we have used dynamic web servers to evaluate our AbNI, by also analyzing their behaviours for diﬀerent cache layouts and communication and computation loads. We also plan to analyze the behaviour of our proposed network interfaces in the context of multiple NICs, such as it is considered in [13], by using our approach sum-
+
+bandwidth and responsiveness performances, by using microbenchmarks and emulating the application-level behaviours. The evaluation of the proposal in real applications such as parallel ﬁle systems and web servers is considered in [13] as future work. The paper[42] shows that a multiport Gigabit Ethernet can achieve a bandwidth comparable to 10-Gigabit Ethernet with adequate interrupt aﬃnity conﬁgurations. Moreover, from the experimental results obtained in their system, the authors argued that processing packets in many cores could require more resource consumption without beneﬁt due to the locks between the softirqs running in diﬀerent cores and the low cache eﬃciency. Goglin[41] presented a multiqueue support for the Open-MX network stack (which bypasses the usual TCP/IP stack), so that the received packets corresponding to the same application process are handled by the same core. The positive eﬀect of this strategy in the cache behaviour and thus in the communication intensive applications was also shown in this paper. Recent studies[14,16] show diﬀerent NIC technologies for parallel receive processing in multicore/multiprocessing environments by applying aﬃnity strategies. Direct Cache Access[16] makes it possible to store a received packet in the cache of the core
+Ç that processes the protocol and executes the network
+application. Receive side scaling (RSS) 13 supports multiple queues and uses a hash function in the NIC to assign packets of a given ﬂow to the same queue although it cannot steer the received packets to the same
+Ç core where the corresponding application is running.
+The Ethernet Flow Director technology 14 introduced by Intel can steer the received packets of a given ﬂow to the same core where the corresponding communication protocol is processed and the extracted data used by the application, although packets reordering is possible. The Transport-Friendly (A-TFN) NIC, recently proposed in [14], describes an approach to solve this problem.
+In the aﬃnity-based network interface here proposed, only one core is mainly involved in the interrupt handler and device driver processing for the speciﬁc network application that consumes the packets and the softirq is scheduled on the same core that runs the networking application in order to leverage the cache
+
+marized in Fig.6. Moreover, recent advances in Linux networking, such as Receive Packet Steering (RPS) and Receive Flow Steering (RFS), have also tried to take advantage of the presence of several cores in the nodes and to avoid the ksoftirqd[19] bottleneck by modifying the softirqs priority to manage packet ﬂooding situations. RPS uses a hash from the protocol head to select the core where the packet is enqueued to be processed (RPS includes the rxhash ﬁeld to the sk buﬀ structure to take advantage of the capabilities of some NICs that are able to directly calculate the hash value from the received packet). Consequently it is possible that all the packets belonging to the same stream go to the same core thus increasing cache locality. RFS enhances the eﬀects of RPS by applying aﬃnity to steer the incoming packets to the core on which the corresponding application is running. Precisely, we plan to implement these strategies in our distributed interfaces to compare their performances with those provided by our present approaches based on TNAPI.
+5 Conclusions
+Aﬃnity issues have been considered in this paper for improving network applications performance by using multiple processors/cores. Thus, an aﬃnity-based network interface (AbNI) has been proposed in the paper and its performance has been analyzed in diﬀerent node conﬁgurations, and compared with network interfaces that implement onloading and oﬄoading strategies. The two diﬀerent node conﬁgurations considered (hybrid(1) and hybrid(2)) have been analyzed to take into account the workload data location that could minimize the cache misses, as these conﬁgurations present diﬀerent characteristics on the cache hierarchy. The experimental results obtained by using a simple ping-pong communication, a real dynamic web application, and MPI workloads in a cluster show that the considered AbNI conﬁgurations clearly outperform either oﬄoaded or onloaded proposals in terms of throughput and requests per second, and response time has been measured for diﬀerent computation/communication rates (i.e., application rates) with respect to either oﬄoaded or onloaded proposals. Thus, improvements from 45%
+
+Ç13 Microsoft Corporation. Receive-side scaling enhancements in Window server. http://msdn.microsoft.com/en-us/library/winÇ /hardware/gg463253.aspx, November 2012.
+14 Intel 82599 10GbE controller datasheet, November 2012.
+
+Andr´es Ortiz et al.: Multicore Aﬃnity Network Interfaces
+
+523
+
+to 110% in throughput, from 70% to 500% percent in response time, and from 35% to 85% in requests per second have been obtained depending on the conﬁguration and web server application rates. In most cases the hybrid(2) conﬁguration outperforms hybrid(1) one, as it is expected considering that it provides a better data distribution. The behaviour of the improvements, obtained for diﬀerent computation/communication proﬁles in the dynamic web application considered, can be explained by taking into account the decreasing in both communication overheads and computation costs provided by the task distribution and cache layouts of the proposed network interface conﬁgurations. On the other hand, experiments using the MPI message passing framework over TCP/IP have been performed. These experiments show improvements for small and large messages. Nevertheless, the improvements using small messages are higher as the application ratio grows due to the increase in the resources available for protocol processing. As in TCP/IP, the hybrid network interfaces provide better MPI communication performances than other oﬄoading and onloading alternatives. When larger messages are transferred (64 KB), the bottleneck on the communication path moves to the internal buses of the node and the beneﬁts of the oﬄoading techniques diminish specially for high values of the parameter γ (ratio of application workload to communication overhead). Nevertheless, the proposed AbNI shows a better behaviour for high values of γ than other approaches and clearly outperforms them in both throughput and latency.
+There is still much work to do at the operating system level to improve the communication performance on multicore architectures. We are now considering the eﬀect of our proposed network interface in the context of several connections and, in the future, we will also intend to take into account the eﬀect of cache layouts not considered here, such as the cache hierarchies of three levels, and to evaluate our approaches by using other real network applications. The code of the modiﬁed kernel functions and the code (C and python) of the network interface are available upon request to the authors.
+References
+[1] Balaji P, Feng W, Panda D K. Bridging the EthernetEthernot performance gap. IEEE Micro, 2006, 26(3): 24-40.
+[2] Bhoedjang R, Ru´hl T, Bal H E. User-level network interface protocols. IEEE Computer, 1998, 31(11): 53-60.
+[3] Gilfeather P, Maccabe A. Modeling protocol oﬄoad for message-oriented communication. In Proc. the 2005 IEEE Int. Conf. Cluster Computing, Sept. 2005, pp.1-10.
+[4] Regnier G, Makineni S, Illikkal R et al. TCP onloading for data center servers. IEEE Computer, 2004, 37(11): 48-58.
+[5] Shivam P, Chase J. On the elusive beneﬁts of protocol oﬄoad.
+
+In Proc. 2003 SIGCOMM NICELI, August 2003, pp.179-184. [6] Westrelin R, Fugier N, Nordmark E et al. Studying network
+protocol oﬄoad with emulation: Approach and preliminary results. In Proc. the 12th IEEE Symp. HOTI, Aug. 2004, pp.84-90. [7] Nahum E, Yates D, Kurose J, Towsley, D. Performance issues in parallelized network protocols. In Proc. the 1st USENIX OSDI, November 1994, Article No.10. [8] Willmann P, Rixner S, Cox A. An evaluation of network stack parallelization strategies in modern operating systems. In Proc. the USENIX Technical Conf., May 2006, pp.91-96. [9] Mogul J C. TCP oﬄoad is a dumb idea whose time has come. In Proc. the 9th HotOS, May 2003, pp.25-30. [10] Apte V, Hansen T, Reeser P. Performance comparison of dynamic web platforms. Computer Communications, 2003, 26(8): 888-898. [11] Lauritzen K, Sawicki T, Stachura T, Wilson C. Intel I/O acceleration technology improves network performance, reliability and eﬃciency. Technology@ Intel Magazine, May 2005, pp.3-11. [12] Foong A, Fung J, Newell D et al. Architectural characterization of processor aﬃnity in network processing. In Proc. the IEEE ISPASS, March 2005, pp.207-218. [13] Jang H, Jin H W. MiAMI: Multi-core aware processor aﬃnity for TCP/IP over multiple network interfaces. In Proc. the 17th Symp. HOTI, Aug. 2009, pp.73-82. [14] Wu W, DeMar P, Crawford M. A transport-friendly NIC for multicore/multiprocessor systems. IEEE Transactions on Parallel and Distributed Systems, 2012, 23(4): 607-615. [15] Kim H, Pai V, Rixner S. Exploiting task-level concurrency in a programmable network interface. In Proc. the 9th ACM SIGPLAN PPoPP, June 2003, pp.61-72. [16] Kumar A, Huggahalli R. Impact of cache coherence protocols on the processing of network traﬃc. In Proc. the 40th IEEE/ACM MICRO, Dec. 2007, pp.161-171. [17] Magnusson P, Christensson M, Eskilson J et al. Simics: A full system simulation platform. IEEE Computer, 2002, 35(2): 50-58. [18] Willmann P, Shafer J, Carr D et al. Concurrent direct network access for virtual machine monitors. In Proc. the 13th HPCA, Feb. 2007, pp.306-317. [19] Benvenuti C. Understanding Linux Network Internals (1st edition). OReilly Media Inc., 2005. [20] Love R. Linux Kernel Development (2nd edition). Sams Publishing, 2005. [21] Ortiz A, Ortega J, D´ıaz A, Prieto, A. Network interfaces for programmable NICs and multicore platforms. Computer Networks, 2010, 54(3): 357-376. [22] Clark D, Jacobson V, Romkey J et al. An analysis of TCP processing overhead. IEEE Communications Magazine, 1989, 27(6): 23-29. [23] GadelRab S. 10-Gigabit Ethernet connectivity for computer servers. IEEE Micro, 2007, 27(3): 94-105. [24] Nahum E, Yates D, Kurose J et al. Cache behaviour of network protocols. In Proc. the ACM SIGMETRICS, June 1997, pp.169-180. [25] Tu T, Hsueh C. Uniﬁed UDispatch: A user dispatching tool for multicore systems. Journal of Computer Science and Technology, 2011, 26(3): 375-391. [26] Liao G, Zhu X, Bhuyan L. A new server I/O architecture for high speed networks. In Proc. the 17th HPCA, Feb. 2011, pp.255-265. [27] Ortiz A, Ortega J, D´ıaz A et al. Protocol oﬄoad analysis by simulation. J. Systems Architecture, 2009, 55(1): 25-42. [28] Ortiz A, Ortega, J, Diaz, A, Prieto, A. Protocol oﬄoad evaluation using Simics. In Proc. the 2006 IEEE International Conference on Cluster Computing, September 2006, pp.1-9.
+
+524
+
+J. Comput. Sci. & Technol., May 2013, Vol.28, No.3
+
+[29] Paciﬁci G, Segmuller W, Spreitzer M, Tantawi, A. CPU demand for web serving: Measurement analysis and dynamic estimation. Performance Evaluation, 2008, 65(6/7): 531-553.
+[30] Yeager N, McGrath R. Web Server Technology: The Advanced Guide for World Wide Web Information Providers. San Francisco CA: Morgan-Kaufmann, Inc., 1996.
+[31] MPICH2: A high performance and widely portable implementation of the message passing interface (MPI) standard. http://www.mpich.org/, October 2012.
+[32] Kim H, Rixner S. TCP oﬄoad through connection handoﬀ. In Proc. the 1st ACM SIGOPS/EuroSys European Conference on Computer Systems, October 2006, pp.279-290.
+[33] Kim H, Rixner S, Pai V. Network interface data caching. IEEE Transactions on Computers, 2005, 54(11): 1394-1408.
+[34] Vaidyanathan K, Panda D K. Beneﬁts of I/O acceleration technology (I/OAT) in clusters. In Proc. the 2007 IEEE ISPASS, April 2007, pp.220-229.
+[35] Shalev L, Marhervaks V, Machulsky Z et al. Loosely coupled TCP acceleration architecture. In Proc. the 14th HOTI, Aug. 2006, pp.3-8.
+[36] Narayanaswamy G, Balaji P, Feng W. An analysis of 10Gigabit Ethernet protocol staks in multicore environments. In Proc. the 15th HOTI, August 2007, pp.109-116.
+[37] de Bruijn W, Bos H. Model-T: Rethinking the OS for terabits speeds. In Proc. the INFOCOM Workshop on High-Speed Networks, April 2008, pp.1-6.
+[38] Wun B, Crowley P. Network I/O acceleration in heterogeneous multicore processors. In Proc. the 14th HOTI, August 2006, pp.9-14.
+[39] Brecht T, Janakiraman G, Lynn B et al. Evaluating network processing eﬃciency with processor partitioning and asynchronous I/O. In Proc. the 1st ACM SIGOPS/EuroSys European Conf. Computer Systems, Apr. 2006, pp.265-278.
+[40] Foong A, Fung J, Newell D. An in-depth analysis of the impact of processor aﬃnity on network performance. In Proc. the 12th IEEE Int. Conf. Networks, Mar. 2004, pp.244-250.
+[41] Goglin B. NIC-assisted cache-eﬃcient receive stack for message passing over Ethernet. Concurrency and Computation: Practice and Experience, 2011, 23(2): 199-210.
+[42] Jin H, Yun Y, Jang H C. TCP/IP performance near I/O bus bandwidth on multi-core systems: 10-Gigabit Ethernet vs. multi-port Gigabit Ethernet. In Proc. the International Conference on Parallel Processing, September 2008, pp.87-94.
+[43] Narayanaswamy G, Balaji P, Feng W. Impact of network sharing in multi-core architectures. In Proc. the 17th Int. Conf. Comp. Commun. Networks, Aug. 2008, pp.1-6.
+Andr´es Ortiz received the M.Sc. degree in electronics in 2000, and the Ph.D. degree in computer science in 2008, both from the University of Granada, Spain. From 2000 to 2005 he was working as a systems engineer with Telefonica, Madrid, where his work areas were high performance computing and network performance analysis. Since 2004 he has been with the Department of Communications Engineering at the University of M´alaga, and currently is an associate professor. His research interests include high performance networks, signal processing and artiﬁcial intelligence systems.
+
+Julio Ortega received the B.Sc. degree in electronic physics in 1985, the M.Sc. degree in electronics in 1986, and the Ph.D. degree in computer science in 1990, all from the University of Granada, Spain. His Ph.D. dissertation has received the award of Ph.D. dissertations of the University of Granada. He was at the Open University, UK, and at the Department of Electronics, University of Dortmund, Germany, as an invited researcher. Currently he is a full professor at the Department of Computer Architecture and Technology of the University of Granada. His research interest are in the ﬁelds of parallel processing and parallel computer architectures, artiﬁcial neural networks, and evolutionary computation.
+Antonio F. D´ıaz received the M.Sc. degree in electronic physics in 1991, and the Ph.D. degree in computer science in 2001, all from the University of Granada, Spain. He is currently an associate professor in the Department of Computer Architecture and Technology, at the same university. His research interests are in the areas of network protocols, distributed systems and network area storage.
+Alberto Prieto earned his BSc degree in electronics in 1968 from the Complutense University in Madrid. In 1976, he got the Ph.D. degree in computer science at the University of Granada. From 1971 to 1984 he was the founder and head of the Computing Centre, and headed the computer science and technology studies at the University of Granada from 1985 to 1990. He is currently a fulltime professor and head of the Department of Computer Architecture and Technology of the same university. He is the co-author of four text-books published by McGraw-Hill and Thomson editorials, has coedited ﬁve volumes of the LNCS, and is the co-author of more than 250 articles. His research primarily focuses on intelligence systems.
+
+View publication stats
+

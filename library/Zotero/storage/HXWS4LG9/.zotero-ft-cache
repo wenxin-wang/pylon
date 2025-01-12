@@ -1,0 +1,139 @@
+
+ Forum  Book  ELPA    FAQ    Donate  Fork Us
+Emacs China
+注册 登录
+
+各位 Emacs 道友，大家好。 （如果邮件注册没有收到激活邮件，请添加QQ群: 820941363, 群主会帮忙手动激活帐号。）
+
+在通过电邮、新闻组或者聊天室提出技术问题前，请检查你有没有做到：
+
+    阅读手册，试着自己找答案。（ C-h C-h ， 有问题，问 Emacs）；
+    在网上搜索；
+    使用 Emacs China 站内搜索（本论坛的站内搜索做的相当不错，中英文都支持）。
+
+关于提问的艺术，完整版本请参考： https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way/blob/master/README-zh_CN.md
+gccemacs
+Emacs-general
+elisp
+
+已选择 0 个帖子。
+
+全选
+
+取消选择
+2019年12月
+2 / 5
+2019年12月
+2019年12月
+MaskRay
+4
+19年12月
+
+GCC貢獻者Andrea Corallo宣佈了gccemacs On elisp running native 16 ，用libgccjit編譯elisp爲ELF shared objects。libgccjit在這裏沒有用作JIT，而是驅動GCC進行優化和生成ELF。
+
+倉庫： https://gitlab.com/koral/gccemacs/commits/dev 16
+
+作者創建這個專案的動機和方法：
+
+    On my side the long story short is about this:
+
+    I was already into gcc and libgccjit. I thought was cool to apply these to some lisp implementation. I decided to have Emacs as a target cause I imagined would have been useful and because I’m obviously an Emacs user and fan.
+
+    I wanted to do something with the potential to be completed and up streamed one day. Therefore I discarded the idea of writing the full lisp front-end from scratch. On the other side I considered the idea seen in previous projects of reusing the byte-compiler infrastructure quite clever.
+
+    The original plan was the to do something like Tromey’s jitter but gcc based and with a mechanism to reload the compiled code. So I did it.
+
+    I had a single pass compiler all written in C that was decoding the byte code and driving libgccjit.
+
+    I was quite unhappy with that solution for two reasons:
+
+    1- The C file was getting huge without doing anything really smart.
+
+    2- After some test and observation became clear that to generate efficient code this approach was quite limited and a more sophisticated approach with a propagation engine and the classical compiler theory data structures was needed. The idea of just driving gcc and having everything magically optimized was simply naive.
+
+    So I came up with the idea of defining LIMPLE and using it as interface between the C and the lisp side of the compiler.
+
+    In this way I had the right IR for implementing the ‘clever’ algorithmic into lisp and the C side has just to ‘replay’ the result on libgccjit. Moreover it saved me from the pain of exposing libgccjit to lisp.
+
+    I then realized I could, instead of decoding op-codes, just spill the LAP from the byte-compiler. This makes the system simpler and more robust cause I get also information on the stack depth I can double check or use during limplification.
+
+    Lastly I managed to reuse the information defined in the byte-compiler on the stack offset of every op to generate automatically or semi the code of my compiler for the translation from LAP to LIMPLE for good part of the op codes.
+
+    The rest just iterating over tests debugging and implementing.
+
+C部分主要加了 src/comp.c
+
+ % git diff master...dev --stat configure.ac | 29 + lisp/emacs-lisp/bytecomp.el | 47 +- lisp/emacs-lisp/comp.el | 1917 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ src/Makefile.in | 8 +- src/comp.c | 3480 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ src/data.c | 13 + src/emacs.c | 5 + src/eval.c | 6 + src/lisp.h | 7 + src/lread.c | 38 +- src/pdumper.c | 8 +- test/src/comp-test-funcs.el | 393 +++++++++++++ test/src/comp-tests.el | 487 ++++++++++++++++ 13 files changed, 6422 insertions(+), 16 deletions(-)  
+
+ git clone https://gitlab.com/koral/gccemacs --branch=dev; cd gccemacs ./autogen.sh ./configure make -j src/emacs -Q  
+
+evaluate (native-compile "a.el") 可以構建出shared object a.eln ，可以用require or load-file加載。
+1
+
+    创建时间
+    19年12月
+    最后回复
+    19年12月
+    4
+    回复
+    555
+    浏览
+    4
+    用户
+    2
+    赞
+    2
+    链接
+
+cireu
+19年12月
+native Emacs Lisp Emacs-general
+
+    emacs-devel火热讨论中 这个就是把Emacs Lisp编译成直接跑的机器码。现在Emacs Lisp是编译成byte code用解释器跑。 
+
+已经有相关讨论了
+MaskRay
+1
+19年12月
+
+謝謝指出。發的時候沒有注意到。那麼再加一點內容
+
+我平常用自行構建的 ~/Dev/Emacs/emacs + doom-emacs。現在運行 /tmp/p/gccemacs/src/emacs 感覺很奇怪，doom會把load-path設置爲 ~/Dev/Emacs/emacs/lisp/* 等目錄，而不是 /tmp/p/gccemacs/lisp/* 等目錄， (require 'comp) 會報錯。
+
+編輯：可能是因爲 ~/.emacs.d/autoloads.pkg.el 包含 (setq load-path ...) 。怎麼嘗試一個新鮮的emacs而不影響主要用的 ~/Dev/Emacs/emacs 呢？
+2 回复
+1
+casouri Regular
+19年12月
+
+或许可以临时修改HOME环境变量到别的地方
+LdBeth Leader
+MaskRay
+19年12月
+
+试试 chroot 呗，其实 Linux 的话新建个专门用来测试软件的用户也不错，X Window 支持同时使用其他用户的图形应用的。
+回复
+推荐主题
+主题 	回复 	浏览 	活动
+百度翻译 - Helm 搜索补全
+Emacs-general
+	4 	694 	19年6月
+请问emacs的surround插件很强大好用的是哪个？
+Emacs-general
+	20 	1.1K 	19年8月
+golang 的 lsp-mode非常卡, 有什么解决办法吗
+Emacs-general
+go
+	12 	1.5K 	19年6月
+lsp-mode python 虚拟环境支持应该如何设置?
+Emacs-general
+	2 	403 	19年12月
+Wanderlust收到的会议邀请邮件显示不正确
+Emacs-general
+wanderlust
+	2 	235 	2月12日
+想阅读更多？浏览 Emacs-general 的其他主题或 查阅最新主题 。
+[zh_CN.share.topic]
+
+Emacs China 2016 - 2020 湘ICP备12012448号
+Invalid date Invalid date

@@ -11,16 +11,18 @@ handbooks) and references (reading materials).
 
 * Waypoints
 
-[[bootstrap]] contains code and instructions on how to reproduce the working environment.
+[[./bootstrap]] contains code and instructions on how to reproduce the working environment.
 
-[[museum]] contains things that belongs to the past.
+[[./museum]] contains things that belongs to the past.
 
-[[journals]] is where I record thought process of "working" itself.
+[[./journals]] is where I record thought process of "working" itself.
 
 Highlights of newly acquired knowledges are kept in [[today-i-learnt]]. They should
 be further sorted into topics that I am interested in, and then filed into
 [[today-i-learnt/{year}]] for archiving purpose. They do not go into [[museum]] because I
 think they should be fun to reread.
+
+[[./library]] is where I record references.
 
 * Why?
 

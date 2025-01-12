@@ -1,0 +1,3910 @@
+THE ART OF PROBABiliTY
+FOR SCIENTISTS AND ENGINEERS
+
+Boca Raton London New York
+CRC Press is an imprint of the Taylor & Francis Group, an informa business
+A CHAPMAN & HALL BOOK
+
+Text Design: Peter Vacek Cover Design: Iva Frank
+
+First published 1991 by Westview Press
+Published 2018 by CRC Press Taylor & Francis Group 6000 Broken Sound Parkway NW, Suite 300 Boca Raton, FL 33487-2742
+CRC Press is an imprint ofthe Taylor & Francis Group, an informa business
+Copyright © 1991 by Taylor & Francis Group LLC
+No claim to original U.S. Government works
+This book contains information obtained from authentic and highly regarded sources. Reason-able efforts have been made to publish reliable data and information, but the author and publisher cannot assume responsibility for the validity of all materials or the consequences of their use. The authors and publishers have attempted to trace the copyright holders of all material reproduced in this publication and apologize to copyright holders if permission to publish in this form has not been obtained. If any copyright material has not been acknowledged please write and let us know so we may rectifY in any future reprint.
+Except as permitted under U.S. Copyright Law, no part of this book may be reprinted, reproduced, transmitted, or utilized in any form by any electronic, mechanical, or other means, now known or hereafter invented, including photocopying, microfilming, and recording, or in any information storage or retrieval system, without written permission from the publishers.
+For permission to photocopy or use material electronically from this work, please access www. copyright.com (http://www.copyright.com/) or contact the Copyright Clearance Center, Inc. (CCC), 222 Rosewood Drive, Danvers, MA 01923, 978-750-8400. CCC is a not-for-profit organiza-tion that provides licenses and registration for a variety of users. For organizations that have been granted a photocopy license by the CCC, a separate system of payment has been arranged.
+Trademark Notice: Product or corporate names may be trademarks or registered trademarks, and are used only for identification and explanation without intent to infringe.
+Visit the Taylor & Francis Web site at http://www.taylorandfrancis.com
+and the CRC Press Web site at http://www.crcpress.com
+
+Library of Congress Cataloging-in-Publication Data
+
+Hamming, R. W. (Richard Wesley), 1915-
+
+The art of probability-for scientists and engineers/Richard W. Hamming.
+
+p.
+
+em.
+
+Includes index.
+
+1. Probabilities.
+
+I. Title.
+
+QA273.H3544
+
+1991
+
+519.2-dc20
+
+90-42240
+
+ISBN 0-201-51058-8 (H) CIP
+
+ISBN 0-201-40686-1 (P)
+
+This book was typeset using the 'lEX typesetting language ou IBM Compatible
+computer
+
+ISBN 13: 978-0-201-40686-3 (pbk)
+
+Preface
+
+"If we want to start new things rather than trying to elaborate and
+
+improve old ones, then we cannot escape reflecting on our basic
+
+conceptions."
+
+Hans Primas [P, p. 17)
+
+Every field of knowledge has its subject matter and its methods, along with a style for handling them. The field of Probability has a great deal of the Art component in it-not only is the subject matter rather different from that of other fields, but at present the techniques are not well organized into systematic methods. As a result each problem has to be "looked at in the right way" to make it easy to solve. Thus in probability theory there is a great deal of art in setting up the model, in solving the problem, and in applying the results back to the real world actions that will follow. It is necessary to include some of this art in any textbook that tries to prepare the reader to use probability in the real world of science and engineering rather than merely admire it as an abstract discipline and a branch of mathematics.
+It is widely agreed that art is best taught through concrete examples. Especially in teaching probability it is necessary to work many problems. Since the answers are already known the purpose of the Examples and Exercises cannot be to "get the answer" but to illustrate the methods and style of thinking. Hence the Examples in the text should be studied for the methods and style as well as for the results; also they often have educational value. Thus in solving the Exercises style should be considered as part of their purpose.
+It is not enough to merely give solutions to problems in probability. If the art is to be communicated to the reader then the initial approach-which is so vital in this field-must be carefully discussed. From where, for example, do the initial probabilities come? Only in this way can the reader learn this art-and most mathematically oriented text book simply ignore the source of the probabilities!
+[v]
+
+(vi] PREFACE
+What is probability? I asked myself this question many years ago, and found that various authors gave different answers. I found that there were several main schools of thought with many variations. First, there were the frequentists who believe that probability is the limiting ratio of the successes divided by the total number of trials (each time repeating essentially the same situation). Since I have a scientific-engineering background, this approach, when examined in detail, seemed to me to be non-operational and furthermore excluded important and interesting situations.
+Second, there are those who think that there is a probability to be attached to a single, unique event without regard to repetitions. Via the law of large numbers they deduce the frequency approach as something that is likely, but not sure.
+Third, I found, for example, that the highly respected probabilist di Finetti [dF, p. x] wrote at the opening of his two volume treatise,
+Probability Does Not Exist.
+Fourth, I found that mathematicians tend to simply postulate a Borel family of sets with suitable properties (often called a u-algebra or a Borel field) for the sample space of events and assign a measure over the field which is the corresponding probability. But the main problems in using probability theory are the choice of the sample space of events and the assigment of probability to the events! Some highly respected authors like Feller [F, p. x] and Kac [K, p. 24] were opposed to this measure theoretic mathematical approach to probability; both loudly proclaimed that probability is not a branch of measure theory, yet both in their turn seemed to me to adopt a formal mathematical approach, as if probability were merely a branch of mathematics and not an independent field.
+Fifth, I also found that there is a large assortment of personal probabilists, the most prominent being the Bayesians, at least in volume of noise. Just what the various kinds of Bayesians are proclaiming is not always clear to me, and at least one said that while nothing new and testable is produced still it is "the proper way to think about probability".
+Finally, there were some authors who were very subjective about probability, seeming to say that each person had their own probabilities and there need be little relationship between their beliefs; possibly true in some situations but hardly scientific.
+When I looked at the early history of probability I found the seeds of most of these views; apparently very little has been settled in all these years.
+I also found that there were flagrant omissions in all the books; whole areas of current use of probability, such as quantum mechanics, were completely ignored! Few authors cared to even mention them.
+What was I to make of all this? Following an observation of Disraeli, I decided to find out what I myself believed by the simple process of writing a book that would be, to me at least, somewhat more believable than what
+
+PREFACE [vii)
+had I found. Of necessity, being application oriented, it would have a lot more philosophy than most textbooks that postulate a probability model and then present the techniques without regard to understanding when, how, and where to use the techniques, or why the particular postulates are assumed. Indeed, most mathematicians blandly assume that probability is a branch of mathematics without ever doubting this assumption. Such books tend to discourage the reader from making new applications outside the accepted areas-yet it is hard to believe that the range of applications of probability has been anywhere near exhausted. It seems to me that the philosophy of probability is not a topic to be avoided in a first course, but rather, in view of the dangers of the misapplication of the· theory (which are many), it is an essential part.
+Initially I wanted to provide some organization and structure for the various methods for solving probability problems instead of merely giving the usual presentation of problems and their solution by any method, selected almost at random, that would work. My success has been of limited extent, but I feel that I have taken a few steps in that direction.
+I further decided that it would be necessary to build up my intuition about problems so that: (1) many of the false results that are so easily obtained would be noticed, and (2) that even if I could not solve a problem still I might have a feeling for the size and nature of the answer.
+Finally, as a sometime engineer, I well know that few things are known exactly, and that many times probabilities used in the final result are based on estimates, hence the robustness (sensitivity) of the results with respect to the small changes in the initially assumed probabilites and their interrelationships must be investigated carefully. Again, this is a much neglected part of probability theory, though clearly it is essential for serious applications.
+The availability of computers, even programmable hand held ones, greatly affects probability theory. First, one can easily evaluate formulas that would have taxed hand computation some decades ago. Second, often the simulation of probability problems is now very practical [see Chapter 10]; not that one can get answers accurate to many decimal places, but that a crude simulation can reveal a missed factor of 2, the wrong sign on a term, and other gross errors in the formula that purports to be the answer. These simulations can also provide some intuition as to why the result is what it is, and even at times suggest how to solve the problem analytically. Simulation can, of course, give insight to problems we cannot otherwise solve.
+The fact that probability theory is increasingly being used to make important decisions is a further incentive for examining the theory carefully. I have witnessed very important decisions being made that were based on probability, and as a citizen I have to endure the consequences of similar decisions made in Washington D.C. and elsewhere; hence I feel that anything that can clarify and improve the quality of the application of probability theory will be of great benefit to our society.
+
+(viii) PREFACE
+It is generally recognized that it is dangerous to apply any part of science without understanding what is behind the theory. This is especially true in the field of probability since in practice there is not a single agreed upon model of probability, but rather there are many widely different models of varying degrees of relevance and reliability. Thus the philosophy behind probability should not be neglected by presenting a nice set of postulates and then going forward; even the simplest applications of probability can involve the underlying philosophy. The frequently made claim that while the various foundational philosophies of probability may be different, still the subsequent technique (formalism) is always the same, is flagrantly false! This book gives numerous examples illustrating this·fact. One can only wonder why people make this claim; the reason is probably the desire to escape the hard thinking on the foundations and to get to protection of the formalism of mathematics. Furthermore, the interpretation of the results may be quite difficult and require careful thinking about the underlying model of probability that was assumed.
+This book is the result. It is one man's opinion using a rather more scientific (as opposed to mathematical) approach to probability than is usual. It is hardly perfect, leaves a lot open for further work, and omits most of subjective probability as not being scientific enough to justify many actions in the real world based on it. Not only are many scientific theories and problems based on probability, but many engineering tasks, such as the launching of space vehicles, depend on probability estimates. Perhaps most important, many political, biological, medical, and social decisions involve probability in an essential way. One would like to believe that these decisions are based on sound principles and not on personal prejudices, politics and propaganda.
+In order to strengthen the reader's intuitions for making probability judgements, I have included a reasonable number of tables of results. These tables are well worth careful study to understand why the numbers are the way they are. I have also examined various results to show how they agree, or disagree, with common experience. In my opinion this is a necessary part of any course in probability, since in normal living one has a very limited exposure to the varieties of peculiar results that can occur.
+The material has therefore been carefully presented in a pedagogical manner, including deliberate repetitions, for the benefit of the beginner, and not in the logical order for the benefit of the professor who already understands probability.
+But one's efforts are limited, and it occurred to me that others might want to examine, criticize, change, and advance further the problem of what probability is, hence what I found is presented here for their consideration. I doubt that in the future there will be any single, widely accepted model of probability that is useful for all applications; hence the need for multiple approaches to the topic, and in time new ones not yet discovered!
+I am greatly indebted to Professor Roger Pinkham of Stevens Institute,
+
+PREFACE (ix]
+Hoboken, for endless patience and guidance while I tried to learn probability theory, as well as for a large supply of Examples to illustrate various points. I am, of course, solely responsible for the contents of this book and he cannot be held responsible for my opinions and errors; he did his best!
+I am also indebted to Professor Bruce MacLennan of the University of Tennesee, Knoxville, for many stylistic improvements and suggestions for a dearer presentation; again he is not responsible for the final product. Professor Don Gaver has been of help in numerous discussions.
+
+Table of Contents
+
+Preface
+
+v
+
+Table of Contents
+
+xi
+
+References
+
+339
+
+Chapter 1 Probability
+
+1
+
+1.1 Introduction
+
+1
+
+1.2 Models in General
+
+4
+
+1.3 The Frequency Approach Rejected
+
+6
+
+1.4 The Single Event Model
+
+7
+
+1.5 Symmetry as the Measure of Probability
+
+9
+
+1.5-1 Selected faces of a die
+
+10
+
+1.5-2 A card with the face 7
+
+10
+
+1.5-3 Probability of a spade
+
+11
+
+1.6 Independence
+
+12
+
+1.6-1 The sample space of two dice
+
+13
+
+1.6-2 The sample space of three coins
+
+13
+
+1.6-3 The number of paths
+
+13
+
+1.7 Subsets of a Sample Space
+
+14
+
+1.7-1 Exactly one head in three tosses of three coins
+
+15
+
+1.7-2 Sum of two dice
+
+15
+
+Aside: Probability scales
+
+16
+
+1.8 Conditional Probability
+
+18
+
+1.8-1 At least two heads in ten tosses
+
+18
+
+1.8-2 An even sum on two dice
+
+19
+
+1.8-3 Probability of exactly three heads given
+
+that there are at least two heads
+
+19
+
+[xii] TABLE OF CONTENTS
+
+1.9 Randomness
+
+20
+
+1.9-1 The two gold coin problem
+
+23
+
+1.9-2 The two children problem
+
+24
+
+1.9-3 The four card deck
+
+25
+
+1.9-4 The two headed coin
+
+26
+
+1.9-5 No information
+
+27
+
+1.9-6 The birthday problem
+
+27
+
+1.9-7 The general case of coincidences
+
+30
+
+1.9-8 The information depends on your state of knowledge
+
+31
+
+1.10 Critique of the Model
+
+34
+
+1.A Bounds on Sums
+
+35
+
+l.B A Useful Bound
+
+40
+
+Chapter 2 Some Mathematical Tools
+
+41
+
+2.1 Introduction
+
+41
+
+2.2 Permutations
+
+43
+
+2.2-1 Arrange 3 books on a shelf
+
+45
+
+2.2-2 Arrange 6 books on a shelf
+
+45
+
+2.2-3 Arrange 10 books on a shelf
+
+45
+
+2.2-4 Two out of three items identical
+
+45
+
+2.2-5 Another case of identical items
+
+46
+
+2.3 Combinations
+
+48
+
+2.3-1 Sums of binomial coefficients
+
+51
+
+2.3-2 Bridge hands
+
+51
+
+2.3-3 3 out of 7 books
+
+52
+
+2.3-4 Probability of n heads in 2n tosses of a coin
+
+52
+
+2.3-5 Probability of a void in bridge
+
+53
+
+2.3-6 Similar items in bins
+
+53
+
+2.3-7 With at least 1 in each bin
+
+53
+
+2.4 The Binomial Distribution-Bernoulli Trials
+
+55
+
+2.4-1 Inspection of parts
+
+58
+
+2.4-2 Continued
+
+59
+
+2.4-3 Floppy discs
+
+59
+
+2.4-4 Distribution of the sum of three dice
+
+60
+
+2.4-5 Bose-Einstein statistics
+
+62
+
+2.4-6 Fermi-Dirac statistics
+
+62
+
+2.5 Random Variables, Mean and the Expected Value
+
+64
+
+2.5-1 Expected value of a roll of a die
+
+65
+
+2.5-2 Expected value of a coin toss
+
+65
+
+2.5-3 Sum of two dice
+
+66
+
+2.5-4 Gambling on an unknown bias
+
+70
+
+Mathematical aside: Sums of powers of the integers
+
+70
+
+TABLE OF CONTENTS [xiii)
+
+2.6 The Variance
+
+72
+
+2.6-1 Variance of a die
+
+75
+
+2.6-2 Variance of M equally likely outcomes
+
+76
+
+2.6-3 Variance of the sum of n dice
+
+76
+
+2.7 The Generating Function
+
+78
+
+2.7-1 Mean and variance of the binomial distribution
+
+80
+
+2.7-2 The binomial distribution again
+
+82
+
+2.7-3 The distribution of the sum of three dice
+
+82
+
+2.8 The Weak Law of Large Numbers
+
+84
+
+2.9 The Statistical Assignment of Probabil~ty
+
+88
+
+2.9-1 Test of coin and Monte Carlo methods
+
+89
+
+2.9-2 Chevalier de Mere problem
+
+90
+
+2.10 The Representation of Information
+
+91
+
+2.11 Summary
+
+93
+
+2.A Derivation of the Weak Law of Large Numbers
+
+94
+
+2.B Useful Binomial Identities
+
+95
+
+Chapter 3 Methods for Solving Problems
+
+97
+
+3.1 The Five Methods
+
+97
+
+3.1-1 The elevator problem (five ways)
+
+98
+
+3.2 The Total Sample Space and Fair Games
+
+103
+
+3.2-1 Matching pennies (coins)
+
+103
+
+3.2-2 Biased coins
+
+104
+
+3.2-3 Raffles and lotteries
+
+105
+
+3.2-4 How many tickets to buy in a raffle
+
+106
+
+3.3 Enumeration
+
+108
+
+3.3-1 The game of six dice
+
+108
+
+3.3-2 The sum of three dice
+
+111
+
+3.4 Historical Approach
+
+112
+
+3.4-1 The problem of points
+
+113
+
+3.4-2 Three point game with bias
+
+113
+
+3.4-3 Estimating the bias
+
+114
+
+3.5 Recursive Approach
+
+115
+
+. 3.5-1 Permutations
+
+115
+
+3.5-2 Runs of heads
+
+116
+
+3.5-3 N biased coins
+
+116
+
+3.5-4 Random distribution of chips
+
+117
+
+3.5-5 The gambler's ruin
+
+119
+
+3.6 The Method of Random Variables
+
+121
+
+3.6-1 Pairs of socks
+
+121
+
+3.6-2 Problem de recontre
+
+123
+
+3.6-3 Selecting N items from a set of N
+
+124
+
+3.7 Critique of the Notion of a Fair Game
+
+125
+
+[xiv) TABLE OF CONTENTS
+
+3.8 Bernoulli Evaluation
+
+126
+
+Mathematical aside: Log Expansions
+
+126
+
+3.8-1 Coin toss
+
+127
+
+3.8-2 Symmetric payoff
+
+127
+
+3.8-3 Fair games
+
+128
+
+3.8-4 Insurance (ideal-no extra costs)
+
+129
+
+3.9 Robustness
+
+130
+
+3.9-1 The robust birthday problem
+
+131
+
+3.9-2 The robust elevator problem
+
+132
+
+3.9-3 A variant on the birthday problem
+
+134
+
+3.9-4 A simulation of the variant birthday problem
+
+135
+
+3.10 Inclusion-Exclusion Principle
+
+136
+
+3.10-1 Misprints
+
+137
+
+3.10-2 Animal populations
+
+138
+
+3.10-3 Robust multiple sampling
+
+138
+
+3.10-4 Divisibility of numbers
+
+139
+
+3.11 Summary
+
+140
+
+Chapter 4 Countably Infinite Sample Spaces
+
+141
+
+4.1 Introduction
+
+141
+
+Mathematical aside: Infinite Sums
+
+141
+
+4.2 Bernoulli Trials
+
+145
+
+4.2-1 First occurence
+
+145
+
+4.2-2 Monte Carlo test of a binomial choice
+
+148
+
+4.2-3 All six faces of a die
+
+149
+
+4.2-4 Monte Carlo estimate
+
+151
+
+4.2-5 Card collecting
+
+151
+
+4.2-6 Invariance principle of geometric distributions
+
+152
+
+4.2-7 First and second failures
+
+153
+
+4.2-8 Number of boys in a family
+
+154
+
+4.2-9 Probability that event A precedes event B
+
+156
+
+4.2-10 Craps
+
+156
+
+4.3 On the Strategy to be Adopted
+
+158
+
+4.4 State Diagrams
+
+159
+
+4.4-1 Two heads in a row
+
+160
+
+4.4-2 Three heads in a row
+
+165
+
+4.5 Generating Functions of State Diagrams
+
+172
+
+4.5-1 Six faces of a die again
+
+174
+
+4.6 Expanding a Rational Generating Function
+
+177
+
+4.7 Checking the Solution
+
+179
+
+4.7-1 Three heads in a row
+
+179
+
+TABLE OF CONTENTS [xv]
+
+4.8 Paradoxes
+
+180
+
+4.8-1 The St. Petersburg paradox
+
+180
+
+4.8-2 The Castle Point paradox
+
+181
+
+4.8-3 Urn with black and white balls
+
+182
+
+4.9 Summary
+
+184
+
+4.A Linear Difference Equations
+
+185
+
+Chapter 5 Continuous Sample Spaces
+
+189
+
+5.1 A Philosophy of the Real Number System
+
+189
+
+5.2 Some First Examples
+
+191
+
+5.2-1 Distance from a river
+
+192
+
+5.2-2 Second random choice of angle
+
+193
+
+5.2-3 Broken stick
+
+194
+
+5.2-4 The Buffon needle
+
+195
+
+5.2-5 Another Monte Carlo estimate of 1r
+
+196
+
+5.2-6 Mean and variance of the unit interval
+
+198
+
+5.3 Some Paradoxes
+
+199
+
+5.3-1 Bertrand's paradox
+
+200
+
+5.3-2 Obtuse random triangles
+
+203
+
+5.3-3 A random game
+
+205
+
+5.4 The Normal Distribution
+
+208
+
+5.4-1 Hershel's derivation of the normal distribution
+
+209
+
+5.4-2 Distance to a random point
+
+211
+
+5.4-3 Two random samples from a normal distribution
+
+212
+
+5.5 The Distribution of Numbers
+
+214
+
+5.5-1 The general product
+
+216
+
+5.5-2 Persistence of the reciprocal distribution
+
+218
+
+5.5-3 Probability of shifting
+
+219
+
+5.5-4 The general quotient
+
+220
+
+5.6 Convergence to the reciprocal distribution
+
+222
+
+5.6-1 Product of two numbers from a flat distribution
+
+222
+
+5.6-2 Approach to the reciprocal distribution in general
+
+222
+
+5.6-3 Approach from the flat distribution
+
+224
+
+5.6-4 A computation of products from a flat distribution
+
+224
+
+5.7 Random Times
+
+226
+
+5.7-1 Sinusiodal notion
+
+226
+
+5.7-2 Random events in time
+
+227
+
+5.7-3 Mixtures
+
+230
+
+5.8 Dead Times
+
+230
+
+5.9 Poisson Distributions in time
+
+231
+
+5.9-1 Shape of the state distributions
+
+232
+
+5.10 Queuing Theory
+
+233
+
+5.11 Birth and Death Systems
+
+237
+
+5.12 Summary
+
+238
+
+(xvi] TABLE OF CONTENTS
+
+Chapter 6 Uniform Probability Assignments
+
+239
+
+6.1 Mechanical Probability
+
+239
+
+6.2 Experimental Results
+
+243
+
+6.3 Mathematical Probability
+
+245
+
+6.4 Logical Probability
+
+247
+
+6.5 Robustness
+
+248
+
+6.6 Natural Variables
+
+250
+
+6.7 Summary
+
+251
+
+Chapter 7 Maximum Entropy·
+
+253
+
+7.1 What is Entropy?
+
+253
+
+7.2 Shannon's Entropy
+
+256
+
+7.2-1 An entropy computation
+
+257
+
+7.2-2 The entropy of uniform distributions
+
+261
+
+7.3 Some Mathematical Properties of the Entropy Function
+
+262
+
+7.3-1 The log inequality
+
+262
+
+7.3-2 Gibbs' inequality
+
+263
+
+7.3-3 The entropy of independent random variables
+
+263
+
+7.3-4 The entropy decreases when you combine items
+
+264
+
+7.4 Some Simple Applications
+
+265
+
+7.4-1 Maximum entropy distributions
+
+265
+
+7.4-2 The entropy of a single binary choice
+
+267
+
+7.4-3 The entropy of repeated binary trials
+
+267
+
+7.4-4 The entropy of the time to first failure
+
+268
+
+7.4-5 A discrete distribution with infinite entropy
+
+269
+
+7.5 The Maximum Entropy Principle
+
+270
+
+7.5-1 Marginal distributions
+
+271
+
+7.5-2 Jaynes' example
+
+272
+
+7.5-3 Extensions of Jaynes' example
+
+275
+
+7.6 Summary
+
+276
+
+Chapter 8 Models of Probability
+
+279
+
+8.1 General Remarks
+
+279
+
+8.2 Review
+
+280
+
+8.3 Maximutn Likelihood
+
+282
+
+8.3-1 Maximum likelihood in a binary choice
+
+283
+
+8.3-2 Least squares
+
+284
+
+8.3-3 Scale free
+
+285
+
+8.4 von Mises' Probability
+
+285
+
+8.5 The Mathematical Approach
+
+287
+
+8.6 The Statistical Approach
+
+289
+
+TABLE OF CONTENTS [xvii)
+
+8.7 When the Mean Does Not Exist
+
+289
+
+8.7-1 The Cauchy distribution
+
+290
+
+8.8 Probability as an Extension of Logic
+
+294
+
+8.8-1 The four liars
+
+295
+
+8.9 di Finetti
+
+296
+
+8.10 Subjective Probability
+
+297
+
+8.11 Fuzzy Probability
+
+299
+
+8.12 Probability in Science
+
+300
+
+8.13 Complex Probability
+
+302
+
+8.14 Summary
+
+304
+
+Chapter 9 Some Limit Theorems
+
+307
+
+9.1 Introduction
+
+307
+
+9.2 The Normal Distribution
+
+309
+
+9.2-1 The approximation of a unimodal distribution
+
+311
+
+= 9.3 The Binomial Approximation for the Case p 1/2
+
+313
+
+9.3-1 Binomial sums
+
+315
+
+9.3-2 Binomial sums for nonsymmetric ranges
+
+317
+
+9.4 Approximation by the Normal Distribution
+
+317
+
+9.4-1 A normal approximation to a skewed distribution
+
+318
+
+9.4-2 Approximation to a binomial distribution
+
+319
+
+9.5 Another Derivation of the Normal Distribution
+
+320
+
+9.6 Random Times
+
+323
+
+9.7 The Zipf Distribution
+
+324
+
+9.8 Summary
+
+326
+
+Chapter 10 An Essay On Simulation
+
+327
+
+10.1 Introduction
+
+327
+
+10.2 Simulations for checking purposes
+
+328
+
+10.3 When you cannot compute the result
+
+328
+
+10.3-1 Random triangles in a circle
+
+329
+
+10.4 Direct simulations
+
+330
+
+10.5 The use of some modeling
+
+331
+
+10.6 Thought simulations
+
+333
+
+10.7 Monte Carlo methods
+
+333
+
+10.8 Some simple distributions
+
+334
+
+10.8-1 The exponential distribution
+
+335
+
+10.8-2 The normal distribution
+
+335
+
+10.8-3 The reciprocal distribution
+
+336
+
+10.9 Notes on programming many simulations
+
+336
+
+10.10 Summary
+
+337
+
+Index
+
+341
+
+1
+Probability
+"Probability is too important to be left to the experts."
+1.1 Introduction
+Who has not watched the toss of a coin, the roll of dice, or the draw of a card from a well shuffled deck? In each case, although the initial conditions appear to be much the same, the specific outcome is not knowable. These situations, and many equivalent ones, occur constantly in our society, and we need a theory to enable us to deal with them on a rational, effective basis. This theory is known as probability theory and is very widely applied in our society-in science, in engineering, and in government, as well as in sociology, medicine, politics, ecology, and economics.
+How can there be laws of probability? Is it not a contradiction? Laws imply regularity, while probable events imply irregularity. We shall see that many times amid apparent irregularity some regularity can be found, and furthermore this limited regularity often has significant consequences.
+How is it that from initial ignorance we can later deduce knowledge? How can it be that although we state that we know nothing about a single toss of a coin yet we make definite statements about the result of many tosses, results that are often closely realized in practice?
+Probability theory provides a way, indeed a style, of thinking about such problems and situations. The classical theory has proved to be very useful even in domains that are far removed from gambling (which is where it arose and is still, probably, the best initial approach). This style of thinking is an art and is not easy to master; both the historical evidence based on its late development, and the experience of current teaching, show that much careful thinking on
+
+[2] PROBABILITY
+
+CHAPTER 1
+
+the student's part is necessary before probability becomes a mental habit. The sophisticated approach of beginning with abstract postulates is favored by mathematicians who are interested in covering as rapidly as possible the material and techniques that have been developed in the past. This is not an effective way of teaching the understanding and the use of probability in new situations, though it clearly accelerates the formal manipulation of the symbols {see the quotation at the top of the Preface). We adopt the slow, cautious approach of carefully introducing the assumptions of the models, and then examining them, together with some of their consequences, before plunging into the formal development of the corresponding theory. We also show the relationship between the various models of probability that are of use in practice; there is not a single model of probability, but many and of differing reliabilities.
+Mathematics is not just a collection of results, often called theorems; it is a style of thinking. Computing is also basically a style of thinking. Similarly, probability is a style of thinking. And each field is different from the others. For example, I doubt that mathematics can be reduced to button pushing on a computer and still retain its style of thinking. Similarly, I doubt that the theory of probability can be reduced to either mathematics or computing, though there are people who claim to have done so.
+In normal life we use the word "probable" in many different ways. We speak of the probability of a head turning up on the toss of a coin, the probability that the next item coming down a production line will be faulty, the probability that it will rain tomorrow, the probability that someone is telling a lie, the probability of dying from some specific disease, and even the probability that some theory, say evolution, special relativity, or the "big bang," is correct.
+In science (and engineering) we also use probability in many ways. In its early days science assumed there was an exact measurement of something, but there was also some small amount of "noise" which contaminated the signal and prevented us from getting the exact measurement. The noise was modeled by probability. We now have theories, such as information theory and coding theory, which assume from the beginning that there is an irreducible noise in the system. These theories are designed to take account of the noise rather than to initially avoid it and then later, at the last moment, graft on noise. And there are some theories, such as the Copenhagen interpretation of quantum mechanics, which say that probability lies at the foundations of physics, that it is basic to the very nature of the world.
+Thus there are many different kinds of probability, and any attempt to give only one model of probability will not meet today's needs, let alone tomorrow's. Some probability theories are "subjective" and have a large degree of "personal probability" (belief) as an essential part. Some theories try to be more scientific (objective), and that is the path we will mainly followwithout prejudice to the personal (more subjective) probability approaches which we cannot escape using in our private lives. [Kr, both volumes].
+
+1.1
+
+INTRODUCTION (3]
+
+The belief that there is not a single model of probability is rarely held, but it is not unique to the author. The following paraphrase shows an alternate opinion (ignore the jargon for the moment) (G, p.xi,xii]:
+In quantum probability theory the state of the system is determined by a complex-valued function A (called the amplitude function) on the outcome space (or sample space). The outcomes
+of an event E = {:.:1, z 2, •.•} have the probability P(E) of E which
+is computed by
+
+This allows for interference as happens in optics and sound. If the outcomes do not interfere, then of course
+
+This last is the classical probability theory. In the interference case P(E) decomposes into the sum of two parts. The real part is the classical counterpart and the imaginary part leads to the constructive or destructive interference which is characteristic of quantum mechanics and much of physics.
+The basic axiom of the path integral formalism is that the state of a quantum mechanical system is determined by the amplitude function A and that the probability of a set of interfering outcomes {z1, z 2, •.•} is the first equation. This point has been missed by the axiomatic approaches and in this sense they have missed the essence of quantum mechanics. In principle this essence can be regained by adjoining an amplitude function axiom to the other axioms of the system, but then the axiomatic system is stronger than necessary and may well exclude important cases.
+Since we are going to use a scientific approach to probability it is necessary to say what science is and is not. In the past science has tried to be objective and to insist on the property that different people doing the same experiment would get essentially the same results. But we must not assume that science is completely objective, that this repeatability property is perfectly attained or is even essential (for example, consider carefully observational astronomy). Again, if I were to ask two different people to measure the width of a table, one of them might by mistake measure the length, and hence the measurements might be quite different. There is an unstated amount of "understanding what is meant" that is implied in every experimental description. We can only hope to control this assumed background (that is supposed to produce absolute consistency) so that there is little room for error, but we do not believe that we can ever completely eliminate some personal judgment
+
+(4] PROBABILITY
+
+CHAPTERl
+
+in science. In science we try to identify clearly where judgment comes in and to control the amount of it as best we can.
+The statement at the head of this chapter,
+
+Probability is too important to be left to the experts,
+
+is a particular case of a very general observation that the experts, by their very expert training and practice, often miss the obvious and distort reality seriously. The classical statement of this general principle is, "War is too important to be left to the generals:" We daily see doctors who treat cases but not patients, mathematicians who give us exact solutions to the wrong problems, and statisticians who give us verifiably wrong predictions. In our Anglo-Saxon legal system we have clearly adopted the principle that in guilt vs. innocence "twelve tried and true men" are preferable to an experienced judge. The author clearly believes that the same is true in the use of probability; the desire of the experts to publish and gain credit in the eyes of their peers has distorted the development of probability theory from the needs of the average user.
+The comparatively late rise of the theory of probability shows how hard it is to grasp, and the many paradoxes show clearly that we, as humans, lack a well grounded intuition in this matter. Neither the intuition of the man in the street, nor the sophisticated results of the experts provides a safe basis for important actions in the world we live in. The failure to produce a probability theory that fits the real world as it is, more or less, can be very costly to our society which uses it constantly.
+In the past science has developed mainly from attempts to "measure how much," to be more precise than general statements such as larger, heavier, faster, more likely, etc. Probability tries to measure more precisely than "more likely" or "less likely." In order to use the scientific approach we will start (Section 1.5) with the measurement of probability in an objective way. But first some detours and formalities are needed.
+
+1.2 Models in General
+It is reasonably evident to most people that all thought occurs internally, and it is widely believed that thinking occurs in the head. We receive stimuli from the external world, (although some sophists have been known to deny the existence of the external world, we shall adopt a form of the "naive realism" position that the world exists and is to some extent "knowable"). We organize our incoming stimuli according to some ill-defined model of reality that we have in our heads. As a result we do not actually think about the real external
+
+1.2
+
+MODELS IN GENERAL (5)
+
+world but rather we "think" in terms of our impressions of the stimuli. Thus all thought is, in some sense, modeling.
+A model can not be proved to be correct; at best it can only be found to be reasonably consistant and not to contradict some of our beliefs of what reality is. Karl Popper has popularized the idea (which goes back at least to Francis Bacon) that for a theory to be scientific it must be potentially falsifiable, but in practice we do not always obey his criterion, plausible as it may sound at first. From Popper's point of view a scientific theory can only be disproved, but never proved. Supporting evidence, through the application of finite induction, can increase our faith i~ a theory but can never prove its absolute truth.
+In actual practice many other aspects of a model are involved. Occam's razor, which requires that minimal assumptions be used and extra ones removed, is often invoked as a criterion-we do not want redundant, possibly contradictory assumptions. Yet Occam's razor is not an absolute, final guide. Another criterion is aesthetic taste, and that depends, among other things, on the particular age and culture you happen to live in. We feel that some theories are nicer than others, that some are beautiful and some are ugly, and we tend to choose the loveliest one in practice. Another very important criterion is "fruitfulness"-does the model suggest many new things to try?
+A model is often judged by how well it "explains" some observations. There need not be a unique model for a particular situation, nor need a model cover every possible special case. A model is not reality, it merely helps to explain some of our impressions of reality. For example, for many purposes we assume that a table is "solid," yet in physics we often assume that it is made of molecules and is mainly "empty space." Different models may thus seem to contradict each other, yet we may use both in their appropriate places.
+In view of the wide variety of applications of probability, past, present, and future, we will develop a sequence of models of probability, generally progressing from the simpler to the more complex as we assume more and more about the model. At each stage we will give a careful discussion of the assumptions, and illustrate some features of them by giving consequences you are not likely to have thought were included in the model. Thus we will regularly discuss examples (paradoxes) whose purpose is to show that you can get rather peculiar results from a model if you are not careful, even though the assumptions (postulates) on the surface seem to be quite bland, [St). It is irresponsible to teach a probability course as if the contents were entirely safe to use in any situation. As Abelard (1079-1142) said,
+
+"I expose these contradictions so that they may excite the susceptible minds of my readers to the search for truth, and that these contradictions may render their minds more penetrating as the effect of that search. "
+
+(6] PROBABILITY
+
+CHAPTER!
+
+Since the applications of probability theory are constantly expanding in range and depth, it is unlikely that anyone can supply models for all the situations that will arise in the future. Hence we are reduced to presenting a series of models, and to discussing some of their relationships, in the hopes that you will be able to create the model you need when the time comes to develop a new one. Each application you make requires you to decide which probability model to adopt.
+
+1.3 The Frequency Approach Rejected
+Most people have at least two different models of probability in their minds. One model is that there is a probability to be associated with a single event, the other is that probability is the ratio of the number of successes to the total number of trials in a potentially infinite sequence of similar trials. We need to assume one of these and deduce, in so far as we can, the other from the first-otherwise we risk assuming a contradiction! It will turn out that the two models are not completely equivalent.
+A third kind of probability that most people are familiar with is that which arises in betting between friends on sporting events. The "odds" are simply a version of probability; the odds of a to b are the probabilities of af(a +b) and bf(a +b). There is often no serious thought ofrepetitions of the event, or a "random selection from an ensemble of similar events," rather it is the feeling that your "hunches" or "insights" are better than those of the opponent. Both sides recognize the subjective aspect, that two people with apparently the same information can have different probability assignments for the same event. The argument that they have different amounts of information is unconvincing; it is often merely a temporary mood that produces the difference.
+The frequency approach (the ratio of the number of successes to the total number of equally likely possible outcomes) seems to be favored by most statistically inclined people, but it has severe scientific difficulties. The main difficulty with the frequency approach is that no one can say how many (necessarily finite) number of trials to make, and it is not practical science to define the probability as the limit of the ratio as the number of trials approaches infinity. Furthermore, the statement of the limiting frequency, in a careful form, will often include the words that you will for any long, finite sequence be only probably close! It is circular to say the least! And you can't know whether you are looking at an exceptional case or a likely case. It is also true that to get even reasonable accuracy usually requires a discouragingly large number of trials. Finally, there are models, as we shall show in Section 8.7 for which the single event probability has meaning and at the same time the average of n samples has more variability than the original distribution!
+
+1.4
+
+THE SINGLE EVENT MODEL [7)
+
+For a long time there has been in science a strong trend towards accepting in our theories only objectively measureable quantities and of excluding purely conceptual ones that are only props (like the "ether" in classical physics). The extreme of allowing only measureable quantities is perhaps too rigid an attitude (though a whole school of philosophy maintains this position); yet it is a useful criterion in doing science.
+Similarly, there are many mathematical theorems in the literature whose hypotheses cannot be known, even in an intuitive sense, to be close let alone be either exactly true or false within the framework of the intended application; hence these theorems are not likely to be very useful in these practical applications of the theory. Such theorems may be interesting and beautiful pure mathematics but are of dubious applicability.
+This "practical use" attitude tends to push one towards "constructive mathematics" [B] and away from the conventional mathematics. The increasing use of computers tends to make many people favor "computable" numbers as a basis for the development of probability theory. Without careful attention to the problem for which it is being used it is not a priori obvious which approach to the real number system we should adopt. And there are some people who regard the continuous mathematics as merely a useful approximation to the discrete since usually the equivalent operations are easier in the continuous model than they are in the discrete. Furthermore, quantum mechanics suggests, at least to some people, that ultimately the universe is discrete rather than continuous.
+Whenever a new field of application of mathematics arises it is always an open question as to the applicability of the mathematics which was developed earlier; if we are to avoid serious blunders it must be carefully rethought. This point will be raised repeatedly in this book.
+For these and other reasons we will not begin with the frequency approach, but rather deduce (Sections 2.8 and Appendix 2.A) the frequency model along with its limitations. For this present Section see [Ke], especially Chapter 8.
+
+1.4 The Single Event Model
+In most fields of knowledge it is necessary, sooner or later, to introduce some technical notation and jargon so that what is being talked about is fairly precise and we can get rid of the vagueness of words as used in normal language. We have used some of these words already!
+At first a trial is a single unit, like the toss of a coin, the roll of a die (singular of dice), or the draw of a single card from a well shuffled deck. The elementary events of a trial are the possible outcomes of the trial. For example, for the toss of a coin the elementary events are "head" and "tail."
+
+[8] PROBABILITY
+
+CHAPTER 1
+
+For the roll of a die the elementary events are the names of the six faces, 1, 2, 3, 4, 5, 6. The elementary events are considered to be indivisible, atomic, events from which more complex events (say an even numbered face of a die) may be built. We will label the possible outcomes of a trial by the symbols Zi, where i runs from 1 ton (or possibly 0 ton). Thus as a first approximation, to be modified later, we have the trial labeled X whose outcome is some particular Zi· The capital letter X represents the trial, and the set {zi} represents the possible outcomes of the trial; some particular Zi will be the actual outcome of the trial X being conducted. In some circumstances the symbol X may be thought of as being the whole set {zi} just as the function sin z may be thought of as the entire function. This list of possible outcomes is an idealization of reality. Initially we assume that this list is finite in length.
+Later on a trial may be a sequence of these simple trials; the roll of, say, four dice at one time will be a single trial. Still later we will continue for an indefinite number of times until some condition is reached such as tossing a coin until three heads occur in a row. In such cases the entire run will be considered a single trial, and the number of possible events will not be finite but rather countably infinite. Still later, we will examine a continuum of events, a classically non-countable number of events.
+In principle the first step in a discrete probability problem is, for the trial (named) X, to get the corresponding list (or set) X of all the possible outcomes Zi. Thus X has two meanings; it is the name of the trial and it is also the list of possible the outcomes of the trial. The name of the outcome should not be logically confused with any value associated with the outcome. Thus logically the face "the number of spots," say 4, on a die is a label and should not be confused with the name "four," nor with the value "4" that is usually associated with this outcome. In practice these are often carelessly treated as being the same thing.
+The beginner is often confused between the model and reality. When
+tossing a coin the model will generally not include the result that the coin ends up on its edge, nor that it is lost when it rolls off the table, nor that the experimenter drops dead in the middle of the trial. We could allow for such outcomes if we wished, but they are generally excluded from simple
+problems. In a typical mathematical fashion these events (outcomes) Zi are con-
+sidered to be points in the sample space X; each elementary event Zi is a point in the (at present) finite, discrete sample space. To get a particular realization of a trial X we "sample" the sample space and select "at random" (to be explained in more detail in Section 1.9) an event Zi· The space is also called a list (as was stated above) and we choose (at random) one member (some z;) of the list X as the outcome of the trial.
+
+1.5
+
+SYMMETRY AS THE MEASURE OF PROBABILITY [9)
+
+1.5 Symmetry as the Measure of Probability
+
+With this notation we now turn to the assignment of a measure (the numerical value) of the probability Pi to be associated with (assigned to) the event Zi of
+the trial. Our first tool is symmetry. For the ideal die that we have in our mind
+we see that (except for the labels) the six possible faces are all the same, that they are equivalent, that they are symmetric, that they are interchangeable. Only one of the elementary events Zi can occur on one (elementary) trial and it will have the probability Pi· If any one of several different outcomes Zi is allowed on a trial (say either a 4 or a 6 on a roll of a die) then we must have the "additivity" of probabilities Pi. For the original sample space we will get the same probability, due to the assumed symmetry, for the occurences of each of the elementary events. We will scale this probability measure so that the sum of all the probabilities over the sample space of the elementary events must add up to 1.
+If you do not make equal probability assignments to the interchangeable outcomes then you will be embarrassed by interchanging a pair of the nonequal values. Since the six faces of an ideal die are all symmetric, interchangeable if you prefer, then each face must have the probability of 1/6 (so that the total probability is 1). For a well shuffled ideal deck of cards we believe that each of the 52 cards are interchangeable with every other card so each card must have a probability of 1/52. For a well balanced coin having two symmetric faces each side must have probability 1/2.
+Let us stop and examine this crucial step of assigning a measure (number) Pi called "the probability" to each possible outcome Zi of a trial X. These numbers are the probabilities of the elementary events. From the perceived symmetry we deduced interchangeability, hence the equality of the measure of probability of each of the possible events. The reasonableness of this clearly reinforces our belief in this approach to assigning a measure of probability to elementary events in the sample space.
+This perception of symmetry is subjective; either you see that it is there or you do not. But at least we have isolated any differences that may arise so that the difference can be debated sensibly. We have proceeded in as objective a fashion as we can in this matter.
+However, we should first note that, "Symmetric problems always have symmetric solutions." is false [W). Second, when we say symmetric, equivalent, or interchangable, is it based on perfect knowledge of all the relevant facts, or is it merely saying that we are not aware of any lack thereof? The first case being clearly impossible, we must settle for the second; but since the second case is vague as to how much we have considered, this leaves a lot to be desired. We will always have to admit that if we examined things more closely we might find reason to doubt the assumed symmetry.
+We now have two general rules: (1) if there are exactly n different inter-
+
+[10] PROBABILITY
+
+CHAPTER!
+
+changeable (symmetric in some sense) elementary events Zi, then each event
+Zi has probability Pi = 1/n since (2) the probabilities of the elementary events
+in the sample space are additive with a total probability of 1. Again, from the additivity of the probabilities of the elementary events
+it follows that for more complex situations when there is more than one point in the sample space that satisfies the condition then we add the individual probabilities.
+For the moment we will use the words "at random" to mean equally likely choices in the sample space; but e.ven a beginner can see that this is circular-
+what can "equally likely" mean except equally probable, (which is what we are trying to define)? Section 1.9 will discuss the matter more carefully; for the moment the intuitive notion will suffice to do a few simple problems.
+
+Example 1.5-1 Selected Faces of a Die
+Suppose we have a well balanced die and ask for the probability that on a random throw the upper face is less than or equal to 4.
+The admissible set of events (outcomes) is {zi} = { 1, 2, 3, 4}. Since each
+= has probability Pi 1/6, we have
+= Prob {zi :54}= 1/6 + 1/6 + 1/6 + 1/6 4/6 = 2/3
+If instead we ask for the probability that the face is an even number, then we have the acceptable set {2,4,6}, and hence
+= = = Prob {zi even} 1/6 + 1/6 + 1/6 3/6 1/2
+
+Example 1.5-2 A Card With tl1e Face 7
+What is the probability that on the random draw of a card from the standard card deck of 52 cards (of 4 suits of 13 cards each) that the card drawn has the number 7 on it?
+We argue that there are exactly 4 cards with a 7 on their face, one card from each of the four suits, hence since the probability of a single card is 1/52 we must have the probability
+= Prob {face = 7} 4/52 = 1/13.
+There are other simple arguments that will lead to the same result.
+
+1.5
+
+SYMMETRY AS THE MEASURE OF PROBABILITY [11)
+
+Example 1.5-3 Probability of a Spade
+What is the probability of drawing a spade on a random draw from a deck of cards?
+We observe that the probability of any card drawn at random is 1/52. Since there are 13 spades in the deck we have the combined probability of
+
+= = P(spade) (13) (1/52) 1/4
+
+Exercises 1.5
+1.5-1. If there are 26 chips each labeled with a different letter of the alphabet what is the probability of choosing the chip labeled Q when a chip is drawn at random? Of drawing a vowel (A, E, I, 0, U)? Of not drawing a vowel? Ans. 1/26, 5/26, 21/26.
+1.5-2. If 49 chips are labeled 1, 2, ... 49, what is the probability of drawing the 7 at random? A number greater or equal to 7? Ans. 1/49, 43/49.
+1.5-3. If 49 chips are labeled 2, 4, ... 98, what is the probability of drawing the chip 14 at random? Of a number greater than 20?
+1.5-4 A plane lattice of points in the shape of a square of size n > 2 has n2
+points. What is the probability of picking a corner point? The probability of picking an inner point? Ans. 4/n2 , [(n- 2)/n]2
+1.5-5 A day of the week is chosen at random, what is the probability that it is Tuesday? A "weekday"?
+1.5-6 We have n3 items arranged in the form of a lattice in a cube, and we pick at random an item from an edge (not on the bottom). What is the probability that it is a corner item? Ans. 1/(2n - 3).
+1.5-7 In a set of 100 chips 10 are red; what is the probability of picking a red chip at random? Ans. 1/10.
+1.5-8 If there are r red balls, w white balls, and b blue balls in an urn and a ball is drawn at random, what is the probability that the ball is red? Is white? Is blue? Ans. r/(r + w +b), w/(r + w +b), b/(r + w +b).
+1.5-9 There are 38 similar holes in a roulette wheel. What is the probability of the ball falling in any given hole?
+1.5-10 In a deck of 52 cards what is the probability of a random drawing being the 1 (ace) of spades? Of drawing at random a heart? Ans. 1/52, 1/4
+1.5-11 There are 7 bus routes stopping at a given point in the center of town. If you pick a bus at random what is the probability that it will be the one to your house?
+1.5-12 In a box of 100 items there are 4 defective ones. If you pick one at random what is the probability that it is defective? Ans. 1/25
+
+(12] PROBABILITY
+
+CHAPTER 1
+
+1.5-13 If 3% of a population has a certain disease what is the probability that the next person you pass on the street has it? Ans. 0.03
+1.5-14 Due to a malajustment a certain machine produces every fifth item defective. What is the probability that an item taken at random is defective?
+1.5-15 In a certain class of 47 students there are 7 with last names beginning with the letterS. What is the probability that a random student's name will begin with the letter S? Ans. 7/47
+
+1.6 Independence
+The next idea we need is independence. If we toss a coin and then roll a die we feel that the two outcomes are independent, that the outcome of the coin has no influence on the outcome of the die. The sample space is now
+1 2 3 4 5 6
+H H1 H2 H3 H4 H5 H6
+T T1 T2 T3 T4 1'5 T6
+We regard this sample space as the product of the two elemetary sample spaces. This is often called the Cartesian (or direct) product by analogy with cartesian coordinates of the two original sample spaces, {H, T} for the coin, and {1,2,3,4,5,6} for the die. Since we believe that the outcomes of the die and coin are independent we believe (from symmetry) that the events in the product sample space are all equally likely, hence each has probability
+= 1/(2 x 6) 1/12. We see that the probability of the compound events in
+the product sample space are (for independent events) just the product of the corresponding probabilities of the separate original events, that
+= 1/12 (1/2) (1/6).
+Clearly the product space (meaning the product of the sample spaces) of the coin with the die is the same as the product space of the die with the coin.
+We immediately generalize to any two independent events, each of these being from an equally likely sample space. If there are n1 of the first kind of
+= event and n2 of the second, then the product space of the combined trial has
+n1n2 events each of the same probability l/n1n2 (1/nl) (l/n2).
+
+1.6
+
+INDEPENDENCE [13]
+
+Example 1.6-1 Tbe Sample Space of Two Dice
+Consider the toss of two independently rolled dice. The sample space has 6 x 6 = 36 events each of probability 1/36, and the sample space is:
+
+1,1 1,2 1,3
+
+1,6
+
+2,1 2,2 2,3
+
+2,6
+
+6,1 6,2 6,3
+
+6,6
+
+Clearly the idea of a product space may be extended to more than two independent things.
+
+Example 1.6-2 Tbe Sample Space of Tbree Coins
+Consider the toss of three coins. We have 2 x 2 X 2 = 8 equally likely outcomes.
+It is awkward to draw 3 dimensional sample spaces, and it is not feasible to draw higher dimensional sample spaces, so we resort to listing the elementary events. For the three coins we have a list (equivalent to the product sample space)
+
+HHH HHT HTH THH HTT THT TTH TTT
+
+each of probability (1/2)(1/2)(1/2) = 1/8.
+
+The extension to m different independent trials each having ni(i =
+1, 2, ... , m) equally likely outcomes leads to a product space of size equal to the product n1n2 ... nm of the dimensions of the original spaces. The probabilities of the events in the product space are equal to the corresponding products of the probabilities of the original events making up the original spaces, hence the product space events are also equally likely (since the original ones were equally likely).
+
+Example 1.6-3 Tbe Number of Patbs
+If you can go from A to B in 6 ways, from B to C in 7 ways, and from C to Din 5 ways, then there are 6 x 7 x 5 = 210 ways of going from A to D, Figure 1.6-1. If each of the original ways were equally likely and independent then each of the 210 ways is also equally likely and has a probability of 1/210.
+
+FIGURE 1.6-1
+
+(14] PROBABILITY
+
+CHAPTER 1
+
+Notice again, the probabilities of the equally likely events in the product sample space can be found by either: (1) computing the number of events Xi in the product space and assigning the same probability Pi= 1/(the number of events) to each event in the product space, or (2) assign the product of the probabilities of the separate parts to each compound event in the product space.
+Notice also that we are always assuming that the elementary points in the sample space are independent of each other, that one outcome is not influenced by earlier choices. However, in this universe in which we live apparently all things are interrelated ("intertwined" is the current jargon in quantum mechanics); if so then independence is an idealization ofreality, and is not reality.
+It is easy to make up simple examples illustrating this kind of probability problem, and working out a large number of them is not likely to teach you as much as carefully reviewing in your mind why they work out as they do.
+
+Exercises 1.6
+1.6-1 What is the probability of H H H on the toss of three coins when the order of the outcomes is important? Of HTH? Of TTH? Ans. 1/8.
+1.6-2 Describe the product space of the draw of a card and the roll of a die.
+= 1.6-3 What is the size of the product space of the roll of three dice? Ans. 63
+216.
+1.6-4 What is the size of the product space of the toss of n coins? Ans. zn.
+1.6-5 What is the size of the product space of the toss of n dice?
+1.6-6 What is the product space of a draw from each of two decks of cards? Ans. Size= (52)2 • 1.6-7 What is the size of the sample space of independent toss of a coin, roll of a die, and the draw of a card?
+
+1.7 Subsets of a Sample Space
+We are often interested not in all the individual outcomes in a product space but rather only those outcomes which have some specific property. We have already done a few such cases.
+
+1.7
+
+SUBSETS OF A SAMPLE SPACE (15]
+
+Example 1.7-1 Exactly One Head in Tbree Tosses
+Suppose we ask in how many ways can exactly one head turn up in the toss of three coins, or equivalently, what is the probability of the event. We see that in the complete sample space of 8 possible outcomes we are only interested in the three events
+HTT THT TTH
+Each of these has a probability of 1/8, so that the sum of these will be 3/8 which is the corresponding probability.
+Clearly we are using the additivity of the probabilities of the events in the sample space. We need to know the size of the sample space, but we need not list the whole original sample space, we need only count the number of successes. Listing things is merely one way of counting them.
+
+Example 1.7-2 Sum of Two Dice
+What is the probability that the sum of the faces of two independently thrown dice total 7? We have only the six successful possibilities
+1 + 6, 2 + 5, 3 + 4, 4 + 3, 5 + 2, 6 + 1
+= in the total sample space of62 36 possible outcomes. See Figure 1.7-1. Each
+possible outcome has probability of 1/36, hence the probability of a total of 7
+= is 6/36 1/6.
+
+Second die
+
+First die
+
+1 2 3 4 5 6
+
+1
+
+•
+
+2
+
+•
+
+3
+
+•
+
+4
+
+•
+
+5 • 6 •
+
+Sum of two dice
+
+FIGURE 1.7-1
+
+We can look at this in another way. Regardless of what turns up on the first die, there is exactly one face of the second that will make the total equal to 7, hence the probability of this unique face is 1/6.
+If we were to ask in how many ways, (or equivalently what is the probability), can the sum of three or four, or more dice add up to a given number
+
+[16) PROBABILITY
+
+CHAPTER 1
+
+then we would have a good deal of trouble in constructing the complete sample space and of picking out the cases which are of interest. It is the purpose of the next two chapters to develop some of the mathematical tools to carry out this work; the purpose of the present chapter is to introduce the main ideas of probability theory and not to confuse you by technical details, so we will not now pursue the matter much further.
+We now have the simple rule: count the number of different ways the compound event can occur in the original sample space ofequally likely events (outcomes), then the probability of this compound event is the ratio of the number of successes in the sample space to the total number of events in the original sample space.
+
+Aside: Probability Scales We have evidently chosen to measure probability on a scale from 0 to 1, with 0 being impossibility and 1 being certainty. A scale that might occur to you is from 1 to infinity, which is merely the reciprocal of the first range, (you might also consider 0 to infinity). In these cases you will find that the addition of probabilities is not simple. There are other objections that you can find if you choose to explore these scales.
+
+Venn Diagram
+
+FIGURE 1.7-2
+A Venn diagram is mainly a symbolic representation of the subsets of a sample space. Typically circles are used to represent the subsets, see Figure 1.7-2. The subsets represented are the insides of the circles A, B and C. Now consider those events which have both properties A and B, shown by the region AB. Similarly for the sets AC and BC. Finally, consider the events which have the properties of A, B and C at the same time; this is the inner piece in the diagram, ABC. In this simple case the representation is very illuminating. But if you try to go to very many subsets then the problem of
+
+1.8
+
+SUBSETS OF A SAMPLE SPACE (17]
+
+drawing a diagram which will show clearly what you are doing is often difficult; circles are not, of course, necessary, but when you are forced to draw very snake-like regions then the diagram is of little help in visualizing the situation. In the Venn diagram the members of a set are often scattered around (in any natural display of the elements of the sample space), hence we will not use Venn diagrams in this book.
+
+Exercises 1.7
+1.7-1 What is the probability of a die showing an odd digit? 1.7-2 What is the probability of drawing a "diamond" when drawing a card from a deck of 52 cards? Ans. 1/4. 1.7-3 On the roll of two dice what is the probability of getting at least one face as a 4? Ans. 11/36. 1.7-4 What is the probability of two H's in two tosses of a coin? 1.7-5 On the roll of two independent dice what is the probability of a total of 61 Ans. 5/36. 1.7-6 Make a Venn diagram for four sets. 1.7-7 In a toss of three coins what are the probabilities of O, 1, 2, or 3 heads? Ans. 1/8, 3/8, 3/8,1/8. 1.7-8 What is the probability of drawing either the 10 of diamonds or the jack of spades? 1.7-9 What is the probability of drawing an "ace" (ace= 1), jack, queen or king from a deck of 52 cards? Ans. 4/13.
+1.7-10 What is the probability of drawing a black card from the deck? 1.7-11 If two dice are rolled what is the probability both faces are the same? Ans. 1/6. 1.7-12 If three dice are rolled what is the probability that all three faces are the same? Ans. 1/36. 1.7-13 If a 1coin is tossed n times what is the probability that all the faces are the same? Ans. 1/2"-1
+1.7-14 If one card is drawn at random from each of two decks of cards what is the probability that the two cards are the same? Ans. 1/52.
+1.7-1'5 Odd man out. Three people each toss a coin. What is the probability of some person being the "odd man out"? Ans. 3/4. 1.7-16 If 4 people play odd man out what is the probability that on a round of tosses one person will be eliminated? Ans. 1/2.
+1.7-17 On the toss of two dice what is the probabilty that at least one face has a 4 or else that the sum of the faces is 4? Ans. 1/18. 1.7-18 Same as 1.7-17 except the number is 6 (not 4). Ans. 4/9.
+
+(18) PROBABILITY
+1.8 Conditional Probability
+
+CHAPTER1
+
+Frequently the probability we want to know is conditional on some event. The effect of the condition is to remove some of the events in the sample space (list), or equivalently to confine the admissable items of the sample space to a. limited region.
+
+Example 1.8-1 At Least Two Heads in Ten Tosses
+What is the probability of at least two heads in the toss of 10 coins, given that we know that there is at least one head.
+The initial sample space of 210 = 1024 points is uncomfortably large for us to list all the sample points, even when some are excluded; and we do not care to list even the successes. Instead of counting we will calculate the number of successes and the size of the entire sample space.
+We may compute this probability in two different ways. First we may reason that the sample space now excludes the case of all tails, which can occut in only one way in the sample space of 210 points; there are now only 210 - 1 equally likely events in the sample space. Of these there are 10 ways in which exactly one head can occur, namely in any one of the ten possible positions, first, second, ..., tenth. To count the number of events with two or more heads we remove from the counting (but not from the sample space) these 10 cases of a. single head. The probability of at least two heads is therefore the ratio of the number of successes (at least 2 heads) to the total number of events (at least one head)
+= = (210 - 1- 10)/(210 - 1) 1013/1023 0.9902 ...
+
+Secondly, we could use a. standard method of computing not what is wanted but the opposite. Since this method is so convenient, we need to introduce a. suitable notation. If p is the probability of some simple event
+then we write q = 1 - p as the probability of it not happening, and call it the
+complement probability. Given the above ten coin problem we can compute the complement event, the probability Q that there was one head, and then subtract this from 1 to get
+p = 1- Q = 1- 10/{210 - 1)
+
+As a matter of convenient notation we will often use lower case letters for the sample space probabilities and upper case letters for the probabilities of the compound events.
+
+1.8
+
+CONDITIONAL PROBABILITY [19]
+
+Example 1.8-2 An Even Sum on Two Dice
+On the roll of two independent dice, if at least one face is known to be an even number, what is the probability of a total of 8?
+We reason as follows. One die being even and the sum is to be 8 hence the second die must also be even. Hence the three equally likely successes (the sum is 8) in the sample space are
+
+2,6 4,4 6,2
+
+= out of a total sample space of {36- (both faces odd)} 36- 3 x 3 = 27.
+
+Hence the probability is 3/27 = 1/9.
+
+·
+
+Example 1.8-3 Probability of Exactly Three Heads Given that there are at Least Two Heads
+What is the probability of exactly three heads knowing that there are at least two heads in the toss of 4 coins?
+We reason as follows. First, how many cases are removed from the
+original complete sample space 24 = 16 points? There is the single case of
+all tails, and the four cases of exactly 1 head, a total of 5 cases are to be excluded from the original 16 equally likely possible cases; this leaves 11 still equally likely events in the sample space. Second, for the three heads there are exactly 4 ways that the corresponding 1 tail can arise, (H H HT, H HTH, HTH H, T H H H), so there are exactly 4 successes. The ratio is therefore
+= 4/11 the probability of exactly three heads given that there are at least
+two heads.
+
+Exercises 1.8
+1.8-1 If a fair coin is tossed 10 times what is the probabilty that the first
+= five are the same side? Ans. 1/16 6.25%.
+1.8-2 Given that the sum of the two faces of a pair of dice is greater than 10, what is the probability that the sum is 12? Ans. 1/3.
+1.8-3 In drawing two cards from a deck (without returning the first card) what is the probability of two aces when you get at least one ace?
+1.8-4 What is the probability of different faces turning up on two tosses of a die? Ans. 5/6.
+1.8-5 What is the probability of no two faces being the same on three tosses of a die? Ans. 5/9.
+1.8-6 What is the probability that at least one face is a 6 on the toss of a pair of dice, given that the sum is~ 10? Ans. 5/6.
+1.8-7 Given that in four tosses of a coin there are at least two heads, what is the probability that there are at least three heads?
+1.8-9 Given that both faces on the toss of two dice are odd, what is the probability of at least one face being a 5? Ans. 5/9.
+
+[20) PROBABILITY
+
+CHAPTERl
+
+1.8-10 Inn tosses of a coin, given that there are at least two heads, what is the probability of n or n - 1 heads?
+1.8-11 Given that two cards are honor cards (10, J, Q, K, A) in spades what is the probability that exactly one of them is the ace? Ans. 8/25.
+1.8-12 Given that a randomly drawn card is black, what is the probability
+that it is an honor card? Ans. 10/26 = 5/13.
+1.8-13 Given that an even number of heads show on the toss of 4 coins (0 is an even number), what is the probability of exactly 2 heads? Ans. 3/4.
+1.8-14 On the toss of three coins what is the probability of an even number of heads? Ans. 1/2.
+1.8-15 On the toss of 4 coins what is the probability of an even number of heads?
+1.8-16 From the previous two problems what is the probability of an even number of heads on the toss of n coins? Ans. 1/2.
+1.8-19 Given that the sum of the faces on two dice is 6, what is the probability that one face is a 4? Ans. 2/5.
+1.8-20 Given that each of the faces on three dice show even number, what is the probability of at least one face being a 6?
+
+1.9 Randomness
+Randomness is a negative property; it is the absence of any pattern (wereject the idea that the absence of a pattern is a pattern and for set theory formalists this should be considered carefully). Randomness can never be proved, only the lack of it can be shown. We use the absence of a pattern to assert that the past is of no help in predicting the future, the outcome of the next trial. A random sequence of trials is the realization of the assumption of independence-they are the same thing in different forms. Randomness is "a priori" (before) and not "a posteriori" (after).
+We have not defined "pattern." At present it is the intuitive idea that, if there is a pattern then it must have a simple description-at least simpler than listing every element of the pattern.
+Randomness is a mathematical concept, not a physical one. Mathematically we think of random numbers as coming from a random source. Any particular sequence of numbers, once known, is then predictable and hence cannot be random. A reviewer of the famous RAND [R] Table of a Million Random Numbers caught himselfin mid review with the observation that now that they had been published the numbers were perfectly predictable (if you
+
+1.9
+
+RANDOMNESS (21]
+
+had the table) and therefore could not be random! Thus the abstract mathematical concept of a random sequence of numbers needs to be significantly modified when we actually try to handle particular realizations ofrandomness.
+In practice, of course, you can have only a finite sequence of numbers, and again, of course, the sequence will have a pattern, if only itself! There is a built in contradiction in the words, "I picked a random number between 1 and 10 and got 7." Once selected (a posteriori) the 7 is definite and is not random. Thus the mathematical idea of random (which is a priori) does not match closely what we do in practice where we say that we have a random sample since once obtained the random Sl:!-mple is now definite and is not mathematically random. Before the roll of a die the outcome is any of the 6 possible faces; after the roll it is exactly one of them. Similarly, in quantum mechanics before a measurement on a particle there is the set of possible outcomes (states); after the measurement the particle is (usually) in exactly one state.
+On most computers we have simple programs that generate a sequence of "pseudo random numbers" although the word "pseudo" is often omitted. If you do not know that they are being generated by a simple formula then you are apt to think that the numbers are from a random source since they will pass many reasonable tests of randomness; each new pseudo random number appears to be unpredictable from the previous ones and there appears to be no pattern (except that for many random number generators they are all odd integers!), but if you know the kind of generating formula being used, and have a few numbers, then all the rest are perfectly predictable. Thus whether or not a particular stream of numbers is to be regarded as coming from a random source or not depends on your state of knowledge--an unsatisfactory state of affairs!
+For practical purposes we are forced to accept the awkward concept of "relatively random" meaning that with regard to the proposed use we can see no reason why they will not perform as if they were random (as the theory usually requires). This is highly subjective and is not very palatable to purists, but it is what statisticians regularly appeal to when they take "a random sample" which once chosen is finite and definite, and is then not random-they hope that any results they use will have approximately the same properties as a complete counting of the whole sample space that occurs in their theory.
+There has arisen in computing circles the idea that the measure of randomness (or if you wish, nonrandomness) should be via the shortest program that will generate the set of numbers (without having carefully specified the language used to program the machine!). This tends to agree with many people's intuitive feelings - it should not be easy to describe the lack of a pattern in any simple fashion, it ought to be about as hard as listing all the random numbers. Thus the sequence
+
+[22) PROBABILITY
+
+CHAPTER 1
+
+0 1 0 1 0 1 0 1 0 ...
+is "more random" than is the sequence
+0 0 0 0 0 0 0 0 0 ...
+but is less random than the sequence
+0 1 0 0 0 1 1 o, 1 1 0 0 0 0 0 1...
+In this approach pseudo random numbers are only slightly random since the program that generates them is usually quite short! It would appear that a genuinely mathematically random number generator cannot be written in any finite number of symbols!
+We will use the convenient expression "chosen at random" to mean that the probabilities of the events in the sample space are all the same unless some modifying words are near to the words "at random." Usually we will compute the probability of the outcome based on the uniform probability model since that is very common in modeling simple situations. However, a uniform distribution does not imply that it comes from a random source; the numbers 1, 2, 3, ... , 6n when divided in this order by 6 and the remainders (0, 1, 2, 3, 4, 5) tabulated, gives a uniform distribution but the remainders are not random, they are highly regular!
+These various ideas of randomness (likeliness) are not all in agreement with our intuitive ideas, nor with each other. From the sample space approach we see that any hand of 13 cards dealt from a deck of 52 cards is as likely as any other hand (as probable-as random). But the description of a hand as being 13 spades is much shorter than that of the typical hand that is dealt. Furthermore, the shortness of the description must depend on the vocabulary available-of which the game of bridge provides many special words. We will stick to the sample space approach. Note that the probability of getting a particular hand is not connected with the "randomness of the hand" so there is no fundamental conflict between the two ideas.
+If this idea of a random choice seems confusing then you can take comfort in this observation: while we will often speak of "picking at random" we will always end up averaging over the whole sample space, or a part of it; we do not actually compute with a single "random sample." This is quite different from what is done in statistics where we usually take a small "sample" from the sample space and hope that the results we compute from the sample are close to the ideal of computing over the complete sample space.
+
+1.9
+
+RANDOMNESS [23)
+
+Example 1.9-1 The Two Gold Coins Problem
+There is a box with three drawers, one with two gold coins, one with a gold and a silver coin, and one with two silver coins. A drawer is chosen at random and then a coin in the drawer is chosen at random. The observed coin is gold. What is the probability that the other coin is also gold?
+The original sample space before the observation is clearly the product space of the three random drawers and the two random choices of which coin, (in order to count carefully we will give the coins marks 1 and 2 when there are two of the same kind, but see Section 2.4)
+
+drawer 1 drawer 2 drawer 3
+
+Order first/second first/second
+
+These six cases, choice of drawer (p = 1/3), and then choice of which coin (p = 1/2), exhaust the sample space. Thus each compound event has a
+probability of 1/6. Since, as we observed, high dimensional spaces are hard to
+draw, we shift to a listing of the elementary events as a standard approach.
+
+first drawer second drawer third drawer G1G2, G2G1, GS, SG•, S1S2*• S2S1*
+In this sample space the probability of drawing a gold coin on the first draw (or on the second) is 1/2.
+However, the observation that the first drawn coin is gold eliminates the three "starred" possibilities. The remainding three points in the sample space GtG2,G2Gt,GS, are still equally likely since originally each had the same probability 1/6 so now each has the conditional probability of
+Successes/total in the reduced sample space
+= (1/6)/(1/6 + 1/6 + 1/6) = 1/3
+Of these three possibilities two give a gold coin on the second draw and only one gives a silver coin, hence the probability of a second gold coin is 2/3.
+If this result seems strange to you (after all the second coin is either G
+or S so why not p = 1/27), then think through how you would do a corre-
+sponding experiment. Note the false starts when you get silver coin on the first trial and you have to abandon those trials.
+
+[24) PROBABILITY
+
+CHAPTER 1
+
+There are many ways of designing this experiment. First imagine 6000 cards, 1000 marked with each of the 6 "initial choice of drawer and coin distribution in the drawer." We imagine putting these 6000 cards in a container, stirring thoroughly, and drawing a card to represent one experimental trial of selecting a drawer and then a coin, and then after looking at the card either discarding the trial if an S showed as the first coin, and if not then going on to see what second coin is marked on the card. We can then return the card, stir the cards and try again and again, until we have done enough trials to convince ourselves of the result. There will, in this version of the experiment, be sampling fluctuations. Here we are (improperly) appealing to you sense that probability is the same as frequency of occurring.
+Second, if we go through this mental experiment, but do not return the card to the container, then we will see that after 6000 trials we will have discarded 3000 cards, and of the 3000 we kept 1000 will have the second coin silver, and 2000 will be gold. This agrees with the calculation made above.
+A third alternate experiment is to search the container of 6000 cards and remove those for which the silver coin occurs first. Then the remainding 3000 cards will give the right ratio.
+Finally there is the very simple experiment, write out one card for each possible situation, remove the failures and simply count, as we did in the above Example 1.9-1.
+These thought experiments are one route from the original equally likely sample space to the equally likely censored sample space. The use of mathematical symbols will not replace your thinking whether or not you believe that the censoring can affect the relative probabilities assigned to the events left; whether or not you believe the above arguments are relevant.
+To the beginner the whole matter seems obvious, but the more you carefully think about it the less obvious it becomes (sometimes!). How certain are you that the removal of some cases can not affect the relative probabilities of the other cases left in the sample space? In the end it is an assumption that is not mathematically provable but must rest on your intuition of the
+symmetry and independence in the problem.
+
+Example 1.9-2 The Two Children Problem
+It is known that the family has two children. You observe one child and that it is a boy, then what is the probability that the other is a boy?
+The sample space, listed with the order of observation indicated (first on the left, second on the right), is
+(B,B) (B,G) (G,B) (G,G)
+
+and assuming for the moment both that: (1) the probability of a boy is 1/2 and (2) the sexes in a family are independent, then each point in the sample
+= space occurs with probability (1/2)(1/2) 1/4. The observation that the
+
+1.9
+
+RANDOMNESS (25]
+
+chosen (first observed) child is a boy eliminates the last two cases, and being equally likely the others both have the conditional probability 1/2. In only one case is the second child a boy, so the probability of the other being a boy
+is 1/2. But if you assert only that at least one child in the family is a boy then
+you remove only one point, GG, from the sample space, and the probability
+of the other child being a boy is 1/3. If you are to develop your intuition for probability problems then it is
+worth your attention to see why the two cases in Example 1.9-2 differ in the result, why in one case the first observatio11: does not affect the second observation while for the conditional probability it does. See also Example 1.9-1. The following Example further illustrates this point.
+
+Example 1.9-3 Tbe Four Card Deck
+A deck has four cards (either red or black, with face value of 1 or 2). The cards are
+R1, B1, R2, B2
+You deal two cards at random. First question, ifone card is known to be a 1, then what is the probability
+that the other card is also a 1? To be careful we list the complete sample space
+(of size 4 x 3 = 12, the first choice controls the row and the second the column)
+
+R1,B1 B1,R1 R2,R1 B2,R1
+
+R1,R2 B1,R2 R2,B1 B2,B1
+
+R1,B2 B1,B2 R2,B2 B2,R2
+
+in table form. The fact that there is a 1 (the order of the cards does not matter) eliminates two cases, R2, B2 and B2, R2, so the sample space is now of size 10. Of these only two cases, R1, B1 and B1, R1, have a second 1.
+Hence the probability is 2/10 = 1/5.
+We could also observe at the start that since the order of the cards does not matter then R1,B1 is the same as B1,R1 and that there are then only 6 cases in the sample space
+
+R1,B1 R1,R2 R1,B2 B1,R2 B1,B2 R2,B2
+
+and each arises by combining two of the original12 equally likely cases, hence each must now have probability 1/6.
+Second question, if the color of the observed card is also known, say, the R1, then what is the probability that the other is a 1? In this case only the first row and first column are to be kept, and these total exactly 6 cases.
+
+[26) PROBABILITY
+
+CHAPTER 1
+
+Of these 6 only 2 cases meet the condition that the second card is a 1. Hence
+the probability is 2/6 = 1/3.
+The two answers are different, 1/5 and 1/3, and the difference is simply that the amount of information (which cases were eliminated from the original sample space) is different in the two examples.
+It is important to be sensitive to the effect of different amounts of information in the given statement of the problem so that you develop a feeling for what effects result from slightly different conditions. It is evident that the more restricting the information is, then the more it reduces the sample space and hence can possibly change the probability.
+
+Example 1.9-4 Two Headed Coin
+In a bag of N coins one is known to be a 2-headed coin, and the others are all normal coins. A coin is drawn at random and tossed for k trials. You get all heads. At what k do you decide that it is the 2-headed coin?
+To be careful we sketch the sample space
+
+Trial
+
+1st 2nd 3rd 4th
+
+kth
+
+HHH H
+
+H
+
+1 case the 2-headed coin p= 1 1 1 1
+
+1
+
+(n- 1) cases
+
+p= 1/2 1/4 1/8 1/16
+
+1/2k
+
+In particular, fork (heads in a row) we have for the false coin the probability
+of (1/n = probability of getting the false coin)
+
+(1/n) (1)
+
+while for a good coin
+
+{(n- 1)/n} {1/2k}
+
+Let us take their ratio
+
+false coin/(good coin) = 2k / (n - 1)
+
+When n is large you need a reasonably large number k of trials of tossing the chosen coin so that you can safely decide that you probably have a false coin, (you need k -log2(n- 1) to have the ratio 1), and to have some safety on your side you need more than that number. How many tosses you want to make depends on how much risk you are willing to take and how costly
+another trial is; there can be no certainty.
+
+1.9
+
+RANDOMNESS (27]
+
+Example 1.9-5 No InFormation
+You draw a card from a well shuffled deck, but do not look at it. Without replacing it you then draw the second card. What is the probability that the second card is the ace of spades?
+The probability that the first card was the ace of spades is 1/52 and in that case you cannot get it on the second draw. If it was not the ace of spaces, probability 51/52, then your chance of the ace on the second draw is 1/51. Hence the total probability is
+(1/52)(0) +(51/52)(1/51) = 1/52
+
+and it is as if the first card had never been drawn! You learned nothing from the first draw so it has no effect on your estimate of the outcome of the second draw.
+Evidently, by a slight extension to a deck of n cards and induction on the number of cards removed from the deck and not looked at, then no matter how many cards (less than n) were drawn and not looked at, the probability of then drawing any specified card is 1/n.
+In most situations if one person knows something and uses it to compute a probability then this probability will differ from that computed by another person who either does not have that information or does not use it. See also Example 1.9-8.
+
+Example 1.9-6 Tbe Birthday Problem
+The famous birthday problem asks the question, "What is the fewest number of people that can be assembled in a room so there is a probability greater than 1/2 of a duplicate birthday."
+We, of course, must make some assumptions about the distribution of birthdays throughout the year. For convenience it is natural to assume that there are exactly 365 days in a year (neglect the leap year effects) and assume that all birthdays are equally likely, namely each date has a probability 1/365. We also assume that the birthdays are independent (there are no known twins, etc.).
+There are the cases of one pair of duplicate birthdays, two pairs of duplicate birthdays, triples, etc.-many different cases to be combined. This is the typical situation where you use the complement probability approach and compute the probability that there are no duplicates. We therefore first compute the complement probability Q(k) that k people have no duplicate birthdays.
+To find Q(k), the first person can be chosen in 365 equally likely ways365/365 is the correct probability of no duplication in the selection of only one person. The second person can next be chosen for no duplicate in only 364 ways-with probability 364/365. The third person must not fall on either
+
+[28] PROBABILITY
+
+CHAPTER!
+
+of the first two dates so there are only 363 ways, the next 362 ways, ... and
+the kth in 365- (k- 1) = 365- k + 1 ways. We have, therefore, for these
+independent selections
+
+P(k) = 1- Q(k)
+= 1- (365/365){364/365) ... [(365- k + 1)/365]
+
+To check this formula consider the cases: (1), P(365) ::f:. 1; (2), Q(366) = 0, hence, as must be, P(366) = 1, there is certainly at least one duplicate! Another check is k = 1 where Q(1).= 1, hence P(1) = 0 as it should. Thus the formula seems to be correct.
+Alternately, to compute Q(k) we could have argued along counting lines. We count the number of cases where there is no duplicate and divide by the total number of possible cases. The first person can be chosen in 365 ways, the second (non duplicate) in 364 ways, the third in 363 ways, ... the kth in
+365- k + 1 ways. The total number of ways (the size of the product space)
+is 3651: and we have the same number for Q(k), the complement probability. It is difficult for the average person to believe the results of this com-
+putation so we append a short table of P(k) at a spacing of 5 and display on the right in more detail the part where P(k) is approximately 1/2.
+
+TABLE 1.9-1
+
+Table of P(k) for selected values
+
+P(k)
+
+log10 P/(1- P)
+
+P(k)
+
+P(5) = 0.02714
+P(10) = 0.11695
+P(15) = 0.25290 P(20) = 0.41144 P(25) = 0.56870
+P(30) = 0.70632
+P(35) = 0.81438
+P(40) = 0.89123
+P(45) = 0.94098 P(50) = 0.97037 P(55) = 0.98626 P(60) = 0.99412
+P(65) = 0.99768 P(70) = 0.99916
+P(75) = 0.99972
+P(80) = 0.99991 P(85) = 0.99998 P(90) = 0.99999
+
+-1.55441 -0.87799 -0.47043 -0.15545 +0.12010
+0.38113 0.64220 0.91348 1.2026 1.5152 1.8560 2.2281 2.6335 3.0754
+3.5527 4.0457 4.6990 4.9999
+
+P(21) = 0.44369 P(22) = 0.47570 P(23) = 0.50730 P(24) = 0.53834
+
+1.9
+
+RANDOMNESS [29)
+
+The result that for 23 people (and our assumptions) the probability of a duplicate birthday exceeds 1/2 is surprising until you remember that any two people can have the same birthday, and it is not just a duplicate of your
+birthday. There are C(n,2) = n(n- 1)/2 pairs of people each pair with a
+probability of approximately 1/365 of a coincidence, hence the average number
+of coincidences is, for n = 28,
+{28 X 27)/2{365) = 1.0356 ...
+hence again the result is reasonable, but see Example 1.9-7.
+
+P(k) 1.0
+.9
+.8 .7 .6 .5 .4 .3 .2 .1
+
+30 40 50 60 70 80 90
+The birthday problem
+FIGURE 1.9-1
+
+The curve ofthis data is plotted in Figure 1.9-1 and,shows a characteristic shape for many probability problems; there is a slow beginning, followed by a steep rise, and then a flattening at the end. This illustrates a kind of "saturation phenomenon"-at some point you pass rapidly from unlikely to very likely. In Figure 1.9-2 we plot log{P/(1- P)} to get a closer look at the two ends of the table.
+
+FIGURE 1.9-2
+
+[30) PROBABILITY
+
+CHAPTER 1
+
+The sequence of numbers we have introduced has the convenient notation of descending factorials
+
+= (n)k n(n- 1)(n- 2) ... (n- k + 1)
+
+(1.9-1)
+
+which is the product, beginning with n, of k successive terms each 1less than the preceeding one and ends with n- (k- 1).
+
+Example 1.9-7 . The General Case of Coincidences
+
+If we draw at random from a collection of n distinct items, and replace the
+
+drawn item each time before drawing again, what is the probability of no
+
+duplicate in k trials?
+
+The reasoning is the same as in the previous problem. The first has a
+
+probability of no duplicate is nfn, the second for no duplicate is (n- 1)/n,
+
+and so on to the kth (where you must avoid all the previous k- 1 samples)
+which is (n- k + 1)/n; hence we have the probability for all k independent
+
+trials
+
+Qn(k) = n(n- 1)(n- 2) ... (n- k + 1)/nk = (n)~c/nk
+
+= n!fnk(n- k)!
+
+= [1- 1/n][1- 2/n) ... (1- (n- k + 1)/n]
+The numerator in the top of these three equations is the falling (descending) factorial with exactly k terms. For n = 365 we have the Q(k) of the birthday problem.
+To evaluate this expression easily we use the third line and an inequality
+from Appendix l.B, namely that for x > 0
+
+on each term of the abovP. product. This gives
+Qn(k) < exp(-{1/n +2/n + ···+(k- 1)/n}) = exp[-k(k- 1)/2n)
+For the probability of the bound to be 1/2 we get
+ln2 = k(k- 1)/2n
+k2 - k - 2n In 2 = 0
+For the birthday problem n = 365, and we solve the quadratic to get 23.000
+within roundoff. To get a feeling for the function y(k) = (n)k/nk we look for the place
+where it rises most steeply. This occurs close to where the second central difference is 0, that is where
+y(k + 1) - 2y(k) + y(k - 1) "" 0
+
+1.9
+
+RANDOMNESS [31)
+
+We can immediately factor out the y(k) to get (remember k > 0)
+
+y(k)[(n- k)fn- 2 + nf(n- k + 1)] = 0
+(n- k? + n- k- 2n2 + 2nk- 2n + n2 = 0
+
+k2 - k- n = 0
+
+k ={1 ± J(l + 4n)}/2 = {1 + V(4n + 1)}/2
+
+"'Vn + 1/2
+
+For the birthday problem n = 365, and we have the approximate place of
+
+steepest rise is
+
+k "' Vn + 1/2 = 19.10 + 1/2 = 19.6
+
+and this indeed we see in Table 1.9-1, and Figure 1.9-1 where the steepest
+rise precedes the 50% point of k = 23.
+
+Example 1.9-8 The Information Depends on Your State of Knowledge
+There is (was?) a TV game in which you guess behind which of three curtains the prize you might win is placed. Your chance of success is 1/3 because of the obvious assumption that there is no pattern in the placing of the prize (otherwise long term watchers would recognize it). The next step is that the host of the show pulls back a curtain, other than the one you indicated, and reveals that there is no prize there. You are then given the chance of changing your choice for the payment of a fixed sum. What should you do?
+Your action logically depends on what you think the host knows and does. If you assume that the host does not know where the prize is and draws the curtain at random (one of the two left) then the sample space has only six possibilities. If we assume that the prize is behind A but you do not know which is A, (hence any pattern you might use is equivalent to your
+choosing A,B or Cat random), then the sample space (you, host) is
+
+(A,B) (A,C) (B,A) (B,C) (C,A) (C,B)
+
+each with probability 1/6. In the case we are supposing, the host's curtain
+reveals no prize and this eliminates the points (B,A) and (C,A) from the
+sample space, so that your probability is now
+
+p = 2(1/6)/{1- 1/3} = 1/(3- 1) = 1/2
+
+Your probability passed from 1/3 to 1/2 because you learned that the prize was not in one of the places and hence it is in one of the remaining two places.
+
+(32) PROBABILITY
+
+CHAPTER 1
+
+But it is unlikely that the host would ever pull the curtain with the prize behind it, hence your more natural assumption is that he does not pull the curtain at random, but rather knows where the prize is and will never
+draw that one. Now the situation is that if you happened to pick A (with
+probability 1/3) the host will pull a curtain at random and the two cases
+(A, B) and (A, C)
+will each have a probability 1/6. But if you pick either B or C then the host is forced to choose the other curtain behind which the prize is not located. Your choices B or C each remain of probability 1/3. Although you now know that the prize is either behind your choice or the other one you have learned nothing since you knew that the curtain drawn would not show the prize. You have no reason to change from you original choice having probability of 1/3. Hence the other curtain must have probability 2/3.
+If this seems strange, let us analyse the matter when the host chooses with a probability p the curtain that does not have the prize. Then the host
+chooses the curtain with the prize q = 1 - p. Now the cases in the sample
+space are:
+p(AB) = 1/6 = p(AC)
+= = p(BA) (1- p)/3 p(CA)
+p(BC) = p/3 = p(CB)
+As a check we see that the total probability is still 1. The fact that the curtain was drawn and did not reveal the prize means that the cases p(BA) and p(CA) are removed from the sample space. So now your probability of winning is
+P = {p(AB) + p(AC)}/{1- p(BA)- p(CA)} = {1/3}/{1- 2(1- p)/3}
+= {1/3}/{1/3 + 2p/3} = 1/{1 + 2p}
+We make a short table to illustrate things and check our understanding of the situation.
+
+p
+
+P meaning
+
+1 1/3 Host never reveals the prize. 1/2 1/2 Host randomly reveals the prize. 0 1 Host must reveal it if it can be done and since he
+did not you must have won.
+
+Hence what you think the host does influences whether you should switch your choice or not. The probabilities of the problem depend on your state of knowledge.
+It should be evident from the above Examples that we need to develop systematic methods for computing such things. The patient reasoning we are using will not work very well in larger, more difficult problems.
+
+1.9
+
+RANDOMNESS (33]
+
+Exercises 1.9
+1.9-1 Consider the birthday problem except that you ask for duplicate days
+of the month (assume that each month has exactly 30 days). Ans. P(7) =
+0.5308
+1.9-2 If there are only 10 possible equally likely outcomes how long will
+you expect to wait until the probability of a duplicate is > 1/2? Assume
+= that the trials are independent. Make the complete table. Ans. P(l) o, P(2) = .1, P(3) = .28, P(4) = .496, P(5) = .6976, P(6) = .8488, P(7) =
+.93952, P(8) = .981856, P(9) = .9963712, P(10) = .99963712.
+1.9-3 There are three children in a family and you observe that a randomly chosen one is a boy, what is the probability that the other two children have a common sex?
+1.9-4 There is a box with four drawers. The contents are respectively GGG, GGS, GSS, and SSS. You pick a drawer at random and a coin at random. The coin is gold. What is the probability that there is another gold coin in the drawer? That a second drawing from the drawer will give a gold coin? Ans. 5/6, 2/3.
+1.9-5 Generalize the previous problem to the case of n coins per drawer. Find the probability that the first two coins drawn are both gold. Ans. 2/3
+1.9-6 If you suppose that a leap year occurs exactly every fourth year, what is the probability of a person being born on Feb. 29?
+1.9-7 In Example 1.9-6 use y" = O(y" =second derivative) in place of the second difference to obtain a similar result.
+1.9-8 You have 2n pieces of string hanging down in your hand and you knot pairs of them, tying at random an end above with and end above and below with below, also at random. What is the probability that you end up with a single loop? [Hint: Knotting pairs at random above has no effect on the problem and you are reduced to n U shaped pieces of string. Proceed as in the birthday problem with suitable modifications (of course)).
+1.9-9 From a standard deck k cards are drawn at random. What is the probability that no two have the same number? Ans. 4"(13)~c/(52)1c
+1.9-10 One card is drawn from each of two shuffled decks of cards. What is the probability:
+1. the card from the first deck is black? 2. at least one of the two cards is black? 3. if you know that at least one is black, that both are black? 4. that the two cards are of opposite color?
+1.9-11 In Appendix l.B get one more term in the approximation for 1- x using e-"' exp( -x2 /2).
+1.9-12 Apply Exercise 1.9-11 to Example 1.9-7.
+1.9-13 There are w white balls and b black balls in an urn. If w + b- 1
+balls are drawn at random and not looked at what is the probability that the last ball is white? Ans. wf(w +b).
+
+[34) PROBABILITY
+
+CHAPTER 1
+
+1.9-14 Show that a bridge hand can be easily described by 64 bits. [Hint:
+give three 4 bit numbers to tell the number of cards in spades, hearts, and diamonds (the number of clubs is obvious then) and then list the 13 card face values in the suits. The minimum representation is much harder to convert to and from the hand values.]
+
+1.10 Critique of the model
+Let us review this model of probability. It uses only the simple concepts of symmetry and interchangeability to assign a probability measure to the finite number of possible events. The concept of the sample space is very useful, whether we take the entire sample space, which may often be built up by constructing the product space from the simpler independent sample spaces, or take some subspace of the sample space.
+The model of equally likely situations, which is typical of gambling, is well verified in practice. But we see that all probabilities must turn out to be rational numbers. This greatly limits the possible applications since, for example, the toss of a thumb tack to see if the point is up or it is on its side (Figure l.lo-1) seems unlikely to have a rational number as its probability. Furthermore, there are many situations in which there are a potentially infinite number of trials, for example tossing a coin until the first head appears, and so far we have limited the model to finite sample spaces. It is therefore clear that we must extend this model if we are to apply probability to many practical situations; this we will do in subsequent chapters beginning with Chapter 4.
+Thumb tack
+FIGURE 1.10-1
+It is difficult to quarrel with this model on its own grounds, but it is still necessary to connect this model with our intuitive concept of probability as a long term frequency of occurrence, and this we will do in the next chapter where we develop some of the consequences of this model that involve more mathematical tools. The purpose of separating the concepts of probability from the mathematics connected with it, is both for philosophical clarity
+
+1.10
+
+CRITIQUE OF THE MODEL (35]
+
+(which is often sadly lacking in many presentations of probability) and the fact that the mathematical tools have much wider applications to later models of probability that we will develop.
+Remember, so far we have introduced a formal measure of probability based on symmetry and it has no other significant interpretation at this point. We used this measure of probability to show how to compute the probabilites of more complex situations from the uniform probability of the sample space. As yet we have shown no relationship to the common view that probability is connected with the long term ratio of successes to the total number of trials. Although very likely you have been interpreting many of the results in terms of "frequencies," probability is still a measure derived from the symmetry of the initial situation. The frequency relationship will be derived in Section 2.8.
+
+Appendix l.A Bounds on Sums
+We often need to get reasonable bounds on sums that arise in probability problems. The following is a very elementary way of getting such bounds, and they are often adequate.
+Suppose we have the continuous function
+
+Y=f(z)
+
+and want to estimate the sum
+
+N
+S(N) = Lf(n)
+n=l
+
+We also suppose that the second derivative /"(z) is of constant sign. Suppose first that
+/"(z) > 0
+
+The trapezoid rule overestimates the integral, Figure l.A-1,
+
+lN
+
+1
+
+1
+
+1 /(z)dz$ 2/{1)+/(2)+ .. ·+"2-/(N)
+
+Hence add (1/2)[/(1) + /(0)] to both sides to get
+
+iN
+
+N
+
+/{z) dz + {/(1) +f(N)}/2 $ Lf(n)
+
+1
+
+1
+
+{l.A-1)
+
+On the other hand the midpoint integration formula underestimates the integral. We handle the two half intervals at the ends by fitting the tangent
+
+(36) PROBABILITY
+
+CHAPTER 1
+
+1
+
+2
+
+3
+
+4
+
+n-1 n
+
+Trapezoid Rule
+
+FIGURE l.A-1
+
+line at the ends (see Figure l.A-2).
+
+1 13/2 N
+
+,
+
+1 f(z) dz;::: 1
+
+{!(1) + (z- 1)/'(1)} dz
+
++/(2) + /(3) + ···+ f(N- 1) + {N {f(N) + (z- N)f'(N)} dz
+JN-1/2
+LN-1
+;?: /(1)/2 +(1/2)2/'(1)/2 + f(n) + f(N)/2- (1/2)2/'(N)/2
+2
+
+f(x)
+
+f~II----Tangent
+
+line
+
+FIGURE l.A-2
+
+n- 1/2 n
+
+1.10
+Rearranging things we have
+
+CRITIQUE OF THE MODEL (37]
+
+I: :51 N /{n)
+
+N
+f(x) dx + [/{1) + /{N)]/2 +[/'{N)- /'{1)]/8 {l.A-2)
+
+1
+
+1
+
+If f"(x) < 0 the inequalities are reversed.
+The two bounds l.A-1 and l.A-2 differ by the term
+
+[f'(N)- /'{1)]/8
+
+(l.A-3)
+
+Since most of the error generally occurs for the early terms you can sum the first k terms separately and then apply the formulas to the rest of the
+sum. Often the result is much tighter bounds since /'{1) becomes f'(k + 1)
+in the error term and f'(k) is generally a decreasing function of k. We now apply these formulas to three examples which are useful in
+practice. First we choose f(x) = 1/x. We have f'(x) = -1/x2 and /"{x) = 2/x3 > 0. The indefinite integral is, of course, merely InN. Hence from 1.A-1 and l.A-2 we have for the harmonic series
+N
+InN+ (N + 1)/2N :5 '2: 1/n :5 InN+ (N + 1)/2N + (1-1/N2)/8 {l.A-4)
+1
+
+The sun1
+
+N
+L1fn = H(N)
+n=1
+
+{l.A-5)
+
+occurs frequently, hence,a short table of the exact values is useful to have. Similarly, the sums
+
+N
+'2:1/n2 = D(N)
+n=1
+
+(l.A-6)
+
+are also useful to have. Since most of the error arises from the early terms,
+using these exact values and then starting the approximation formulas at the
+value n = 11 will give much better bounds.
+
+[38) PROBABILITY
+
+CHAPTER 1
+
+A Short Table of H(N) and D(N)
+
+N
+
+H(N)
+
+D(N)
+
+fraction
+
+decimal
+
+decimal
+
+1
+
+1
+
+1.00000
+
+1.00000
+
+2
+
+3/2
+
+1.50000
+
+1.25000
+
+3
+
+11/6
+
+1.83333
+
+1.36111
+
+4
+
+25/12
+
+2.08333
+
+1.42361
+
+5
+
+137/60
+
+2.28333
+
+1.46361
+
+6
+
+147/60
+
+2.45000
+
+1.49133
+
+7
+
+1089/420
+
+2.59285
+
+1.51180
+
+8
+
+2283/840
+
+2.71786
+
+1.52742
+
+9
+
+7129/2520
+
+2.82897
+
+1.53977
+
+10
+
+7391/2520
+
+2.92897
+
+1.54977
+
+At N = 10 the limits of the bounds are 2.85207 < H(N) < 2.97634. The limiting value of D(N) = 1r2/6 = 1.64493 ....
+There is also a useful analytic expression for H(N) which we will not
+derive here, namely
+
+H(N) =InN+ 'Y + 1/2N- 1/12N2 + 1/120N3 + ...
+
+(l.A-7)
+
+where 'Y = 0.57721 56649 ... is Euler's constant. Ifwe use this formula through the 1/N2 term for N = 10 we get H(10) = 2.92897 which is the correct
+rounded off number.
+= = For the second example we use /(z) 1/z2, for which f'(z) -2/z3 = and f"(z) 6fz4 > 0. The formulas give
+
+:LN
+3/2-1/N +1/2N2 :5 1/n2 :5 3/2-1/N + 1/2N2 +(N3 -1)/N3 {l.A-8)
+1
+For the third example we pick /(z) =In z, for which /'(z) = 1/z and
+f"(z) = -1/z2 < 0. Hence the inequalities are reversed. We get for the
+integral (using integration by parts)
+1N In z dz = N InN - N + 1
+
+and for the formula for the bounds
+N
+N InN- N + 1+ (1/2)1nN ~ L:lnn =InN!
+n=l
+~ N InN - N + (1/2)/n N + 7/8 + 1/8N
+Dropping the last term on the right strengthens the inequality and taking exponentials we get the more usual form for the factorial function
+
+1.10
+
+CRITIQUE OF THE MODEL [39]
+
+(l.A-9)
+These bounds may be compared with the asymptotic form of Stirling's factorial approximation
+
+(l.A-10)
+= = = Note that e 2.71828, ~ 2.50663, and e718 2.39887 (all to five
+decimal places). Bounds are almost essential in "deep"' computations where approxima-
+tions are combined in many ways. On the other hand for "shallow" computations Stirling's and other approximations are often very useful.
+A particularly simple approximation is the midpoint formula
+
+16+1/2 f(z) dz,... ~n=6 /(n)
+
+a-1/2
+
+n:a
+
+In the three earlier cases we get for /(z) = 1/z
+
+(l.A-11)
+
+for /(z) = 1/z2 we get
+
+N
+~ 1/n ,...ln(2N + 1)
+1
+
+(l.A-12)
+
+N
+~1/n2 ,... 4N/(2N + 1)
+1
+and for /(z) = lnz we get
+
+(l.A-13)
+
+N
+~Inn ,... (N + 1/2)/n(N +1/2)- N + (1/2)/n 2
+1
+Taking exponentials we get the formula
+
+(l.A-14) (l.A-15)
+
+[40] PROBABILITY
+e-z 1.0 0.8 0.6 0.4 0.2
+0 0.2 0.4 0.6 0.8 1.0 1.2 1.4 FIGURE l.B-1
+Appendix l.B A Useful Bound If we compute the tangent line to the curve
+= = y(x) e-~ exp(-x)
+at x = 0 we get for the first derivative
+
+CHAPTER 1
+
+hence and the tangent line is
+
+y'(O) = -1
+
+y(x) -1 = {-1)(x- 0) y = 1- X.
+
+Since y" (x) = exp(-x) > 0 we deduce, or else from a sketch of the curve
+
+Figure l.B-1,
+
+e-~ = exp(-x);::: 1- x
+
+{l.B-1)
+
+2
+Some Mathematical Tools
+2.1 Introduction
+C. S. Peirce (1839-1914) observed [N, p.1334] that:
+"This branch of mathematics {probability] is the only one, I believe, in which good writers frequently get results entirely erroneous. In elementary geometry the reasoning is frequently fallacious, but erroneous conclusions are avoided; but it may be doubted if there is a single extensive treatise on probabilities in existence which does not contain solutions absolutely indefensible. This is partly owing to the want of any regular methods of procedure; for the subject involves too many subtleties to make it easy to put problems into equations without such aid. "
+There were, I believe, two additional important reasons for this state of affairs at that time and to some extent even now; first there was a lack of clarity on just what model of probability was being assumed and of its known faults, and second, there was a lack of intuition to protect the person from foolish results. Feller [F, p.67] is quite eloquent on this point. Thus among the aims of this book are to provide: (1) careful discussions of the models assumed and any approach adopted; (2) the use of "regular methods" in preference to trick methods that apply to isolated problems; (3) the deliberate development of intuition by the selection of problems, (4) the analysis of the results, and (5) the systematic use of reasonableness tests of equations and results. By these methods we hope to mitigate the statement of C. S. Peirce just quoted.
+In the previous chapter we created a probability model based on symmetry, and noted that it could only give rational values for the assignment
+[41]
+
+(42) SOME MATHEMATICAL TOOLS
+
+CHAPTER 2
+
+of the probability to the events, and that all the elementary events had the same probability. We will later be able to handle a wider range of probabilities, namely any real number between 0 and 1 (and complex numbers in Section 8.13) as well as nonuniform probability distributions, hence we will now assume this use and not have to repeat the development of the mathematical tools for handling probability problems. The relevant rules we have developed apply to these nonrational probabilities as can be easily seen by rereading the material.
+We saw that the central problem in computing the probability of a complex event is to find all the equally likely elementary successful events in the sample space (those that meet the given conditions), or else the failing events (those that do not), count the successes, or failures, and then divide by the size of the whole sample space. Instead of counting the successes in the uniform sample space and dividing by the total we can add the probabilities of all the individual successes; this is equivalent to assigning to each point in the uniform sample space the probabilty 1/(total number of points in the sample space).
+If the probabilities are not uniform in the sample space we cannot simply count and divide by the total, but as just noted we must add the probabilities of the individual successful events to get the total probability to assign to the complex event since the probability of the sum is additive (we pick our sample space points to be independent hence the probability of a complex event involving sums of points is the sum of the probabilities of its independent parts). Since the total probability is 1 there is no need to divide by the sum of the probabilities (which is 1).
+We also saw that the probabilities assigned to the points in the product space could often be found as the product of the probabilities of the basic events that make up the corresponding point in the product space. We adopt a colorful language to use while computing probability problems; we say, for example, "Select at random..." and mean "Count the number of successes (in the case of a uniform probability assignment)." As an example, "Select a random day in a year of 365 days." means that since any day of the year meets this condition there are 365 choices, and the corresponding probability
+= that you select a (some) day is 365/365 1. The probability of getting a
+specific day if it is named in advance is, of course, 1/365. If we want to select at random, from the possible 365 days in a year, a day that falls in a certain month of 30 days, then there are only 30 successful possible selections, and
+= the corresponding probability is 30/365 6/73. We say that we can select at
+random a day in the year that falls in the given month in 30 successful ways, hence with probability of 30/365.
+The language "select at random" enables us to pass easily from the uniform probability spaces to nonuniform probability spaces, since in both cases we use the same colorful language and the results are the same; of course for the nonuniform case we must add the probabilities of the successes.
+
+2.2
+
+PERMUTATIONS (43]
+
+A "random selection" is only a colorful way of talking, and when the word "random" is used without any modifier it implies that the probability assign-
+ment is uniform. The purpose of this chapter is to introduce the main tools for comput-
+ing simple probability problems which have a finite, discrete sample space, and to begin the development of uniform methods of solution as well as the development of your intuition. This Chapter also shows a connection to the frequency approach to probability. Chapter 3 will further develop, in a more systematic way, the mathematical tools needed for finite sample spaces. There is a deliberate separation between the model of probability being assumed, the concepts needed for solving problems in that area, and the mathematical tools needed for their solution.
+
+2.2 Permutations
+
+You have already seen that the main difficulty, in simple probability problems, is to count the number of ways something can be done. Hence we begin with
+this topic (actually partially repeat). Suppose you have a collection of n distinct things (unspecified in detail,
+but whatever you care to think about). From these n items you then select at random k times, replacing the selected item each time before the next selection. The sample space is the product space n x n x n ... x n (k times) with exactly (we "star" important equations)
+
+(2.2-1)*
+
+items in the product space. This is called sampling with replacement. The probability distribution for a random selection is uniform, hence each item in the sample space will have the probability 1/n".
+Again, suppose you have n things and sample k times, but now you do not replace the sampled items before the next selection. When the order of selection is important then we call the selection without replacement a permutation. The number of these permutations is written as
+
+P(n, k)
+
+and is called "the permutation of n things taken k at a time." To find the numerical value for a random (uniform) selection we argue as before, (Examples 1.9-6 and 1.9-7); the first item may be selected in n ways, the second distinct item in n - 1 ways, the third in n - 2 ways, and the kth in
+n - k + 1 ways. The product space is of size
+
+= = P(n,k) n(n -1)(n- 2) .. .(n- k + 1) (n)k
+
+(2.2-2)*
+
+(44) SOME MATHEMATICAL TOOLS
+
+CHAPTER2
+
+where (n)~: is the standard notation for the falling factorial, (see Equation 1.91). By our method of selection of the individual cases in the (n)~: are uniformly
+probable hence we add the number of cases to get the P(n, k).
+= To partially check this formula we note that when k 1 the answer is
+correct, and when k = n + 1 we must have zero since it is impossible to select n + 1 items from the set of n items.
+A useful bound on P(n, k) can be found by multiplying and dividing the right hand side of (2.2-2) by n1:
+= P(n, k) nk(1)(1- 1/n)(1- 2/n) ... (1- (k- 1)/n)
+
+and then using the result in Appendix l.B (see also Example 1.9-7)
+
+1- z ~ e-:e
+= for each factor (1 - i/n), (i 1, 2, ... , k- 1). Summing this arithmetic
+progression in the exponent
+
+-{1/n + 2/n + ···+ (k- 1)/n} = -k(k- 1)/2n
+
+we get the result
+
+P(n,k) ~ nk exp{-k(k -1)/2n}
+
+(2.2-3)
+
+For an alternate proof that all the P(n, k) individual cases are uniformly
+
+probable note that from the sample space of all possible choices of k items,
+
+which we saw (2.2-1) was uniformly probable and of size nk, we excluded all
+
+those which have the same item twice or more, and we deduced that there are
+
+exactly P(n, k) such points left in the sample space. Since a random choice
+
+leads to a uniform distribution in the original product space, the distribution
+
+is still uniform after the removal of the samples with duplicates (see Exam-
+
+ple 1.9-1, the gold coin problem). All the permutations in the P(n, k) are
+
+equally likely to occur when the items are selected at random. The exponen-
+
+tial gives an estimate of the modifying factor for the number of terms in going
+
+from the sample space of sampling with replacement to sampling without
+
+replacement.
+
+The expression P(n, k) is the beginning of a factorial. If we multiply
+
+both numerator and denominator by (n- k)! the numerator becomes n!, and
+
+we have
+
+= n!
+P(n, k) (n _ k)!
+
+(2.2-4)*
+
+as a useful formula for the permutations of n things taken k at a time. Recall
+
+that by convention 0! = 1 and that P(n,n) = n!. We need also to observe
+= that when k 0 we have
+
+P(n,O) = _n:l =1 = (n)o n!
+
+(2.2-5)
+
+At first this seems like a curious result of no interest in practice, but when
+
+programming a descending factorial on a computer you initialize the iterative
+= loop of computation for P(n,k) with P(n,O) 1; then and only then will each
+
+cycle of the computing loop give the proper number and be suitably recursive.
+
+2.2
+
+PERMUTATIONS (45]
+
+Example 2.2-1 Arrange Three Books on a Shelf
+In how many ways can you arrange 3 books on a shelf out of 10 (distinct) books? Since we are assuming that the order of the books on the shelf matters (the word "arrange"), we have
+= = P(10, 3) 10 X 9 X 8 720
+
+ways.
+
+Example 2.2-2 Arrange Six Books on a Shelf In how many ways can you arrange on a shelf 6 books out of 10 (distinct) books? You have
+= = P(10, 6) 10 X 9 X 8 X 7 X 6 X 5 151,200
+
+possible ways of arranging them.
+
+Example 2.2-3 Arange Ten Books on a Shelf
+In how may ways can you arrange on a shelf a set of 10 distinct books? You have
+P(10, 10) = 10! = 3, 628, 800
+and you see how fast permutations can rise as the number of items selected increases. The Stirling approximation from Appendix l.A gives 10! "" 3,598,695.6 and the ratio ·of Stirling to true is 0.99170.
+
+Example 2.2-4 Two Out of Three Items Identical
+Suppose you have three items, two of which are indistinguishable. How many permutations can you make? First we carefully write out the sample space with elements a1,a2,b supposing we have three distinct elements.
+a1a2b a1ba2 a2a1b a2ba1 ba1a2 ba2a1
+
+Now if a1 and a2 are indistiguishable then items on lines 1 and 3, 2 and 4, and 5 and 6 are each the same; the reduction of the sample space from 6 to 3 is uniform. The following formula gives the proper result
+3!/2 = 6/2 = 3
+
+(46) SOME MATHEMATICAL TOOLS
+
+CHAPTER2
+
+Example 2.2-5 Another Case of Identical Items
+In permutation problems there are often (as in the previous Example) some indistinguishable items. For example you may have 7 items, a, a, a, b, b, c, d. How many permutations of these 7 items are there?
+We again attack the problem by throwing it back on known methods; we first make the 3 a's distinct, calling them a1 , a2 , a3 , and similarly the
+2 b's are now to be thought of as bt. and 62 • Now we have P(7, 7) = 7! permutations. But of these there are P(3, 3) = 3! permutations which will all
+become the same when we remove the distinguishing subscripts on the a's, and this applies uniformly throughout the sample space, hence we have to
+= divide the number in the total sample space by P(3, 3) 3!, Similarly, for
+the b's we get P(2, 2) = 2! as the dividing factor. Hence we have, finally, the
+sample space of distinct permutations
+7! 312!1!1! = 7 X 6 X 5 X 4/2 = 420
+as the number of permutations with the given repetitions of indistinguishable items (we have put 1! twice in the denominator for symmetry and checking
+reasons, 3 + 2 + 1 + 1 = 7). Since the reduction from distinct items in
+the original permutation sample space to those in the reduced permutation space is uniform over the whole sample space, the probabilities of the random selection of a permutation with repetitions are still uniform. If this is not clear see the previous Example 2.2-4.
+The general case is easily seen to follow from these two special cases, Examples 2.2-4 and 2.2-5. If we have n 1 of the first kind, n2 of the second, ... , and n~: of the kth, and if
+
+then there are
+
+(2.2-6)*
+
+permutations all of equal probability of a random selection. These numbers, C(n; n 1, n 2, ... n~:), are called the multinomial coeffi-
+cients in the expansion
+
+They occur when you expand the multinomial and select the term in t1 to the power n1, t 2 to the power n2, ... , t~: to the power n~:, and then examine its coefficient. The coefficient is the number of ways that this combination
+of powers can arise; this coefficient is the number of permutations with the
+given duplication of items. Note that if n1 = k and all the other ni = 1, then
+this is P(n, k).
+
+2.2
+
+PERMUTATIONS [47)
+
+This formula applies to the case when all the terms are selected. If only a part of them are to be selected then it is much more complex in detail, but the ideas are not more complex. You have to eliminate the "over counting" that occurs when the items are first thought of being distinct because the reductions are not necessarily uniform over the sample space. We will not discuss this further as it seems to seldom arise in practice. Simple cases can be done by merely listing the sample space.
+
+Exercises 2.2
+2.2-1 How many arrangements on a pla:tform can be made when there are 10 people to be seated? 2.2-2 How many arrangements can you make by selecting 3 items from a set of 207 Ans. 570. 2.2-3 In a standard deck of 52 cards what is the probability that on drawing two cards you will get the same number (but not suit)? Ans. 3/51.
+2.2-4 In drawing three cards what is the probability that all three are in
+= the same suit? Ans. (12/51)(11/50) 22/425.
+2.2-5 In drawing k ~ 13 cards what is the probability that all are in the same suit?
+2.2-6 Show that P(n, k) = nP(n -1, k- 1).
+2.2-7 You are to place 5 distinct items in 10 slots; in how many ways can this be done?
+= 2.2-8 Tabulate P(10, k)/10" fork O, 1, ... 10. Ans. 1, 0.9, 0.72, 0.504, etc.
+2.2-9 Estimate P(100, 10) using (2.2-3).
+2.2-10 Estimate P(100, 100) using both (2.2-3) and Stirling's formula (l.A-10). Explain the difference.
+2.2-11 Given a circle with n places on the circumference, in how many ways can you arrange k items? Ans. P(n, k)/n
+2.2-12 If in 2.2-11 you also ignore orientation, and n is an odd number, in how many ways can you arrange the k items?
+2.2-13 Using all the letters how many distinct sequences can you make from the letters of the word "success" 1 Ans. 420.
+2.2-14 Using all the letters how many distinct sequences can you make from
+the letters of the word "Mississippi"? Ans. C(ll; 4, 4, 2, 1) = 4950.
+2.2-15 Using all the letters how many distinct sequences can you make from the letters of the word "Constantinople"'?
+2.2-16 How many distinct three letter combinations can you make from the letters of Mississippi? Ans. 38.
+2.2-17 aow many four letter words can you make from the letters of Mississippi? 2.2-18 If an urn has 7 w (white) and 4 b (black) balls show that on drawing
+= = = = two balls Pr{w, w} 21/55, Pr{b, w} 14/55 Pr{w, b}, Pr{b, b} 6/55.
+
+(48) SOME MATHEMATICAL TOOLS
+
+CHAPTER2
+
+2.2-19 If you put 5 balls in three bins at random what is the probablity of exactly 1 empty bin?
+2.2-20 There are three plumbers in town and on one day 6 people called at random for a plumber. What is the probability 3, 2 or only one plumber was
+= called? Show that the Pr{3, 2, 1} 20/343.
+2.2-21 Discuss the accuracy of (2.2-3) when k is small with respect to n. When k is large.
+
+2.3 Combinations
+
+A combination is a permutation when the order is ignored. A special case
+of the multinomial coefficients occurs when there are only two kinds of items
+to be selected; they are then called the binomial (bi = two, nomial = term) coefflcients C(n, k). The formula (2.2-6) becomes
+
+C(n, k)
+
+=
+
+n! k!(n _
+
+k)!
+
+= C(n, n-
+
+k)
+
+(2.3-1t
+
+where there are k items of the first kind (selected) and n-k items of the other kind (rejected). We use the older notation C(n,k) in place of the currently popular notation
+
+because: (1) it is easier to type (especially for computer terminals), (2) does not involve a lot of special line spacing when the symbol occurs in the middle of a line of type, and (3) simple computer input and output programs can recognize and handle it easily when it occurs in a formula. Note that (2.3-1)
+is a special case of (2.2-6) when you use k2 = n- k1. Note also (2.3-1) says
+that what you select is uniquely determined by what you leave. Recurrence relations are easy to find for the C(n, k) and often shed more
+light on the numbers than an actual table of them. For the index k we have, by adjusting the factorials,
+n!
+C(n, k + 1) = (k + 1)!(n- k- 1)!
+
+n!(n- k)
+= (k + 1)k!{n- k)(n- k- 1)!
+
+(2.3-2)*
+
+=
+
+((kn+-
+
+k) 1)
+
+C(n,
+
+k)
+
+2.3
+
+COMBINATIONS [49}
+
+Clearly the largest C(n, k) occurs around (n- k)/(k + 1) "' 1, that is k "'
+(n- 1)/2. For the index n we have the recurrence relation
+
+= = (n + 1)!
+
+(n + 1)n!
+
+C(n + 1' k) k!(n + 1- k)! k!(n + 1- k)(n- k)!
+
+= (n(+n+11-)k) C(n, k)
+
+(2.3-3)*
+
+The binomial coefficients C(n, k) arise· from
+n
+(tt +t2)11 = LC(n,k)t~-J:t~
+J:=O
+= = In a more familiar form we have (tt 1,t2 t)
+
+n
+= Ec(n,k)t~:
+J::O
+
+(2.3-4)*
+
+where the C(n, k) are the number of ways k items can be selected out of n without regard to order. The equation (2.3-4) generates the binomial coefficients.
+From this generating function (2.3-4) and the observation that
+
+(1 +t)n+l = (1 +t)(l +t)11
+
+we can equate like powers ofti: on both sides (since the powers oft are linearly independent) to get the important relation
+
+C(n + 1, k) = C(n,k) + C(n,k- 1)
+with the side conditions that
+
+(2.3-5)*
+
+C(n, 0) = C(n, n) = 1
+An alternate derivation goes as follows. Suppose we have n + 1 items.
+All possible subsets of size k can be broken into two classes, those without
+the (n + 1)st item and those with it. Those without the (n + 1)st item total
+simply C(n, k), while those with it require selection only k- 1 more items, and these total C(n, k- 1). Thus we have (2.3-5).
+
+(50) SOME MATHEMATICAL TOOLS
+
+CHAPTER2
+
+This identity leads to the famous Pascal triangle where each number is the sum of the two numbers immediately above, and the edge values are all 1.
+
+1
+
+1
+
+1
+
+1
+
+2
+
+1
+
+1
+
+3
+
+3
+
+1
+
+1 4
+
+6
+
+4
+
+1
+
+1
+
+5
+
+10
+
+10
+
+5
+
+1
+
+1 6 15
+
+20
+
+15 6 1
+
+1 7 21
+
+35
+
+35 21 7 1
+
+1 8 28 56
+
+70
+
+56 28 8 1
+
+1 9 36 84 126 126 84 36 9 1
+
+1 10 45 120 210 252 210 120 45 10 1
+
+The Pascal Triangle
+
+It might be thought that to get a single line of the binomial coefficients of order n the triangle computation would be inefficient as compared to the
+recurrence relation (2.3-2). If we estimate the time of a fixed point multi-
+plication as about 3 additions and a division as about two multiplications, then we see that for each term on the nth line we have two additions, one multiplication and one division, or about 11 addition times per term. There being n- 1 terms to compute on the nth line we have to compare this with
+the triangle down to the nth line, namely n(n -1)/2 additions. This leads to
+comparing
+n/2 with 11 --+ n = 22
+(Floating point arithmetic would give, of course, different results.) This suggests that as far as the amount of computing arithmetic is concerned it is favorable to compute the whole triangle rather than the one line you want
+until n = 22-which is quite surprising and depends, of course, on the ac-
+tual machine times for the various operations. Symmetry reduces the amount
+of computation necessary by 1/2 in both approaches. One can squeeze out
+time for the one line approach by various tricks depending on the particular machine-the point is only that the Pascal triangle is surprisingly efficient on computers as contrasted with human computation.
+From the generating function (2.3-4) we can get a number of interesting
+relationships among the binomial coefficients.
+
+2.3
+
+COMBINATIONS (51)
+
+Example 2.3-1 Sums of Binomial Coefficients
+If we set t = 1 in (2.3-2) we get
+
+n
+(1 + 1)n = Ec(n,k) =2n
+t:O
+
+(2.3-6t
+
+In words, the sum of all the binomial coefficients of index n is exactly 2n.
+If we set t = -1 we get the corresponding sum with alternating signs
+
+n
+E(-1)tc(n,k) = o
+t:O
+
+(2.3-7)
+
+The alternating sum of the binomial coefficients is exactly 0 for all n. Thus
+
+the sum of all the even indexed coefficients is the same as the sum of all the
+
+odd indexed coefficients. If we differentiate the generating function (2.3-4) with respect to t we
+
+get the identity
+
+=En
+
+n(1 + t)n- 1
+
+kC(n, k)t"-1
+
+t=1
+
+and when we put t = 1 we get
+
+n
+n2n-1 = EkC(n,k)
+1::1
+
+(2.3-8)*
+
+Many other useful relationships can be found by: (1) suitably picking a function oft to multiply through by, (2) differentiating or integrating one or more times, and finally (3) picking a suitable value fort. The difficulty is to decide what to do to get the identity you want. See Appendix 2.B.
+
+Example 2.3-2 Bridge Hands
+In the game of bridge each hand is dealt 13 cards at random from a deck of 52 cards with four suits. How many different sets of 4 hands are there (the order of the receiving the cards does not matter)?
+Evidently we have the combination (since order in the hands does not matter)
+52!/(13!)4 = 5.36447 ... X 1028
+when you assume that the hands are given but not the positions around the bridge table. Thus you see the enormous number of possible bridge dealings. The Stirling approximation (A.1) gives 5.49 ... x 1028•
+
+[52] SOME MATHEMATICAL TOOLS
+
+CHAPTER2
+
+Example 2.3-3 3 Out of 7 Books
+A student grabs at random 3 of his 7 text books and dashes for school. If indeed the student has 3 classes that day what is the probability that the correct three books were selected?
+We can argue in either of two ways. First, we can say that there are exactly C(7, 3} equally likely selections possible out of the set of 7 books and that only 1 combination is correct, hence the probability is
+1/C{7,3) = 3!/(7 X 6 X 5} = 1/35
+We can also argue (repeating the basic derivation of the binomial coefficients) that the first book can be successfully selected in 3 out of 7 ways, hence with probability 3/7. Then the second book can independently be successfully selected in 2 out of 6 ways with probability 2/6. The third book in 1 out of 5 ways with probability 1/5. The probability of making all three independent choices correctly is, therefore,
+(~) (~) (~) = ;5
+
+which agrees with the result of the first approach.
+Example 2.3-4 Probability of n Heads in 2n Tosses of a Coin The number of ways of getting exactly n successes in 2n equally likely trials
+IS
+C(2n,n) and the probability of getting this is
+
+C(2n, n)/22n
+
+because the sum of all the binomial coefficients is 22n, by equation (2.3-6), (alternately each trial outcome has a probability of 1/2).
+To get an idea of this number we apply Stirling's formula (l.A-7). We get
+(2n)!/{n!n!22n} ""'(2n) 2ne- 2nV211'2n/{nne-n~nne-n~22n}
+-1/.;r:;:;;)
+Thus the exact balancing of heads and tails in 2n tosses of a coin becomes
+increasingly unlikely as n increases-but slowly! At n = 5, {10 tosses), this
+approximation gives 0.24609 vs. the exact answer 0.25231, about 1 in 4 trials.
+
+2.3
+
+COMBINATIONS (53]
+
+Example 2.3-5 Probability of a Void in Bridge
+What is the probability when drawing 13 cards at random from a deck of 52 cards of having at least one suit missing?
+For each success we must have drawn from one of 4 decks with only 39 cards (one suit missing). Hence the probability is
+
+P = 4C(39, 13)/C(52, 13) = 4(39!)(39!)/(26!)(52!) = 0.05116 ... - 1/20
+
+If your computer cannot handle a 52! then Stirling's approximation will yield
+= p .05119 ...
+
+Example 2.3-6 Similar Items in Bins
+In how many ways can you put r indistinguishable items into n bins? An example might be rolling r dice and counting how many have each
+possible face (are in each bin). The solution is simple once we realize that by adding to the r items n - 1 dividers ( I) between bins; thus we are arranging
+n + r -1 items
+
+***I* *I***** I* *I******* I*···* I***
+and this can be done in C(n+r-1,r) =C(n+r-1,n-1)
+different ways.
+
+Example 2.3-7 With at Least 1 in Each Bin
+If in the above distribution we have to put at least one ball into each bin then of the r balls we distribute the first n into the n bins leaving r - n balls and then proceed as before. This gives
+
+C(r-1,n-1) and we are assured of at least one in each bin.
+
+(54] SOME MATHEMATICAL TOOLS
+
+CHAPTER 2
+
+Exercises 2.3
+2.3-1 Write out the eleventh line of the Pascal triangle.
+2.3-2 Use 2.3-2 to compute the eleventh line of the Pascal triangle.
+2.3-3 What is the sum of the coefficients of the 11th line? 2.3-4 Compute C(lO, 5) directly.
+2.3-5 Find L:~!., 1 kC(ll, k).
+2.3-6 Find L:k2 C(n, k). Ans. n(n + 1)2n-2 •
+2.3-7 Find an algebraic expression for C(n, n- 1). 2.3-8 Show that C(n, n- 2) = n(n- 1)/2.
+2.3-9 Show that the ratio of C(n, n- 3)/C(n, n- 2) = (n- 2)/3. 2.3-10 How many different bridge hands might you possibly get?
+2.3-11 Discuss the fact that equation 2.3-1 always gives integers, that the indicated divisions always can be done.
+2.3-12 For your machine find the comparative operation times and compute when the Pascal triangle is preferable to the direct computation of one line.
+2.3-13 Show that if there are m Democrats and n Republicans then a committee consisting of k members from each party can be selected in C(m, k)x C(n, k) = n!m!/(n- k)! (m- k)!{k!}2 different ways. 2.3-14 Make a table of the probabilities of the number of heads in 6 tosses of a well balanced coin.
+2.3-15 For 20 tosses (n = 10) compare the Stirling approximation for 10 heads with the exact result. Ans. Exact =.176197, Est. =.178412.
+2.3-16 What is the probability of a bridge hand having no cards other than 2, 3, 4, 5, 6, 7, 8, 9 and 10? Ans. .003639....
+2.3-17 Find the sum of the terms of the form ec(n, k).
+2.3-18 Compute E~=o C(n, k)/(n + 1).
+2.3-19 If each of two people toss n coins what is the probability that both will have the same number of heads? (See 2.B-4) Ans. C(2n, n)/22 n. Check this for n = 1, 2, 3. 2.3-20 In a deck of 52 cards one black card is removed. There are then 13 cards dealt and it is observed that all are the same color. Show that the probability that they are all red is 2/3. 2.3-21 If n items are put into m cells show that the expected number of empty cells is (m -1t/mn-l 2.3-22 If you expect 100 babies to be delivered in a hospital during the next 90 days, show that the expected number of days that the delivery room will not be in use is approximately 29.44 or about 1/3 of the time.
+2.3-23 Balls are put into three cells until all are occupied. Give the distri-
+bution of the waiting time n. Ans. (2n-l - 2)/3n-l, (n > 2).
+2.3-24 Show that the probability of a hand in bridge of all the same color
+= is 2C(26, 13)/C(52, 13) = 19/(47){43)(41)(7) 0.000032757 ....
+2.3-25 What is the approximate number of tosses of a coin when you can expect a 10% chance of half of the outcomes being heads?
+
+2.4
+
+THE BINOMIAL DISTRIBUTION-BERNOULLI TRIALS (55]
+
+2.4 The Binomial Distribution-Bernoulli Trials
+
+Since the binomial distribution is so important we will repeat, in a slightly different form, much of the material just covered. Suppose that the probability
+= of some event occurring is p, and of its not occurring is q 1 - p. Con-
+sider n independent, repeated trials, called Bernoulli trials, in which there are exactly k successes, and of course n - k failures. What is the probability of observing exactly k successes?
+To begin we suppose that the first k trials are all successes and that the rest are all failures. The probability of this event is
+ppp ... pqqq ... q =pk qn-k
+Next, consider any other particular sequence of k successes whose positions in the run are fixed in advance, and n - k failures in the remainding positions. When you pick that sequence of k p's and (n - k)q 's you will find that you have the same probability as in the first case.
+Finally, we ask in how many ways the k successes and (n- k) failures can occur in a total of n trials; the answer is, of course, C(n, k). Hence when we add all these probabilities together, each having the same individual probability, we get
+(2.4-1)*
+as the probability of exactly k successes in n independent trials of probability p. This is often written as
+
+(0 $ k $ n)
+
+(2.4-2)*
+
+In words, "the binomial probability of k successes in n independent trials each of probability p." This gathers together all the C(n, k) equally likely, p"qn-k, individual events in the original product sample space and groups them as one term. The result is the probability of exactly k successes in n independent trials, each single trial with probability of success p.
+We now have the probability distribution for b(k; n,p) as a function of the variable k. We see that this new distribution is not uniform. Even if
+= p 1/2 and the original sample space is uniform the grouped results are not.
+There is a useful relationship between successive terms of this distribution which may be found as follows (from 2.3-2):
+= b(k + 1; n,p) C(n, k + l)pk+lqn-/c-1
+
+= (~ ~ ~) (~) C(n, k)p"qn-k
+
+(2.4-3)
+
+= (~~~) (~)b(k;n,p)
+
+[56] SOME MATHEMATICAL TOOLS
+
+CHAPTER2
+
+With this we can easily compute the successive terms of the distribution.
+= = For example, suppose n 10, and p 2/3, then as a function of k we
+have (using 2.4-3)
+
+TABLE 2.4-1
+P(k) = b(k; 10, 2/3)
+P(O) = 0.00002 P(1) = 0.00034
+= P(2) 0.00305
+P(3) = 0.01626
+= P(4) 0.05690
+P(5) = 0.13658 P(6) = 0.22761 P(7) = 0.26012 P(8) = 0.19509
+= P(9) 0.08671
+P(10) = 0.01734
+= Total 1.00000
+
+b(k; 10, 2/3) 0.3 0.2 0.1
+
+1 2 3 4 5 6 7 8 9 10
+
+k
+
+FIGURE 2.4-1
+
+This is the distribution of the probability function b(k; 10, 2/3), see Figure 2.4-1. The total probability must be 1, of course. To show that this is true in
+
+2.4
+
+THE BINOMIAL DISTRIBUTION-BERNOULLI TRIALS [57]
+
+general we observe that the generating function of b(k; n,p) can be found by
+
+=Ln
+
+( q + pt)R
+
+C(n, k)(pt)k qn-k
+
+k=O
+
+n
+= L)C(n, k)pkqn-k}tk
+k=O
+
+(2.4-5)*
+
+k=O
+= = where the coefficient of tk is b(k; n,p) P(k). Now putting t 1 we have
+n
+= = (q+pt 1 Lb(k;n,p)
+k:O
+From the table we see that (within roundoff) the sum is indeed 1. The sequence b(k; n,p) is called the binomial distribution from its obvi-
+ous source. It is also called the Bernoulli distribution; it arises whenever there are n independent binary (two way) choices, each having the same probability p of success, and you are interested in exactly k successes in the n trials.
+For p = 1/2 the maximum of the binomial distribution is at the middle,
+= k n/2, (if n is even). The approximate inflection points of this important = binomial distribution for p 1/2, (which is a discrete distribution) can be
+found by setting the second difference approximately equal to 0 (see 2.3-1)
+C(n, k + 1)- 2C(n, k) + C(n, k- 1)
+
+=
+
+C(n, k)
+
+[
+
+nk +-
+
+k 1
+
+-2
+
++
+
+n-
+
+k k
+
++
+
+] 1
+
+"'0
+
+Clearing the square bracket of fractions we have
+n2 - nk- nk + k2 + n- k- 2(nk- k2 + k +n- k + 1) + k2 + k""' 0
+
+We arrange this in the form
++ 4k2 - 4nk n 2 - n- 2""' 0
+
+(2k-n?""' n+2
+
+(2.4-6)*
+
+k""' ![n ± V(n + 2)]...., ~ ± Vn 2 2
+
+and the inflection points for large n are symmetrically placed with respect to
+the position of the maximum, n/2, are at a distance approximately equal to
+vn/2.
+
+[58] SOME MATHEMATICAL TOOLS
+
+CHAPTER2
+
+Example 2.4-1 Inspection of Parts
+If the probability of a defective part is 1/1000, what is the probability of exactly one defect in a shipment of 1000 items?
+We reason as follows; the value from (2.4-1) is
+
+b(1; 1000, 1/1000) = C(1000, 1)[(1/1000)(1- 1/1000)999]
+= tm (1 - 1/1000)1000/(1 - 1/1000)
+
+But remembering the limit from the calculus
+
+lim (1- 1/nt = 1/e
+n-oo
+we apply this to the expression to get
+
+(1/e)(1- 1/1000)"' 1/e
+
+(2.4-7)'"
+
+This is a passable (not very good) approximation in many situations as can be seen from the following Table 2.4-2.
+
+TABLE 2.4-2
+
+n (1- 1/n)n
+
+Exact
+
+Error in using 1/e
+
+1 0
+= 2 (1/2)2 1/4 = 3 (2/3)3 8/27 = 4 (3/4)4 81/256 = 5 (4/5)5 1024/3125
+
+= = = =
+=
+
+0 0.25 0.296296 0.316406 0.327680
+
+0.178794 0.071583 0.051473 0.040199
+
+10 (9/10) 10 20 (19/20) 20 50 (49/50) 50
+
+=
+
+0.348678 0.019201
+
+=
+
+0.358486 0.009393
+
+=
+
+0.364170 0.003709
+
+100 (99/100)100 200 (199/200)200 500 (499)/500)500
+
+1000 2000 5000
+
+(999/1000) 1000 ( 1999/2000) 2000 (4999/5000) 5000
+
+=
+
+0.366032 0.001847
+
+=
+
+0.366958 0.000921
+
+=
+
+0.367511 0.000386
+
+=
+
+0.367695 0.000184
+
+=
+
+0.367787 0.000092
+
+--
+
+0.367843 0.000036
+
+10000 ( .9999)10,000
+
+=
+
+0.367861 0.000018
+
+2.4
+
+THE BINOMIAL DISTRIBUTION-BERNOULU TRIALS [59)
+
+The limiting value is 1/e = 0.367879. At n = 10k you get about k decimal
+places correct.
+
+Example 2.4-2 Continued Suppose the p <t: 1 (very much less) and n ~ 1. What is the probability of one or more defective parts in the sample?
+This situation ("one or more") calls naturally for the complement probability approach and we set
+P= 1-Q
+where Q = probability of no defects= (1 ~ p)n. Then
+P = 1- (1- p)n = 1- [(1- p)lfptp
+- 1- e-np
+
+If np < 1 then using the series expansion of exp(z)
+P- 1- e-np = 1- [1- np + (np)2/2- · · ·) ,..... np - (np)2/2 + ···
+
+The expected number of defects is np, and the next term is the first correction term for the multiple occurences.
+
+Example 2.4-3 Floppy Discs
+You are manufacturing floppy discs. Past experience indicates that about 1 in 10,000 discs that get out into the field are defective. Suddenly your processing and control systems change to about 1 in 100 defective. It is suggested that until the manufacturing process gets back into control you include in each package of 10 discs a note plus one extra disc, or maybe 2 extra discs. How effective do you estimate this to be?
+Clearly the assumed probabilities are estimates and not exact numbers, hence we need only estimate things and do not need to use exact formulas. The ratio of the bad discs to the total in a pack is around 1/10 in the new situation, and the first error term beyond what we are covering will give a valid estimate; we could find the exact computations by the "complement" approach if we thought it worth the trouble.
+You were selling bad packages of 10 discs with a probability of about
+
+1 - probability that there are no bad discs in the 10
+
+This is, using the binomial expansion,
+
+p = 1 - (1 - 1/10, 000)10 "' 1 - (1 - 10/10, 000) ,..... 1/1000
+
+[60) SOME MATHEMATICAL TOOLS
+
+CHAPTER2
+
+which is about the probability of one bad disc in 1000 packages Since we will need estimates for various numbers we write out the general
+case,
+Prob {k bad discs}= b(k;n,p) = C(n,k)pk(l-pt-k
+For 11 discs in a package, n = 11, we have the probability of two bad discs (with the new failure rate, p = 1/100)
+= C(ll, 2){1/1002}{1- 1/100} 55{99/100}/104 .... 5.4 X 10-3
+which is about 5 times as bad as you were doing before the changes in the production line.
+For 12 discs in a package the probability of 3 failures is
+C(12,3)p3 (1- p)9 .... {12 xu x 10/6}10-6 {1- 9 x w- 2}
+= {220/106}{0.91}...., 2 X 10-4
+which is about 5 times better than you were doing!
+
+Example 2.4-4 The Distribution of the sum of Three Dice
+Sometime before the year 1642 Galileo was asked about the ratio of the probabilities of three dice having either a sum of 9 or else a sum of 10. We will go further and examine the whole probability distribution for the sum of three faces of three dice. Since the probability is not obvious we will use elementary methods.
+We begin, as usual, with the sample space of the equally likely events; the roll of a single die at random means that we believe that each of the six faces has the same probability, 1/6. The second die makes the product space into 36 equally probable outcomes, each with probability 1/36. The third die leads to the product space of these 36 by its 6 giving 63 = 216 events in the final product space, each with probability 1/216. Notice that the product space is the same whether we imagine the dice rolled one at a time or all at one time.
+We do not want to write out all these 216 cases, rather we would like to get the sample space by a suitable grouping of events. If we label the sum (total value) of the three faces by S having values running from 3 to 18, then we want to find the probability distribution of S. The probability that S will have the value k is written as
+Pr{S = k} (k=3,4, ... ,18)
+In our approach for fixed k we partition the value k into a sum of three integers, each in the range 1 to 6. We will first consider the canonical partitions where the partition values are monotonely increasing (or else monotonely decreasing). Once we have these we will then ask, "In how many places in the sample space will there be equivalent partitions?" We make the entries for the canonical partitions in the table on the right.
+
+2.4
+
+THE BINOMIAL DISTRIBUTION-BERNOULLI TRIALS [61]
+
+TABLE 2.4-3
+
+Table of canonical partitions of k on three dice
+
+k canonical partitions
+
+3 (1,1,1) 4 (1,1,2) 5 (1,1,3) 6 (1,1,4) 7 (1,1,5) 8 (1,1,6) 9 (1,2,6) 10 (1,3,6) 11 {1,4,6) 12 (1,5,6) 13 (1,6,6) 14 (2,6,6) 15 (3,6,6) 16 (4,6,6) 17 (5,6,6) 18 (6,6,6)
+
+(1,2,2) (1,2,3) (1,2,4) (1,2,5) (1,3,5) (1,4,5) (1,5,5) (2,4,6) (2,5,6) (3,5,6) (4,5,6) (5,5,6)
+
+1
+
+3
+
+6
+
+(2,2,2)
+
+10
+
+(1,3,3) (2,2,3)
+
+15
+
+(1,3,4) (2,2,4) (2,3,3)
+
+21
+
+(1,4,4) (2,2,5) (2,3,4) (3,3,3) 25
+
+(2,2,6) (2,3,5) (2,4,4) (3,3,4) 27
+
+(2,3,6) (2,4,5) (3,3,5) (3,4,4) 27
+
+(2,5,5) (3,3,6) (3,4,5) (4,4,4) 25
+
+(3,4,6) (3,5,5) (4,4,5)
+
+21
+
+(4,4,6) (4,5,5)
+
+15
+
+(5,5,5)
+
+10
+
+6
+
+3
+
+1
+
+total= 216
+
+These are the increasing canonical partitions; in how many equivalent
+
+ways can each be written? If the three indices are distinct then there are
+
+evidently exactly 3! = 6 equivalent sequences in the entire sample space. If
+
+two indices are the same then the other index may be put in any of 3 places,
+
+hence there are 3 equivalent sequences in the sample space. Finally, if all three indices are the same then there is only one such sequence in the sample space.
+
+Thus we have to multiply each partition on the left by its multiplication factor
+
+(6, 3, or 1) and then sum across the line to get the total number of partitions
+
+that are in the original sample space and that also have the value k. These
+
+totals are given on the right. Dividing these sums by the total 216 we get
+
+the corresponding probabilities. When we notice the structure of the table,
+
+the symmetry of the totals above and below the middle, and check by adding
+
+all the numbers to see that we have not missed any, then we are reasonably
+
+confident that we have not made any mistakes.
+
+The answer to the question asked of Galileo, the ratio of the probabilities
+
+of a sum of 9 or 10, is clearly 25/27""' 0.926. Although there are the same number of canonical partitions in these two cases, the partitions do not have
+
+the same total number of representatives in the original sample space.
+
+At the time of Galileo there were claims that the canonical partitions
+
+are the equally likely elements of the sample space. Hence you should review
+
+the argument we gave for the product sample space of probabilities to see if
+
+it convinces you.
+
+The reader needs to be careful! The distribution we have used is known
+
+(62] SOME MATHEMATICAL TOOLS
+
+CHAPTER2
+
+as the Maxwell-Boltzmann distribution. If we take the canonical partitions as the equally likely elements then the distribution is known as the Bose-Einstein distribution, which assumes that it is the entries on the left hand side of Table 2.4-1 that are the equally likely events and they have no corresponding multiplicative factors. Thus the right hand column would be the sequence (1, 1, 2, 3, 4, 5, 6, 6, 6, 6, 5, 4, 3, 2, 1, 1). The total number of equally likely cases is 56.
+Finally, if we consider the Pauli exclusion principle of quantum mechanics then only the canonical partitions for which the three entries are distinct can occur and these are the equally likely events. We then have the FermiDirac distribution. Thus in Table 2.4-1 we must eliminate all the entries for which two of the numbers are the same. When we do this we find, beginning with the sum 6 and going to the sum 15, sequence (1, 1, 2, 3, 3, 3, 3, 2, 1, 1). The total number of cases is 20.
+Only the last two distributions, the Bose-Einstein and the Fermi-Dirac, are obeyed by the particles of physics. Thus you cannot argue solely from abstract mathematical principles as to which items are to be taken as the equally likely events; we must adopt the scientific approach and look at what reality indicates. If we wish to escape the medieval scholastic way of thinking then we must make a model, compute what to expect, and then verify that our model is (or is not) closely realized in practice (except when using "loaded dice").
+
+Example 2.4-5 Bose-Einstein Statistics
+If we put n indistinguishable balls in k cells then the number of ways we
+can do this is C(n; i1, h, ... i1:) equally likely ways, where the sum of the ji
+is n. Hence any one configuration has the probability of the reciprocal of this number .
+
+.Example 2.4-6 Fermi-Dirac Statistics
+Suppose we have k (indistinguishable) balls to put into n distinct boxes, (k 5
+n), and ask, "In how many ways can this be done so that at most one ball goes into any one box?"
+We can select the k places from the n possible ones in exactly
+
+C(n,k)
+
+ways, and each way is equally likely. Hence the probability of any one configuration is
+1/C(n, k)
+
+2.5
+
+THE BINOMIAL DISTRIBUTION-BERNOULLI TRIALS (63)
+
+Exercises 2.4
+2.4-1 Write out the table corresponding to (2.4-2) for the Bose-Einstein statistics.
+2.4-2 Write out the table corresponding to (2.4-2) for the Fermi-Dirac statistics.
+2.4-3 What is the probability of no defects in n items each having a probability of a defect p?
+2.4-4 Using Exercise 2.4-3 what is the probability of two or more defective pieces?
+2.4-5 Show that for large n b(l; n, 1fn)"' 1/e.
+= 2.4-6 Similarly show that b(2; n, 1/n) "' 1/2e, and b(3; n, 1/n) "' 1/6e
+1/3!e. 2.4-7 If p is the probability of a Bernoulli event and we make n trials show
+that the probability of an even number of events is [1 + (2p- 1)n]/2.
+2.4-8 Corresponding to Table 2.4-1 make a table of b(k, 10, 3/5).
+= 2.4-9 If a coin is biased with probability p(H) p tlten in the game of "odd
+man out" (see Exercise 1.7-15) what is the probability of a decision? Ans. 3pq.
+2.4-10 From an n-dimensional cube of lattice points and with a side n we select a random point. Show that the probability of the point being inside the cube is [(n- 2)/n]n "'e-2 •
+2.4-11 Expand the binomials in the probabilities of 0, 1, 2, and 3 occurrences, and show that the expansions cancel out to tlte next term provided
+np < 1. Hence if np < 1 the first term neglected in the expansion is close to
+the exact result for 4 or more events.
+2.4-12 Show by exact calculation that the floppy disc estimates in Example 2.4-3 are sufficiently accll.rate.
+2.4-13 Find the distributioa of the sum of two dice following the method used for three dice for the three distributions, Maxwell-Boltzmann, BoseEinstein, and Fermi-Dirac.
+2.4-14 If a coin has probabilty p of being a head show that the probability
+of k tosses of the coin will have the same side is p11 +q'•. For what p is this a
+minimum?
+2.4-15 Quality Control In a set of 100 items 10 are defective. What is the probability that a sample of HI will all be good? ARs. "' 1/e.
+2.4-16 Using the approximation exp(x)"' (1 +1/nt"' and a similar one for
+exp( -x ), discuss their prod. uct and what it indicates.
+
+[64] SOME MATHEMATICAL TOOLS
+
+CHAPTER2
+
+2.5 Random Variables, Mean and the Expected Value
+
+We now introduce the idea of a random variable. We have, so far, discussed carefully the elementary events and the probabilities to assign to each. We now assign a value to the outcome of the event. For example, when we discussed the sum of the faces of three dice (Example 2.4-4) we had the value k associated with selected outcomes, namely where the sum of the three faces was equal to k. Thus we were assigning both a value 1, 2, ... , 6 to each of the corresponding faces of a die and also a value to the sum of the three faces. We wrote
+Pr{S = k}
+and we now understand S to be a random variable having values running from
+3 to 18 with the corresponding probabilities Pr{S = k}. S is regarded as a
+function over the subsets of the sample space and
+
+Pr{S = k}
+
+is the sum of the probabilities of all outcomes which have the corresponding value k. This idea will be used extensively in the future, and if it is at first confusing this is the normal situation. The random variable idea arises because we assign values to the outcomes-the use of only names greatly restricts what we can compute.
+Sometimes we want to know only a specific probability, but often we want to know the whole distribution for the random variable I< which takes on the integer values k= 0, 1, ... ,n with probabilities P(k) = Pr{ I< = k} of exactly k successes inn trials (recall Table 2.4-1). In many cases, however, the actual numbers that make up the distribution are not easily assimilated by the human mind, and we need some summarizing descriptions of the distribution.
+The first useful summarizing number is the mean (average)
+
+L n
+kp(k) =Op(O) + 1p(1) + 2p(2) +···+np(n) =jj
+k=O
+
+(2.5-1)*
+
+which is the mean value of the random variable I< whose values are k = 0, 1, ... , n, each with the corresponding probability p(k). This is usually la-
+beled by the Greek lower case letter p (mu), especially in statistics. It measures the position of the "center of the distribution." It is the mean value of the random variable K. It is also called the average or expected value of the random variable, or of the distribution.
+
+2.5
+
+RANDOM VARIABLES, MEAN AND THE EXPECTED VALUE (65)
+
+Example 2.5-1 The Expected (Mean) Value from the RoU of a Die
+
+The random roll of a die gives the faces 1, 2, 3, 4, 5, 6 each with probability 1/6. If we assign the values 1, 2, 3, 4, 5, 6 to the corresponding faces then the expected (average, mean) value
+
+= = = p l[1 + 2 + 3 + 4 + 5 + 6) 1(6 X 7/2) 3.5
+
+which is not a possible value from any roll. The expected value is not necessarily a value that can be "expected" to turn up! It is, at the moment, only a technical definition and not necessarily what a normal human would think! You have to be a very poor statistician to believe an expected value is a value you can always expect to see.
+
+Example 2.5-2 The Expected Value of a Coin Toss
+The random toss of a coin may be given the values: head = 1 and tail = 0. Thus the expected value of a toss (p = 1/2) is
+p = ;(1 +0] = t
+However, we might have assigned the values: head = 1 and tail = -1. In this case the expected value would be
+= I'= ![1- 1) 0
+
+Which of these two assignments of values for the faces of the coin to
+use depends on the particular application-the assignment of values to the
+outcomes of the trials depends on the use you intend to make of the result. If you are counting the number of heads in a sequence of n tosses then the
+first assignment is reasonable and p = 1/2 is appropriate, but if you win one unit on a head and lose one unit on a tail then p = 0 is more reasonable; on
+a single toss you expect neither a gain nor a loss.
+
+[66) SOME MATHEMATICAL TOOLS
+
+CHAPTER2
+
+Example 2.5-3 The Sum of Two Dice
+What is the expected value of the sum of the faces of two randomly thrown dice? We start with the sample space of 6x 6 = 36 events each with probability of 1/36, (Exercise 1.6). We are interested in the sum so we now group together all events that have the same sum of the two faces, a value running from 2 to 12. This sumS is a random variable, sayS= X1 + X2 where the X 1 is the random variable for the first die and X2 is the random variable for the second die. We have the following Table 2.5-1:
+
+TABLE 2.5-1
+
+P(S = 2) P(S = 3)
+
+= 1/36
+=2/36
+
+= Table of S Xt + X2
+{1,1) (1,2) (2,1)
+
+P(S = 4) = 3/36 (1,3) (2,2) (3,1)
+
+P(S = 5)
+P(S = 6)
+= P(S 7)
+P(S = 8)
+= P(S 9)
+
+= 4/36 (1,4) (2,3) (3,2) (4,1)
+=5/36 (1,5) (2,4) (3,3) (4,2) (5,1)
+= 6/36 (1,6) (2,5) (3,4) (4,3) (5,2) (6,1) = 5/36 (2,6) (3,5) (4,4) (5,3) (6,2)
+= 4/36 (3,6) (4,5) (5,4) {6,3)
+
+P(S = 10) = 3/36 (4,6) (5,5) (6,4)
+
+= P(S = 11)
+
+2/36 (5,6) (6,5)
+
+P(S = 12) = 1/36 {6,6)
+
+The table on the right lists the 36 equally likely entries in the sample space in a convenient order. The derived random variableS does not have a uniform distribution though it comes from a uniform distribution via grouping various terms having the same value for the random variableS (the sum). The expected value of the distribution of S is (for the standard value assignment to the outcomes)
+
+~=[2x1+3x3+4x3+5x4+6x5+7x6+8x5+9x4
++ 10 X 3 + 11 X 2 + 12 X 1]/36 = 252/36 = 7
+
+But this is just the sum of the expected values from each of the two independently thrown dice! This is not a coincidence as we will see below. Thus further investigation of the expected value of a distribution (with a given value assignment) is worth some effort.
+We see that the mean (average) or expected value is merely the sum of the values assigned to the outcomes of each trial when each outcome is weighted by the probability of its occurrence. This weighting of the values of the outcomes of the occurrences by their corresponding probabilities happens frequently and we need, therefore, a notation and some simple results to relieve us of rethinking the details every time we compute a mean. Given a random
+
+2.5
+
+RANDOM VARIABLES, MEAN AND THE EXPECTED VALUE (67]
+
+variable X whose outcomes have probabilities p(i), and have the values Zi,
+(i = 1, 2, ... , n), then the expected value of the random variable X is defined
+to be (E is for expectation)
+
+n
+E{X} = Lzip(i)
+i=l
+
+(2.5-2)*
+
+This is the average computed over the sample space, each outcome value Zi
+is weighted by its probability p(i). The expected value. operator E{.} is. a linear operator whose properties
+are worth investigating. We first examine the expected value of the product of two random independent variables X and Y, and then examine the sum.
+For the prodnet XY, of the two random, independent variables X and Y, the probability of the pair of outcomes Zi and Y; will by definition (2.5-2) be
+
+E{XY} =Lkp{XY =k}
+1:
+
+(2.5-3)
+
+How do we get the p{XY = k}? By definition (2.5-2) we must first sum all the Px(i)py(j) in the sample space for which ZiYj = k, where the subscripts
+on the probabilities indicate the corresponding variable. Hence we have
+
+E{XY} = Lk L px(i)py(j)
+1: :r:;w;=l:
+
+This formula is not easy to use so we seek an alternate approach to compute E{XY}. We go back to (2.5-2). The product ZiYj arises with probability Px(i)py(j), hence
+
+L E{XY} =
+
+ZiY;Px(i)py(j)
+
+eample apace
+L = LZiY;Px(i)py(j)
+
+i j
+
+(2.5-4)
+
+We need to convince ourselves that these two different expressions (2.5-3) and (2.5-4) for E{X} are the same. To see this take any point in the product sample space (Zi, Y;) and follow it through each computation; you will see that it enters into the result exactly once and only once either way, each time with weight px(i)py(j). Hence the two formulas represent alternate ways of finding the expected value.
+This proof of the equivalence is simple for a finite discrete sample space, but when we later face continuous sample spaces it brings up two separate ideas. First, the integral (corresponding to the finite summation) over the
+
+[68] SOME MATHEMATICAL TOOLS
+
+CHAPTER2
+
+whole sample space is the iterated integral (in either order) as in the calculus. Second, a change of variables (in this case from rectangluar to what will be an integration along a hyperbolic coordinate and then all the hyperbolas are integrated to cover the whole sample space) to new coordinates will involve the corresponding Jacobian of the transformation.
+We now return to the problem at hand. Taking it in the second form, (2.5-4), we have the expected value of the product of the independent variables
+E{XY} = L::ziy;px(i)py(j)
+i,j
+If we fix in our minds one of the variables, say Zi, and sum over they variable we will find that for each value Xi we will get the expected value of Y, namely E{Y}. This will factor out of each term in the variable Zi, hence out of the sum. What is left is the expected value of X. Thus we have the result that for independent random variables
+
+E{XY} = l:zipx(i) L:v;py(j)
+
+i
+
+j
+
+= E{X}E{Y}
+
+(2.5-5)
+
+A rather simple way to see this important result is to actually write out the product space of the random independent variables X and Y in a rectangular array.
+
+ZlYlPx(l)py(l) z1Y2Px(l)py(2) Z2Y1Px(2)py(l) Z2Y2Px(2)py (2)
+
+XlYnPx(l)py(n) Z2YnPx(2)py(n)
+
+ZnYlPx(n)py(l) XnY2Px(n)py(2)
+
+XnYnPx(n)py(n)
+
+Now consider summing by the rows; for the ith row the XiPx(i) value is fixed and you get for every row the same value E{Y}. Now sum what is left after factoring out the E{Y} and you get E{X}. Alternately, you can sum by the columns first to get E{X} and then sum the rest to get the E{Y}. In both cases you get the product of the expectations.
+Next we consider the sum of any two random variables X and Y, independent or not. We have
+j
+E{X + Y} =~·)xi+ Y;)p(i,j)
+i
+where p(i,j) is the probability of the pair Zi, Yi occurring. When you think about the two following equations you see why they are true:
+
+LP(i,j) = Px(i)
+j
+l:p(i,j) = py(j)
+i
+
+(2.5-6)
+
+2.5
+
+RANDOM VARIABLES, MEAN AND THE EXPECTED VALUE [69]
+
+We have, therefore, on breaking up the sum into two sums and then interchanging the order of summation in the second sum,
+j
+E{X + Y} = I)zi + Y;)p(i,j)
+i
+
+= :~:::>iPx(i) + L:y;py(j)
+
+i
+
+j
+
+= E{X} +E{Y}
+
+This should be clearly understood because it is fundamental in many situations. We have the result that the expected value of the sum of two random variables, independent or not, is the sum of their expected values,
+
+E{X + Y} = E{X} + E{Y}
+
+(2.5-7)
+
+It is an easy extension to see that E{.} is a linear operator, that is
+
+E{aX +bY}= aE{X} + bE{Y}
+
+(2.5-8)*
+
+We have only to follow through the above argument with the constants a and b and notice how they factor out of each sum. This result shows why the expected value of the sum of the values of the two dice is the sum of their expected values.
+The fact that the expectation of a sum of random variables is the sum of the expectations no matter how the two variables are related explains why E{.} is such a useful linear operator.
+This method of summing over one of the variables and then over the other, and finding that the expected value factors out of the other sum and that then the other sum is exactly 1, is fundamental to much of the theory and should be mastered. If you do not see it clearly then look again at the product space (the rectangular array) and examine what happens as you sum
+(zi + Y;) by rows and then by columns.
+Once we notice that the sum of two random variables is itself a random variable, then we can recursively apply the above formula and obtain result that for any finite sum of random variables Xi with constants Ci
+
+(2.5-9)*
+
+For products of independent random variables we have correspondingly
+
+(2.5-10}*
+
+(70) SOME MATHEMATICAL TOOLS
+
+CHAPTER2
+
+these generalize equations (2.5-7) and (2.5-5). Other measures of a distribution besides the expected value are often
+used by statisticians. One is the median which is the middle value when the Zi are ranked in order (the average of the middle two when there are an even number of values). Another measure is the mode which is the most frequent (most fashionable) value. The mode makes sense only when the distribution has a single, well defined, peak. The mid range (:tmax- Zmin)/2 is occasionally used.
+
+Example 2.5-4 Gambling on an Unknown Bias
+
+You have a sequence of repeated, independent trials of unknown probability p, say betting on a biased coin. One strategy for betting is to bet on the face of
+
+the most recent outcome thus making your bets have the same frequency as
+
+the out comes of the trials. Your expected gain per trial is
+
+gain -loss= pp + qq- {pq +qp} = (p- q)2
+
+If you have the additional information that the bias is such that p > 1/2
+then an alternate strategy is to bet always on the event. Now your gain per
+
+toss is
+
+(p- q)
+
+Thus knowing only the side which the bias favors, you have a significant
+= = advantage (except for p 1/2 and p 1) as the following table shows.
+
+prob. p
+.5 .6 .7
+.8 .9 1.0
+
+gain 1
+.00 .04 .09 .16
+.64 1.00
+
+gain 2
+.0
+.2
+.4
+.6 .8
+1.0
+
+Mathematical aside: Sums of Powers of tbe Integers We often need some small mathematical details that are not easily recalled by the student. In particular we will often need the sums of the consecutive integers raised to low powers; we will need the formulas
+'Ekn = n(n + 1)/2
+A:=l
+Lkn
+2 = n(n + 1)(2n + 1)/6
+A:=l
+'Ekn 3 = [n(n+ 1)/2]2
+A:=l
+
+2.6
+
+RANDOM VARIABLES, MEAN AND THE EXPECTED VALUE (71)
+
+These are all easy to prove by the use of mathematical induction. For example, for the sum of the cubes of successive integers we need to show: (1) for the basis of the induction, using n = 1, we get the same number on both sides, and (2) for the induction step from n - 1 to n we have an equality, namely
+
+old sum + next term = new sum
+[n(n- 1)/2J2 + n3 = n2((n2 - 2n + 1)/4 + n] = n2 ((n + 1)2/4] = [n(n + 1)/2]2 =new sum
+
+Exercises 2.5
+2.5-1 Cannon balls are piled as a pyramid with a square base. If the side of the square is n, then how many balls in the pile? 2.5-2 Triangular numbers are defined as /(n) = n(n- 1)/2. Find the sum of the first 1.: triangular numbers.
+2.5-3 What is the expected value for a deck of cards numbered (values) 1, 2, ..., 52?
+2.5-4 What is the expected value of the sum of four dice?
+2.5-5 What is the expected value of the sum of n coins? Ans. n/2 or 0.
+2.5-6 What is the expected value of the sum of n dice?
+2.5-7 One and only one key on a key chain of n keys fits the lock. Compare finding the key by systematic or random methods.
+2.5-8 A disc track is selected from a set numbered 1, 2, ..., n. Call this X.
+You now select Y from 1 ~ 11 ~X. Show that E{Y} = (n + 3)/4.
+2.5-9 If p(l.:) = 1.:/10, (0 ~ 1.: 54) find E(K).
+= 2.5-10 If p(k) = qplc(k o, 1, ...) find E(K).
+2.5-11 Find the product of the values on the two faces of a pair of independently thrown dice. Ans. 49/4.
+2.5-12 What is the expected value of the product of three independently thrown dice?
+
+(72] SOME MATHEMATICAL TOOLS
+2.6 The Variance
+
+CHAPTER2
+
+The mean gives the location of the "center" of a distribution, but a little experience with distributions soon shows that some distributions are spread out and some are narrow; see Figure 2.6-1. The amount of the spread is often important so we need a measure of the "spread" of a distribution. The most
+
+Two distributions FIGURE 2.6-1
+useful one from the point of view of mathematics (meaning it can be handled easily) is the sum of the squares of the deviations from the mean, Jt, each square of course multiplied by its probability p(i),
+(2.6-1)*
+
+The standard notation is t12 , where t1 is often used as a measure for the spread of the distribution of the random variable X. A large variance means that the distribution is broad, and a small variance means that the all distribution is near the mean. Indeed, a zero variance means that the distribution is all at one point, the mean, It· Note, like the mean, the variance is computed over the whole sample space.
+It is immediately evident that the variance is independent of any shift in the coordinate axis, since it depends only on the difference of coordinates and not on the coordinates themselves. This is important because it allows us, many times, to simplify various derivations by assuming that the mean is zero.
+We need the facts that (cis a constant)
+
+= = V{c} 0 V{cX} c2V{X}
+
+(2.6-2)*
+
+The first follows because the variance is measured about the mean (which is c), and the second because by the definition a multiplying factor c will
+
+2.6
+
+THE VARIANCE [73)
+
+also multiply the mean by c, and hence c2 comes out of the square of the
+differences. For theoretical work we often convert the formula for the variance to a
+more useful form. We simply expand the square term in (2.6-1) and note how
+the mean arises, (E{X} = p)
+
+(2.6-3)*
+
+Next, we prove that for a sum of independent random variables X; we have (V{.} is a linear operator)
+
+(2.6-4)*
+
+The proof is easy. For convenience we assume that the mean of each random
+variable X; is 0, E{X;} = 0. Then we have, (using different summation
+indices to keep things straight)
+
+E{}:xlJ = E{}:X; Ex;}
+
+=E{EX;X;}
+iJ
+
+= E{I: Xl} + E{I: X; X;}
+
+i
+
+i~j
+
+where the squared terms are in the first summation and the cross products are in the second (each there twice). But for independent random variables from (2.5-5) E{X;X;} = E{X;}E{X;} = 0 x 0 = 0 (since we assumed the means were 0). Hence the last sum is zero. Therefore, for independent random variables the variances simply add, a very useful property:
+
+(2.6-5)*
+
+Thus the variance of the sum of n samples of the same random variable has the variance ntT2 •
+The mean and variance we have just computed are probability weighted averages of the values over the whole sample space. Often for just n random sample values from the distribution we want to know expected value and the variance of their average. Thus we need to study the average of the n samples. We do not want to actual handle the specific samples, so we write their corresponding random variables X;, and examine the random variable
+S(n) = Xt +X2+ ···+Xn
+
+[74) SOME MATHEMATICAL TOOLS
+
+CHAPTER2
+
+We want to study the average so we use
+
+S(n)/n = [X1 + X2 + ···+ Xn]/n
+
+For the expected value of the average S(n)/n we have
+= E{S(n)/n} [E{Xt} + ···+ E{Xn})/n
+= [Jl + /J + p + ... + p]/n = /J
+
+Thus the expected value of the average of n samples is exactly the expected value of the original random variable X -it is an unbiased estimate since it is neither too high nor too low.
+For the variance of the :~.verage of n independent samples we assume the mean is 0 and have
+V{S(n)/n} = [V{Xt} + · · · + V{Xn}]/n2
+
+Thus the variance of the average of n samples of a random variable decreases like 1/n. The corresponding measure of the spread of the distribution (compare 2.4-6) of the average of n samples is
+
+This means that if we want to decrease the spread of a distribution of the average of n samples by a factor of 10 we will need to take 100 times as many samples.
+How robust are these measures to small changes in the probabilities p(i)? If the p(i) are not exactly what we supposed they were but have errors e(i),
+
+then the true values are
+
+p(i) + e(i)
+
+= where we have, of course, l:e(i) 0. We should have computed
+
+= = E{X}* :Ez;[(p(i) +e(i)] E{X} + :Ez;e(i)
+
+and we lost the last sum. For convenience we write
+= E{X}* = p• and E{X} p
+
+and we have
+
+or p*- P =A
+
+2.6
+
+THE VARIANCE (75)
+
+where we have set A= E; z;e(i) and A is therefore the shift in the mean. The variance is more complex. We should have computed
+
+Instead we computed
+
+V = 2:)z; -p)2p(i)
+
+To get V" in terms of simpler expressions, especially V, we write things as
+
+Expand the binomials and get term by term
+V" = V- 2A l:(z;- p)p(i) + A2 + l:(z;- p)2e(i)- 2A :L(x; -p)e(i) + A2 :Le(i)
+The second and sixth terms and part of the fourth and fifth drop out and if
+we set Ezle(i) = B then we have
+V* = V + A2 + B - 2pA - 2A2
+= V + B - A(2p +A)
+Example 2.6-1 The Variance of a Die The roll X of a die has, (from Example 2.5-1), E{X} = 7/2. The variance is the values measured from the mean, then squared, and finally summed over all the values weighted by their probabilities p(i). We get, for the standard assignment of values for the faces of the die, the differences from the mean
+-5/2, -3/2, -1/2, 1/2, 3/2, 5/2
+to be squared, multiplied each by p(i) = 1/6, and added. As a result we get
+(1/6)[25 +9 + 1 + 1 + 9 +25)/4 = 70/24 = 35/12
+Instead we can compute the squares of 1, 2, 3, 4, 5, 6, add, and then
+multiply the sum by the probability 1/6, to get E{X2 } = 91/6. According
+to (2.6-3) we then subtract the square of the mean
+= = = 91/6- (7/2)2 91/6- 49/4 (182- 147)/12 35/12
+which is, of course, the same number. Notice that the formula (2.6-3) may (as in this example) give a difference
+of large numbers and hence be sensitive to roundoff errors, especially when the mean is large with respect to the variance.
+
+(76) SOME MATHEMATICAL TOOLS
+
+CHAPTER2
+
+Example 2.6-2 Variance of M Equally Likely Outcomes
+This is a generalization of Example 2.6-1. We have the Zi = i, (i = 1, ... , M), p(i) = 1/M, and the sums
+
+I)=M
+E E{X} = (1/M) Zi = (1/M)M(M + 1)/2 = (M + 1)/2
+E{X2} = (1/M) Ezl = (~/M)M(M + 1)(2M + 1)/6
+
+= (M + 1)(2M + 1)/6
+
+hence the variance is
+V = ((M + 1)][(2M + 1)/6- (M + 1)/4) = (M + 1)[4M +2-3M- 3]/12
+= (M + 1)(M- 1)/12 = (M2 - 1)/12
+
+ForM= 6 this gives 35/12 as before, Example 2.6-1.
+
+Example 2.6-3 Tbe Variance of tbe Sum of n Dice
+If we assume, as we should since nothing else is said, that the outcomes of the roll of n individual dice are independent and uniformly likely, then by (2.6-5) we merely take the variance of a single die and multiply by n
+
+(35/12)n
+
+to get the variance of the sum of n dice.
+
+There is a tendency to believe that the square root of the variance gives a good measure of the expected deviation from the mean. But remember that we "averaged" the squares of the deviations from the mean. In the sum of the squares the big deviations tend to dominate the sum (since the square of a large number is very large and the square of a small number is small, hence only the large numbers influence the total very much). Thus it should be clear that if the deviations from the mean vary a lot then the square root of the variance is not a good measure of the expected deviation, which should be given by a formula like (although I' should probably be computed by a different formula, say the median)
+E E I X - I' I = I Zi - I' I p(i)
+i
+
+2.6
+
+THE VARIANCE (77]
+
+This is the average of the absolute differences from the mean (or maybe the median). It is not used much because it has difficult mathematical properties (but often good statistical properties!).
+Consider the equally likely data (p(i) = 1/10)
+= Zl = 6, Z2 = :Z:3 = •·· Z10 = 1
+The mean is (6 + 9)/10 = 1.5, hence the variance is
+Var = (1/10)[(4.5)2 + 9(0.5)2] = (20.25 + 2.25)/10 = 2.25
+
+Hence the root mean square (the square root ofthe mean ofthe quares) is 1.5. On the other hand the mean deviation from 1.5 (the mean) is
+L: (1/10) I Zi - 1.5 I= (1/10)[4.5 + 9{1/2)] = 9/10 = 0.9
+
+The difference in the two answers is due mainly to the "outlier" :z:1 = 6. When is 1.5 a better measure of the deviation from a reasonable estimate of the center of the distribution than is 0.9 given nine values at 1 and one value at 6? It all depends on the use to be made of the result! Had we used the median, which is 1, and found the mean deviation from it we would, in this
+case, have found the result 1/2.
+
+The sequence E{1} = 1, E{X}, and E{X 2} suggests that the general kth moment should be defined by
+
+(2.6-5)*
+
+If we want the A:th moment about the mean (the kth central moment) then we have
+(2.6-6}*
+
+For most purposes all the moments determine, theoretically, the distribution, and play a significant role in both probability and statistics. In practice only the lower moments are used-because as noted above the larger terms dominate in the sum of the squares and this is even more true for higher powers. The third moment about the mean is called "skewness" and the fourth is called "kurtosis" (elongation, flatness); the higher ones, have not even been named! Similarly,
+
+E{/(n)} = :EJ(i)p(i)
+
+(2.6-7}*
+
+for any reasonable function f(n).
+
+(78) SOME MATHEMATICAL TOOLS
+
+CHAPTER2
+
+Exercises 2.6
+= 2.6-1 For the formula (2.6-5) find for k 3, 4, and 5 the central moments
+in terms of the moments about the origin.
+2.6-2 Carry out the derivation of the formula for the variance when the mean is p.
+2.6-3 Find the variance of n trials from a sample space of M equally likely events.
+2.6-4 Conjecture that the sum of the fourth powers of the integers is a polynomial in n of degree five. Impose the induction hypothesis (and initial sum) and deduce the corresponding coefficients of the fifth degree polynomial.
+2.6-5 Find the mean and variance of a Bernoulli d1stribution.
+2.6-6 Find the third and fourth moments of a Bernoulli distribution.
+2.6-7 Find the mean and variance of the distribution {qp"} (n = 0,1, ...).
+Ans. p and p/q2 •
+= = 2.6-8 For the distribution p(k) k/10 (k 0, ... ,4) find the mean and
+variance.
+
+2.7 The Generating Function
+
+Given a probability distribution p(k) (for integer values k) we can write it as a single expression by means of the generating function which is a polynomial in the variable t whose coefficients are the values p(k)
+
+G(t) = L:p(k)tA: = E{tA:}
+A:
+
+(2.7-1)*
+
+For example, for a die with six faces each of probability 1/6, we have the generating function
+= G(t) (t + t 2 + t3 + t4 + t 5 + t6)/6
+
+= t(1 - t6)/6(1 - t)
+
+We have seen the generating function before, but in the form used for counting or enumerating. For example, for the binomial coefficients we had (2.3-2) the generating function
+
+= =I:n
+
+G(t) (1 + t)"
+
+C(n, k)tA:
+
+A:=O
+
+2.7
+
+THE GENERATING FUNCTION [79]
+
+This suggests immediately that for the binomial (Bernoulli) probability distribution (2.4-2)
+
+we will have the generating function (see 2.4-5)
+
+n
+G(t) = l:{C(n, k)pA:qn-A:}tA: =(q +pt)"
+A:=O
+
+(2.7-2)
+
+The generating function representation of a probability distribution is very useful in many situations; the whole probability distribution is contained in a single expression. It should be evident from (2.7-1) that
+
+G(1) =:Ep(k) =1
+A:
+
+If we differentiate the generating function with respect to t we get
+
+G'(t) = 'L:kp(k)tt-t
+A:
+
+and hence
+
+G'(1) =p. =E{X}
+
+If we multiply G'(t) by t and then differentiate again we will get
+
+[tG'(t)]' = tG"(t) + G'(t) = 2:k2p(k)tt-t
+A:
+and hence we have (set t = 1 again)
+
+E{X2} = G"(1) + G'(1)
+
+(2.7-3)*
+
+Therefore, the second moment about the mean is simply {2.6-3)
+V {X} = G"(1) + G'(1)- [G'(1)]2 = u2
+
+(2.7-4)*
+
+We see that from the generating function alone we can get by formal differentiation both the mean and variance of a distribution (as well as higher moments if we wish). Thus the generating function is a fundamental tool in handling distributions and solving probability problems.
+
+[80) SOME MATHEMATICAL TOOLS
+
+CHAPTER2
+
+Example 2.7-1 Tbe Mean and Variance oftbe Binomial Distribution
+From (2.7-2) the generating function for the binomial distribution and its first two derivatives are
+G(t) = (q + pt)" G'(t) = np(q + pt)n-l
+G"(t) = n(n- 1)p2(q + pt)n-2
+
+We now set t = 1 and get the values (remember that p +q = 1)
+
+G{1) = 1 G'{1) = p = np G"(1) = n(n- 1)p2
+
+hence we have for the binomial distribution (use {2.7-4))
+
+mean = p = np
+variance = u2 = n(n- l)p2 + (np)- (np)2 = np(l - p) = npq
+
+(2.7-5)* (2.7-6)*
+
+The generating function allows us to do much more. If we ask how the sum of the faces of two dice can arise we see that it is the product of the generating function with itself
+G(t)G(t) = (t +t 2 + ... +t6) (t +t 2 + ... + t 6)___
+= t 2 + 2t3 + 3t4 + ... + t 12
+
+The coefficient of any power oft, say the kth power, is the number of ways that the sums of the original exponents can produce that k. The number of ways this can happen is exactly the coefficient of tl:. The coefficient counts the number of ways the sum can arise. Thus we have the result that the generating function for the sum of the faces of two dice is simply the square of the generating function for a single die.
+This is a general result. Since the exponent of t is the same as the value assigned to the outcome of the trial, the power series product of two generating functions (where the exponents are automatically arranged for us
+
+2.7
+
+THE GENERATING FUNCTION (81)
+
+when we arrange things in powers oft) has for each power oft a coefficient that counts how often that sum can occur. In general, if
+
+(3.7-8)
+
+where the summations begin with index 0 to allow for a possible constant term), then for the product we have
+
+L: G(t)H(t) = CJctk
+k
+
+(3.7-9}*
+
+where
+
+L La;k
+CJc = asbj = h-i
+
+i+j:/c
+
+i:O
+
+(3.7-10)*
+
+This sequence {c~c} is called the convolution of the sequence {a;} with the
+sequence {bj}. The concept of a convolution is very useful, so we will linger over it a bit
+more to improve your understanding of it. We can easily picture a convolution of two sequences, one belonging to G(t) and the other to H(t). We imagine one written from left to right on a strip, beginning with the zeroth term, and the other sequence written in the reverse direction (right to left) on the other
+
+I I I I I I b. b3 62 bl bo
+I I I I I ao a1 a21 a31 a• as
+A convolution FIGURE 2.7-1
+strip, as shown in Figure 2.7-1. The second is placed below the first and is also displaced so that the kth term of one is opposite the zeroth term of the other. The sum of the products of the overlapping terms is exactly the convolution of the two corresponding sequences. In more detail we start with
+the zeroth terms opposite each other, compute to get the value for c0 = a0 b0 ;
+shift one strip one unit, compute to get the value for c1 = a 0b1 + a 1b0; shift,
+compute c2 = aob2 + a1b1 + a2bo; ... until we get all the coefficients Ck we
+want. The convolution of G(t) with H(t) is the same as the convolution of
+

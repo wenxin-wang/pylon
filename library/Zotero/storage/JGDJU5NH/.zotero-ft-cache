@@ -1,0 +1,490 @@
+CSCI0330
+
+Intro Computer Systems
+
+Doeppner
+
+x64 Cheat Sheet
+Fall 2019
+
+1. x64 Registers
+x64 assembly code uses sixteen 64-bit registers. Additionally, the lower bytes of some of these registers may be accessed independently as 32-, 16- or 8-bit registers. The register names are as follows:
+
+8-byte register
+%rax %rcx %rdx %rbx %rsi %rdi %rsp %rbp %r8 %r9 %r10 %r11 %r12 %r13 %r14 %r15
+
+Bytes 0-3
+%eax %ecx %edx %ebx %esi %edi %esp %ebp %r8d %r9d %r10d %r11d %r12d %r13d %r14d %r15d
+
+Bytes 0-1
+%ax %cx %dx %bx %si %di %sp %bp %r8w %r9w %r10w %r11w %r12w %r13w %r14w %r15w
+
+Byte 0
+%al %cl %dl %bl %sil %dil %spl %bpl %r8b %r9b %r10b %r11b %r12b %r13b %r14b %r15b
+
+For more details of register usage, see Register Usage, below.
+
+2. Operand Specifiers
+The basic types of operand specifiers are below. In the following table,
+● Imm​ refers to a constant value, e.g. ​0x8048d8e​ or ​48​, ● E​x​ refers to a register, e.g.​ %​ rax​, ● R[E​x​]​ refers to the value stored in register ​Ex​ ,​ and ● M[x]​ refers to the value stored at memory address ​x.​
+
+CSCI0330
+
+x86-64 Guide
+
+Doeppner
+
+Type
+Immediate Register Memory Memory Memory
+
+From
+$Imm E​a Imm (E​a​) Imm(E​b,​ Ei​ ,​ s)
+
+Operand Value
+Imm R[Ea​ ​] M[Imm] M[R[E​b​]] M[Imm + R[E​b​] + (R[E​i​] x s)]
+
+Name
+Immediate Register Absolute Absolute Scaled indexed
+
+More information about operand specifiers can be found on pages 169-170 of the textbook.
+
+3. x64 Instructions
+In the following tables,
+● “byte” refers to a one-byte integer (suffix ​b​), ● “word” refers to a two-byte integer (suffix ​w​), ● “doubleword” refers to a four-byte integer (suffix​ ​l​), and ● “quadword” refers to an eight-byte value (suffix​ ​q​).
+Most instructions, like ​mov​, use a suffix to show how large the operands are going to be. For example, moving a quadword from ​%rax​ to ​%rbx​ results in the instruction ​movq %rax, %rbx​. Some instructions, like ​ret​, do not use suffixes because there is no need. Others, such as ​movs and ​movz​ will use two suffixes, as they convert operands of the type of the first suffix to that of the second. Thus, assembly to convert the byte in ​%al​ to a doubleword in ​%ebx​ with zero-extension would be ​movzbl %al, %ebx​.
+In the tables below, instructions have one suffix unless otherwise stated.
+3.1 Data Movement
+
+Instruction
+mov​ ​S, D push​ ​S pop​ ​D
+mov​ ​S, D push​ ​S
+cwtl cltq cqto
+
+Description Instructions with one suffix Move source to destination Push source onto stack Pop top of stack into destination Instructions with two suffixes Move byte to word (sign extended) Move byte to word (zero extended) Instructions with no suffixes Convert word in ​%ax​ to doubleword in ​%eax​ (sign-extended) Convert doubleword in ​%eax​ to quadword in ​%rax​ ​(sign-extended) Convert quadword in ​%rax​ to octoword in​ ​%rdx:%rax
+
+Page #
+171 171 171
+171 171
+182 182 182
+
+CSCI0330
+
+x86-64 Guide
+
+Doeppner
+
+3.2 Arithmetic Operations
+Unless otherwise specified, all arithmetic operation instructions have one suffix.
+3.2.1 Unary Operations
+
+Instruction inc D dec D neg D not D
+
+Description Increment by 1 Decrement by 1 Arithmetic negation Bitwise complement
+
+Page # 178 178 178 178
+
+3.2.2 Binary Operations
+
+Instruction leaq S, D add S, D sub S, D imul S, D xor S, D or S, D and S, D
+
+Description Load effective address of source into destination Add source to destination Subtract source from destination Multiply destination by source Bitwise XOR destination by source Bitwise OR destination by source Bitwise AND destination by source
+
+Page # 178 178 178 178 178 178 178
+
+3.2.3 Shift Operations
+
+Instruction
+
+sal / shl k, D
+
+sar
+
+k, D
+
+shr
+
+k, D
+
+Description Left shift destination by ​k​ bits Arithmetic right shift destination by ​k​ bits Logical right shift destination by ​k​ bits
+
+Page # 179 179 179
+
+3.2.4 Special Arithmetic Operations
+
+Instruction
+
+Description
+
+imulq S
+
+Signed full multiply of %rax by S Result stored in %rdx:%rax
+
+Page # 182
+
+CSCI0330
+
+x86-64 Guide
+
+mulq S idivq S divq S
+
+Unsigned full multiply of ​%rax​ by S Result stored in ​%rdx:%rax Signed divide​ %rdx:%rax​ by S Quotient stored in ​%rax Remainder stored in ​%rdx Unsigned divide ​%rdx:%rax​ by S Quotient stored in ​%rax Remainder stored in ​%rdx
+
+Doeppner 182 182 182
+
+3.3 Comparison and Test Instructions
+Comparison instructions also have one suffix.
+
+Instruction
+
+Description
+
+cmp S2​ ​, S​1 Set condition codes according to S​1​ - S​2 test S2​ ​, S​1 Set condition codes according to S​1​ & S​2
+
+Page # 185 185
+
+3.4 Accessing Condition Codes
+None of the following instructions have any suffixes.
+3.4.1 Conditional Set Instructions
+
+Instruction
+
+sete​ / ​setz
+
+D
+
+setne​ ​/ ​setnz
+
+D
+
+sets
+
+D
+
+setns
+
+D
+
+setg​ / ​setnle
+
+D
+
+setge​ / ​setnl
+
+D
+
+setl​ / ​setnge
+
+D
+
+setle​ / ​setng
+
+D
+
+seta​ / ​setnbe
+
+D
+
+setae​ / ​setnb
+
+D
+
+setb​ / ​setnae
+
+D
+
+setbe​ / ​setna
+
+D
+
+Description Set if equal/zero Set if not equal/nonzero Set if negative Set if nonnegative Set if greater (signed) Set if greater or equal (signed) Set if less (signed) Set if less or equal Set if above (unsigned) Set if above or equal (unsigned) Set if below (unsigned) Set if below or equal (unsigned)
+
+Condition Code ZF ~​ZF SF ~​SF ~​(SF​^​0F)&​~​ZF ~​(SF​^​0F) SF^0F (SF​^​OF)|ZF ~​CF&​~​ZF ~​CF CF CF|ZF
+
+Page # 187 187 187 187 187 187 187 187 187 187 187 187
+
+CSCI0330
+
+x86-64 Guide
+
+Doeppner
+
+3.4.2 Jump Instructions
+
+Instruction
+
+jmp
+
+Label
+
+jmp
+
+*Operand
+
+je​ / ​jz
+
+Label
+
+jne​ / ​jnz Label
+
+js
+
+Label
+
+jns
+
+Label
+
+jg​ / ​jnle Label
+
+jge​ / ​jnl Label
+
+jl​ / ​jnge Label
+
+jle​ / ​jng Label
+
+ja​ / ​jnbe Label
+
+jae​ / ​jnb Label
+
+jb​ / ​jnae Label
+
+jbe​ / ​jna Label
+
+Description Jump to label Jump to specified location Jump if equal/zero Jump if not equal/nonzero Jump if negative Jump if nonnegative Jump if greater (signed) Jump if greater or equal (signed) Jump if less (signed) Jump if less or equal Jump if above (unsigned) Jump if above or equal (unsigned) Jump if below (unsigned) Jump if below or equal (unsigned)
+
+Condition Code
+ZF ~​ZF SF ~​SF ~​(SF​^​0F)&​~​ZF ~​(SF​^​0F) SF^0F (SF​^​OF)|ZF ~​CF&​~​ZF ~​CF CF CF|ZF
+
+Page # 189 189 189 189 189 189 189 189 189 189 189 189 189 189
+
+3.4.3 Conditional Move Instructions
+Conditional move instructions do not have any suffixes, but their source and destination operands must have the same size.
+
+Instruction
+
+cmove​ / ​cmovz
+
+S, D
+
+cmovne​ / ​cmovnz S, D
+
+cmovs
+
+S, D
+
+cmovns
+
+S, D
+
+cmovg​ / ​cmovnle S, D
+
+cmovge​ / ​cmovnl S, D
+
+cmovl​ / ​cmovnge S, D
+
+cmovle​ / ​cmovng S, D
+
+cmova​ / ​cmovnbe S, D
+
+cmovae​ / ​cmovnb S, D
+
+cmovb​ / ​cmovnae S, D
+
+cmovbe​ / ​cmovna S, D
+
+Description Move if equal/zero Move if not equal/nonzero Move if negative Move if nonnegative Move if greater (signed) Move if greater or equal (signed) Move if less (signed) Move if less or equal Move if above (unsigned) Move if above or equal (unsigned) Move if below (unsigned) Move if below or equal (unsigned)
+
+Condition Code ZF ~​ZF SF ~​SF ~​(SF​^​0F)&​~​ZF ~​(SF​^​0F) SF^0F (SF​^​OF)|ZF ~​CF&​~​ZF ~​CF CF CF|ZF
+
+Page # 206 206 206 206 206 206 206 206 206 206 206 206
+
+CSCI0330
+
+x86-64 Guide
+
+Doeppner
+
+3.5 Procedure Call Instruction
+Procedure call instructions do not have any suffixes.
+
+Instruction call Label call *Operand leave ret
+
+Description Push return address and jump to label Push return address and jump to specified location Set ​%rsp​ to %​ rbp​, then pop top of stack into ​%rbp Pop return address from stack and jump there
+
+Page # 221 221 221 221
+
+4. Coding Practices
+4.1 Commenting
+Each function you write should have a comment at the beginning describing what the function does and any arguments it accepts. In addition, we strongly recommend putting comments alongside your assembly code stating what each set of instructions does in pseudocode or some higher level language. Line breaks are also helpful to group statements into logical blocks for improved readability.
+4.2 Arrays
+Arrays are stored in memory as contiguous blocks of data. Typically an array variable acts as a pointer to the first element of the array in memory. To access a given array element, the index value is multiplied by the element size and added to the array pointer. For instance, if ​arr​ is an array of ​int​s, the statement:
+​arr[i] = 3;
+can be expressed in x86-64 as follows (assuming the address of ​arr​ is stored in​ %rax​ and the index ​i​ is stored in ​%rcx​):
+​movq $3, (%rax, %rcx, 8)
+More information about arrays can be found on pages 232-241 of the textbook.
+
+CSCI0330
+
+x86-64 Guide
+
+Doeppner
+
+4.3 Register Usage
+There are sixteen 64-bit registers in x86-64: ​%rax​, ​%rbx​, ​%rcx​, ​%rdx​, ​%rdi​, ​%rsi​, ​%rbp​, %rsp​, and ​%r8-r15​. Of these, ​%rax​, ​%rcx​, ​%rdx​, ​%rdi​, ​%rsi​, ​%rsp​, and ​%r8-r11​ are considered caller-save registers, meaning that they are not necessarily saved across function calls. By convention, ​%rax​ is used to store a function’s return value, if it exists and is no more than 64 bits long. (Larger return types like structs are returned using the stack.) Registers ​%rbx​, %rbp​, and ​%r12-r15​ are callee-save registers, meaning that they are saved across function calls. Register​ ​%rsp​ is used as the ​stack pointer,​ a pointer to the topmost element in the stack.
+Additionally, ​%rdi​,​ %rsi​, ​%rdx​, ​%rcx​, ​%r8​, and ​%r9​ are used to pass the first six integer or pointer parameters to called functions. Additional parameters (or large parameters such as structs passed by value) are passed on the stack.
+In 32-bit x86, the ​base pointer​ (formerly ​%ebp​, now​ ​%rbp​) was used to keep track of the base of the current stack frame, and a called function would save the base pointer of its caller prior to updating the base pointer to its own stack frame. With the advent of the 64-bit architecture, this has been mostly eliminated, save for a few special cases when the compiler cannot determine ahead of time how much stack space needs to be allocated for a particular function (see Dynamic stack allocation).
+
+4.4 Stack Organization and Function Calls
+
+4.4.1 Calling a Function
+
+To call a function, the program should place the first six integer or pointer parameters in the registers ​%rdi​, ​%rsi​, ​%rdx​, ​%rcx​, ​%r8​, and ​%r9​; subsequent parameters (or parameters larger than 64 bits) should be pushed onto the stack, with the first argument topmost. The program should then execute the call instruction, which will push the return address onto the stack and jump to the start of the specified function.
+
+Example:
+
+# Call foo(1, 15) movq $1, %rdi Movq $15, %rsi call foo
+
+# Move 1 into %rdi # Move 15 into %rsi # Push return address and jump to label foo
+
+If the function has a return value, it will be stored in ​%rax​ after the function call.
+
+CSCI0330
+
+x86-64 Guide
+
+Doeppner
+
+4.4.2 Writing a Function
+An x64 program uses a region of memory called the stack to support function calls. As the name suggests, this region is organized as a stack data structure with the “top” of the stack growing towards lower memory addresses. For each function call, new space is created on the stack to store local variables and other data. This is known as a ​stack frame​. To accomplish this, you will need to write some code at the beginning and end of each function to create and destroy the stack frame.
+
+Setting Up:​ When a ​call​ instruction is executed, the address of the following instruction is pushed onto the stack as the return address and control passes to the specified function.
+
+If the function is going to use any of the callee-save registers (​%rbx​, %​ rbp​, or​ ​%r12-r15​), the current value of each should be pushed onto the stack to be restored at the end. For example:
+
+Pushq pushq pushq
+
+%rbx %r12 %r13
+
+Finally, additional space may be allocated on the stack for local variables. While it is possible to make space on the stack as needed in a function body, it is generally more efficient to allocate this space all at once at the beginning of the function. This can be accomplished using the call subq $N, %rsp​ where N is the size of the callee’s stack frame. For example:
+
+subq
+
+$0x18, %rsp
+
+# Allocate 24 bytes of space on the stack
+
+This set-up is called the ​function prologue​.
+
+Using the Stack Frame:​ Once you have set up the stack frame, you can use it to store and access local variables:
+
+● Arguments which cannot fit in registers (e.g. structs) will be pushed onto the stack before the call instruction, and can be accessed relative to ​%rsp​. Keep in mind that you will need to take the size of the stack frame into account when referencing arguments in this manner.
+● If the function has more than six integer or pointer arguments, these will be pushed onto the stack as well.
+● For any stack arguments, the lower-numbered arguments will be closer to the stack pointer. That is, arguments are pushed on in right-to-left order when applicable.
+● Local variables will be stored in the space allocated in the function prologue, when some amount is subtracted from ​%rsp​. The organization of these is up to the programmer.
+
+Cleaning Up:​ After the body of the function is finished and the return value (if any) is placed in %rax​, the function must return control to the caller, putting the stack back in the state in which it
+
+CSCI0330
+
+x86-64 Guide
+
+Doeppner
+
+was called with. First, the callee frees the stack space it allocated by adding the same amount to the stack pointer:
+
+addq $0x18, %rsp
+
+# Give back 24 bytes of stack space
+
+Then, it pops off the registers it saved earlier
+
+popq popq popq
+
+%r13 %r12 %rbx
+
+# Remember that the stack is FILO!
+
+Finally, the program should return to the call site, using the ret instruction:
+
+ret
+
+Summary:​ Putting it together, the code for a function should look like this:
+
+foo:
+
+pushq pushq pushq subq
+
+%rbx %r12 %r13 $0x18, %rsp
+
+# Save registers, if needed # Allocate stack space
+
+# Function body
+
+addq popq popq popq
+
+$0x18, %rsp %r13 %r12 %rbx ret
+
+# Deallocate stack space # Restore registers
+# Pop return address and return control # to caller
+
+4.4.3 Dynamic stack allocation
+
+You may find that having a static amount of stack space for your function does not quite cut it. In this case, we will need to borrow a tradition from 32-bit x86 and save the base of the stack frame into the base pointer register. Since ​%rbp​ ​is a callee-save register, it needs to be saved before you change it. Therefore, the function prologue will now be prefixed with:
+
+pushq
+
+%rbp
+
+movq
+
+%rsp, %rbp
+
+Consequently, the epilogue will contain this right before the ​ret​:
+
+CSCI0330
+
+x86-64 Guide
+
+Doeppner
+
+movq
+
+%rbp, %rsp
+
+popq
+
+%rbp
+
+This can also be done with a single instruction, called ​leave​. The epilogue makes sure that no matter what you do to the stack pointer in the function body, you will always return it to the right place when you return. Note that this means you no longer need to add to the stack pointer in the epilogue.
+
+This is an example of a function which allocates between 8-248 bytes of random stack space during its execution:
+
+pushq movq pushq pushq subq ...
+
+%rbp %rsp, %rbp %rbx %r12 $0x18, %rsp
+
+# Use base pointer # Save registers # Allocate some stack space
+
+call andq
+subq
+
+rand $0xF8, %rax
+%rax, %rsp
+
+# Get random number # Make sure the value is 8-248 bytes and # aligned on 8 bytes # Allocate space
+
+…
+
+movq movq movq
+popq
+
+(%rbp), %r12 0x8(%rbp), %rbx %rbp, %rsp
+%rbp ret
+
+# Restore registers from base of frame
+# Reset stack pointer and restore base # pointer
+
+This sort of behavior can be accessed from C code by calling pseudo-functions like alloca, which allocates stack space according to its argument.
+
+More information about the stack frame and function calls can be found on pages 219-232 of the textbook.
+

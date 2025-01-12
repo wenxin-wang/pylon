@@ -1,0 +1,515 @@
+See discussions, stats, and author profiles for this publication at: https://www.researchgate.net/publication/221211398
+High-performance technical computing with erlang
+Conference Paper · September 2008
+DOI: 10.1145/1411273.1411281 · Source: DBLP
+
+CITATIONS
+5
+3 authors, including:
+Alceste Scalas CRS4 Centro di Ricerca, Sviluppo e Studi Superiori in Sardegna 2 PUBLICATIONS 5 CITATIONS
+SEE PROFILE
+
+READS
+2,243
+Piero Pili CRS4 Centro di Ricerca, Sviluppo e Studi Superiori in Sardegna 22 PUBLICATIONS 147 CITATIONS
+SEE PROFILE
+
+Some of the authors of this publication are also working on these related projects: www.eliantocsp.com View project
+
+All content following this page was uploaded by Piero Pili on 19 May 2015.
+The user has requested enhancement of the downloaded file.
+
+High-performance Technical Computing with Erlang
+Alceste Scalas Giovanni Casu Piero Pili
+CRS4 Center for Advanced Studies, Research and Development in Sardinia Polaris Scientiﬁc and Technological Park, Building 1, Pula (Cagliari – Italy)
+{alceste,giocasu,piero}@crs4.it
+
+Abstract
+High-performance Technical Computing (HPTC) is a branch of HPC (High-performance Computing) that deals with scientiﬁc applications, such as physics simulations. Due to its numerical nature, it has been traditionally based on low-level or mathematicallyoriented languages (C, C++, Fortran), extended with libraries that implement remote execution and inter-process communication (like MPI and PVM).
+But those libraries just provide what Erlang does out-of-thebox: networking, process distribution, concurrency, interprocess communication and fault tolerance. So, is it possible to use Erlang as a foundation for developing HPTC applications?
+This paper shows our experiences in using Erlang for distributed number-crunching systems. We introduce two extensions: a simple and efﬁcient foreign function interface (FFI), and an Erlang binding for numerical libraries. We use them as a basis for developing a simple mathematically-oriented programming language (in the style of MatlabTM) compiled into Core Erlang. These tools are later used for creating a HPTC framework (based on message-passing) and an IDE for distributed applications.
+The results of this research and development show that Erlang/OTP can be used as a platform for developing large and scalable numerical applications.
+Categories and Subject Descriptors D.1.3 [Concurrent Programming]: Distributed programming; G.4 [Mathematical Software]: Efﬁciency
+General Terms Design, Languages, Measurement, Performance
+Keywords Erlang, HPC, numerical applications
+1. Introduction
+With High-performance Technical Computing (HPTC) we refer to the use of parallel machines, or clusters of interconnected computers, for executing massive scientiﬁc and numerical applications (like physical simulations), possibly under real-time requirements. Today, clusters assembled with PC-class hardware are the most common HPTC solution, due to their low cost and increasing computing power.
+Permission to make digital or hard copies of all or part of this work for personal or classroom use is granted without fee provided that copies are not made or distributed for proﬁt or commercial advantage and that copies bear this notice and the full citation on the ﬁrst page. To copy otherwise, to republish, to post on servers or to redistribute to lists, requires prior speciﬁc permission and/or a fee. Erlang’08, September 27, 2008, Victoria, BC, Canada. Copyright c 2008 ACM 978-1-60558-065-4/08/09. . . $5.00
+
+Distributed scientiﬁc applications are usually developed with low-level or numerically-oriented languages (such as C, C++, Fortran, etc.) that have no native concept of parallel execution and interprocess communication. These languages are thus extended with libraries like MPI (Message Passing Interface) [20, 21] or PVM (Parallel Virtual Machine) [26] that implement communication primitives and allow to spawn and monitor remote processes.
+In the context of a CRS4 research project, we have been requested to build a framework for real-time HPTC, that should be used by physicists and engineers. Our idea was to use Erlang/OTP as a foundation for building distributed numerical applications, thus exploiting its parallel nature and networking capabilities. In other words, we wanted to replace the most common HPTC structural “building blocks” (MPI, PVM, etc) with Erlang/OTP, in order to:
+1. rely on what Erlang/OTP does natively (parallelism, fault tolerance, etc.);
+2. use a high-level and concurrency-oriented programming language and platform for creating and extending our HPTC framework, instead of building it on a lower-level ground using C/C++/Fortran.
+We also had to take into account that our target users do not know Erlang, but are accustomed to numerical programming languages like MatlabTM[27].
+The choice of the Erlang path led us to implement several novel extensions and applications:
+• a Foreign Function Interface for Erlang/OTP (section 3). We include benchmarks and code samples showing its advantages over the traditional Erlang linked-in driver interface;
+• a BLAS (Basic Linear Algebra Subprograms) binding for Erlang/OTP (section 4), that guarantees native-speed numerical computation, and allows numerical data (i.e. matrices and vectors) to be easily managed using standard Erlang constructs;
+• an imperative, MatlabTM-style language for numerical computation, called Matlang (section 5), compiled into Core Erlang. It reduces the amount of code needed for numerical applications, and allows Erlang-unaware physicists and engineers to exploit the features of our Erlang-based HPTC platform;
+• a model for distributed numerical applications in Erlang, and a framework (called FLOW) based on that model (section 6);
+• an IDE, called ClusterL, for building applications based on the FLOW framework (section 7). It offers a visual approach (reﬂecting tools like SimulinkTM [28] or LabVIEWTM [22]) for assembling distributed numerical applications, and its design allows to handle large projects.
+
+49
+
+We also made some benchmarks in order to measure the performance of our HPTC architecture in respect to the “classical” C/MPI/BLAS combination, obtaining very good results (section 8).
+2. Real-time HPTC
+The development of HPTC applications with real-time requirements must face four main issues related to the distribution of computation over a network of computers:
+cluster assembly the clustering solution chosen for HPTC should implement some sort of distributed virtual machine, that allows processes to communicate in a network-transparent way. Interprocess communication may be implemented with message passing or (network-transparent) shared memory, with all the issues related to the “share-nothing vs. share-all” (i.e. “processes vs. threads”) approaches;
+data copying the amount of data being copied in memory at runtime should be minimized, thus reducing latencies and resources usage. When adopting the message passing IPC abstraction, messages should be preferably sent as references to shared memory buffers — but it also means that side effects of each process/thread must be strictly controlled, in order to avoid memory corruptions;
+process migration when dealing with variable workloads and long-running applications, processes may need to be migrated from one cluster node to another: it allows both to balance the computing load of the cluster and ensure that processes exchanging high volumes of data are executed on the same machine (without wasting network bandwidth);
+fault tolerance long-running distributed applications may have to deal with hardware failures or software bugs that, starting from one or more components, may inﬂuence the whole system. If a complete failure is not allowed, then errors should be identiﬁed, reported and handled in run-time.
+A HPTC framework should help solving all these issues. Furthermore, it must deal with existing numerical code: it is quite uncommon that low-level routines are developed from scratch, since an enormous amount of well-tested mathematical functions is available. In particular, linear algebra packages such as BLAS [9, 10] and LAPACK [2] are the foundation of almost all numerical applications; they also have several highly optimized implementations, either provided by hardware vendors (such as IntelTM [16] or AMDTM [1]) or available on the Web as open source software (such as ATLAS (Automatically Tuned Linear Algebra Subprograms) [30]). In addition, research centers and universities usually have relevant collections of home brewed numerical code. Any good HPTC solution must allow to reuse existing software as easily as possible.
+3. A Foreign Function Interface for Erlang/OTP
+As a direct consequence of the previous paragraph, one of the primary requirements of our Erlang-based HPTC solution is that existing numerical code could be reused without excessive complications. By solving this issue, it also becomes easier to (re)implement performance-critical portions of an application in C, and call the optimized routines from Erlang.
+Unfortunately, the traditional Erlang/OTP solution for interfacing external code (i.e. developing a linked-in driver) shows several shortcomings. It gives power and ﬂexibility (like the capability to handle asynchronous execution) — but the resulting API is complex even for developers who just need to perform some synchronous native function calls. This is the case with
+
+numerical libraries: they are usually composed by tens or hundreds of functions, and binding all of them with an Erlang linkedin driver requires a relevant amount of boilerplate code for data (de)serialization and type conversions. This code inﬂation, of course, increases the possibility of introducing bugs. This issue has been addressed with tools like EDTK (Erlang Driver Toolkit) [13] and DryvERL [18] that autogenerate most of the glue code — but the procedure is still not straightforward. Furthermore, the glue code itself may introduce latencies in native function calls.
+For all these reasons, we developed an Erlang FFI (Foreign Function Interface) that simpliﬁes the creation of Erlang bindings to native libraries. It does not offer the full potential of linked-in drivers: it just performs synchronous calls with Erlang-to-C and Cto-Erlang type translations — but it is done in a simple, automatic and efﬁcient way.
+In order to use our FFI, it is necessary to load an existing shared library, and obtain a port that will work as a handle for further C function calls:
+ok = erl_ddll:load_library("/lib", libc), Port1 = open_port("libc").
+It is now possible to perform direct C calls through that port:
+Pointer1 = ffi:raw_call(Port1, {malloc, 1024}, {pointer, size_t}),
+ok = ffi:raw_call(Port1, {free, Pointer1}, {void, pointer}).
+The ﬁrst tuple provided to raw_call/3 contains the C function name and arguments, while the second one is the function signature — i.e. a tuple with the function return type followed by the arguments types.
+This FFI API is very easy to use, but introduces noticeable overhead: each call must perform a C function symbol lookup and build dynamic C call structures. In order to reduce such delays, our FFI allows to preload functions and compile call structures in advance:
+ok = erl_ddll:load_library("/lib", libc, [{preload, [{puts, {sint, nonnull}}, {putchar, {sint, sint}}, {malloc, {nonnull, size_t}}, {free, {void, nonnull}}]}]),
+Port2 = open_port("libc").
+The preloading mechanism allows to call C functions without specifying function signatures again:
+Pointer2 = ffi:raw_call(Port, {3, 1024}), ffi:raw_call(Port, {4, Pointer2}).
+The “3” and “4” occurrences above represent the positions of malloc() and free() in the preload list given as argument to erl_ddll:load_library/3. Even if this API is less developerfriendly, it can be used in the inner parts of an Erlang library binding, possibly with the help of tools like SWIG [4].
+Since we are working on numerical applications, we have performed a benchmarks on our FFI by executing a sequence of 5 matrix multiplications. We called the BLAS function sgemm() (see section 4) from ATLAS 3.6.0 in different ways:
+• natively: C code with cblas_sgemm() invocations;
+
+50
+
+5 BLAS multiplications (matrix type: single precision, 10x10)
+
+0.12
+
+0.10
+
+0.08
+
+Milliseconds
+
+0.06
+
+0.04
+
+cblas
+
+bif
+
+pffi
+
+eblas
+
+ffi
+
+matlab
+
+octave
+
+numpy
+
+BLAS interface type
+
+Figure 1. Box plot with benchmarking results of a sequence of 5 matrix multiplications (BLAS function sgemm()) performed in different
+ways: cblas (direct call in C through the CBLAS interface), bif (dedicated Erlang BIF, developed for testing pourposes), pfﬁ (Erlang FFI with
+symbol preloading), eblas (higher-level BLAS interface based on pfﬁ), fﬁ (Erlang FFI, without symbol preloading). The last three columns show the timings of the same multiplications on MatlabTM R14, GNU Octave 3.0.0 and NumPy 1.0.4 with Python 2.5. All the measurements have been done by linking against the same BLAS implementation (ATLAS 3.6.0, optimized for SSE2) on the same platform (UbuntuTM 7.10, IntelTM PentiumTM 4, 2800 Mhz). The box plot summarizes 20 repetitions of the benchmark.
+
+• in Erlang, with different strategies:
+using a dedicated BIF, developed for testing purposes;
+using our FFI, without function preloading;
+using our FFI, with function preloading; • MatlabTM R14 (by setting its environment variables to make it
+load the required ATLAS version);
+• GNU Octave [11] (linked against ATLAS);
+• NumPy [23] (linked against ATLAS).
+The timings are summarized in ﬁg. 1. We have chosen box plots [29] for visualization, because they allow us to emphasize the median value (bold line in each column) as well as the presence of jitter and outliers (shown as isolated points above/below each pair of “box and whiskers”) among the repetitions of the benchmark.
+The plots show that the FFI/preloading combination offers a very good tradeoff: it introduces a small overhead compared to native calls or dedicated BIFs, and its latency is still less than MatlabTM. Furthermore, BLAS routines have been interfaced in Erlang with just a few lines of code (mostly necessary for function preloading): developing a linked-in driver for achieving the same result would have required a greater effort (without guaranteeing comparable performances).
+Our Erlang FFI has been implemented as a series of patches for OTP R11B-5 [25], and published as an Erlang Enhancement Proposal [24].
+
+4. A BLAS binding for Erlang/OTP
+BLAS [9, 10] is the de facto standard for numerical computing. It is a set of Fortran routines, also available for the C language (under the name of CBLAS). Its functions are organized in levels: level 1 (vector-vector operations), level 2 (matrix-vector) and level 3 (matrix-matrix). All routines work on memory buffers containing matrix or vector data, and support different numerical types distinguished by the preﬁx of the function name: single precision (s), double precision (d), and complex numbers with single (c) or double (z) precision. This preﬁx will be indicated with <X> in the examples below.
+The peculiar form of the BLAS API causes some issues when designing language bindings and integrating existing code. The following paragraphs summarize the problems, and, after listing some additional requirements, present our solution.
+Memory layout BLAS operations may access memory buffers in different ways: when dealing with matrices, for example, function parameters allow to use column-major (Fortran-style) or row-major (C-style) modes, with or without transposition; furthermore, each row/column may be separated from the others by any number of unused values: a 10x10 row-major untransposed matrix, for example, could be accessed within a 10x20 one simply by passing 10 as row length, and 20 as the so-called leading dimension (i.e. the distance between the ﬁrst elements of two consecutive rows). These access patterns must be made available through the library binding: they allow to integrate existing numerical routines even if they follow different memory layouts for numerical data.
+
+51
+
+rows=8, cols=8, offset=0, ld=8
+00000000000000001111111111111111ro00000000000000001111111111111111w00000000000000001111111111111111s=00000000000000001111111111111111400000000000000001111111111111111, 00000000000000001111111111111111co00000000000000001111111111111111ls00000000000000001111111111111111=000000000000000011111111111111115,00000000000000001111111111111111o00000000000000001111111111111111ff00000000000000001111111111111111se00000000000000001111111111111111t=00000000000000001111111111111111100000000000000001111111111111111700000000000000001111111111111111, l00000000000000001111111111111111d=00000000000000001111111111111111800000000000000001111111111111111
+= 4/8/16 bytes
+Figure 2. Example of matrix slicing: a 4x5 matrix is indexed within a binary containing the rows and columns of an 8x8 matrix. Each cell contains a numeric value, sized between 4 and 16 bytes depending on the matrix type.
+Destructive API Most BLAS functions overwrite one of the arguments with the result of their operations. Furthermore, basic operators may not be directly available — but they may be obtained by calling more complex functions. For example, the contents of two memory buffers A and B could be multiplied and stored in a buffer C by calling the <X>gemm() function — which, given the ﬂoating point arguments α and β, performs the following operation:
+C ← αAB + βC Thus, by passing α = 1.0 and β = 0.0, we obtain C ← AB as we needed.
+As another example, there are no BLAS functions that implement matrix addition, and thus it is necessary to implement loops of vector additions (one per row or column). But vector addition, in turn, is only implemented with a function, called <X>axpy(), that performs the following operations:
+Y ← αX + Y Since one of the operands is overwritten after the addition, we need to make a copy if we want its value to be preserved. API requirements An easy-to-use BLAS-based API for handling vectors and matrices in Erlang must satisfy several requirements:
+1. matrices and vectors should be represented with standard Erlang terms, that could be sent between local or remote processes using standard message passing. In-memory copies should be avoided whenever possible;
+2. new matrices and vectors are often created by slicing (for example, a vector may be extracted from a column of a matrix). This operation should be as efﬁcient as possible, minimizing data copying and memory usage (and thus maximizing performance);
+3. there should be a functional, side-effect-free and Erlang-style API for matrix/vector operations, that could be used without caveats;
+
+blas:init(),
+%% Create a 3x3 identity matrix I = blas:eye(s, % Precision: ’s’ingle or ’d’ouble
+3), % Rows and columns V = blas:vector(s, 3, [1.0, 2.0, 3.0]),
+%% Functional API example: blas:mul/2 V2 = blas:mul(blas:mul(2.0, I), V), VL = blas:to_list(blas:transpose(V2)), %% VL is: %% [[2.00000,4.00000,6.00000]]
+%% Procedural API example: blas:mul/3 VTarget = blas:vector(s, 3), % Random data blas:mul(blas:mul(2.0, I), V, VTarget), VL = blas:to_list(blas:transpose(VTarget)). %% VTarget has been overwritten, thus matching VL
+
+Figure 3. Usage example of the Erlang BLAS binding.
+
+4. there should also be a procedural interface, easier to use than the underlying BLAS library, allowing to overwrite existing memory buffers — thus reducing memory allocations and garbage collections;
+5. lastly, there should be a one-to-one mapping between BLAS routines and Erlang functions, in order to achieve the maximum performance when necessary.
+Implementation Facing all the requirements above, matrices have been implemented with Erlang records:
+
+-record(matrix, {
+
+type, % Atom: s, d, c, z
+
+rows, % Number of rows
+
+cols, % Number of columns
+
+ld,
+
+% Leading dimension
+
+trans, % Transposition indicator
+
+offset, % Offset from beginning of binary data
+
+data % Refcounted binary with matrix data
+
+}).
+
+The same for vectors:
+
+-record(vector, { type, % Atom: s, d, c, z length, % Number of elements inc, % Distance between elements trans, % Transposition indicator offset, % Offset from beginning of binary data data % Refcounted binary with vector data
+}).
+
+These representations allow vector and matrices to be treated as regular Erlang terms. The BLAS library binding ensures that binaries assigned to the data ﬁeld are always reference-counted, even for small matrices or vectors: this is necessary in order to make the procedural BLAS API work as expected (when small binaries are copied instead of referenced, destructive updates may be “lost”). For this purpose, the binding always creates data binaries bigger than the heap binary size limit (64 bytes on OTP R11B and R12B [12]).
+Matrix and vector slicing is obtained by adjusting the rows, cols, ld, length, inc and offset ﬁelds of the matrix/vector records: they allow to use the same data binary to represent different matrices or vectors (see ﬁgure 2).
+
+52
+
+%% Create a 3x3 identity matrix
+
+I = eye(3);
+
+%% The following expression is equivalent to:
+
+%% V = blas:transpose(
+
+%%
+
+blas:vector(s, 3, [1.0, 2.0, 3.0]))
+
+V = [1.0, 2.0, 3.0]’;
+
+%% The following expression is equivalent to: %% V2 = blas:mul(blas:mul(2.0, I), V) V2 = 2 * I * V; %% Result: %% V2 = [2.00000, 4.00000, 6.00000]’
+
+%% Function definition function y = fn(x, t, data)
+y = -x * 3; end;
+
+%% Function integration (4th-order Runge-Kutta)
+
+Y = rk4(fn,
+
+% Function to integrate
+
+3.0,
+
+% Initial value
+
+[0.0, 0.1, 0.2], % Integration points
+
+[]);
+
+% Data (unused)
+
+%% Integration result (on final point):
+
+%% Y = 1.64652
+
+Figure 4. Usage example of the Matlang language.
+
+The resulting BLAS API for can be used as shown in ﬁg. 3. The benchmark results in ﬁg. 1, in the eblas column, show that the overhead introduced by the Erlang binding is moderate, and its run-time checks do not eliminate the performance advantage given by our FFI over MatlabTM or GNU Octave.
+5. A MatlabTM-style language
+At this point, Erlang and our BLAS binding are the basic elements for assembling HPTC applications. But there are relevant drawbacks:
+1. the numerical code is verbose, expecially compared to equivalent routines developed with mathematically-oriented languages like MatlabTM or GNU Octave;
+2. even if the BLAS binding provides a procedural API with side effects, it may be difﬁcult to use efﬁciently: all the optimizations (and the risks of destructive updates on shared data) are left in the hands of the developer;
+3. engineers and physicists (who, as we said in the introduction, are the main target of our work) are not usually accustomed to Erlang and functional programming: they expect to use some procedural language, possibly with MatlabTM-like data types and syntax.
+For all these reasons, we decided to develop a procedural, MatlabTM-like programming language that compiles into Core Erlang [5, 6] by translating matrix and vector operations into BLAS function calls (performed through our Erlang BLAS binding).
+We called such language Matlang. A code sample is shown on ﬁgure 4.
+The main difference between Matlang and MatlabTM is our treatment of functions as ﬁrst-class objects: in the code sample we see how the fn variable (created when deﬁning the homonym function) is passed to the integration routine rk4(). Since MatlabTM does not support higher-order functions, the same behaviour could be simulated by passing the ’fn’ string to rk4() — which, in turn, would need to call eval() on its argument.
+
+There are also other minor differences, mostly due to unsupported syntactic quirks (for an in-depth overview of the problems in implementing a complete MatlabTM language parser, see [17]).
+The main mismatch between Matlang (or any imperative language in general) and Core Erlang is the single-assignment semantics. Since multiple assignments cannot be translated directly, we followed a two-step strategy:
+1. the Matlang parse tree is converted to SSA (Static Single Assignment) form [8];
+2. the SSA form is compiled in Core Erlang: Matlang if statements are converted into Core Erlang case switches, while for and while loops are turned into letrecs.
+In the second phase, φ-functions inserted during the ﬁrst step are used to decide which variables must be returned by each Core Erlang statement.
+In its current incarnation, Matlang is a dynamically typed language, and the compiler generates relevant amounts of run-time checks that ensure correct typing of expressions. We are, however, enhancing to the compiler in order to obtain a statically typed language: more details are available in the conclusions (section 9).
+6. An Erlang framework for HPTC
+In section 2 we have seen four main issues that an HPTC framework must solve: cluster assembly, process migration, minimization of in-memory copies, fault tolerance.
+In order to solve them, we deﬁned a simple model that abstracts a generic HPTC application:
+A distributed numerical application is a set of looping numerical processes connected by predeﬁned communication channels (called buses)
+We implemented this model in a framework, called FLOW, that provides an API for building, running, monitoring and controlling distributed applications. The developer only needs to deﬁne the bus topology and the functions being looped by each process, while FLOW takes care of distributing the computation load on a cluster of computers, dispatch communications and monitor the system behaviour.
+More in detail, a FLOW process is deﬁned by:
+• an unique identiﬁer;
+• one or more input ports;
+• one or more output ports;
+• a core function, with arguments and return values mapped respectively to input and output ports.
+Ports are characterized by an unique identiﬁer and a signature that speciﬁes which data types it handles. For example, an output port may be called Output1 and produce three ﬂoating-point values, called x, y and z.
+Buses can connect one output port to one or more input ports, provided that they have compatible type signatures (the Output1 port may, thus, be connected to an input port that expects three ﬂoating-point values as well).
+As an example of FLOW application, we illustrate the simulation of a mechanical system: a single-degree-of-freedom compound pendulum (ﬁg. 5), composed by a rod RS with length l that oscillates around point S constrained to O (the reference system origin).
+The pendulum motion can be described with the following ordinary differential equation (ODE):
+θ¨ = −3g sin θ 2l
+
+53
+
+y
+
+O
+
+x
+
+fy
+
+S
+
+θ B
+fx
+
+R
+
+g
+
+Figure 5. Schema of compound pendulum simulation: the rod RS falls subject to gravity g, but is constrained to O by artiﬁcial forces fx and fy applied to its barycenter B.
+By integrating such equation, we can obtain the pendulum angle θ and its angular velocity θ˙ at any time instant.
+But we could also follow a different approach:
+• the rod is simulated as unconstrained and free-falling under gravity g. Its position is indicated with barycenter B (with coordinates (Bx, By)) and angle θ, while its horizontal, vertical and angular velocities are indicated respectively with B˙ x, B˙ y and θ˙;
+• the pendulum constraint is simulated by two artiﬁcial forces (fx and fy) applied to B. They are periodically recomputed so that, every instant, the rod is moved to a position that makes point S coincide with point O. In other words, fx and fy simulate the pendulum constraint reactions.
+The artiﬁcial forces are computed using well-known control theory techniques: in a feedback-based loop, their intensity changes depending on the current position, velocity and angle of the pendulum. More details on this simulation scheme are available in [7]: it allows to model complex constrained mechanical systems, achieving parallelization and numerical stability (even if its beneﬁts may not be apparent from our simple compound pendulum example).
+This kind of pendulum simulation can be modeled with two processes:
+• a process called Constraint that, given the rod state vector (Bx, B˙ x, By, B˙ y, θ, θ˙) as input, computes the constraint forces fx and fy;
+• a process called Rod that, given the current constraint forces and the rod state vector, computes an updated state vector.
+These processes should, thus, exchange the current state vector and constraint forces. They should remain idle until new inputs are available. This model can be represented with a diagram, as seen in ﬁg. 6 (on the left).
+This kind of diagram can be translated directly into a list of FlowChildSpecs, i.e. a data structure that describes a FLOW application in terms of processes and buses (ﬁg. 6 on the right).
+The FLOWChildSpecs in the example deﬁne two processes and two buses. As anticipated above, the processes are characterized by an unique identiﬁer (Rod and Constraint), input/output ports and a core function that is executed in an inﬁnite loop (core_Constraint/3 and core_Rod/3). When new data is avail-
+
+able on the input ports, it is passed as argument to the core function; after its execution, the return values are written on the output ports.
+The core functions must respect the following signature:
+core_fn(State, Params, Inputs) -> ... {State1, Outputs}.
+where State is a term representing the current internal state, Params contains constant parameters, and Inputs is a list containing all the values coming from the process input ports. The return tuple contains an updated internal state (State1) and a list of values that will be sent through the process output ports. When the core function is called for the ﬁrst time, the State parameter takes the value of the state0 ﬁeld from the process FLOWChildSpec. The Params parameter, instead, comes from the params ﬁeld.
+Returning to our pendulum, we have two buses, B_state and B_fxfy, which carry respectively the rod state and constraint forces. The input_process and output_processes ﬁelds specify which I/O ports get connected by each bus.
+Since the pendulum simulation has a circular structure, both Rod and Constraint have to wait until the other process writes some values on its output port. In order to start the computational loop, the Rod process has a ﬁeld, output0, with an initial value (i.e. the initial rod state) that FLOW writes directly on the State port.
+Lastly, the node ﬁeld, found in both processes and buses, is a hint that FLOW uses for load balancing: objects with the same node value will be spawned on the same Erlang VM, while different values will cause processes and buses to be distributed among different VMs.
+6.1 Run-time services
+At run-time, the FLOW framework works like the Erlang/OTP supervisor behaviour: it spawns, monitors and eventually restarts FLOW processes when they die because of errors. The same happens for buses.
+FLOW also provides several functions for the run-time management of an HPTC application, allowing to:
+• obtain the FLOWChildSpec of a running application, in order to reconstruct its topology;
+• stop/resume processes or data dispatching over a bus;
+• add, remove or replace processes;
+• add, remove or replace bus connections;
+• replace the core function of a process, or change its internal state and parameters;
+• migrate processes from one cluster node to another, without halting the execution.
+These functions allow, for example, to connect to a running FLOW application, attach a monitoring process to a bus and observe the values being dispatched. The monitoring process can be detached when needed. Returning to the pendulum example, we developed an ESDL-based [14] real-time visualization tool that can be attached to the B_state bus (ﬁg. 7) with the following sequence of Erlang statements:
+Pid = spawn(pendulum_monitor, start, []), ok = flow_bus:add_output_process(
+{pendulum, ’B_state’}, Pid).
+where pendulum is the identiﬁer of the running FLOW application, and the {pendulum, ’B_state’} tuple identiﬁes the bus.
+
+54
+
+Constraint fx, fy
+(Bx, B˙ x, By, B˙ y, θ, θ˙) Rod
+
+[%% FLOW process specs [ {type, process}, {id, ’Constraint’}, {core, fun core_Constraint/3}, {node, n1}, {params, {1.0, 36.0, ...}}, % Constraint coefficients {state0, 0}, {input_ports, [{’State’, {vector}}]}, {output_ports, [{’Forces’, {float, float}}]} ], [ {type, process}, {id, ’Rod’}, {core, fun core_Rod/3}, {node, n2}, {params, {9.80665, 1.0, ...}}, % Gravity, rod length... {state0, {blas:vector(...)}}, {output0, [{’State’, blas:vector(...)}]}, {input_ports, [{’Forces’, {float, float}}]}, {output_ports, [{’State’, {vector}}]} ], %% FLOW bus specs [ {type, bus}, {id, ’B_state’}, {node, n2}, {input_process, {’Rod’, ’State’}}, {output_processes, [{’Constraint’, ’State’}]} ], [ {type, bus}, {id, ’B_fxfy’}, {node, n1}, {input_process, {’Constraint’, ’Forces’}}, {output_processes, [{’Rod’, ’Forces’}]} ]
+].
+
+Figure 6. Example of FLOW diagram with corresponding list of FLOWChildSpecs. The communication channels are modeled with the B state and B fxfy buses.
+
+Figure 7. Real-time visualization tool for the compound pendulum simulator. The barycenter is emphasized in the middle of the rod. Since the screenshot was taken when the simulation was still converging, we can see that the constraint is not completely satisﬁed: the rod extremity is not centered in the reference system origin.
+
+When the monitor is not useful anymore, it can be detached by executing:
+ok = flow_bus:remove_output_process( {pendulum, ’B_state’}, Pid).
+Running processes can also be migrated with a simple function call:
+{ok, NewPid} = flow_supervisor:migrate_process( {pendulum, ’Rod’}, ’vm@host.com’).
+It causes the Rod process to be moved from its current cluster node to vm@host.com, keeping its internal state. Its input and output buses are automatically redirected, without halting the execution of the whole pendulum application.
+7. An IDE for HPTC applications
+Even if the FLOW framework takes care of the low-level details, modeling an large HPTC application could be a very long task: in particular, specifying a list of FLOWChildSpecs by hand is tedious and error-prone. And we, as we wrote from the beginning, cannot expect that our target users become proﬁcient enough with Erlang to handle it.
+For these reasons, we developed an Integrated Development Environment (IDE), called ClusterL, that allows to autogenerate and run a FLOW application with a visual, point-and-click approach.
+
+55
+
+Figure 8. ClusterL IDE workspace, with compound pendulum simulation diagram.
+
+In its current form, it provides a workspace for placing FLOW processes and buses, and a toolbar for editing them.
+A screenshot of the interface can be seen in ﬁg. 8: the similarities between the contents of the workspace and the pendulum diagram in ﬁg. 6 are apparent.
+ClusterL allows to program FLOW processes either using Erlang or Matlang. Code editing is performed with an editing dialog shown in ﬁg. 10. The GUI allows to deﬁne all the process ﬁelds seen in the FLOWChildSpec (section 6): I/O ports names and types, initial process state, initial outputs, clustering hints, etc. Processes can be connected by adding buses — and, as one may expect, the IDE checks whether the selected input and output ports have compatible type signatures.
+ClusterL also introduces some metaphors for representing particular types of processes:
+• source processes, i.e. processes without input ports that only generate output data. They can abstract external components like read-only ﬁles or interfaces to hardware sensors;
+• sink processes, i.e. processes that have input ports but no output ports. They can be used to represent monitoring or logging routines, or interfaces to hardware devices that provide no input;
+• nested processes, i.e. processes composed by several subprocesses. This abstraction can represent reusable sub-systems, and allows to assemble large distributed applications without cluttering the GUI with tens or hundreds of objects.
+When editing is done, the buttons on the toolbar allow to check the consistency of the process graph, and autogenerate a FLOWbased application — that could be run either from the toolbar, or independently as a stand-alone product. The toolbar also allows to conﬁgure a cluster of Erlang VMs, and decide how the application will be distributed on the available nodes.
+
+Head A, B
+
+Worker1
+
+Worker2
+
+C C
+
+Worker3
+
+Worker4
+
+C C
+
+Tail C
+
+Figure 9. Schema of parallel benchmarking application: the Head process sends two matrices, A and B, to four worker processes, which perform a sequence of BLAS operations (20 for each worker) and dispatch results (matrix C), to Tail. When Tail collects all four copies of C, it sends one of them to Head, which in turn wakes up and sends A and B again.
+
+56
+
+Figure 10. ClusterL IDE process editing dialog. The application is still in alpha stage, and some Erlang code snippets appear where a GUI has not yet been deﬁned (for example, in the text entries for deﬁning I/O ports).
+
+Our experience so far shows that the ClusterL visual approach helps Erlang-unaware physicists and engineers to develop distributed systems.
+8. Parallel benchmark
+In order to measure the performance of the FLOW framework and our Erlang BLAS binding in respect to “classical” HPTC solutions, we developed a simple parallel benchmark (shown in ﬁg. 9): four worker processes wait for two matrices A and B from a coordinator process (“head”), perform a sequence of 20 BLAS operations each, and send their result C to another process (“tail”) — which, in turn, sends C to “head”. The timing runs in the “head” process, and measures the number of milliseconds elapsed between A and B are sent, and C is received.
+We implemented this parallel benchmark in two ways:
+• in Erlang, using ClusterL to generate an application based on FLOW and our BLAS binding;
+• in C, with an ad hoc program based on BLAS and MPI, using blocking functions for sending and receiving messages (MPI_Send() and MPI_Recv()).
+We deployed the benchmark on two hardware conﬁgurations: a single dual-core workstation, and a small cluster with two dual-
+
+core PCs connected over a dedicated 1-Gigabit Ethernet LAN. In the latter case, each node ran three processes (two workers together with either “head” or “tail”).
+Given this setup, we tried two different solutions for the Erlangbased measurements:
+1. we launched one SMP-enabled Erlang VM on each cluster node;
+2. later, we tried with two non-SMP Erlang VMs on each cluster node. The VMs were bound to different CPU cores using the LinuxTM taskset utility [19], and each VM ran a single worker process.
+For the MPI tests, we used MPICH2 [3] with its default conﬁguration, except for the --ncpus option of mpd (which we used to indicate the number of CPU cores in each node).
+The benchmark results are summarized in ﬁg. 11 and 12. The plots show that, at least for this benchmark, our Erlang-based HPTC solution can reach the same performance of an ad hoc application written using C, BLAS and MPI (and thus lacking the run-time services provided by the FLOW framework). Launching several Erlang virtual machines per node (with taskset) instead of a single SMP-enabled VM can reduce jitter and increase performance predictability — but multiple VMs also increase the amount
+
+57
+
+Parallel benchmark (matrix type: single precision, 100x100)
+
+40
+
+35
+
+30
+
+Milliseconds
+
+25
+
+20
+
+15
+
+flow−smp
+
+flow−taskset
+
+mpich2
+
+flow−smp−dist
+
+HPTC framework and environment
+
+flow−taskset−dist
+
+mpich2−dist
+
+Figure 11. Box plot with the results of the parallel benchmark in ﬁg. 9, repeated 40 times with 100x100 matrix size. The ﬁrst three columns show the timings obtained on a single workstation (dual-core AMDTM AthlonTM 64 4200+ with 2GB RAM, Ubuntu 8.04 and MPICH2 1.0.6p1); the latter three columns (with the -dist sufﬁx in their label) show the results after distributing the benchmark on two workstations (with the same hw/sw conﬁguration above) connected over a dedicated 1-Gigabit Ethernet LAN. The FLOW benchmarks have been performed both by running a single SMP Erlang VM on each cluster node (columns with -smp), and by launching a non-SMP Erlang VM for each CPU core (with the taskset utility).
+
+of data serialized and sent through sockets, possibly degrading performance (as we can see in ﬁg. 12).
+There are, however, some “cheats” that guarantee the efﬁciency of the FLOW benchmarks: the Erlang VM always tries to handle and send binaries by reference instead of copying them (while MPICH2 uses highly optimized in-memory copying, as required by the MPI standard); furthermore, FLOW buses can automatically detect if two or more target processes are running on a remote node: if it happens, then data is sent only once to a remote dispatcher process, which in turn handles multiple delivery to its local targets. MPI does not implement these capabilities — but our “cheats” are just some advantages that derive from the choice of using a very high-level language (Erlang) and framework (FLOW) that can automatically perform such optimizations.
+9. Conclusions and future developments
+This paper illustrated how we extended Erlang/OTP, and then used it, as a foundation for building High-performance Technical Computing applications:
+1. our Foreign Function Interface allows to interface native code in a simple and efﬁcient way;
+2. our BLAS binding represents an use case of the FFI, and allows Erlang to achieve native-speed number crunching capabilities;
+3. the Matlang language allows to write Erlang-based numerical code with a concise and mathematically-oriented syntax,
+
+familiar to physicists and engineers accustomed to tools like MatlabTM;
+4. the FLOW framework allows to deﬁne and control distributed numerical applications in Erlang, freeing the developer from low-level tasks;
+5. the ClusterL IDE can be used for the rapid development of FLOW-based applications, even by users that know nothing about Erlang.
+With these solutions, we were able to satisfy the four HPTC framework requirements outlined in section 2. The parallel benchmarks we’ve performed also show that the overall performance is very good, and comparable to classical solutions based on lowerlevel libraries.
+The most important aspect from our point of view of framework developers, however, is that the resulting HPTC toolkit has been built, and can be extended, using an high-level, concurrencyoriented and fault-tolerant language and platform — i.e. Erlang/OTP. It is an enormous advantage in terms of productivity, that our ﬁnal users can notice in terms of rapid development and quick response to customization requests. We were prepared to pay this advantage by losing some performance over “traditional” HPTC solutions — but so far the price appears to be moderate.
+Even if the results we’ve obtained are positive and encouraging, there are still several enhancements we are working on. More in detail:
+
+58
+
+Parallel benchmark (matrix type: single precision, 500x500)
+
+4000
+
+3500
+
+Milliseconds 2500 3000
+
+2000
+
+1500
+
+1000
+
+flow−smp
+
+flow−taskset
+
+mpich2
+
+flow−smp−dist
+
+HPTC framework and environment
+
+flow−taskset−dist
+
+mpich2−dist
+
+Figure 12. Box plot with the results of the parallel benchmark in ﬁg. 9, repeated 40 times with 500x500 matrix size. When the amount of data exchanged among processes increases, the SMP-enabled Erlang VM guarantees better performances, reaching the numbers of MPICH2. Separate non-SMP Erlang VMs, on the other hand, are slowed down by the need to serialize and transmit huge memory buffers, instead of simply sharing them among processes.
+
+1. FLOW should be extended with the concept of nested processes (that, as reported in section 7, are currently implemented by the ClusterL IDE). We should, in other words, add support for entities similar to SimulinkTM “systems”;
+2. the FLOW run-time control functions should be made available through an user-friendly graphical tool, allowing to connect to a running FLOW-based application and manage it. Users should be able to infer the connection graph of buses and processes, instantiate and connect monitoring tools, migrate a process around cluster nodes, etc. — all without touching the Erlang shell;
+3. the ClusterL GUI should be improved, possibly by using wxErlang [15] or some other modern widget toolkit;
+4. since port signatures in FLOW processes are statically typed, Matlang could be treated as a statically typed language, too. This would allow to remove most of the run-time checks and increase execution speed. Static type checks could also reduce the amount of bugs, expecially in large projects;
+5. static typing could also allow to optimize matrices and vectors handling in Matlang, that (in its current form) never uses the procedural API provided by the BLAS binding. The compiler should perform more static analysis, and decide whether certain optimizations (like overwriting an unused matrix with the partial results of a computation) are legal within some code block.
+References
+[1] Advanced Micro DevicesTM, Inc. AMD Core Math Library (ACML). http://developer.amd.com/cpu/Libraries/acml.
+
+[2] E. Anderson, Z. Bai, J. Dongarra, A. Greenbaum, A. McKenney, J. Du Croz, S. Hammarling, J. Demmel, C. Bischof, and D. Sorensen. LAPACK: a portable linear algebra library for high-performance computers. In Supercomputing ’90: Proceedings of the 1990 ACM/IEEE conference on Supercomputing, pages 2–11, Washington, DC, USA, 1990. IEEE Computer Society.
+[3] Argonne National Laboratory. MPICH2: an high-performance, portable implementation of the MPI standard. http://www.mcs. anl.gov/research/projects/mpich2.
+[4] David M. Beazley. SWIG: an easy to use tool for integrating scripting languages with C and C++. In TCLTK’96: Proceedings of the 4th conference on USENIX Tcl/Tk Workshop, Berkeley, CA, USA, 1996. USENIX Association.
+[5] R. Carlsson. An introduction to Core Erlang. In Proceedings of the PLI’01 Erlang Workshop, September 2001.
+[6] Richard Carlsson, Bjo¨rn Gustavsson, Erik Johansson, Thomas Lindgren, Sven-Olof Nystro¨m, Mikael Petterson, and Robert Virding. Core Erlang 1.0.3 language speciﬁcation, 2004. http://www.it.uu.se/ research/group/hipe/cerl/doc/core_erlang-1.0.3.pdf.
+[7] M. D. Compere and R. G. Longoria. Combined DAE and sliding mode control methods for simulation of constrained mechanical systems. Journal of dynamic systems, measurement and control, 122:691–697, December 2000.
+[8] Ron Cytron, Jeanne Ferrante, Barry K. Rosen, Mark N. Wegman, and F. Kenneth Zadeck. Efﬁciently computing static single assignment form and the control dependence graph. ACM Transactions on Programming Languages and Systems (TOPLAS), 13(4):451–490, 1991.
+[9] Jack Dongarra. Preface: Basic Linear Algebra Subprograms Technical (Blast) Forum Standard I. International Journal of High Performance Applications and Supercomputing, 16(1):1–111, Spring 2002.
+
+59
+
+[10] Jack Dongarra. Preface: Basic Linear Algebra Subprograms Technical (Blast) Forum Standard II. International Journal of High Performance Applications and Supercomputing, 16(2):115–199, Summer 2002.
+[11] John W. Eaton. GNU Octave numerical computation language. http: //www.gnu.org/software/octave/.
+[12] Ericsson ABTM. Erlang efﬁciency guide: Constructing and matching binaries, 2008.
+[13] Scott Lystig Fritchie. The evolution of Erlang drivers and the Erlang driver toolkit. In ERLANG ’02: Proceedings of the 2002 ACM SIGPLAN workshop on Erlang, pages 34–44, New York, NY, USA, 2002. ACM.
+[14] Dan Gudmundsson. ESDL, a SDL and OpenGLTM driver for Erlang/OTP. http://esdl.sourceforge.net.
+[15] Dan Gudmundsson. wxErlang, an Erlang binding to wxWidgets. http://www.erlang.org/~dgud/wxerlang/.
+[16] IntelTM Corporation. IntelTM Math kernel library. http: //www.intel.com/cd/software/products/asmo-na/eng/ 266858.htm.
+[17] Pramod G. Joisha, Abhay Kanhere, Prithviraj Banerjee, U. Nagaraj Shenoy, and Alok Choudhary. The design and implementation of a parser and scanner for the MATLAB language in the MATCH compiler. Technical Report CPDCTR9909017, Center for Parallel and Distributed Computing, Electrical and Computer Engineering Department, Technological Institute, 2145 Sheridan Road, Northwestern University, IL 602083118, September 1999.
+[18] Romain Lenglet and Shigeru Chiba. Dryverl: a ﬂexible Erlang/C binding compiler. In ERLANG ’06: Proceedings of the 2006 ACM SIGPLAN workshop on Erlang, pages 21–31, New York, NY, USA, 2006. ACM.
+[19] Robert M. Love. The taskset on-line manpage from the LinuxTM User manual. http://www.linuxcommand.org/man_ pages/taskset1.html.
+
+[20] Message Passing Interface Forum (MPIF). MPI: A message-passing interface standard. Technical Report UT-CS-94-230, University of Tennessee, 1994.
+[21] Message Passing Interface Forum (MPIF). MPI-2: Extensions to the message-passing interface. Technical report, University of Tennessee, 1996.
+[22] National InstrumentsTM. The LabVIEWTM Development environment. http://www.ni.com/labview/.
+[23] NumPy development team. NumPy, numerical package for python. http://numpy.scipy.org/.
+[24] Alceste Scalas. Erlang enhancement proposal 7: Foreign function interface, September 2007. http://erlang.org/eeps/eep-0007. html.
+[25] Alceste Scalas. Home page of the foreign function interface (FFI) for Erlang/OTP, 2008. http://muvara.org/crs4/erlang/ffi/.
+[26] V. S. Sunderam. PVM: a framework for parallel distributed computing. Concurrency, Practice and Experience, 2(4):315–340, 1990.
+[27] The MathworksTM. MatlabTM: the language of technical computing. http://www.mathworks.com/products/matlab/.
+[28] The MathworksTM. SimulinkTM : Simulation and model-based design. http://www.mathworks.com/products/simulink/.
+[29] John W. Tukey. Exploratory data analysis. Behavioral Science: Quantitative Methods. Addison-Wesley, Reading, Massachusetts, 1977.
+[30] R. Clint Whaley and Jack J. Dongarra. Automatically tuned linear algebra software. Technical Report UT-CS-97-366, University of Tennessee, 1997.
+
+View publication stats
+
+60
+

@@ -1,0 +1,66 @@
+
+Joachim Breitner
+Blog Projects Publications Content About me Photos
+Joachim Breitner's Homepage
+WebGL, Fragment Shader, GHCJS and reflex-dom
+Published 2018-07-22 in sections English , Haskell .
+
+What a potpourri of topics... too long to read? Click here!
+
+On the side and very slowly I am working on a little game that involves breeding spherical patterns… more on that later (maybe). I want to implement it in Haskell, but have it run in the browser, so I reached for GHCJS, the Haskell-to-Javascript compiler.
+WebGL for 2D images
+
+A crucial question was: How do I draw a generative pattern onto a HTML canvas element. My first attempt was to calculate the pixel data into a bit array and use putImageData() to push it onto the canvas, but it was prohibitively slow. I might have done something stupid along the way, and some optimization might have helped, but I figured that I should not myself calculate the colors of each pixel, but leave this to who is best at it: The browser and (ideally) the graphic card.
+
+So I took this as an opportunity to learn about WebGL, in particular fragment shaders. The term shader is misleading, and should mentally be replaced with “program”, because it is no longer (just) about shading. WebGL is intended to do 3D graphics, and one sends a bunch of coordinates for triangles, a vertex shader and a fragment shader to the browser. The vertex shader can places the vertices, while the fragment shader colors each pixel on the visible triangles. This is a gross oversimplification, but that is fine: We only really care about the last step, and if our coordinates always just define a rectangle that fills the whole canvas, and the vertex shader does not do anything interesting, then what remains is a HTML canvas that takes a program (written in the GL shader language), which is run for each pixel and calculates the color to be shown at that pixel.
+
+Perfect! Just what I need. Dynamically creating a program that renders the pattern I want to show is squarely within Haskell’s strengths.
+A reflex-dom widget
+
+As my game UI grows, I will at some point no longer want to deal with raw DOM access, events etc., and the abstraction that makes creating such user interfaces painless is Functional Reactive Programming (FRP). One of the main mature implementations is Ryan Trinkle's reflex-dom , and I want to use this project to get more hands-on experience with it.
+
+Based on my description above, once I hide all the details of the WebGL canvas setup, what I really have is a widget that takes a text string (representing the fragment shader), and creates a DOM element for it. This would suggest a function with this type signature
+
+ fragmentShaderCanvas :: MonadWidget t m => Dynamic t Text -> m () 
+
+where the input text is dynamic , meaning it can change over time (and the canvas will be updated) accordingly. In fact, I also want to specify attributes for the canvas (especially width and height ), and if the supplied fragment shader source is invalid and does not compile, I want to get my hands on error messages, as provided by the browser. So I ended up with this:
+
+ fragmentShaderCanvas :: MonadWidget t m => Map Text Text -> Dynamic t Text -> m (Dynamic t (Maybe Text)) 
+
+which very pleasingly hides all the complexity of setting up the WebGL context from the user. This is abstraction at excellence!
+
+I published this widget in the hackage.haskell.org/package/reflex-dom-fragment-shader-canvas package on Hackage.
+A Demo
+
+And because reflex-dom make it so nice, I created a little demo program; it is essentially a fragment shader playground!
+
+On https://nomeata.github.io/reflex-dom-fragment-shader-canvas/ you will find a text area where you can edit the fragment shader code. All your changes are immediately reflected in the canvas on the right, and in the list of warnings and errors below the text area. The code for this demo is pretty short.
+
+A few things could be improved, of course: For example, the canvas element should have its resolution automatically adjusted to the actual size on screen, but it is somewhat tricky to find out when and if a DOM element has changed size. Also, the WebGL setup should be rewritten to be more defensively, and fail more gracefully if things go wrong.
+
+BTW, if you need a proper shader playground, check out Shadertoy .
+Development and automatic deployment
+
+The reflex authors all use Nix as their development environment, and if you want to use reflex-dom , then using Nix is certainly the path of least resistance. But I would like to point out that it is not a necessity, and you can stay squarely in cabal land if you want:
+
+    You don’t actually need ghcjs to develop your web application: reflex-dom builds on jsaddle which has a mode where you build your program using normal GHC, and it runs a web server that your browser connects to. It works better with Chrome than with Firefox at the moment, but is totally adequate to develop a program.
+
+    If you do want to install ghcjs , then it is actually relatively easily: The README on the ghc-8.2 branch of GHCJS tells you how to build and install GHCJS with cabal new-build .
+
+    cabal itself supports ghcjs just like ghc ! Just pass --ghcjs -w ghcjs to it.
+
+    Because few people use ghcjs and reflex with cabal some important packages ( ghcjs-base , reflex , reflex-dom ) are not on Hackage, or only with old versions. You can point cabal to local checkouts using a cabal.project file or even directly to the git repositories. But it is simpler to just use a Hackage overlay that I created with these three packages, until they are uploaded to Hackage.
+
+    If the application you create is a pure client-based program and could therefore be hosted on any static web host, wouldn’t it be nice if you could just have it appear somewhere in the internet whenever you push to your project? Even that is possible, as I describe in an example repository !
+
+It uses Travis CI to build GHCJS and the dependencies, caches them, builds your program and – if successful – uploads the result to GitHub Pages. In fact, the demo linked above is produced using that. Just push, and 5 minutes later the changes available online!
+
+I know about rumors that Herbert’s excellent multi-GHC PPA repository might provide .deb packages with GHCJS prebuilt soon. Once that happens, and maybe ghcjs-base and reflex get uploaded to Hackage, then the power of reflex-based web development will be conveniently available to all Haskell developers (even those who shunned Nix so far), and I am looking forward to many cool projects coming out of that.
+Flattr this blog. Flattr this post.
+Comments
+
+Have something to say? You can post a comment by sending an e-Mail to me at < mail@joachim-breitner.de >, and I will include it here.
+Go up
+© Joachim Breitner .
+
+normal 

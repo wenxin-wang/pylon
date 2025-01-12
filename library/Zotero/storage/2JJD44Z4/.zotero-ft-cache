@@ -1,0 +1,290 @@
+Scalable I/O Event Handling for GHC
+
+Bryan O’Sullivan
+Serpentine bos@serpentine.com
+
+Johan Tibell
+Google johan.tibell@gmail.com
+
+Abstract
+We have developed a new, portable I/O event manager for the Glasgow Haskell Compiler (GHC) that scales to the needs of modern server applications. Our new code is transparently available to existing Haskell applications. Performance at lower concurrency levels is comparable with the existing implementation. We support millions of concurrent network connections, with millions of active timeouts, from a single multithreaded program, levels far beyond those achievable with the current I/O manager. In addition, we provide a public API to developers who need to create event-driven network applications.
+Categories and Subject Descriptors D.3.2 [Programming Languages]: Language Classiﬁcations—Applicative (functional) languages; D.3.2 [Programming Languages]: Language Classiﬁcations—Concurrent, distributed and parallel languages; D.3.3 [Programming Languages]: Language Constructs and Features— Concurrent programming structures; D.3.4 [Programming Languages]: Processors—Runtime-environments
+General Terms Algorithms, Languages, Performance
+1. Introduction
+The concurrent computing model used by most Haskell programs has been largely stable for almost 15 years [10]. Despite the language’s many innovations in other areas, networked software is written in Haskell using a programming model that will be familiar to most programmers: a thread of control synchronously sends and receives data over a network connection. By synchronous, we mean that when a thread attempts to send data over a network connection, its continued execution will be blocked if the data cannot immediately be either sent or buffered by the underlying operating system.
+The Glasgow Haskell Compiler (GHC) provides an environment with a number of attractive features for the development of networked applications. It provides composable synchronization primitives that are easy to use [3]; lightweight threads; and multicore support [2]. However, the increasing demands of largescale networked software have outstripped the capabilities of crucial components of GHC’s runtime system.
+We have rewritten GHC’s event and timeout handling subsystems to be dramatically more efﬁcient. With our changes, a modestly conﬁgured server can easily cope with networking workloads
+Permission to make digital or hard copies of all or part of this work for personal or classroom use is granted without fee provided that copies are not made or distributed for proﬁt or commercial advantage and that copies bear this notice and the full citation on the ﬁrst page. To copy otherwise, to republish, to post on servers or to redistribute to lists, requires prior speciﬁc permission and/or a fee. Haskell’10, September 30, 2010, Baltimore, Maryland, USA. Copyright c 2010 ACM 978-1-4503-0252-4/10/09. . . $10.00
+
+that are several orders of magnitude more demanding than before. Our new code is designed to accommodate both the thread-based programming model of Concurrent Haskell (with no changes to existing application code) and the needs of event-driven applications.
+2. Background
+2.1 The GHC concurrent runtime
+GHC provides a multicore runtime system that uses a small number of operating system (OS) threads to manage the execution of a potentially much larger number of lightweight Haskell threads [6]. The number of operating system threads to use may be chosen at program startup time, with typical values ranging up to the number of CPU cores available1.
+From the programmer’s perspective, programming in Concurrent Haskell is appealing due to the simplicity of the synchronous model. The fact that Haskell threads are lightweight, and do not have a one-to-one mapping to OS threads, complicates the implementation of the runtime system. When a Haskell thread must block, this cannot lead to an OS-level thread also being blocked, so the runtime system uses a single OS-level I/O event manager thread (which is allowed to block) to provide an event notiﬁcation mechanism.
+The standard Haskell ﬁle and network I/O libraries are written to cooperate with the I/O event manager thread. When one of these libraries acquires a resource such as a ﬁle or a network socket, it immediately tells the OS to access the resource in a non-blocking fashion. When a client attempts to access (e.g. read or write, send or receive) such a resource, the library performs the following actions:
+1. Attempt to perform the operation. If it succeeds, resume immediately.
+2. If the operation would need to block, the OS will instead cause it to fail and indicate (via EAGAIN or EWOULDBLOCK in Unix parlance) that it must be retried later.
+3. The thread registers with the I/O event manager to be awoken when the operation can be completed without blocking. The sleeping and waking are performed using the lightweight MVar synchronization mechanism of Concurrent Haskell.
+4. Once the I/O event manager wakes the thread, return to step 1. (The operation may fail repeatedly with a would-block error, e.g. due to a lost race against another thread for resources, or an OS buffer ﬁlling up.)
+As this sketch indicates, GHC provides a synchronous programming model using a lower-level event-oriented mechanism. It does so via a semi-public API that clients (e.g. the ﬁle and networking libraries) can use to provide blocking semantics.
+1 GHC also provides an “unthreaded” runtime, which does not support multiple CPU cores. We are concerned only with the threaded runtime.
+
+−− Block the current thread u n t i l data i s available −− on the given f i l e descriptor . threadWaitRead, threadWaitWrite :: Fd → IO ()
+2.2 Timeout management and robust networking
+Well designed network applications make careful use of timeouts to provide robustness in the face of a number of challenges. At internet scale, broken and malicious clients are widespread. As an example, a defensively written application will, if a newly connected client doesn’t send any data within a typically brief time window, unilaterally close the connection and clean up its resources.
+To support this style of programming, the System.Timeout module provides a timeout function:
+timeout :: Int → IO a → IO (Maybe a)
+It initiates an IO action, and if the action completes within the speciﬁed time limit, returns Just its result, otherwise it aborts the action and returns Nothing.
+Concurrent Haskell also provides a threadDelay function that blocks the execution of a thread for a speciﬁed amount of time.
+Behind the scenes, the I/O event manager thread maintains a queue of pending timeouts. When a timeout ﬁres, it wakes the appropriate application thread.
+3. Related work
+Li and Zdancewic [9] began the push for higher concurrency in Haskell server applications with an application-level library that provides both event- and thread-based interfaces. We followed their lead in supporting both event-based and thread-based concurrency, but unlike their work, ours transparently beneﬁts existing Haskell applications.
+In the context of the Java Virtual Machine, Haller and Odersky unify event- and thread-based concurrency via a Scala implementation of the actor concurrency model [1]. Much of their work is concerned with safely implementing lightweight threads via continuations on top of Java’s platform-level threads, resulting in an environment similar to the two-level threading of GHC’s runtime, with comparable concurrency management facilities.
+For several years, C programmers concerned with client concurrency have enjoyed the libev and libevent libraries. These enable an event- and callback-driven style of development that can achieve high levels of both performance and concurrency. Similar frameworks are available in other languages, e.g. Twisted for Python and Node.js for Javascript.
+4. Shortcomings of the traditional I/O manager
+Although the I/O manager in versions of GHC up to 6.12 is portable, stable, and performs well for low-concurrency applications, its imperfections make it inapplicable to the scale of operations required by modern networked applications.
+The I/O manager uses the venerable select system call for two purposes. It informs the OS of the resources it wishes to track for events, and the time until the next pending timeout should be triggered, and blocks until either an event occurs or the timeout ﬁres.
+The select system call has well-known problems. Most obvious is the distressingly small ﬁxed limit on the number of resources it can handle even under modern operating systems, e.g. 1,024 on Linux. In addition, the programming style enforced by select can be inefﬁcient. The sizes of its programmer-visible data structures are linear in the number of resources to watch. They must be ﬁlled out, copied twice across the user/kernel address space boundary, and checked afresh for every invocation. Since the common case
+
+for server-side applications on the public Internet is for most connections to be idle, the amount of useful work performed per call to select dwindles as the number of open connections increases. This repetitious book-keeping rapidly becomes a noticeable source of overhead.
+The I/O manager incurs further inefﬁciency by using ordinary Haskell lists to manage both events and timeouts. It has to walk the list of timeouts once per iteration of its main loop, to ﬁgure out whether any threads must be woken and when the next timeout expires. It must walk the the list of events twice per iteration: once to ﬁll out the data structures to pass to select, and again after select has returned to see which threads to wake.
+Since select imposes such a small limit on the number of resources it can manage, we cannot easily illustrate the cost of using lists to manage events, but in section 9.2, we will demonstrate the clear importance of using a more efﬁcient data structure for managing timeouts.
+5. Our approach
+When we set out to improve the performance of GHC’s I/O manager, our primary goal was to increase the number of ﬁles, network connections, and timeouts GHC could manage by several orders of magnitude. We wanted to achieve this in the framework of the existing Concurrent Haskell model, retaining complete sourcelevel compatibility with existing Haskell code, and in a manner that could be integrated into the main GHC distribution with minimal effort.
+Secondarily, we wanted to sidestep the long dispute over whether events or threads make a better programming model for high-concurrency servers [11]. Since we needed to implement an event-driven I/O event manager in order to provide synchronous semantics to application programmers, we might as well design the event API cleanly and expose it publicly to those programmers who wish to use events2.
+We desired to implement as much as possible of the new I/O event manager in Haskell, rather than delegating to a lower-level language. This wish was partly borne out of pragmatism: we initially thought that it might be more efﬁcient to build on a portable event handling library such as libev or libevent2, but experimentation convinced us that the overhead involved was too high. With performance and aesthetics pushing us in the same direction, we were happy to forge ahead in Haskell.
+Architecturally, our new I/O event manager consists of two components. Our event notiﬁcation library provides a clean and portable API, and abstracts the system-level mechanisms used to provide efﬁcient event notiﬁcations (kqueue, epoll, and poll). We have also written a shim that implements the semi-public threadWaitRead and threadWaitWrite interfaces. This means that neither the core ﬁle or networking libraries, nor other low-level I/O libraries, require any changes to work with our new code, and they transparently beneﬁt from its performance improvements.
+6. Interface to the I/O event manager
+Our I/O event manager is divided into a portable front end and a platform-speciﬁc back end. The interface to the back end is simple, and is only visible to the front end; it is abstract in the public interface.
+2 In our experience, even in a language with ﬁrst-class closures and continuations, writing applications of anything beyond modest size in an eventdriven style is painful.
+
+data Backend = forall a. Backend { −− State specific to t h i s platform . _beState :: !a,
+
+−− Poll the back end for new events . The callback
+
+−− provided i s invoked once per f i l e descriptor with
+
+−− new events .
+
+_bePoll :: a
+
+→ Timeout
+
+−− in milliseconds
+
+→ (Fd → Events → IO ()) −− I/O callback
+
+→ IO (),
+
+−− Register , modify , or unregister i n t e r e s t in the
+
+−− given events on the specified f i l e descriptor .
+
+_beModifyFd :: a
+
+→ Fd
+
+−− f i l e descriptor
+
+→ Events −− old events to watch for
+
+→ Events −− new events to watch for
+
+→ IO (),
+
+−− Clean up platform−specific s t a t e upon destruction . _beDestroy :: a → IO () }
+A particular back end will provide a new action that ﬁlls out a Backend structure. For instance, the Mac OS X back end starts out as follows:
+module System.Event.KQueue (new) where new :: IO Backend
+On a Unix-inﬂuenced platform, typically more than one back end will be available. For instance, on Linux, epoll is the most efﬁcient back end, but select and poll are available. On Mac OS X, kqueue is usually preferred, but again select and poll are also available.
+Our public API thus provides a default back end, but allows a speciﬁc back end to be used (e.g. for testing).
+−− Construct the f a s t e s t back end for t h i s platform . newDefaultBackend :: IO Backend
+
+newWith :: Backend → IO EventManager
+
+new :: IO EventManager new = newWith =<< newDefaultBackend
+For low-level event-driven applications, a typical event loop involves running a single step through the I/O event manager to check for new events, handling them, doing some other work, and repeating. Our interface to the I/O event manager supports this approach.
+init :: EventManager → IO ()
+
+−− Returns an indication of whether the I/O event manager −− should continue , and a modified timeout queue . step :: EventManager
+→ TimeoutQueue −− current pending timeouts → IO (Bool, TimeoutQueue)
+To register for notiﬁcation of events on a ﬁle descriptor, clients use the registerFd function.
+−− Cookie describing an event r e g i s t r a t i o n . data FdKey
+
+−− A set of events to wait for . newtype Events instance Monoid Events evtRead, evtWrite :: Events
+
+−− A synchronous callback into the application . type IOCallback = FdKey → Events → IO ()
+
+registerFd :: EventManager
+
+→ IOCallback −− callback to invoke
+
+→ Fd
+
+−− f i l e descriptor of i n t e r e s t
+
+→ Events −− events to l i s t e n for
+
+→ IO FdKey
+
+Because the I/O event manager has to accommodate being invoked from other threads as well as from the same thread in which it is running, registerFd wakes the I/O manager thread when invoked.
+A client remains registered for notiﬁcations until it explicitly drops its registration, and is thus called back on every step into the I/O event manager as long as an event remains pending. We ﬁnd this level-triggered approach to event notiﬁcation to be easier than edge triggering for client applications to use.
+
+unregisterFd :: EventManager → FdKey → IO ()
+
+7. Implementation
+By and large, the story of our efforts revolves around appropriate choices of data structure, with a few extra dashes of contextsensitive and proﬁle-driven optimization thrown in.
+7.1 Economical I/O event management
+GHC’s original I/O manager has to walk the entire list of blocked clients once per loop before calling select, and mutate the list afterwards to wake and ﬁlter out any clients that have pending events. A step through the I/O manager’s loop thus involves O(n) of traversal and mutation, where n is the number of clients.
+Our new I/O event manager registers ﬁle descriptors persistently with the operating system, using epoll on Linux and kqueue on Mac OS X, so the I/O event manager no longer needs to walk through all clients on each step through the list. Instead, we maintain a ﬁnite map from ﬁle descriptor to client, which we can look up for each triggered event. This map is based on Leijen’s implementation of Okasaki and Gill’s purely functional Patricia tree [7]. The new I/O event manager’s loop thus involves O(m log n) traversal, and negligible mutation, where m is the number of clients with events pending. This works well in the typical case where m n.
+7.2 Cheap timeouts
+In the original I/O manager, GHC maintains pending timeouts in an ordered list, which it partly walks and mutates on every iteration. Inserting a new timeout thus has O(n) cost per operation, as does each step through the I/O manager’s loop.
+The I/O event manager needs to perform two operations efﬁciently during every step: remove all timeouts that have expired, and ﬁnd the next timeout to wait for. Since we need both efﬁcient update by key and efﬁcient access to the minimum value, we use a priority search queue. Ours is based on that of Hinze [4], so insertion and deletion have O(log n) cost. A step through our new loop has O(m log n) cost, where m is the number of expired timeouts (typically m n, so we win on performance).
+8. War stories, lessons learned, and scars earned
+Writing fast networking code is tricky business. We have variously encountered:
+• Tunable kernel variables (15 at the last count) that regulate obscure aspects of the networking stack in ways that are important at scale;
+• Abstruse kernel infelicities (e.g. Mac OS X lacking the NOTE_EOF argument to kqueue, even though it has been present in other BSD variants since 2003);
+
+• Performance bottlenecks in GHC that required expert diagnosis (section 8.2);
+• An inability to stress the software enough, due to lack of 10gigabit Ethernet hardware (gigabit Ethernet is easily saturated, even with obsolete hardware).
+In spite of these difﬁculties, we are satisﬁed with the performance we have achieved to date. To give a more nuanced ﬂavour of the sorts of problems we encountered, we have chosen to share a few in more detail.
+8.1 Efﬁciently waking the I/O event manager
+In a concurrent application with many threads, the I/O event manager thread spends much of its time blocked, waiting for the operating system to notify it of pending events. A thread that needs to block until it can perform I/O has no way to tell how long the I/O event manager thread may sleep for, so it must wake the I/O event manager in order to ensure that its I/O request can be queued promptly.
+The original implementation of event manager wakeup in GHC uses a Unix pipe, which clients use to transmit one of several kinds of single-byte control message to the I/O event manager thread. The delivery of a control message has the side effect of waking the I/O event manager if it is blocked. Because a variety of control message types exist, the original event manager reads and inspects a single byte from the pipe at a time. If several clients attempt to wake the event manager thread before it can service any of their requests, it acts as if it has been woken several times in succession, potentially performing unneeded work.
+More damagingly, this design is vulnerable to the control pipe ﬁlling up, since a Unix pipe has a ﬁxed-size buffer. If control messages are lost due to a pipe overﬂow, an application may deadlock3. As a result, we invested some effort in ameliorating the problem. Our principal observation was that by far the most common control message is a simple “wake up.” We have accordingly special-cased the handling of this message.
+On Linux, when possible, we use the kernel’s eventfd facility to provide fast wakeups. No matter how many clients send wakeup requests in between checks by the I/O event manager, it will receive only one notiﬁcation.
+While other operating systems do not provide a comparably fast facility, we still have a trick up our sleeves. We dedicate a pipe to delivering only wakeup messages. To issue a wakeup request, a client writes of a single byte to this pipe. When the I/O event manager is notiﬁed that data is available on this pipe, it issues a single read system call to gather all currently buffered wakeups. It does not need to inspect any of the data it has read, since they must all be wakeups, and the ﬁxed size of the pipe buffer guarantees that it will not be subject to unnecessary wakeups, regardless of the number of clients requesting. This means that we no longer need to worry about wakeup messages that cannot be written for want of buffer space, so the thread doing the waking can safely use a non-blocking write.
+8.2 The great black hole pileup
+Our use of an IORef to manage the timeout queue yielded a problem that was especially difﬁcult to diagnose, with a symptom of programs unpredictably running thousands of times slower.
+In our threadDelay benchmark, thousands of threads compete to update the single timeout management IORef atomically. If one of these threads was pre-empted while evaluating the thunk left in the IORef by atomicModifyIORef, then the thunk would become a
+3 Indeed, one of our microbenchmarks inadvertantly provided a demonstration of how easy it was to provoke a deadlock under heavy load!
+
+“black hole,” i.e. a closure that is being evaluated. From that point on, all the other threads would become blocked on black holes: as one thread called atomicModifyIORef and found a black hole inside, it would deposit a new black hole inside that depended on its predecessor. A black hole is a special kind of thunk that is invisible to applications, so we could not play any of the usual seq tricks to jolly evaluation along.
+When we encountered this problem, the black hole queue was implemented as a global linear list, which was scanned during every GC. Most of the time, this choice of data structure was not a problem, but it became painful with thousands of threads.
+In response, Simon Marlow performed a wholesale replacement of GHC’s black hole mechanism. Instead of a single global black hole queue, GHC now queues a blocked thread against the closure upon which it is blocking. His work has ﬁxed our problem.
+8.3 Bunﬁght at the GC corral
+When a client application registers a new timeout, we must update the data structure that we use to manage timeouts. Originally, we stored the priority search queue inside an IORef, and each client manipulated the queue using atomicModifyIORef. Alas, this led to a bad interaction with GHC’s generational garbage collector.
+Since our client-side use of atomicModifyIORef did not force the evaluation of the data inside the IORef, the IORef would accumulate a chain of thunks. If the I/O event manager thread did not evaluate those thunks promptly enough, they would be promoted to the old generation and become roots for all subsequent minor garbage collections (GCs).
+When the thunks eventually got evaluated, they would each create a new intermediate queue that immediately became garbage. Since the thunks served as roots until the next major GC, these intermediate queues would get copied unnecesarily in the next minor GC, increasing GC time. We had created a classic instance of the generational “ﬂoating garbage” problem.
+The effect on performance of the ﬂoating garbage problem was substantial. For example, with 20,000 threads sleeping, we saw variations in our threadDelay microbenchmark performance of up to 34%, depending on how we tuned the GC and whether we simply got lucky.
+We addressed this issue by having clients store a list of edits to the queue, instead of manipulating it directly.
+type TimeoutEdit = TimeoutQueue → TimeoutQueue
+While maintaining a list of edits doesn’t eliminate the creation of ﬂoating garbage, it reduces the amount of copying at each minor GC enough that these substantial slowdowns no longer occur.
+9. Empirical results
+We gathered Linux results on commodity quad-core server-class hardware with 4GB of RAM, and 2.66GHz Intel R Xeon R X3230 CPUs running 64-bit Debian 4.0. We used version 6.12.1 of GHC for all measurements, running server applications on three cores with GHC’s parallel garbage collector disabled4. When measuring network application performance, we used an idle gigabit Ethernet network.
+9.1 Performance of event notiﬁcation
+To evaluate the raw performance of event notiﬁcation, we wrote two HTTP servers. Each uses the usual Haskell networking libraries, and we compiled each against both the original I/O manager (labeled “(old)” in graphs) and our rewrite (labeled “(new)”).
+4 The ﬁrst release of the parallel GC performed poorly on loosely coupled concurrent applications. This problem has since been ﬁxed.
+
+pong (new) pong (old) file (new) file (old)
+
+Requests per second
+
+20000 15000 10000 5000
+0 1
+
+10 100 1000 10000 Concurrent active clients
+
+Request latency (ms)
+
+10000 1000 100
+10 1
+0.1 1
+
+10 100 1000 10000
+
+Figure 1. Requests served per second (top) and latency per request (bottom) for two HTTP server benchmarks, with all clients busy, under old and new I/O managers.
+
+The ﬁrst, pong, simply responds immediately to any HTTP request with a response of “Pong!”. The second, file, opens and serves the contents of a 4,332-byte ﬁle. We used the ApacheBench tool to measure performance while varying client concurrency.
+In ﬁgure 1, all client connections are active simultaneously; none are idle. Under these conditions of peak load, the epoll back end exhibits throughput and latency comparable to the original I/O manager. Notably, the new I/O event manager handles far more concurrent connections than the 1,016 or so that the original I/O manager is capable of.
+To create a workload that corresponds more closely to conditions for real applications, we open a variable number of idle connections to the server, then measure the performance of a series of requests where we always use 64 concurrently active clients. Figure 2 illustrates the effects on throughput and latency of the pong microbenchmark when we vary the number of idle clients.
+For completeness, we measured the performance of both the epoll and poll back ends. The original and epoll managers show similar performance up to the 1,024 limit that select can handle, but while the performance of poll is erratic, the epoll back end is solid until we have 50,000 idle connections open5.
+In general, the small limit that select imposes on the number of concurrently managed resources prevents us from seeing any interesting changes in the behaviour of the original I/O manager, because applications fall over long before any curves have an opportunity to change shape. We ﬁnd this disappointing, as we were looking forward to a fair ﬁght.
+5 We have tested the new event manager with as many as 300,000 idle client connections.
+
+pong (new, epoll) pong (new, poll) pong (old)
+
+Requests per second
+
+20000 15000 10000 5000
+0 1
+1000
+
+10 100 1000 10000 Concurrent idle clients
+
+Request latency (ms)
+
+100
+
+10
+
+1 1 10 100 1000 10000
+Figure 2. Requests served per second (top) and latency per request (bottom), with 64 active connections and varying numbers of idle connections.
+9.2 Performance of timeout management
+We developed a simple microbenchmark to measure the performance of the threadDelay function, and hence the efﬁciency of the timeout management code. We measured its execution time, with the runtime system set to use two OS-level threads.
+As the upper graph of ﬁgure 3 indicates, GHC’s traditional I/O manager exhibits O(n2) behaviour when managing numerous timeouts.
+In comparison, the lower graph of ﬁgure 3 shows that the new timeout managament code has no problem coping with millions of simultaneously active timeouts. The performance of our microbenchmark did not begin to degrade until we had three million threads and timeouts active on a system with 4GB of RAM.
+Even for smaller numbers of threads, the new timeout management code is far more efﬁcient than the old, as ﬁgure 4 shows.
+10. Future work
+We have integrated our event management code into GHC, and it will be available to all applications as of GHC 6.14. Our future efforts will revolve around Windows support and further performance improvements.
+10.1 Windows support
+As we are primarily Unix developers, our work to date leaves GHC’s event management on Windows unchanged. We believe that our design can accommodate the Windows model of scalable event notiﬁcation via I/O completion ports.
+10.2 Lower overhead
+We were a little surprised that epoll is consistently slightly slower than select. This might be in part because we currently issue
+
+Execution time (secs)
+
+35 30 25 20 15 10 5 0
+0
+
+5
+
+10 15 20 25
+
+Thousands of running threads
+
+Execution time (secs)
+
+25 20 15 10 5 0
+0
+
+500 1000 1500 2000 2500 3000
+
+Figure 3. Performance of the threadDelay benchmark, run under the existing I/O event manager (top) and our rewritten manager (bottom).
+
+Execution time (secs)
+
+100 10 1 0.1
+0.01 0
+
+old new
+10 20 30 40 50 60 Thousands of running threads
+
+Figure 4. Comparative performance of old and new I/O managers on the threadDelay microbenchmark. Note the logarithmic scale on the y-axis, needed to make the numbers for the new manager distinguishable from zero.
+
+two epoll ctl system calls per event notiﬁcation: one to queue it with the kernel, and one to dequeue it. In contrast, the original I/O manager performs none. If we used epoll in edge-triggered mode, we could eliminate one call to epoll ctl to dequeue an event6.
+10.3 Improved scaling to multiple cores
+In theory, an application should be able to improve both throughput and latency by distributing its event management load across multiple cores. We already support running many instances of the low-level I/O event manager at once, with each instance managing a disjoint set of ﬁles or network connections.
+6 As a side note, the BSD kqueue mechanism is cleaner than epoll in this one respect, combining queueing, dequeueing, and checking for multiple events into a single system call. However, the smaller number of trips across the user/kernel address space boundary does not appear to result in better performance, and the kqueue mechanism is otherwise more cluttered and difﬁcult to use than epoll.
+
+We hope to create a benchmark that stresses the I/O event manager in such a way that we can either ﬁnd bottlenecks in, or demonstrate a performance improvement via, multicore scaling.
+10.4 Better performance tools
+When we were diagnosing performance problems with the I/O event manager, we made heavy use of existing tools, such as the Criterion benchmarking library [8], GHC’s proﬁling tools, and the ThreadScope event tracing and visualisation tool [5].
+As useful as those tools are, when we made our brief foray into multicore event dispatching, we lacked data that could help us to pin down any performance bottleneck. If we could integrate the new Linux perf analysis tools with ThreadScope, we might gain a broader systemic perspective on where performance problems are occurring.
+A. Additional materials
+The source code of the original, standalone version of our event management library and our benchmarks are available at http://github.com/tibbe/event .
+Acknowledgments
+We owe especial gratitude to Simon Marlow for his numerous detailed conversations about performance, and for his heroic ﬁxes to GHC borne of the tricky problems we encountered.
+We would also like to thank Brian Lewis and Gregory Collins for their early contributions to the new event code base.
+References
+[1] P. Haller and M. Odersky. Actors that unify threads and events. In Proceedings of the International Conference on Coordination Models and Languages, 2007.
+[2] T. Harris, S. Marlow, and S. Peyton Jones. Haskell on a sharedmemory multiprocessor. In Haskell ’05: Proceedings of the 2005 ACM SIGPLAN workshop on Haskell, pages 49–61.
+[3] T. Harris, S. Marlow, S. Peyton Jones, and M. Herlihy. Composable memory transactions. In PPoPP ’05: Proceedings of the tenth ACM SIGPLAN symposium on Principles and Practice of Parallel Programming, pages 48–60.
+[4] R. Hinze. A simple implementation technique for priority search queues. In Proceedings of the 2001 International Conference on Functional Programming, pages 110–121.
+[5] D. Jones Jr., S. Marlow, and S. Singh. Parallel performance tuning for Haskell. In Proceedings of the 2009 Haskell Symposium.
+[6] S. Marlow, S. Peyton Jones, and W. Thaller. Extending the Haskell foreign function interface with concurrency. In Haskell ’04: Proceedings of the ACM SIGPLAN workshop on Haskell, pages 57–68. URL http: //www.haskell.org/~simonmar/papers/conc-ffi.pdf.
+[7] C. Okasaki and A. Gill. Fast mergeable integer maps. In Workshop on ML, pages 77–86, 1998.
+[8] B. O’Sullivan. Criterion, a new benchmarking library for Haskell. http://bit.ly/rUuAa, 2009.
+[9] L. Peng and S. Zdancewic. Combining events and threads for scalable network services. In PLDI ’07: Proceedings of the 2007 ACM SIGPLAN Conference on Programming Language Design and Implementation, pages 189–199.
+[10] S. Peyton Jones, A. Gordon, and S. Finne. Concurrent Haskell. In POPL ’96: Proceedings of the 1996 Annual Symposium on Principles of Programming Languages, pages 295–308.
+[11] R. von Behren, J. Condit, and E. Brewer. Why events are a bad idea (for high-concurrency servers). In HotOS IX: 9th Workshop on Hot Topics in Operating Systems, 2003.
+

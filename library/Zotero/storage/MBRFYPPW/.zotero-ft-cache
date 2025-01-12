@@ -1,0 +1,521 @@
+Reproducible deployment with GNU Guix: theory & packaging
+Ludovic Courtès TREX CoE build system hackathon
+November
+
+https://www.acm.org/publications/policies/artifact-review-badging
+
+https://rescience.github.io/
+
+So you have your beautiful build system...
+... now what?
+
+./configure && make && make install Or: cmake .. && make && make install
+
+Containers to the rescue?
+
+whale oil? strawberry?
+
+Containers
+lack transparency
+courtesy of Ricardo Wurmus
+
+https://hpc.guix.info
+
+Guix started in 2012 ≈20,000 packages, all free software 4.5 architectures: x86_64, i686, ARMv7, AArch64, POWER9 Guix-HPC e ort (Inria, MDC, UBC, UTHCS) started in 2017 Guix 1.3.0 released May 2021
+
+guix install gcc-toolchain openmpi hwloc eval ‘guix package --search-paths=prefix‘ guix package --roll-back guix environment --ad-hoc \
+gcc-toolchain@5.5 hwloc@1
+
+guix package --manifest=my-packages.scm
+(specifications->manifest ’("gcc-toolchain" "openmpi" "scotch" "mumps"))
+
+bob@laptop$ guix package --manifest=my-packages.scm bob@laptop$ guix describe
+guix cabba9e repository URL: https://git.sv.gnu.org/git/guix.git commit: cabba9e15900d20927c1f69c6c87d7d2a62040fe
+
+bob@laptop$ guix package --manifest=my-packages.scm bob@laptop$ guix describe
+guix cabba9e repository URL: https://git.sv.gnu.org/git/guix.git commit: cabba9e15900d20927c1f69c6c87d7d2a62040fe
+alice@supercomp$ guix pull --commit=cabba9e alice@supercomp$ guix package --manifest=my-packages.scm
+
+travel in space and time!
+
+guix time-machine --commit=cabba9e -- \ install hello
+
+(define pastix (package (name "pastix") (home-page "https://gitlab.inria.fr/solverstack/pastix") (source (origin (method git-fetch) (uri (git-reference (url home-page) (commit "2f30ff07a") (recursive? #t))) (sha256 (base32 "106rf402cvfdhc2yf...")))) ...))
+
+(define pastix (package (name "pastix") (home-page "https://gitlab.inria.fr/solverstack/pastix") (source (origin (method git-fetch) (uri (git-reference (url home-page) (commit "2f30ff07a") (recursive? #t))) (sha256 (base32 "106rf402cvfdhc2yf...")))) ...))
+https://www.softwareheritage.org/2019/04/18/software-heritage-andgnu-guix-join-forces-to-enable-long-term-reproducibility/
+
+PlaFRIM (FR): Inria Bordeaux (3,000+ cores) GriCAD (FR): Grenoble (1,000+ cores) CCIPL (FR): Nantes (4,000+ cores) Grid’5000 (FR): 8 sites (12,000+ cores) Max Delbrück Center (DE): 250-node cluster + workstations UMC Utrecht (NL): 68-node cluster (1,000+ cores) ...
+
+$ guix pack \ python python-numpy python-scipy
+... /gnu/store/...-pack.tar.gz
+
+$ guix pack --relocatable \ python python-numpy python-scipy
+... /gnu/store/...-pack.tar.gz
+https://hpc.guix.info/blog/2020/05/fasterrelocatable-packs-with-fakechroot/
+
+$ guix pack --format=squashfs \ python python-numpy python-scipy
+... /gnu/store/...-singularity-image.tar.gz
+
+$ guix pack --format=docker \ python python-numpy python-scipy
+... /gnu/store/...-docker-image.tar.gz
+
+LOL
+
+guix pack hwloc \ --with-source=./hwloc-2.1rc1.tar.gz
+guix install mumps \ --with-input=scotch=pt-scotch
+
+Your rst package.
+
+0. Install Guix: https://guix.gnu.org/en/download 1. Create a Git repository—a channel 2. Write (or generate) a package de nition 3. Test it with guix build 4. Iterate :-) 5. Commit, push, enjoy!
+
+0. Install Guix: https://guix.gnu.org/en/download 1. Create a Git repository—a channel 2. Write (or generate) a package de nition 3. Test it with guix build 4. Iterate :-) 5. Commit, push, enjoy! 6. (optional) Publish binaries with guix publish
+
+Feeling lucky?
+guix import pypi my-package > ~/my-def.scm
+
+(define-public hello-trex (package (name "hello-trex") (version "1.0") (source (origin (method url-fetch) (uri (string-append "http://example.org/hello-" version ".tar.gz")) (sha256 (base32 "0wqd...dz6" ))))
+(build-system gnu-build-system ) (synopsis "The great package") (description "The tyrannosaurus Rex is back.") (home-page "https://example.org") (license license:gpl3+)))
+
+(define-public hello-trex
+
+(package
+
+(name "hello-trex")
+
+(version "1.0") (source (origin
+
+guix hash hello-1.0.tar.gz
+
+(method url-fetch)
+
+(uri (string-append
+
+"http://example.org/hello-" version
+
+".tar.gz"))
+
+(sha256 (base32 "0wqd...dz6" ))))
+
+(build-system gnu-build-system ) (synopsis "The great package") (description "The tyrannosaurus Rex is back.") (home-page "https://example.org") (license license:gpl3+)))
+
+(define-public hello-trex
+
+(package (name "hello-trex."/)configure && make install...
+
+(version "1.0")
+
+(source (origin
+
+(method url-fetch) (uri (string-append
+
+depends on gcc, make, bash, etc.
+
+"http://example.org/hello-" version
+
+".tar.gz"))
+
+(sha256 (base32 "0wqd...dz6" ))))
+
+(build-system gnu-build-system ) (synopsis "The great package") (description "The tyrannosaurus Rex is back.") (home-page "https://example.org") (license license:gpl3+)))
+
+(define-public hello-trex (package (name "hello-trex") (version "1.0") (source (origin (method url-fetch) (uri (string-append "http://example.org/hello-" version ".tar.gz")) (sha256 (base32 "0wqd...dz6" )))) (build-system cmake-build-system) (synopsis "The great package") (description "The tyrannosaurus Rex is back.") (home-page "https://example.org") (license license:gpl3+)))
+
+(define-public hello-trex (package (name "hello-trex") (version "1.0") (source (origin (method url-fetch) (uri (string-append "http://example.org/hello-" version ".tar.gz")) (sha256 (base32 "0wqd...dz6" )))) (build-system cmake-build-system)
+(inputs ‘(("openmpi" , openmpi ) ("petsc" , petsc )))
+(synopsis "The great package") (description "The tyrannosaurus Rex is back.") (home-page "https://example.org") (license license:gpl3+)))
+
+(define-public hello-trex (package (name "hello-trex") (version "1.0") (source (origin (method url-fetch) (uri (string-append dependencies"http://example.org/hello-" version ".tar.gz")) (sha256 (base32 "0wqd...dz6" )))) reference to a variable (build-system cmake-build-system)
+(inputs ‘(("openmpi" , openmpi ) ("petsc" , petsc )))
+(synopsis "The great package") (description "The tyrannosaurus Rex is back.") (home-page "https://example.org") (license license:gpl3+)))
+
+(define-module ( t-rex ) #:use-module (guix) #:use-module (guix build-system cmake) #:use-module ((guix licenses) #:prefix license:))
+(define-public hello-trex (package . . . ))
+
+(define-module ( t-rex ) #:use-module (guix) #:use-module (guix build-system cmake) #:use-module ((guix licenses) #:prefix license:))
+(define-public hello-fotrreax le called t-rex.scm (package . . . ))
+
+(define-module ( t-rex hello ) #:use-module (guix) #:use-module (guix build-system cmake) #:use-module ((guix licenses) #:prefix license:))
+(define-public helfolro-atrleexcalled t-rex/hello.scm (package . . . ))
+
+Time to build it!
+
+$ guix build -L ~/src/trex hello-trex
+
+$ guix build -L ~/src/trex hello-trex ice-9/eval.scm:223:20: In procedure proc: error: openmpi: unbound variable hint: Did you forget ‘(use-modules (gnu packages mpi))’?
+
+$ guix build -L ~/src/trex hello-trex ice-9/eval.scm:223:20: In procedure proc: error: openmpi: unbound variable hint: Did you forget ‘(use-modules (gnu packages mpi))’?
+# Edit le, add #:use-module (gnu packages mpi), save...
+
+$ guix build -L ~/src/trex hello-trex ice-9/eval.scm:223:20: In procedure proc: error: openmpi: unbound variable hint: Did you forget ‘(use-modules (gnu packages mpi))’?
+# Edit le, add #:use-module (gnu packages mpi), save...
+$ guix build -L ~/src/trex hello-trex ... /gnu/store/. . . -hello-trex-1.0
+
+guix install -L ~/src/trex hello-trex guix environment -L ~/src/trex hello-trex guix pack -f docker -L ~/src/trex hello-trex ...
+
+Last steps
+Publish Git repository Have users extend ˜/.config/guix/channels.scm:
+(append (list (channel (name ’my-channel) (url "https://example.org/my-channel.git"))
+%default-channels)
+... and run guix pull
+
+Need help?
+https://guix.gnu.org/en/help https://guix.gnu.org/manual/en/html_node/DefiningPackages.html
+
+Wrap-up.
+
+Let’s add reproducible deployment to our best practices book.
+
+ludovic.courtes@inria.fr | @GuixHPC https://hpc.guix.info
+
+Bonus slides!
+
+$ guix build hwloc isolated build: chroot, separate name spaces, etc.
+
+$ guix build hwloc /gnu/store/ h2g4sf72... -hwloc-1.11.2
+hash of all the dependencies
+
+$ guix build hwloc /gnu/store/ h2g4sf72... -hwloc-1.11.2
+$ guix gc --references /gnu/store/...-hwloc-1.11.2 /gnu/store/...-glibc-2.24 /gnu/store/...-gcc-4.9.3-lib /gnu/store/...-hwloc-1.11.2
+
+$ guix build hwloc /gnu/store/ h2g4sf72... -hwloc-1.11.2
+$ guix gc --references /gnu/store/...-hwloc-1.11.2 /gnu/store/...-glibc-2.24 /gnu/store/...-gcc-4.9.3-lib /gnu/store/...-hwloc-1.11.2
+(nearly) bit-identical for everyone
+
+Guile, make, etc. Guile, make, etc. Guile, make, etc.
+
+build processes
+chroot, separate UIDs
+build daemon
+
+client commands
+guix build hello
+
+Guile, make, etc. Guile, make, etc. Guile, make, etc.
+
+build processes
+chroot, separate UIDs
+build daemon
+
+client commands
+guix build hello
+RPCs
+
+Guile, make, etc. Guile, make, etc. Guile, make, etc.
+
+build processes
+chroot, separate UIDs
+build daemon
+
+client commands
+guix build hello
+RPCs
+
+https://github.com/canonical-websites/snapcraft.io/issues/651
+
+https://lwn.net/Articles/752982/
+
+hwloc@2.2.0
+
+cairo@1.16.0
+
+poppler@0.86.1
+
+gobject-introspection@1.62.0
+
+cairo@1.16.0
+
+libspectre@0.2.8
+
+glib@2.62.6
+
+libselinux@3.0
+
+dbus@1.12.16
+
+swig@4.0.1
+
+ghostscript@9.52
+
+lcms@2.9
+
+docbook-xml@4.4
+
+jbig2dec@0.18
+
+boost@1.72.0
+
+pcre@8.44
+
+libtiff@4.1.0
+
+python-wrapper@3.8.2
+
+doxygen@1.8.17
+
+libjpeg-turbo@2.0.4
+
+libsepol@3.0
+
+python@3.8.2
+
+unzip@6.0
+
+docbook-xsl@1.79.1
+
+tk@8.6.10
+
+gdbm@1.18.1
+
+bzip2@1.0.8
+
+libpaper@1.1.24
+
+libxft@2.3.3
+
+sqlite@3.31.1
+
+tcl@8.6.10
+
+libxrender@0.9.10
+
+libxext@1.3.4
+
+libx11@1.6.9
+
+libtool@2.4.6
+
+xtrans@1.4.0
+
+libxcb@1.14
+
+automake@1.16.2
+
+xcb-proto@1.14
+
+libxdmcp@1.1.3
+
+libxau@1.0.9
+
+libxslt@1.1.34
+
+bison@3.5.3
+
+autoconf-wrapper@2.69
+
+icu4c@66.1
+
+python-minimal-wrapper@3.8.2
+
+libbsd@0.10.0
+
+xorgproto@2019.2
+
+libgcrypt@1.8.5
+
+tcsh@6.22.02
+
+flex@2.6.4
+
+guile@2.0.14
+
+guile@3.0.2
+
+nasm@2.14.02
+
+python-minimal@3.8.2
+
+bash@5.0.16
+
+libgpg-error@1.37
+
+autoconf@2.69
+
+bison@3.5.3
+
+openssl@1.1.1f
+
+libltdl@2.4.6
+
+gmp@6.2.0
+
+libgc@8.0.4
+
+bash-minimal@5.0.16
+
+libffi@3.3
+
+texinfo@6.7
+
+tzdata@2019c
+
+readline@8.0.4
+
+gettext-minimal@0.20.1
+
+expat@2.2.9
+
+help2man@1.47.13
+
+m4@1.4.18
+
+guix graph hwloc perl@5.30.2
+
+libunistring@0.9.10
+
+libpthread-stubs@0.4
+
+util-macros@1.19.2
+
+ncurses@6.2
+
+pkg-config@0.29.2
+
+yelp-tools@3.32.2 yelp-xsl@3.34.2 itstool@2.0.6
+
+openjpeg@2.3.1
+
+fontconfig@2.13.1
+
+gperf@3.1
+
+gs-fonts@8.11
+
+xmlto@0.0.28
+
+util-linux@2.35.1
+
+net-base@5.3
+
+tar@1.32
+
+python-libxml2@2.9.10
+
+libxml2@2.9.10
+
+kmod@27
+
+xz@5.2.4
+
+freetype@2.10.1
+
+pixman@0.38.4
+
+libpng@1.6.37
+
+zlib@1.2.11
+
+libpciaccess@0.16 pciutils@3.7.0 which@2.21
+
+hwloc-2.2.0
+
+cairo-1.16.0
+
+glib-2.62.6
+
+pixman-0.38.4
+
+libxext-1.3.4
+
+libxrender-0.9.10
+
+dbus-1.12.16
+
+hwloc-2.2.0-lib
+
+libx11-1.6.A
+
+fontconfig-2.13.1
+
+libpciaccess-0.16
+
+libxcb-1.14
+
+util-linux-2.35.1-lib
+
+expat-2.2.9
+
+font-dejavu-2.37
+
+freetype-2.10.4
+
+pciutils-3.7.0
+
+libxdmcp-1.1.3
+
+libxau-1.0.9
+
+libselinux-3.0
+
+bzip2-1.0.8
+
+libpng-1.6.37
+
+kmod-27
+
+libbsd-0.10.0
+
+libffi-3.3
+
+pcre-8.44
+
+libsepol-3.0
+
+pkg-config-0.29.2
+
+zlib-1.2.11
+
+xz-5.2.4
+
+gcc-7.5.0-lib
+
+bash-minimal-5.0.16
+
+guix graph --type=references hwloc
+
+glibc-2.31 bash-static-5.0.16
+
+ncurses-6.2
+
+(operating-system (host-name "guixbox") (timezone "Europe/Brussels") (locale "fr_BE.utf8") (bootloader (bootloader-configuration (bootloader grub-efi-bootloader) (target "/boot/efi"))) (file-systems (append (list (file-system (device (file-system-label "my-root")) (mount-point "/") (type "ext4"))) %base-file-systems)) (users (append (list (user-account (name "charlie") (group "users") (home-directory "/home/charlie"))) %base-user-accounts)) (services (append (list (service dhcp-client-service-type) (service openssh-service-type)) %base-services)))
+
+(operating-system (host-name "guixbox") (timezone "Europe/Brussels") (locale "fr_BE.utf8") (bootloader (bootloader-configuration (bootloader grub-efi-bootloader) (target "/boot/efi"))) (file-systems (append (list (file-system (device (file-system-label "my-root"))
+guix sys((tmteoyupmnet-"vpeoxmitn4t")c")o/)"n) fig.scm
+%base-file-systems)) (users (append (list (user-account
+(name "charlie") (group "users") (home-directory "/home/charlie"))) %base-user-accounts)) (services (append (list (service dhcp-client-service-type)
+(service openssh-service-type)) %base-services)))
+
+(operating-system (host-name "guixbox") (timezone "Europe/Brussels") (locale "fr_BE.utf8") (bootloader (bootloader-configuration (bootloader grub-efi-bootloader) (target "/boot/efi"))) (file-systems (append (list (file-system (device (file-system-label "my-root"))
+guix system d((omtcoyupknete-"rpeox-itn4it")m")a/)"g) e config.scm
+%base-file-systems)) (users (append (list (user-account
+(name "charlie") (group "users") (home-directory "/home/charlie"))) %base-user-accounts)) (services (append (list (service dhcp-client-service-type)
+(service openssh-service-type)) %base-services)))
+
+(operating-system (host-name "guixbox") (timezone "Europe/Brussels") (locale "fr_BE.utf8") (bootloader (bootloader-configuration (bootloader grub-efi-bootloader) (target "/boot/efi"))) (file-systems (append (list (file-system (device (file-system-label "my-root"))
+guix system ((cmtoyoupnent-"tpeaoxitin4t"n)")e/)r") config.scm
+%base-file-systems)) (users (append (list (user-account
+(name "charlie") (group "users") (home-directory "/home/charlie"))) %base-user-accounts)) (services (append (list (service dhcp-client-service-type)
+(service openssh-service-type)) %base-services)))
+
+(operating-system (host-name "guixbox") (timezone "Europe/Brussels") (locale "fr_BE.utf8") (bootloader (bootloader-configuration (bootloader grub-efi-bootloader) (target "/boot/efi"))) (file-systems (append (list (file-system (device (file-system-label "my-root"))
+guix system r((emtoycupneot-"npefoxitin4t"g)")u/)r")e config.scm
+%base-file-systems)) (users (append (list (user-account
+(name "charlie") (group "users") (home-directory "/home/charlie"))) %base-user-accounts)) (services (append (list (service dhcp-client-service-type)
+(service openssh-service-type)) %base-services)))
+
+(operating-system (host-name "guixbox") (timezone "Europe/Brussels") (locale "fr_BE.utf8") (bootloader (bootloader-configuration (bootloader grub-efi-bootloader) (target "/boot/efi"))) (file-systems (append (list (file-system (device (file-system-label "my-root"))
+The next step? (mount-point "/") (type "ext4"))) %base-file-systems)) (users (append (list (user-account
+(name "charlie") (group "users") (home-directory "/home/charlie"))) %base-user-accounts)) (services (append (list (service dhcp-client-service-type)
+(service openssh-service-type)) %base-services)))
+
+Copyright © 2010, 2012–2021 Ludovic Courtès ludo@gnu.org.
+GNU Guix logo, CC-BY-SA 4.0, https://gnu.org/s/guix/graphics.
+Smoothie image and hexagon image © 2019 Ricardo Wurmus, CC-BY-SA 4.0.
+Parcel image from https://thumbs.dreamstime.com/z/parcel-illustration-drawing-engraving-ink-line-art-vector-whatmade- pencil- paper- then- was- digitalized- 143335396.jpg
+Hand-drawn arrows by Freepik from aticon.com.
+DeLorean time machine picture © 2014 Oto Godfrey and Justin Morton, CC-BY-SA 4.0, https://commons.wikimedia.org/wiki/File:TeamTimeCar.com- BTTF_DeLorean_Time_Machine- OtoGodfrey.comJMortonPhoto.com- 07.jpg.
+Copyright of other images included in this document is held by their respective owners.
+This work is licensed under the Creative Commons Attribution-Share Alike 3.0 License. To view a copy of this license, visit https://creativecommons.org/licenses/by-sa/3.0/ or send a letter to Creative Commons, 171 Second Street, Suite 300, San Francisco, California, 94105, USA.
+At your option, you may instead copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.3 or any later version published by the Free Software Foundation; with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts. A copy of the license is available at https://www.gnu.org/licenses/gfdl.html.
+The source of this document is available from https://git.sv.gnu.org/cgit/guix/maintenance.git.
+

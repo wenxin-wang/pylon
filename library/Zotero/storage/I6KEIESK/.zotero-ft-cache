@@ -1,0 +1,157 @@
+
+
+    Moloch
+    Home Demo Screenshots Help
+    Moloch
+    Home
+    Demo
+    Screenshots
+    Help
+    Downloads
+    Estimators
+    Learn
+    FAQ Settings API Docs
+    FAQ
+    Settings
+    API
+    Docs
+    Slack Us
+    Moloch GitHub
+
+Slack Channel Moloch GitHub
+Moloch
+Full Packet Capture
+
+Large scale, open source, indexed packet capture and search.
+Download GitHub Slack Us
+
+Augment your current security infrastructure to store and index network traffic in standard PCAP format.
+Moloch is not meant to replace Intrusion Detection Systems (IDS), instead it provides more visibility.
+Security
+
+Access to Moloch is protected by using HTTPS with digest passwords or by using an authentication providing web server proxy. All PCAPs are stored on the installed Moloch sensors and are only available through the Moloch web interface or API. Moloch supports encrypting PCAP files at rest.
+
+Want to report a security issue or just learn more? There's more info here .
+Scalability
+
+Moloch is designed to be deployed across multiple clustered systems providing the ability to scale to handle multiple gigabits per second of traffic. PCAP retention is based on available sensor disk space while metadata retention is based on the scale of the Elasticsearch cluster. Both can be increased at anytime.
+Interface
+
+A web application is provided for PCAP browsing, searching, analysis, and PCAP carving for exporting. Moloch stores and exports all packets in standard PCAP format allowing you to use your favorite PCAP ingesting tools during your analysis workflow.
+APIs
+
+APIs are exposed that allow PCAP data and JSON-formatted session data to be downloaded directly.
+
+View the API documentation
+ 
+Moloch Demo
+Moloch
+Demo
+
+Check it out!
+
+Username and password are both moloch
+
+Warning: Anyone can see anything you upload
+
+Also, check out our recorded talks and feature demos .
+Sessions Page
+
+The Sessions page displays a list of indexed sessions for the selected time period and search expression. It includes a timeline graph and map of the session results.
+Sessions screenshot
+  Search
+
+The search bar allows for powerful search queries to narrow down the data. Click the owl for available fields.
+  Session detail
+
+Get more information about any session and view the session's packet data by clicking the "+" button.
+  Value actions
+
+Hover and click any value to view a dropdown menu of actions, like applying that value as search criteria.
+  Export PCAP
+
+You can export search results as PCAP or CSV by clicking the "Actions" ( ) drop down menu on the top right.
+  Timeline search
+
+Click and drag an area in the timeline to filter sessions by time.
+  Country search
+
+Click a country on the map to apply it as search criteria.
+SPI View Page
+
+The SPI (Session Profile Information) View page allows you you to view unique values with session counts for each of the captured fields.
+SPI View screenshot
+  Toggle categories
+
+Click on any section to open or close any field category.
+  Search for fields
+
+Search for fields within a category by using the input box within a category.
+  Toggle fields
+
+Click on a field in the top section of a category to toggle the field's visibility. You can also click the load/unload all buttons to load/unload all the fields in that category.
+  Cancel Load
+
+Click the cancel button on the top right of the page if the page is taking a long time load data or you made a mistake when you issued a query.
+SPI Graph Page
+
+The SPI (Session Profile Information) Graph page shows a temporal view for the top unique values of any field.
+SPI Graph screenshot
+  Total
+
+The first timeline graph and map shows an aggregation of all the results below. Click on the "x" button on this map to hide all maps.
+  Search for fields
+
+Make a selection from the SPI Graph drop down on the top left to view the unique values for different fields.
+  More fields
+
+Change the number of Max Elements to display more results.
+  Sorting
+
+Change the sort by dropdown to change how the results are sorted. By default, the results are sorted starting with the highest unique field value.
+Connections Page
+
+The Connections page shows a network graph of your search results.
+Connections screenshot
+  Lock
+
+Click and drag a node to lock it into place in the graph.
+  Node Info
+
+Hover over a node or a link to view more information (or hide it).
+  Node/Link Weight
+
+Change the Node/Link Weight dropdown to change how the node and link sizes are calculated.
+  Change Source/Destination Nodes
+
+Make a selection from the Src and Dst drop downs to visualize your data based upon different captured field relationships.
+Download Moloch
+NOTICE CHANGELOG Instructions Open an Issue
+  Loading Moloch downloads...
+Moloch 2.2.3
+
+Latest Release 2020-03-09
+Centos 6 Centos 7 Centos 8 Ubuntu 16.04 Ubuntu 18.04
+  Sorry, we couldn't retrieve Moloch downloads.  
+Please try again later.
+
+Meanwhile, view Moloch on GitHub
+More Downloads
+Help!
+FAQ
+
+Read our FAQ first!
+Slack
+
+Join our Slack workspace to discuss Moloch and ask questions.
+Issues
+
+Find a bug? Want a new feature? Open an issue on GitHub .
+Community Feedback
+Have feedback about the Moloch community? Tell us what you think here .
+
+Want to add to our FAQ? Found an issue in this site?
+
+  This site's code is open source. Please contribute!  
+Moloch Logo
+Moloch     Moloch GitHub Found an Issue? Docs     API     FAQ

@@ -1,0 +1,348 @@
+
+Log in
+About FAQ Manual Blog Apply Newsletter New Newsletter
+Sign up for Still Computing, our biweekly newsletter for curious programmers, or preview the issue below.
+Subscribe
+April 14, 2020
+10 Lines a Day: An Interview With Janice Silcox
+by Nick Bergson-Shilcock
+Cartoon
+by Katherine Ye and Terry O’Shea
+Up Is Down, Down Is Up: An Interview With Sue McCain
+by Miles McCain
+Vintage Computing
+via IBM's archive
+Dear Zu
+Advice for good open source community management
+Caption This Cartoon
+Your shot at greatness
+System 7 Programming
+by John Earnest
+Programming Contest
+It's folders all the way down
+What We're Coding To
+Four Tet album cover
+
+This song makes me feel connected and happy. It's calm, upbeat, and focused. It's my favorite song from an album that I listen to back-to-back, and I think it makes great coding music!
+
+– Nasreen
+
+Lush by Four Tet
+Issue 4: Into the Mainframe
+
+Welcome to Still Computing #4!
+
+Still Computing is a newsletter for curious programmers, largely written by members of the Recurse Center community.
+
+This week, we have two interviews with women who worked as programmers in the 1960s, with insightful and humorous reflections on software, their careers, the ways computing has changed over the years, and the ways it hasn’t. Read on to learn why programmers only wrote ten lines of code per day and never touched a keyboard, and why you should remember to be grateful for the existence of libraries.
+
+We also have a piece by John Earnest about writing new software for Macintosh System 7, the winner of last week’s programming contest, a lively discussion in response to a reader’s question about managing open source projects, and a decidedly prehistoric cartoon for you to caption.
+
+We hope you like it!
+
+- James
+
+P.S. We’ve decided to open RC batches to remote participation for the rest of 2020, regardless of when we can return to our physical space. Read more on our blog or apply for one of our upcoming batches!
+What We're Coding To
+Four Tet album cover
+
+This song makes me feel connected and happy. It's calm, upbeat, and focused. It's my favorite song from an album that I listen to back-to-back, and I think it makes great coding music!
+
+– Nasreen
+
+Lush by Four Tet
+10 Lines a Day: An Interview With Janice Silcox
+by Nick Bergson-Shilcock
+
+My aunt, Janice Silcox, first programmed a computer during her junior year of college. The year was 1967, and it was also her first time using a computer. As a math major at Denison University, she signed up for a Fortran programming class where she used a Burroughs mainframe that took up an entire room. The course wasn’t run by the computer science department (because there wasn’t a “computer science” department). The class wasn’t even offered for credit. She took it anyway, just for fun.
+
+By her senior year, the university had a new, “compact” IBM 360. In lieu of an honors project, my aunt worked with a professor and another woman in her class to learn how to program the 360 as senior research. Nobody at the college knew how to do it, so the three of them read the manuals and learned assembly language together.
+
+The experience proved valuable, and it led to a job right after graduation. I spoke with her recently about her experience working as a programmer in the late sixties.
+
+Nick: What did you do after you graduated?
+
+Aunt Janice: I joined the UNIVAC division of the Sperry Rand Corporation. I started July 1st, 1968, and I was one of 23 programmers that started together. In that group, there were thirteen women and ten guys. Everybody except one lady had just graduated from college. Most of us were math majors, but we also had a French major, a music major, a psych major — obviously for computers you don’t have to be a math major, you just need a logical mind!
+
+Nick: How did work begin?
+
+JS: We had three months of training. The first week or so, long-time employees spoke to the group on various topics, including company history, background on UNIVAC mainframes, and data communications. Then a recent training class graduate taught us Fortran, which was a refresher course for me.
+
+We then had two programming language courses. One was for the 418, a “word” machine, and the other was for the 9300, a halfword byte machine. That's when the assembly language light bulb came on for me and I really got it! In college we sort of fumbled around; with the help of an instructor, everything became crystal clear.
+
+For the final five weeks of training, we were split into two groups and we worked to learn the ins and outs of the proprietary machines. We were assigned to projects and I ended up as an associate programmer trainee in the 9400 group, working on a new fullword byte machine.
+A UNIVAC 9400 installation A UNIVAC 9400 installation. Photo credit H. Müller .
+
+N: What was programming like back then?
+
+JS: We wrote our code by hand on coding pads. What did you think we’d write it on: a PC?! The coding pads had 80 columns, and we’d write out each line of our programs on them. Columns 72 to 80 were supposed to be for numbering your cards, because sometimes the cards would be dropped and these were sequence numbers that the card sorter could use to re-sort them.
+
+The average number of lines you were expected to write in a day was ten! That’s because some days all you were doing was testing and you weren’t writing code.
+
+We’d write our code and then send our pages to the keypunch room. Then the keypunch operators would type in what we wrote and send the punch cards back to us. That was amazingly quick, like two hours! If it was less than a page or so, maybe only fifteen minutes.
+
+Nick: Why did you send your coding pads off to someone else to type up?
+
+JS: Because most people didn’t know how to type! I had taken typing in ninth grade, but most people older than me didn’t know how to type, and so everyone was supposed to take their cards to the punch card group. The group was really good — it was their job. They were fast and rarely made a mistake.
+
+The keypunch operators were all women; that's the way it was. The computer center had a few keypunch machines available to programmers, in case we needed to make a quick correction, but we were told to limit our punching to just a few cards.
+
+The keypunch group disbanded sometime in the mid seventies, because there were enough new people who knew how to type and some of the older folks had also learned by then.
+
+Nick: What did you do once you got your punch cards back?
+
+JS: We’d go to the computer center to “assemble” our program. We usually had half an hour or an hour to ourselves, and we had to sign up for it.
+
+In the computer center, we had operators. Heaven help that a programmer mount a tape or change the paper in the printer— that was somebody else’s job! Later, we were allowed to do that ourselves.
+
+We did crawl around on the floor, and we all had to wear dresses and heels and stockings, so we’d get runs in our stockings. We had to hook up cables and peripheral devices, modems and Uniscopes. One time, there was a mouse issue — not like a PC mouse, a real one — and we found some cables that had been gnawed on.
+
+To actually run your code, you'd put job control around it and run whatever job you were trying to do. Hopefully you wouldn’t get any assembly errors.
+
+When I first joined the 9400 group in October 1968, the operating system was still being developed and our jobs were run remotely in Roseville, Minnesota. The jobs - that is, the cards - were transmitted over phone lines. Since you only had one or two "shots" a day, you worked very hard to limit your errors and code correctly! You didn’t just scribble something down to try it.
+
+Eventually we had our mainframes in Blue Bell, Pennsylvania, and we were able to run jobs day and night.
+
+Nick: What was it like to debug?
+
+JS: That was fun! Hopefully you didn’t crash the machine completely. You’d run something and if it didn’t work right, you’d get a print out. It was all hexadecimal, and you learned very quickly what you were looking for at certain addresses.
+
+We also had to do flowcharts. In training class we did a lot of flowcharts — you always had to have all the error paths covered. You really did design in your head. The better your flowchart was, the easier it was to write and debug your program quickly.
+
+Nick: What system and type of software did you work on?
+
+JS: The 9000 series. In 1968, I was put on the 9400 project. They were halfword machines. I think the 9200 and 9300 OS was written in 32k. That’s how many bytes you had to write an entire operating system!
+
+I was in the data communications group. Our device was called a Uniscope, and it had a screen and a keyboard like a PC would have. The people who would use these systems were banks and airlines, for things like checking in and making reservations.
+
+My group didn't write the applications, we handled the actual data transmissions. On the input side, we parsed the data as it came in and stored it in libraries. The end users would read from those libraries and write applications to handle the input. The application would then process the data and pass the result back to the operating system to be transmitted out and displayed on a Uniscope or even a Teletype.
+
+We were the people who helped get the data to and from the mainframe to the device. When you typed a key, we had to make sure it got to the mainframe and then verify the data. We were big on error processing and retransmissions and error recovery, because it was new, and it was common to not get the data sent correctly on the line. The user wouldn’t know that, but sometimes it would take a couple of tries to get the data correctly.
+A Sperry Rand UNIVAC Uniscope 100 data terminal. A Sperry Rand UNIVAC Uniscope 100 data terminal. Photo credit Adamantios .
+
+Nick: How were the teams organized, and did you program with other people?
+
+JS: In our group, we did our own unit testing. Then it went to the Component Test group, and then the System Test people, who tested the whole operating system to make sure it worked together.
+
+Then we passed it off to Testing and Evaluation. They would come to us and ask what our product was supposed to do, and then they developed their own tests. They were the ones who really went down the error paths to make sure everything was good.
+
+We had beta test sites, who were clients willing to take the new versions of the operating system or new features. Hopefully everything worked, but when it didn’t, they’d call field support and then field support would call us. We’d get tapes in from the field where things didn't work. We’d take the tape down to the computer center, print out the dump, and try to figure out what went wrong. Then we’d find the bug, make a patch, and hopefully get the patch to the customer quickly. Then we’d update our software for the next release of the system.
+
+We had deadlines — you know, this product had to work by a certain date, and we had to get it out into the field. We hated the phrase, "When the whistle blows, the product goes!"
+
+There was also a publications group; they wrote the user manuals. We gave them input and the overall picture, but the pubs people wrote it in user-friendly terms, with pictures.
+Janice Silcox, c. 1968 or 1969 in front of the main UNIVAC building in Blue Bell, Pennsylvania. Janice Silcox, c. 1968 or 1969 in front of the main UNIVAC building in Blue Bell, Pennsylvania.
+
+Nick: Did you like the work?
+
+JS: At the beginning, I can see myself standing in my cube — I was always in a cube — thinking, “I cannot believe they are paying me to do this.” Mom and Dad had just been paying for me to go to college, and now somebody was giving me money to do what I had done a little bit of in college.
+
+I started July 1st, 1968, and I worked there until December 31st, 2001 — I was there 33.5 years to the day. I enjoyed the work, I enjoyed the people. I loved it so much.
+A cartoon of two people, with one person pointing at a laptop sitting on a tree branch and speaking.
+Illustration by Katherine Ye. Caption by Terry O’Shea.
+
+“I see you've mastered git branch —now why don't you try git fetch ?”
+Up Is Down, Down Is Up: An Interview With Sue McCain
+by Miles McCain
+
+My grandmother, Sue McCain, thought she hated programming until she tried it. But once she did, there was no looking back: she started programming in the mid sixties using Fortran, and is still writing code today. (She's currently learning Haskell!) We spoke about her first encounters with computing, how it has changed over generations, and the joy she still finds in programming.
+
+Miles: How were you first introduced to computing?
+
+Well, my first introduction to computers was a course that somebody from IBM taught when I was in college. It was really boring, and convinced me that I wanted nothing to do with computers.
+
+I was a math major, but math in those days had nothing to do with computers. All I knew was that a friend of mine worked for IBM wiring boards. So that and the boring class convinced me that computers were not my future.
+
+But I eventually went to work in the marketing department of a bank. We wanted to perform some analyses on our data, so we called in the Operations Research (OR) group. They handled all the computers. It consisted of about four guys—they were all right out of college, like me—and they performed the analysis for us.
+
+I saw what they were doing with the machines, and it was fascinating. I loved it! And so I moved into the OR group and started programming in Fortran. There were no classes to attend or tutorials to follow back then, so you learned from a book. Daniel McCracken's A Guide to Fortran Programming — I think that's how I learned. It wasn't even a hardcover book, it was pretty much just a little magazine. 88 pages, and that was all you needed to know. (Now, I see the Haskell programming book is 1,200 pages? But I suspect no one actually reads it; people learn in different ways now. Things have changed!)
+
+M: How was programming different from other types of work you had done?
+
+Well, for one, it was fun! It was wonderful. I loved it. The marketing work had been quite boring. The programming, though, was terrific. And you got to work with everyone in the bank — whenever someone needed something, they would call us up and we'd help them out. So you'd get to know everyone in the bank and see the way everything was running.
+
+M: What kind of computer were you using in those days?
+
+The bank only had one computer: an IBM 7070. And you'd boot the 7070 from the IBM 1401. It was all punch cards. You'd run the cards through the reader and then put it all on tape. You'd have the entire computer room to yourself—a huge room, and this was in New York City, so rooms like that were rare.
+
+M: Was there any concept of "personal projects" then, or was everything done for the company?
+
+Everything was done for the company, but that didn't mean we couldn't have fun while doing it! I remember we used to write all these subroutines, and whatever you named the subroutines would be printed out in the console. I named all of my subroutines things like "ONE" "GREAT" "PROGRAM" "FROM" "SUE" "MCCAIN", and that would print out in the console as it ran! This is very bad programming, but I did it anyway. We had a lot of fun doing that kind of stuff.
+
+For instance, later in my career I kept a weighted punching clown in my office. As programmers, we liked our users, but we also sort of hated them. They would make all these unreasonable requests, give us bad data, stuff like that. So all my staff could come by my office when they were mad at their users and punch the clown to feel better. It was fun.
+
+I had two doors in my office, and one time some guy I'd never seen before in my life walked into my office without knocking, punched the clown, and walked out the other door. Never saw him again.
+
+Another time, we were trying to decide what to name two new computers. I suggested "Up" and "Down," so that we could say things like "Up is down" and "Down is up." I didn't get my way (thank goodness), but I almost did! I think that speaks to the way we treated the work.
+
+And we kept the sense of humor all the way through, even towards the end when I was about to retire. I think that this sense of humor is something that many programmers share. There's a true camaraderie to it.
+
+M: When did you first start programming for your own personal enjoyment?
+
+You know, I think it only really started after I retired and left the bank. I didn't even have a PC at home when I retired! I bought one then. At that point, I started helping out on [my siblings' farm] by designing programs for inventory management, accounting, personnel control, equipment maintenance, all sorts of things. That was a lot of fun, but it was also just business stuff.
+
+But now, things are different. There's no more business for me to do anymore, so it's all just learning for the sake of learning. I'm studying Haskell just for the fun of it! I'm assuming I'll eventually find a way to use it, but I'm content with "just" learning for now.
+
+M: What has changed about computing since you started?
+
+It may sound small, but probably the idea of libraries. There are zillions of libraries now for just about everything you can imagine, but back then there were only a few. So you had to reinvent the wheel all the time. You had to know your system from bottom to top. And I think the way things are done now is a big improvement.
+
+And of course user interfaces have changed drastically. Using the GUIs nowadays is much easier than the cryptic interfaces we had back then. It's probably easier to build those interfaces now, too — we had to build all that ourselves back then, and you don't need to anymore.
+
+M: What hasn't changed about computing since you started?
+
+Well, one of the things that hasn't changed is the satisfaction I get from doing it. It's such a pleasure. In the early days, since there were no real schools for programming and computer science, anybody who was in computing was there because they loved it.
+
+As a manager, the best systems programmer I ever had was a dropout — a Bill Gates type. Of course, trying to get him hired into a stuffy old bank was pretty darn hard! "A dropout? You're joking!" they said. But those were the best programmers. You really didn't need a formal education. (And in those days, there was no such thing as a formal education with computers!)
+
+Most of the people I worked with had a passion for computing — they found joy in it — and I suspect that's as true now as it was then.
+Four trucks carry an IBM 7070 mainframe in 1959.
+
+The IBM 7070 mainframe that Sue McCain worked with early in her career as a programmer was the company’s first computer to be fully built on discrete transistors rather than vacuum tubes. It weighed 11.5 tons; these four trucks are carrying one machine to its new home at the Bank of Naples in 1959.
+
+From the IBM archive
+Dear Zu
+
+Dear Zu is an advice column where anyone can pose a question to our community and get a taste of what it’s like to participate in RC. You submit questions (about code, tools, systems, jobs, or anything related to life as a programmer), we put them on Zulip (our internal chat system), and then we publish some of the most interesting responses from our community of over 1700 really nice programmers!
+
+This week, Mouse asks:
+
+    I created an open source project and I have some contributors now (woo!). What are suggestions, best practices, etc, for working with contributors? I want to make sure people feel heard, appreciated, and respected, while also keeping my vision for my project and making effective decisions. 
+
+Recursers agreed that good communication and respect for contributors is key to managing open source projects effectively, but had very different interpretations of what that means in practice!
+
+    Ryan: I think Andy Chu has been doing a good job with Oil Shell showcasing contributor efforts, encouraging people to write docs, tests, new features, etc, all while maintaining his vision for the project, even as that vision has changed over time. So a shout out to him!
+
+    Oil Shell: https://www.oilshell.org/
+
+    An example of a recent post where Andy highlights contributors: https://www.oilshell.org/blog/2020/03/release-0.8.pre3.html
+
+    Tim: I was asked to answer here (I run Zulip), so let me collect some thoughts.
+
+        I think the most important thing is thinking about the contributor experience for your open source project as a product, and trying to make it a product with a great user experience! Most of the things below are ways of working towards achieving this goal.
+        Responsiveness is key! Aim to give a reply to every PR within 24 hours, even if it's just a thank-you-I'll-look-soon if your project is small. Similar to what you'd do with customer support for a product you're launching.
+        Have a chat tool like Zulip that you encourage contributors to join and ask questions. I am obviously biased but Zulip saves me soooo much time doing this that I can still reply to every thread even if I do several hours of focused work at a time and even though we have like 50+ people doing stuff, since the UI makes replying later with a friendly, welcoming message a good experience for contributors.
+
+    On the product side of things, here are some ideas to help understand what I mean by that type of thinking:
+
+        Run a sprint! Even if it's just a few friends, looking over people's shoulders while they try to get started with your software is incredibly informative about what's right and wrong with your tool's developer on-boarding experience. It's like a usability study for your developer experience.
+        Plaster your website with encouragement to visit the chat, introduce oneself, and/or ask for help! This helps you get opportunities to talk to your users/contributors.
+        Write down what you learned from that experience and spend a bunch of time serializing that to issues at least. In the early days, like 25% of the Zulip issue tracker was ideas for making the codebase or developer experience better — they make great first issues!
+        Look at the feedback you needed to give on pull requests. See if you can make your tooling give most of that feedback instead. (For Zulip, we did a ton of work on linting and testing to help with this. The first N pull requests, half the feedback was random style variations; now we don't spend much time on that because our tools help folks do it right the first time).
+        Repeat until you feel like a person could stumble across your website and have a great experience without having to talk to you before their PR is submitted.
+        When you're at a size where a summer intern would be interesting, doing Google’s Summer of Code is a great way to get dozens of students to test your on-boarding experience.
+
+    I've been meaning to write a giant essay blog post on this topic for the Zulip blog, since I have tons of things I'd like to say on the topic, but I can never find the time :(.
+
+    Ori: It's all about clear communication.
+
+    Coming at it from the other side, as a contributor, opening an issue feels like you're making a statement about how things should be, and filing a pull request feels the same, but with an even larger investment. This makes it hard to figure out what you can do to help out, while preserving the vision.
+
+    For larger projects, I think that one of the best things that you can do to help here is to have a low overhead, relatively low latency place for people to discuss the project. The projects I'm working with tend to use IRC channels for this, but any sort of chat works.
+
+    This gives a place for people to ask low overhead questions, and discuss the approach they want to take before proposing solutions. It allows iteration on the concepts to happen before any real investment occurs, which means that people are both more willing to make the investment, and aren't as bummed out if it turns out that their idea doesn't fit — or maybe they even come away with an even better solution or approach to a problem.
+
+    Having a contributing document, where you describe what you expect people to do and how, is also worthwhile. If you're concerned about vision, spell out what you consider out of scope there too.
+
+    And, a small addendum on vision: I've not found this to be a problem. Many of my contributors seem to be more concerned about whether a change will fit into the project than I am. More than once, I've had a contributor that had an idea for a more sweeping change that I think is a great idea, but they were holding back because they weren't sure how it'd fit.
+
+    Aditya: "It's all about clear communication."
+
+    I second that, also coming from the other side as a user and maybe contributor.
+
+    I really like projects that:
+
+        Set clear straightforward expectations about what the rules of engagement are: the owner's commitment, intended pace of development, what kind of contributions are welcome, how the owner intends to govern the project, contributor agreements, etc.
+        Provide a structured way to contribute, like bug templates, labeled issues, dos and don’ts.
+        Respect my time as a contributor. Code review and iteration should be as low friction as possible for me and the owner (GitHub-like workflows make me sad).
+        Adopt an etiquette, if not a full Code of Conduct, and enforce it with kindness.
+        Choose the appropriate software license.
+
+    Anja: I do want to establish that a lot of these things are really time-intensive.
+
+    It is okay to pick and choose what you have time for. It is okay to only engage in PRs with folks that you already have an established relationship with. It is okay to close issues that you do not see yourself working on in the foreseeable future.
+
+    It is okay to sometimes fail on the communication end. You are giving a lot of your generous time and energy. The current structure of the world is to raise the highest expectations on those who are already giving the most of themselves. Altruistic folks set really high standards for themselves.
+
+    Please do set personal boundaries. Please do honor your personal boundaries. Your time and energy has value. Do the best you can, given the resources you want to give, and then let yourself take a step back.
+
+    Aditya: Agreed! I'm sorry, I did not mean to imply "do all the above upfront". I meant to illustrate the parts of each point I made.
+
+    To clarify, a "starter" version of the above is:
+
+        Expectations, in a paragraph or two.
+        “Hello, this is a project intended for my own use. Feel free to fork and modify at will. I will be happy to discuss ideas in issues and explore ways to improve the project. Please do not send PRs directly. Be aware that the pace of development will be the order of weeks for the foreseeable future.”
+        A structured way to contribute.
+        Copy-paste a template from $favourite project. These are increasingly common. Meta-data like labels etc. can evolve over time.
+        Respect contributor time.
+        I don't know how to do this right on Github. I much prefer Gerrit, or if not that, a patch-based workflow.
+        Etiquette / CoC.
+        Again, lift a personal favorite and run with it as long as it makes sense.
+        Software license: ties into #1 and #3 above.
+        Depends on the project goals and expectations of contributors. I default to the MIT license, unless I really have to think hard. The MIT license also lets me comfortably say "well, all my code is yours, so you do as you please in your world and I do as I please in mine".
+
+    Anja: This is super neat, Aditya!
+
+    Andrew: I am in agreement with the other things people have said in this thread. I just wanted to contribute one little thing that I think I've arrived on, which can go a long way to these goals. It's to hold as a fundamental premise that everybody's use cases are valid. Sometimes it can take a little digging to figure out what someone's use case is. Perhaps they are asking for a new feature, that doesn't really make sense for you to add to your project. But it remains true that their use case is valid . If you can figure out what their use case is, then you can probably prescribe some actions they can take to solve their problem, which may or may not involve your open source project. For me, this mental model helps to avoid tense conversations, and frames things differently than "accepting" or "rejecting" a contribution. Rather, each contribution is a little mini mystery where you figure out what they're trying to do, and help them accomplish their goals in a way that works best for the project and the contributor.
+
+    Ryan: I think the "everybody's use cases are valid" point that Andrew made can be a trap for open source projects. This is coming from a perspective having been a part of a few very opinionated open source projects, namely Conjur and elementary OS. Of course with open source, people have the legal and moral right to use your software for whatever case they're interested in. You don't need to validate it, though! Sometimes the best answer is "oh thank you for asking about [x use case] but we're not interested in that."
+
+    I'll give a couple examples. A lot of Conjur's secret management functionality is built around Postgres features. We use pg streaming replication for high availability, we use stored procedures to implement auditing and the permissions model, we use rich JSON data fields in a number of areas. People in the community a number of times have proposed making Conjur compatible with another database, like Cassandra or MongoDB are two that came up. And the answer is basically no. Decoupling Conjur from the db tech it's built on and abstracting over all that would be a significant undertaking and make the codebase really interesting, where we're going for a boring, reliable, auditable codebase for a security-critical application. That's not a valid use case /for Conjur/.
+
+    In elementary OS, the community often contributes dekstop themes for which they would like to see official upstream support. The elementary team takes design seriously and so we tend to attract a lot of designers who want to give it their touch of creativity. The answer is basically no, elementary OS will not support themes. Part of our contract with app designers for elementary is that you are in control of the look and feel of your app, subject to the interface guidelines provided, and the OS will not clobber that. So custom theming is not a valid use case for elementary OS.
+
+    Those conversations are usually not tense. Of course people are welcome to take the code in any direction that they like, but the project doesn't need to be a party to that. Part of the burnout that a lot of open source maintainers feel can come from a combination of saying "yes" to a niche use case too often, taking on the accompanying burdens on time & mental capacity, and laboring over every "no" and trying to leave nobody unsatisfied, rather than saying "not interested" and letting that be enough.
+
+Have a question for Dear Zu? Send it to us at stillcomputing@recurse.com .
+Caption This Cartoon
+
+Caption this cartoon by Katie Surrence:
+Two cave people are painting on a cave wall. One is writing in binary, and the other is writing in a modern programming language and speaking.
+
+Submit your captions by 5pm on Wednesday, April 22nd, for a chance to win a $25 gift certificate to your local bookstore. Send your entries to stillcomputing@recurse.com with CAPTION in the subject line.
+System 7 Programming
+by John Earnest
+
+I have a deep-seated fondness for early Macs. The first computer I could call my own — and the machine I taught myself to program on — was a Macintosh SE I rescued from a dumpster. How better to celebrate my affection for these machines and learn about computing history than to write something new for them?
+
+While it is certainly possible to use modern tools to build software that targets System 7, cross-compiling as one might for an embedded system, I can't help but feel that this diminishes the romance of the endeavor. There's something delightful about a crisp, pixel-perfect black-and-white screen and the calming ambience of the Chicago typeface floating overhead. Emulating the hardware is pragmatic, but doing development from inside a Macintosh is aesthetically necessary.
+
+In this article I'm going to highlight useful resources for getting started in Macintosh programming, and some of the challenges in resurrecting old software for the platform.
+
+Hunting and Gathering
+
+Getting my hands on a workable toolchain involved tracking down software and documentation from a variety of scattered sources. In the past, Apple hosted many useful downloads on their support pages, but sadly the shifting sands of SEO and website overhauls have buried or extinguished nearly all of them.
+
+The best surviving repository of documentation I have found is Vintage Apple . Most valuable is Inside Macintosh , Apple's official and lovingly detailed reference for every layer of the Mac software and hardware stack. Beyond this, Vintage Apple also hosts numerous technical and promotional materials which can fill in gaps and provide more examples of how historical developers did their work. If I were trying to make use of real hardware, Vintage Apple's collection of drivers could prove vital. As an alternative, Internet Archive has a rich collection of digital materials - including impressive in-browser emulation for many games and HyperCard stacks - but scans of reference documentation are harder to find in the stacks.
+
+On the software side, the Gryphel Project is home to the excellent Macintosh Plus emulator Mini vMac , but also a curated set of freeware and shareware applications which work with it. What this collection lacks in breadth, it makes up for tremendously in quality. As we will see below, artifacts from elsewhere may be harder to use than expected.
+
+The Macintosh Repository is another great resource, including some lapsed commercial software in a gray area of copyright, and many alternate versions of some titles. Of particular note is their collection of THINK compilers, including THINK C, a highly-regarded Mac IDE for C89 (with some custom C++ -esque extensions over time). Curation is less consistent on the Macintosh Repository than on Gryphel, and software spans a larger range of history; quite a bit of the material here is from the much later PowerPC era.
+
+Packages, Boxes, and Bags
+
+Collecting the software I need — an operating system, a compiler, some utilities — is only one part of the story. Before the dawn of macOS, Macs used a filesystem called HFS (Hierarchical File System). In HFS, files and directories can be tagged with a variety of metadata: application associations, custom icons, and more. Additionally, files themselves contain two separately-accessible forks . The "data" fork of a file contains arbitrary binary data, while the "resource" fork is structured like a simple database organized into resource types like icons, dialog boxes, and menus.
+
+The filesystems which ultimately won out on "modern" operating systems, like exFAT or ext4, are far less expressive; usually the only metadata permitted on files or directories are a limited set of permissions attributes and timestamps, and there is no universal mechanism for structured, extensible data like a resource fork. Thus, when early Macs needed to communicate over networks via the lowest common denominator, a number of formats emerged for converting a Macintosh file or application into a binary which would not be mangled in transport. Mac files preserved online will be found in a scattershot of such formats, which must be unpacked, decompressed and integrated. As in DOS, these "portable" files identify themselves with an extension on the filename.
+
+The .HQX file is one of the most common packaging formats, also known as BinHex . You may occasionally find these with a .BIN extension. Gryphel has a binary of the encoder/decoder packaged in a Mini vMac-compatible .DSK image.
+
+If you find a raw .SEA file (Self-Extracting Archive) you may be in for disappointment. These are Macintosh applications in their own right which self-decompress, and if they are sitting naked on a modern filesystem they have probably already been damaged in transit.
+
+The other common format is .SIT , the StuffIt format. StuffIt was a popular proprietary compression format during the early Mac era, and the developers still sell updated versions. Once again, Gryphel comes to the rescue with a copy of the (shareware) decompressor . Using the modern decompressor may help you examine the contents of an old archive and pull out inherently portable data files like JPEG images or text files (modulo Macintosh \r line endings), but it is only available on macOS.
+
+Yak Shaving
+
+Having attained a usable development environment under emulation, I am now elbow-deep in the HFS format. While some tools exist for transporting individual text files and the like between the host/emulator boundary, I want a bulk solution to dumping everything intelligible out of an HFS volume image and assembling a fresh one from a directory of files on a host system. This will allow me to work entirely in the emulator, but synchronize my source tree with an (external) Git repository, allowing me to easily back up and distribute my work. So far, dumping source code out of an HFS volume works, and going the other way is... well, a work in progress.
+
+My adventures in System 7 have only begun, but with each foray I emerge with new insights and appreciation for the developers at Apple. Resource files, QuickDraw, and the rest of the Macintosh Toolbox are truly elegant systems from a more enlightened age.
+Programming Contest
+
+In the last issue we challenged readers to submit programs that print our motto — “Never Graduate!” — in a creative or offbeat way. Daniel Temkin wrote the winning submission in Folders, a programming language he created himself. Folders is a language in which instructions are expressed using only nested structures of folders. Check out this video of Daniel's winning submission , and then read more about Folders .
+
+Congratulations to Daniel, and thank you to everyone who submitted programs!
+
+Our next issue will be out on April 28th. In the meantime, if you have thoughts or feedback about Still Computing, please reply to this email. We would love to hear from you. Thanks for reading!
+About FAQ Code of conduct Blog Team Hire Joy of Computing
+Apply
+Twitter Instagram

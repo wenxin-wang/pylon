@@ -1,0 +1,4110 @@
+Introduction to Quantum Information Science Lecture Notes
+Scott Aaronson1 Fall 2018
+1With crucial help from: Corey Ostrove and Paulo Alves
+
+Contents
+
+Page
+
+1 Course Introduction and The Extended
+
+Church-Turing Thesis
+
+7
+
+2 Probability Theory and Quantum Mechanics
+
+11
+
+2.1 Linear Algebra Approach to Probability Theory . . . . . . . . 15
+
+3 Basic Rules of Quantum Mechanics
+
+19
+
+3.1 Quantum States and The Ket Notation . . . . . . . . . . . . . 19
+
+3.2 Transforming Quantum States . . . . . . . . . . . . . . . . . . 21
+
+3.3 Quantum Interference . . . . . . . . . . . . . . . . . . . . . . 22
+
+3.3.1 Global and Relative Phase . . . . . . . . . . . . . . . . 23
+
+4 Quantum Gates and Circuits, Quantum Zeno
+
+and The Elitzur-Vaidman Bomb
+
+25
+
+4.1 Quantum Gates . . . . . . . . . . . . . . . . . . . . . . . . . . 25
+
+4.1.1 Generalized Born Rule . . . . . . . . . . . . . . . . . . 26
+
+4.1.2 General Properties of Quantum Gates and Measurements 26
+
+4.2 Quantum Circuit Notation . . . . . . . . . . . . . . . . . . . . 29
+
+4.3 Quantum Zeno Eﬀect . . . . . . . . . . . . . . . . . . . . . . . 30
+
+4.4 The Elitzur-Vaidman Bomb . . . . . . . . . . . . . . . . . . . 32
+
+5 The Coin Problem, Distinguishability, Multi-Qubit States
+
+and Entanglement
+
+34
+
+5.1 The Coin Problem . . . . . . . . . . . . . . . . . . . . . . . . 34
+
+5.2 Distinguishability of Quantum States . . . . . . . . . . . . . . 35
+
+5.3 Multi-Qubit States and Operations . . . . . . . . . . . . . . . 37
+
+5.3.1 Multi-Qubit Operations . . . . . . . . . . . . . . . . . 37
+
+5.3.2 Entanglement . . . . . . . . . . . . . . . . . . . . . . . 39
+
+2
+
+CONTENTS
+
+3
+
+6 Mixed States
+
+42
+
+6.1 Mixed States . . . . . . . . . . . . . . . . . . . . . . . . . . . 42
+
+6.1.1 Density Matrices . . . . . . . . . . . . . . . . . . . . . 43
+
+6.1.2 Properties of Density Matrices . . . . . . . . . . . . . . 46
+
+6.1.3 Partial Trace and Reduced Density Matrices . . . . . . 47
+
+7 The Bloch Sphere, No-Cloning Theorem and
+
+Wiesner’s Quantum Money Scheme
+
+50
+
+7.1 The Bloch Sphere . . . . . . . . . . . . . . . . . . . . . . . . . 50
+
+7.1.1 Quantum Gates in the Bloch Sphere Representation . . 53
+
+7.2 The No-Cloning Theorem . . . . . . . . . . . . . . . . . . . . 54
+
+7.3 Quantum Money . . . . . . . . . . . . . . . . . . . . . . . . . 56
+
+7.3.1 Wiesner’s Quantum Money Scheme . . . . . . . . . . . 56
+
+8 Quantum Money and Quantum Key Distribution
+
+58
+
+8.1 Quantum Money Attacks . . . . . . . . . . . . . . . . . . . . . 58
+
+8.1.1 Interactive Attacks . . . . . . . . . . . . . . . . . . . . 59
+
+8.1.2 Public-Key Quantum Money . . . . . . . . . . . . . . . 61
+
+8.2 Quantum Key Distribution . . . . . . . . . . . . . . . . . . . . 61
+
+9 Superdense Coding
+
+65
+
+9.1 Superdense Coding . . . . . . . . . . . . . . . . . . . . . . . . 65
+
+10 Teleportation, Entanglement Swapping, GHZ State
+
+and The Monogamy of Entanglement
+
+67
+
+10.1 Quantum Teleportation . . . . . . . . . . . . . . . . . . . . . . 67
+
+10.1.1 Multi-Qubit Teleportation and Entanglement Swapping 70
+
+10.1.2 The GHZ State and Monogamy of Entanglement . . . 72
+
+11 Quantifying Entanglement
+
+75
+
+11.1 Schmidt Decomposition . . . . . . . . . . . . . . . . . . . . . . 76
+
+11.2 Von Neumann Entropy . . . . . . . . . . . . . . . . . . . . . . 76
+
+11.2.1 Entanglement Entropy . . . . . . . . . . . . . . . . . . 77
+
+11.3 Mixed State Entanglement . . . . . . . . . . . . . . . . . . . . 79
+
+12 Interpretations of Quantum Mechanics
+
+82
+
+12.1 The Copenhagen Interpretation . . . . . . . . . . . . . . . . . 83
+
+12.1.1 “Shut Up and Calculate” . . . . . . . . . . . . . . . . . 83
+
+12.2 Schro¨dinger’s Cat and Wigner’s Friend . . . . . . . . . . . . . 84
+
+12.3 Dynamical Collapse . . . . . . . . . . . . . . . . . . . . . . . . 85
+
+12.3.1 Ghirardi-Rimini-Weber (GRW) Theory . . . . . . . . . 87
+
+4
+
+CONTENTS
+
+12.3.2 Penrose Theory . . . . . . . . . . . . . . . . . . . . . . 87 12.4 The Many-Worlds Interpretation . . . . . . . . . . . . . . . . 90
+
+13 Hidden Variables and Bell’s Inequality
+
+96
+
+13.1 Hidden Variable Theories . . . . . . . . . . . . . . . . . . . . . 96
+
+13.1.1 Bohmian Mechanics . . . . . . . . . . . . . . . . . . . 96
+
+13.1.2 Local Hidden Variable Theories . . . . . . . . . . . . . 98
+
+13.2 The CHSH Game . . . . . . . . . . . . . . . . . . . . . . . . . 99
+
+14 Nonlocal Games
+
+103
+
+14.1 CHSH Game: Quantum Strategy . . . . . . . . . . . . . . . . 103
+
+14.1.1 Analysis of Protocol . . . . . . . . . . . . . . . . . . . 104
+
+14.1.2 CHSH Game: Interpretations and Local Realism . . . . 106
+
+14.1.3 Tsirelson’s Inequality . . . . . . . . . . . . . . . . . . . 107
+
+14.1.4 Experimental Tests of Bell’s Inequalities . . . . . . . . 109
+
+14.2 The Odd Cycle Game . . . . . . . . . . . . . . . . . . . . . . . 111
+
+14.3 The Magic Square Game . . . . . . . . . . . . . . . . . . . . . 113
+
+15 Einstein-Certiﬁed Randomness
+
+115
+
+15.1 Guaranteed Random Numbers . . . . . . . . . . . . . . . . . . 115
+
+15.1.1 Leashing Quantum Systems . . . . . . . . . . . . . . . 119
+
+16 Quantum Computing and Universal Gate Sets
+
+120
+
+16.1 Complexity of General Unitaries: Counting Argument . . . . . 123
+
+16.2 Universal Gate Sets . . . . . . . . . . . . . . . . . . . . . . . . 125
+
+16.2.1 Classical Universality . . . . . . . . . . . . . . . . . . . 125
+
+16.2.2 Quantum Universality . . . . . . . . . . . . . . . . . . 127
+
+16.2.3 The Solovay-Kitaev Theorem . . . . . . . . . . . . . . 129
+
+17 Quantum Query Complexity and The Deutsch-Josza Problem131 17.1 Quantum Query Complexity . . . . . . . . . . . . . . . . . . . 132 17.2 Quantum Garbage Collection . . . . . . . . . . . . . . . . . . 134 17.3 Deutsch’s Algorithm . . . . . . . . . . . . . . . . . . . . . . . 137 17.4 Deutsch-Josza Algorithm . . . . . . . . . . . . . . . . . . . . . 138
+
+18 Bernstein-Vazirani and Simon’s Algorithm
+
+141
+
+18.1 The Bernstein-Vazirani Problem . . . . . . . . . . . . . . . . . 141
+
+18.1.1 Quantum Algorithm . . . . . . . . . . . . . . . . . . . 141
+
+18.2 Simon’s Problem . . . . . . . . . . . . . . . . . . . . . . . . . 143
+
+18.2.1 Classical Lower Bound . . . . . . . . . . . . . . . . . . 145
+
+18.2.2 Quantum Algorithm . . . . . . . . . . . . . . . . . . . 146
+
+CONTENTS
+
+5
+
+19 RSA and Shor’s Algorithm
+
+150
+
+19.1 RSA Encryption . . . . . . . . . . . . . . . . . . . . . . . . . 150
+
+19.2 Period Finding . . . . . . . . . . . . . . . . . . . . . . . . . . 152
+
+19.2.1 Factoring to Period-Finding Reduction . . . . . . . . . 153
+
+19.2.2 Quantum Algorithm for Period-Finding . . . . . . . . . 156
+
+20 Quantum Fourier Transform
+
+158
+
+20.1 Quantum Fourier Transform . . . . . . . . . . . . . . . . . . . 158
+
+20.1.1 Implementing the QFT . . . . . . . . . . . . . . . . . . 161
+
+20.1.2 Period Finding Using the QFT . . . . . . . . . . . . . 164
+
+21 Continued Fractions and Shor’s Algorithm Wrap-Up
+
+168
+
+21.1 Continued Fraction Algorithm . . . . . . . . . . . . . . . . . . 169
+
+21.2 Applications of Shor’s Algorithm . . . . . . . . . . . . . . . . 171
+
+21.2.1 Graph Isomorphism . . . . . . . . . . . . . . . . . . . . 172
+
+21.2.2 Lattice-Based Cryptography . . . . . . . . . . . . . . . 172
+
+22 Grover’s Algorithm
+
+174
+
+22.1 The Algorithm . . . . . . . . . . . . . . . . . . . . . . . . . . 176
+
+22.1.1 Implementing the Diﬀusion Operator . . . . . . . . . . 179
+
+22.1.2 Geometric Interpretation . . . . . . . . . . . . . . . . . 180
+
+22.1.3 Analysis . . . . . . . . . . . . . . . . . . . . . . . . . . 181
+
+22.1.4 Multiple Marked Items . . . . . . . . . . . . . . . . . . 184
+
+23 BBBV Theorem and Applications of Grover’s Algorithm 188 23.1 The BBBV Theorem . . . . . . . . . . . . . . . . . . . . . . . 188 23.2 Applications of Grover’s Algorithm . . . . . . . . . . . . . . . 194 23.2.1 OR of ANDs . . . . . . . . . . . . . . . . . . . . . . . 194
+
+24 More Grover Applications and Quantum Complexity Theory198 24.1 More Applications of Grover’s Algorithm . . . . . . . . . . . . 198 24.1.1 The Collision Problem . . . . . . . . . . . . . . . . . . 198 24.1.2 Element Distinctness . . . . . . . . . . . . . . . . . . . 200 24.2 Parity Lower Bound . . . . . . . . . . . . . . . . . . . . . . . 202 24.3 Quantum Complexity Theory . . . . . . . . . . . . . . . . . . 203
+
+25 Hamiltonians
+
+206
+
+25.1 Quantum Algorithms for NP-complete Problems . . . . . . . 206
+
+25.2 Hamiltonians . . . . . . . . . . . . . . . . . . . . . . . . . . . 207
+
+25.2.1 Matrix Exponentiation . . . . . . . . . . . . . . . . . . 208
+
+25.2.2 Energy . . . . . . . . . . . . . . . . . . . . . . . . . . . 211
+
+6
+
+CONTENTS
+
+25.2.3 Tensor Products of Hamiltonians . . . . . . . . . . . . 215 25.2.4 Addition of Hamiltonians . . . . . . . . . . . . . . . . 215
+
+26 The Adiabatic Algorithm
+
+220
+
+26.1 Local Hamiltonians . . . . . . . . . . . . . . . . . . . . . . . . 220
+
+26.2 The Adiabatic Algorithm . . . . . . . . . . . . . . . . . . . . . 222
+
+27 Quantum Error Correction
+
+233
+
+27.1 Classical Error Correction . . . . . . . . . . . . . . . . . . . . 234
+
+27.1.1 Classical Fault-Tolerance . . . . . . . . . . . . . . . . . 236
+
+27.2 Quantum Error Correction . . . . . . . . . . . . . . . . . . . . 237
+
+27.2.1 The Shor 9-Qubit Code . . . . . . . . . . . . . . . . . 241
+
+27.2.2 Quantum Fault Tolerance . . . . . . . . . . . . . . . . 246
+
+28 The Stabilizer Formalism
+
+248
+
+28.1 The Gottesman-Knill Theorem . . . . . . . . . . . . . . . . . 252
+
+28.1.1 The Gottesman-Knill Algorithm . . . . . . . . . . . . . 253
+
+28.2 Stabilizer Codes . . . . . . . . . . . . . . . . . . . . . . . . . . 256
+
+28.2.1 Transversal Gates . . . . . . . . . . . . . . . . . . . . . 258
+
+Lecture 1: Course Introduction and The Extended Church-Turing Thesis
+Quantum Information Science is an inherently interdisciplinary ﬁeld (Physics, CS, Math, Engineering, Philosophy) It’s not just about inventing useful devices and algorithms, but also about clarifying the workings of quantum mechanics.
+– We use it to ask questions about what you can and can’t do with quantum mechanics
+– It can help us better understand the nature of quantum mechanics itself.
+Professor Aaronson is very much on the theoretical end of research. Theorists inform what experimentalists make, which in turn informs theorists’ queries
+Today we’ll articulate several “self-evident” statements about the physical world. We’ll then see that quantum mechanics leaves some of these statements in place, but overturns others—with the distinctions between the statements it upholds and the ones it overturns often extremely subtle! To start with. . .
+Probability (P ∈ [0, 1]) is the standard way of representing uncertainty in the world. Probabilities have to follow certain axioms such as:
+Given a set of n mutually exclusive exhaustive events, the sum of the probabilities satisﬁes P1 + P2 + · · · + Pn = 1 The probability of any particular event satisﬁes Pi ≥ 0
+7
+
+...
+
+8
+
+LECTURE 1. COURSE INTRODUCTION AND THE ECT
+
+There’s a view that “probabilities are all in our heads.” Which is to say that if we knew everything about the universe (let’s say position/velocity of all atoms in the solar system) that we could just crunch the equations and see that things either happen or they don’t.
+Let’s suppose we have two points separated by a barrier with an open slit, and we want to measure the probability that a particle goes from one point to the other. It seems obviously true that increasing the number of paths (say, by opening another slit) should increase, or at any rate not decrease, the likelihood that it will reach the other end. We refer to this property by saying that probabilities are monotone.
+
+Locality is the idea that things can only propagate through the universe at a certain speed. When we update the state of a little patch of space, it should only require knowledge of a small neighborhood around it. Conway’s Game Of Life (left) is a good model here: changes you make to the system can aﬀect it, but since each cell only directly interacts with its nearest neighbors the changes only propagate at a certain speed.
+In physics, locality naturally emerges due to Einstein’s Special Theory of Relativity which implies that no signal can propagate faster than the (ﬁnite) speed of light; this simple principle can explain a large number of physical phenomena. In special relativity anything traveling faster than the speed of light would be effectively traveling backwards in time, from some observer’s standpoint.
+
+Local Realism is the principle that any instantaneous update in knowledge about faraway events can be explained by correlations of random variables. For example, if you in Austin and a friend in San Francisco both subscribe to the same newspaper then when you read your copy in the morning your knowledge of the headline on your friend-inSan-Francisco’s copy instantly collapses to whatever your copy’s headline is. Before picking up the copy in the morning your knowledge of the headline for yourself and your friend may have been best described by a probability
+
+9
+distribution over various possibilities, but since the outcomes are perfectly correlated, as soon as you learn the headline on your copy you instantly know that your friend’s must be the same.
+Some popular science articles talk about how if you measure the spin of one particle then instantaneously you can know the spin of another particle on the other side of the galaxy. But unless and until something more is said about it, that’s no diﬀerent from the case of the newspapers and seems 100% compatible with local realism!
+Church-Turing Thesis The Church-Turing Thesis states that every physical process can be simulated by a Turing machine to any desired precision. The way that Church and Turing understood this was as a deﬁnition of computation, but we can think of it instead as a falsiﬁable claim about the physical world. You can think about this as the idea that the entire universe is sort of a gigantic video game: you’ve got all sorts of complicated things, like quarks and black holes and whatnot, but at the end of the day you’ve got to be able to simulate it on a computer. The Extended Church-Turing Thesis says moreover that, when we simulate reality on a digital computer, there’s at most a polynomial (e.g., linear or quadratic) blowup in time, space, and other computational resources.
+Theoretical computer science courses can be seen as basically math courses. So what does connect them to reality? The Church-Turing Thesis.
+So, what does quantum mechanics have to say about each of these principles? To give you a teaser for much of the rest of the course:
+We’ll still use probabilities. But the way we’ll calculate probabilities will be totally diﬀerent, and will violate the axiom of monotonicity. That is, increasing the number of ways for an event to happen, can decrease the probability that it happens. Locality will be upheld. But Local Realism will be overthrown. And if those two principles sounded like restatements of each other—well, quantum mechanics will dramatically illustrate the diﬀerence between them!
+
+10
+
+LECTURE 1. COURSE INTRODUCTION AND THE ECT
+
+As we’ll see, the Church-Turing Thesis still seems to be in good shape, even in light of quantum mechanics, but the Extended Church-Turing Thesis seems to be false, with quantum computing standing as a glaring counterexample to it—possibly the one counterexample that our laws of physics allow. With that said, however, one can formulate a quantum version of the Extended Church-Turing Thesis, which remains true as far as anyone knows today.
+
+You could imagine other possible counter-examples to the Extended Church-Turing Thesis. For instance, some have proposed that by using time dilation you could travel billions of years in the future and get results to hard problems. Fun! But you’d need a LOT of energy, and if you have that much energy in one place you collapse to a black hole. Not so fun!
+
+Lecture 2: Probability Theory and Quantum Mechanics
+The famous theoretical physicist Richard Feynman said that everything about quantum mechanics could be encapsulated in the Double Slit Experiment. In the double-slit experiment, you shoot photons one at a time toward a wall with two narrow slits. Where each photon lands on a second wall is probabilistic. If we plot where photons appear on the back wall, some places are very likely, some not. In Figures 2.1 – 2.3 you can see diagrams showing the basic experimental set-up and results from performing both single-slit and double-slit experiments with photons.
+Note that some places on the screen being likely and others unlikely in and of itself isn’t the weird part: we could totally explain this by some theory where each photon just had some extra degree of freedom (an “RFID tag”) that we didn’t know about, and that determined which way it went. What’s weird is as follows. For some interval on the second wall:
+Let P be the probability that the photon lands in the interval with both slits open. Let P1 be the probability that the photon lands in the interval if only slit 1 is open. Let P2 be the probability that the photon lands in the interval if only slit 2 is open.
+You’d think that P = P1 + P2. But experiment ﬁnds that that’s not the case! Even places that are never hit when both slits are open, can sometimes be hit if only one slit is open.
+The weirdness isn’t that “God plays dice,” but rather that “these aren’t normal dice”!
+11
+
+12
+
+LECTURE 2. PROBABILITY THEORY AND QM
+
+Figure 2.1: Experimental setup for a single-slit photon interference experiment
+
+Figure 2.2: Experimental setup for a double-slit photon interference experiment
+
+Figure 2.3: Comparison of single-slit and double-slit interference patterns as seen in an actual experiment. Notice in the double-slit pattern the appearance of new dark spots (areas with a low probability of a photon landing there) not seen for the single-slit.
+
+13
+You may think to measure which slit the photon went through, but doing so changes the measurement results into something that makes more sense, with just two bright patches, one for each slit. Note that it isn’t important whether there’s a conscious observer: if the information about which slit the photon went through leaks out in any way into the outside environment, the results go back to looking like they obey classical probability theory.
+As if Nature says “What? Me? I didn’t do anything!”
+Figure 2.4: Double-slit experiment with measuring devices on each slit which measure which slit any given photon passes through. In this case the probability distribution looks like the average of the individual single slit distributions.
+This reversion to classical probability theory when systems are coupled to their environments is called decoherence. Decoherence is why the usual laws of probability look like they work in everyday life. A cat isn’t found in a superposition of alive and dead states, because it interacts constantly with its environment. These interactions essentially leak information about the ‘cat system’ out. Quantum superposition is something that happens to particles, or groups of particles, when they’re isolated from their environments. Needing the particles to be isolated is why it’s so hard to build a quantum computer.
+And what if the particles aren’t perfectly isolated, but merely mostly isolated? Great question! We’ll come back to it later in the course. The story of atomic physics between roughly 1900 and 1926 is that scientists kept ﬁnding things that didn’t ﬁt with the usual laws of mechanics or probability. They often came up with hacky solutions that explained a
+
+14
+
+LECTURE 2. PROBABILITY THEORY AND QM
+
+phenomenon without connecting it to much else. That is, until Heisenberg, Schro¨dinger, etc. came up with the general rules of quantum mechanics.
+Brieﬂy, though, take the usual high school model of the electron, rotating around a nucleus in a ﬁxed orbit. Scientists realized that this model would mean that the electron, as an accelerating electric charge, would be constantly losing energy in the form of radiation and spiraling inwards until it hit the nucleus. To explain how the electron orbits could remain stable, along with the double-slit experiment and countless other phenomena, physicists eventually had to change the way probabilities were calculated.
+Instead of using probabilities P ∈ [0, 1], they started using amplitudes α ∈ C. Amplitudes can be positive or negative, or more generally complex numbers (with real and imaginary parts). The central claim of quantum mechanics is that to fully describe the state of an isolated system, you need to give one amplitude for each possible conﬁguration that you could ﬁnd the system in on measuring it.
+The Born Rule says that the probability you see a particular outcome is the squared absolute value of the amplitude:
+
+P = |α|2 = Re(α)2 + Im(α)2
+
+(2.1)
+
+So let’s see how amplitudes being complex leads them to act diﬀerently from probabilities. Let’s revisit the double-slit experiment using amplitudes. We’ll say that:
+
+Let α the total amplitude of a photon landing in a certain spot on the screen, α1 the amplitude it lands in the spot if only slit 1 is open and, α2 the amplitude it lands in the spot if only slit 2 is open.
+By analogy to classical probability we have
+
+α = α1 + α2 Then from the Born rule, Equation 2.1, we have
+P = |α|2 = |α1 + α2|2 = |α1|2 + |α2|2 + α1∗α2 + α1α2∗.
+
+(2.2) (2.3)
+
+2.1. LINEAR ALGEBRA APPROACH TO PROBABILITY THEORY 15
+If, for example, α1 = 1/2 and α2 = −1/2, then we ﬁnd P = 0 if both slits are open but, P = 1/4 if only one slit is open; This phenomenon is known as interference.
+So then, to justify the electron not spiraling into the nucleus we can say that, yes, there are many paths where the electron does do that, but some have positive amplitudes and others have negative amplitudes and they end up canceling each other out.
+With some physics we won’t cover in this class, you’d discover that the possibilities where amplitudes don’t cancel each other out lead to discrete energy levels, which are the places where the electrons can sit. The phenomenon of discrete energy levels is in turn what leads to chemistry.
+
+2.1 Linear Algebra Approach to Probability Theory
+
+We use Linear Algebra to model the states of systems as vectors and the evolution of systems in isolation as transformations of vectors. In the simplest case, for a system with two states, we could write
+
+M
+
+a1 a2
+
+=
+
+a1 a2
+
+.
+
+(2.4)
+
+For now, we’ll consider classical probability. Let’s look at ﬂipping a coin. We model this with a vector assigning a probability to each possibility: p = P (heads) and q = P (tails).
+
+p
+
+p, q ≥ 0
+
+q
+
+p+q = 1
+
+We can apply a transformation, like turning the coin over.
+
+(2.5)
+
+01 10
+
+p q
+
+=
+
+q p
+
+(2.6)
+
+Turning the coin over means the probability that the coin was heads is now the probability that the coin is tails. If it helps, you can think of the
+
+16
+
+LECTURE 2. PROBABILITY THEORY AND QM
+
+transformation matrix as:
+
+P (heads|heads) P (heads|tails) P (tails|heads) P (tails|tails)
+
+(2.7)
+
+where P (a|b) is the conditional probability for the state of the coin to be “a” given that it was previously in the state “b.” We could also ﬂip the coin fairly.
+
+1 2 1 2
+
+1 2 1 2
+
+=
+
+p q
+
+=
+
+1 2 1 2
+
+(2.8)
+
+Which means that regardless of previous state, both possibilities are now equally likely. Let’s say we ﬂip the coin, and if we get heads we ﬂip again, but if we get tails we turn it to heads.
+
+0
+
+1 2
+
+1
+
+1 2
+
+p q
+
+=
+
+q
+
+p
+
+2
++
+
+q 2
+
+(2.9)
+
+Does this make sense? Since if the state of the coin is found to be heads we
+
+do a fair ﬂip we can see that given it’s heads the probability after we do the
+
+ﬂip for heads or tails is
+
+1 2
+
+.
+
+That is,
+
+P (heads|heads) = P (tails|heads) =
+
+1 2
+
+.
+
+If
+
+we see a tails however we always ﬂip it back to heads and so P (tails|tails) = 0
+
+and P (tails|heads) = 1.
+
+So, which matrices can be used as transformations? Firstly, we know that
+
+all entries have to be non-negative (because probabilities can’t be negative).
+
+We also know that each column must sum to 1, since we need the sum of initial
+
+probabilities to equal the sum of the transformed probabilities (namely, both
+
+should equal 1). A matrix that satisﬁes these conditions is called a Stochastic
+
+Matrix.
+
+Now let’s say we want to ﬂip two coins, or rather, two bits. For the ﬁrst
+
+bit a = P (0) and b = P (1). For the second let c = P (0) and d = P (1).
+
+0a
+
+0c
+
+1b
+
+1d
+
+To combine the two vectors we need a new operation, called Tensor Product:
+
+P (00) ac
+
+a b
+
+⊗
+
+c d
+
+=
+
+P P
+
+(01) (10)
+
+=
+
+ad
+
+ 
+
+bc
+
+ 
+
+P (11)
+
+bd
+
+(2.10)
+
+2.1. LINEAR ALGEBRA APPROACH TO PROBABILITY THEORY 17
+
+It’s worth noting that not all possible 4-element vectors can arise by the tensor product of two 2-element vectors. For example, suppose by contradiction that
+
+ac
+
+1
+2
+
+ad
+
+ 
+
+bc
+
+ 
+
+=
+
+0 0
+
+.
+
+bd
+
+1 2
+
+(2.11)
+
+Then multiplying the ﬁrst and last equations together implies that (ac)(bd) =
+
+1 4
+
+,
+
+while
+
+multiplying
+
+the
+
+second
+
+and
+
+third
+
+implies
+
+that
+
+(ad)(bc)
+
+=
+
+0,
+
+giving
+
+a
+
+contradiction. As such, the 4-element vector on the right hand side can’t be
+
+written as the tensor product of two 2-element vectors.
+
+As we did with the one-bit systems, we can describe probabilistic transfor-
+
+mations of two-bit systems using stochastic matrices. For example, let’s say
+
+we apply a transformation where if the ﬁrst bit is 1 then we ﬂip the second bit
+
+and otherwise we do nothing to the system. The 4 × 4 matrix that achieves
+
+this is given in Equation 2.12, and is called the Controlled NOT or CNOT
+
+matrix; it will also come up often in quantum computing.
+
+00 01 10 11
+
+
+00
+
+1
+
+0
+
+0
+
+0
+
+CNOT =
+
+01 0
+
+ 10
+
+0
+
+1 0
+
+0 0
+
+0
+
+1
+
+ 
+
+11 0 0 1 0
+
+(2.12)
+
+Suppose we apply the CNOT matrix to the following vector, representing a
+
+system
+
+where
+
+the
+
+ﬁrst
+
+bit
+
+is
+
+either
+
+zero
+
+or
+
+one
+
+with
+
+1 2
+
+probablity
+
+and
+
+the
+
+second
+
+bit is always 0:
+
+1
+
+0
+
+0
+
+0
+
+
+
+1 2
+
+
+
+
+00
+
+1 2
+
+
+
+0 0
+
+1 0
+
+0 0
+
+0 1
+
+0
+1 2
+
+=
+
+01 0 
+
+ 10
+
+0
+
+ 
+
+0010 0
+
+11
+
+1 2
+
+(2.13)
+
+We see that we’ve reached an output distribution that we previously proved can’t arise as a tensor product! Such a distribution is called correlated : learning one bit tells you something about the other bit. In this case, the two bits are always equal; with 50% probability they’re both 0 and with 50% probability they’re both 1. So, we’ve learned that the CNOT matrix can create
+
+18
+
+LECTURE 2. PROBABILITY THEORY AND QM
+
+correlations: it can transform an uncorrelated distribution into a correlated one.
+Quantum mechanics essentially follows the same process to model states using vectors, except that it uses amplitudes instead of probabilities. We can describe transformations of vectors representing quantum states using matrices.
+
+
+
+ a1 b1
+
+ U  a2 = b2
+
+a3
+
+b3
+
+(2.14)
+
+where instead of preserving the sum of the vector entries we preserve the sum
+
+of the squared-amplitudes
+
+3 i=1
+
+|ai|2
+
+=
+
+3 i=1
+
+|bi|2
+
+=
+
+1,
+
+which
+
+by
+
+Equation
+
+2.1
+
+(the Born rule) implies that the probabilities of the outcomes sum to 1. Such
+
+matrices are called Unitary Matrices, and in the next lecture we’ll describe
+
+their properties as well as the basic mathematical rules for handling quantum
+
+states in much greater detail.
+
+Lecture 3: Basic Rules of Quantum Mechanics
+3.1 Quantum States and The Ket Notation
+A quantum state (technically, a “pure state”) is a unit vector in CN describing the state of a quantum system. The dimension, N , could theoretically be anything. Physics courses cover inﬁnite-dimensional quantum states such as position or momentum states, but we’ll stick to discrete systems (which is to say that when we make a measurement, there are only ﬁnitely many possible outcomes).
+What does quantum mechanics say about the universe being discrete or continuous at its most basic level? It suggests a strange, hybrid picture. Even for a simple two dimensional system there’s a continuum of possible quantum states, but every measurement has a discrete outcome. A system with two amplitudes, [α, β] , has uncountably inﬁnitely many possible states (even with the restriction that |α|2 + |β|2 = 1), though note that the same would be true even if we described states using classical probabilities. In both cases, classical and quantum, as long as we stick to ﬁnite-dimensional systems the continuum is never directly observed, but is only used in calculating the probabilities of discrete outcomes.
+A qubit is the simplest interesting quantum system. It’s a two-level system (we label the levels “0” and “1”), with an amplitude for 0 and an amplitude for 1.
+A one-level quantum system would just be [1]. Not very
+19
+
+20
+
+LECTURE 3. BASIC RULES OF QM
+
+interesting!
+
+Following the notation introducted by Paul Dirac, we write quantum state vectors using the so-called Ket Notation
+
+α β
+
+= α |0
+
++ β |1
+
+= |ψ
+
+.
+
+Note that |0 =
+
+1 0
+
+and |1
+
+=
+
+0 1
+
+,
+
+and
+
+that
+
+we’ll
+
+often
+
+use
+
+|ψ
+
+to refer
+
+generically to a quantum state.
+
+Why do we use the ket notation? One main advantage is that practically
+
+speaking, we often deal with really sparse vectors (where most amplitudes
+
+are 0). Ket notation makes it easy to represent only the values we’re talking
+
+about.
+
+It’s really just a formalism to make life easier, we can put
+
+anything in ket notation. Look, this is Schr¨odinger’s Cat
+
+in ket notation: √1 | + |
+
+.
+
+2
+
+Another motivation for adopting the ket notation is that it simpliﬁes many of the linear algebra operations we use frequently in quantum mechanics. Often, for example, we’ll need to take the transpose (or conjugate transpose for complex-valued vectors):
+
+α β
+
+→
+
+α∗
+
+β∗
+
+and we can use these conjugate-transposed vectors to deﬁne a norm on our vector space
+
+||v||2 = α∗ β∗
+
+α β
+
+= |α|2 + |β|2
+
+(3.1)
+
+In ket notation both of these operations can easily be represented. The conjugate-transpose of a ket, |ψ = α |0 + β |1 , is represented by a corresponding object called a bra ψ| where
+
+ψ| = α∗ 0| + β∗ 1| .
+We can also use the bra as we’ve just deﬁned it to write the inner product between a pair of kets, |x and |y , as x|y . The norm of the ket |ψ in this notation is ||ψ||2 = ψ|ψ . The inner product as its been deﬁned here has the
+
+3.2. TRANSFORMING QUANTUM STATES
+
+21
+
+property that x|y = y|x ∗. Note that we’ll be adopting the physics convention of denoting the conjugate-transpose with the † symbol (read dagger).
+The set of all possible pure quantum states of a qubit with real coeﬃcients deﬁnes a circle. The set of all possible quantum states with complex coeﬃcients deﬁnes a sphere known as the Bloch sphere, which we will learn about in greater detail in a later lecture. In addition to the states |0 and |1 (known as the “standard basis states”) there are four other single qubit states that occur so frequently in quantum information theory that they’ve been given special names:
+
+Figure 3.1: Standard and Hadamard basis states respresented on the real plane.
+
+|0 + |1 |+ = √
+2
+
+|0 − |1 |− = √
+2
+
+|i
+
+|0 =
+
+√+ i |1
+
+2
+
+|−i
+
+|0 =
+
+√− i |1
+
+2
+
+(3.2)
+
+The pair {|+ , |− } is often referred to as the “Hadamard basis.” Figure 3.1 shows the positions of the standard and Hadamard basis states in the real plane.
+
+3.2 Transforming Quantum States
+
+Just like with classical probability theory, one basic way to change quantum states is by applying linear transformations.
+
+U |ψ
+
+=U
+
+α β
+
+=
+
+α β
+
+In order for a linear transformation to correspond to a valid transformation of a quantum state, we require that it be unitary. A transformation on a single
+
+22
+
+LECTURE 3. BASIC RULES OF QM
+
+qubit, U , is unitary if |α|2 + |β|2 = |α |2 + |β |2 for all input vectors [α, β] . In other words, U preserves the 2-norm of the vector. Examples of 1-Qubit Unitary Transformations
+
+1 0 0 1
+
+0 1 1 0
+
+1 0 0 i
+
+cos (θ) − sin (θ) sin (θ) cos (θ) 
+
+Identity NOT Gate Relative Phase Shift 2D-Rotations
+
+(3.3)
+
+The second-to-last unitary matrix above has the eﬀect of mapping |0 → |0
+and |1 → i |1 ; in fact, we can replace the i in this matrix with any unit magnitude complex number of the form eiθ. Remember Euler’s equation,
+
+eiθ = cos (θ) + i sin (θ).
+
+(3.4)
+
+Rotations also preserve the 2-norm of vectors and so for example, we can use
+the last matrix above to rotate our state in the real plane by some speciﬁed
+angle θ (we denote this family of matrices Rθ). Since a unitary matrix, U , preserves the 2-norm of vectors it immediately
+follows that it must also preserve the value of the inner product ψ|ψ . This gives the following series of equalities ψ|ψ = (|ψ )† |ψ = (U |ψ )†U |ψ = ψ| U †U |ψ . This can only be true for all |ψ if U †U = I, which implies that for a unitary matrix U −1 = U †. It also implies that the rows of U must be an orthogonal unit basis. Conversely, it’s easy to see that if U −1 = U † then U is unitary. So you can tell if a matrix is unitary by checking if U †U = I, or
+equivalently if the rows (or the columns) form an orthogonal unit basis.
+
+This is not the “operational deﬁnition” of unitary matrices, but is a logical consequence of unitary transformations preserving the 2-norm.
+
+An orthogonal matrix is both unitary and real-valued. Any orthogonal matrix is a product of rotations and reﬂections. For example, the matrix Rπ/4 is orthogonal. Applying Rπ/4 repeatedly to the input state |0 gives the sequence of states |0 → |+ → |1 → − |− · · · . You’ll get a full revolution after applying Rπ/4 eight times.
+
+3.3 Quantum Interference
+In the classical world, if an event could happen multiple ways, but will be “random” no matter which way it happens, then it’s simply “random” overall.
+
+3.3. QUANTUM INTERFERENCE
+
+23
+
+But in the quantum world, you can sometimes apply a unitary transformation to a superposition state and get a determinate answer, even though the answer would have been random had you applied it to any individual component of the superposition. Many of the most interesting phenomena in quantum mechanics can be explained in terms of quantum interference. As an illustrative example, suppose we start initially in the |0 state. We then apply twice a unitary transformation which when applied to |0 places us in |+ = |0√+|1
+2
+and which when applied to |1 places us in |− = |0√−|1 . This situation drawn 2
+in Figure 3.2.
+
+Figure 3.2: Diagram showing eﬀect of applying a unitary operation which maps |0 → |+ and |1 → |− .
+To get the amplitude associated with a particular path we take the product of the amplitudes along that path. Then to get the ﬁnal amplitude associated with a particular output, we sum the amplitudes for each of the paths through the tree leading to that output. In this case, the amplitude of |0 is 1 and the amplitude of |1 is 0. The paths leading to |0 interfere constructively while the paths leading to |1 interfere destructively.
+3.3.1 Global and Relative Phase
+No matter what unitary transformation you apply, because it is a linear operation we always have that U (− |0 ) = −U |0 or more generally U (c |0 ) = cU |0 for any constant c. When c is a unit magnitude complex number (i.e. it can be written in the form eiθ for some θ) we call it a global phase. The states |ψ and eiθ |ψ are physically indistinguishable, which is to say: Global phase
+
+24
+
+LECTURE 3. BASIC RULES OF QM
+
+is unobservable! Multiplying your entire quantum state by a scalar is like if last night someone moved the entire universe twenty feet to the left. We can only really measure things relative to other things!
+But this leads to a second maxim: Relative phase is observable. To distinguish between the states |+ and |− which were deﬁned in Equation 3.1, for example, we can rotate by 45 degrees (by applying Rπ/4, perhaps) and then measure to see whether we got |0 or |1 (see Figure 3.1). The relative phase diﬀerence between the states |+ and |− is observable precisely because there is a sequence of unitary operations and measurements (an experiment) that we can perform to distinguish between the two cases. For global phases there is no experiment one could ever do which would distinguish between |ψ and eiθ |ψ .
+
+Lecture 4: Quantum Gates and Circuits, Quantum Zeno and The Elitzur-Vaidman Bomb
+
+4.1 Quantum Gates
+
+In quantum information theory we often refer to small unitary transformations
+
+as “gates.” We use some of these gates so often that they have special names
+
+and symbols associated with them. For example, the matrix √
+
+0 1
+
+1 0
+
+is called
+
+the NOT gate. One can also deﬁne a NOT gate,
+
+√
+
+1
+
+NOT =
+
+2
+
+1+i 1−i
+
+1−i 1+i
+
+,
+
+(4.1)
+
+√√ which you can check satisﬁes the property that NOT NOT = NOT. One
+
+of the most ubiquitous gates in quantum information is the Hadamard gate
+
+H = √1 2
+
+1 1
+
+1 −1
+
+(4.2)
+
+The Hadamard gate is so useful because it maps the {|0 , |1 } basis to the {|+ , |− } basis, and vice versa.
+
+H |0
+
+1 =√
+2
+
+1 1
+
+1 −1
+
+1 0
+
+=
+
+√1 2
+√1
+
+= |+
+
+2
+
+Similarly, H |1 = |− , H |+ = |0 and H |− = |1 . Note that the {|0 , |1 } basis and {|+ , |− } basis form diﬀerent two diﬀerent orthogonal (and complementary) bases with the special property that being maximally
+
+25
+
+26 LECTURE 4. QUANTUM GATES, CKTS, ZENO AND E-V BOMB
+
+certain in the {|0 , |1 } basis means that you’re maximally uncertain in the {|+ , |− } basis and vice versa. Another example of a basis changing gate is
+
+1 √
+2
+
+1 i
+
+1 −i
+
+.
+
+(4.3)
+
+This one switches us from the {|0 , |1 } basis to the {|i , |−i } basis. Why would we want to use multiple bases? We like to think of vectors existing abstractly in a vector space, but to do computations we often need to pick a convenient basis. When we see some actual quantum algorithms and protocols, we’ll see the power that comes from switching between bases.
+
+4.1.1 Generalized Born Rule
+We can deﬁne quantum measurement more generally. Measuring the state |ψ in the orthonormal basis {|V0 , · · · , |VN−1 }, you’ll get the outcome |Vi with probability | Vi|ψ |2. So the probability of the outcome |Vi is the squared length of the projection onto that basis vector.
+When talking about the Born Rule in earlier lectures, we’ve been using the special case of the {|0 , |1 } basis for simplicity.
+To implement a measurement in an arbitrary basis, you can use unitary transformations to convert between bases. So for example, to measure in the {|V0 , · · · , |VN−1 } basis, you can ﬁrst apply a unitary transformation U such that U |V0 = |0 , U |V1 = |1 , etc. . . , and then measure in the standard basis {|0 , · · · |N − 1 }.
+There’s an extreme point of view in quantum mechanics that unitary transformations are the only thing that really exist, and measurements don’t. And the converse also exists: the view that measurements are the only things that really exist, and unitary transformations don’t. More about this when we talk about interpretations!
+
+4.1.2 General Properties of Quantum Gates and Measurements
+Unitary Transformations are:
+
+4.1. QUANTUM GATES
+
+27
+
+Invertible: This should be clear, since preserving the 2-norm means that U †U = I which means U −1 = U †.
+– In other words, the transformation |ψ → U |ψ can always be reversed by applying U †, since U †U |ψ = |ψ .
+
+Interestingly this implies that unitary evolution can never destroy information, which should imply that the universe is reversible. Physics has treated the microscopic laws as reversible since Galileo’s time (e.g. a time-reserved video of a swinging pendulum still shows it obeying the laws of physics). So for example burning a book shouldn’t destroy the information within, as physics says that in principle you can recover all the information from the smoke and ash left over.
+
+Deterministic: There is nothing probabilistic in the unitary evolution process itself.
+Continuous: Unitary transformations take place over intervals of time which can always be broken into smaller and smaller subintervals.
+
+This last item is part of why it’s important that unitary matrices are in gen-
+
+eral complex-valued. If, for example, the transformation
+
+1 0
+
+0 −1
+
+was applied
+
+by some process which took 1 second, then by applying the same process for
+
+half of a second, we can obtain
+
+1 0
+
+0 i
+
+or some other square root of the trans-
+
+formation. But we invite you to check that
+
+1 0
+
+0 −1
+
+has no 2 × 2 real-valued
+
+square root.
+
+By the way, if we allow ourselves the ability to add an extra dimension
+
+then there is a 3 × 3 matrix that “squares” to
+
+1 0
+
+0 −1
+
+:
+
+1 0 02 1 0 0 
+
+0 0 1 = 0 −1 0  .
+
+0 −1 0
+
+0 0 −1
+
+But, to take a square root of
+
+1 0
+
+0 −1
+
+,
+
+either
+
+you
+
+need
+
+complex
+
+numbers,
+
+or
+
+else you need to add a third dimension. The latter is analogous to reﬂecting
+
+28 LECTURE 4. QUANTUM GATES, CKTS, ZENO AND E-V BOMB
+your three-dimensional self by rotating yourself in a fourth dimension—as in some science ﬁction stories!
+Important: If you come back reﬂected after a trip into the fourth dimension, don’t eat anything without ﬁrst consulting medical professionals. Normal food will have molecules of the wrong chirality for you to digest them.
+Measurements break all three rules of unitary transformations! Measurements are:
+Irreversible: Whatever information about the system you didn’t capture is now lost.
+Probabalistic: Everything in quantum mechanics is deterministic until measurement, but measurement outcomes are in general random.
+Discontinuous: The “collapse of the amplitude vector” is conventionally treated as an instantaneous event.
+So how can we reconcile these two sets of rules? That’s the famous Measurement Problem; we’ll talk about various points of view on it later. Despite the philosophical conﬂict, unitary transformations and measurement sync up well because unitary transformations preserve the 2-norm and measurement gives probabilities determined by the 2-norm.
+Classical probability is based on the 1-norm, while quantum mechanics is based on the 2-norm. So it’s natural to wonder: what about theories based on the 3-norm, 4-norm, etc. . . ? Actually, there don’t seem to be any interesting theories there, making quantum mechanics a bit of “an island in theory space.” If you try to adjust anything about it in any way, you typically get junk! You could alternatively say that there seems to be “nothing near quantum mechanics, that’s nearly as nice as quantum mechanics itself.” Another example of this are some of the (somewhat technical) reasons why complex numbers work better than the reals, or for that matter quaternions, as amplitudes.
+
+4.2. QUANTUM CIRCUIT NOTATION
+
+29
+
+4.2 Quantum Circuit Notation
+Quantum Circuit Notation gives us a graphical language to keep track of which qubits we have, which operations we’re applying to them and in which order. In a quantum circuit diagram we use wires to represent qubits, and labeled boxes and other symbols to represent unitary transformations on those qubits. When reading a quantum circuit diagram we interpret time (typically thought of as occurring in discrete time-steps) as ﬂowing from left to right. Say for example we want to represent a single qubit, initialized to the |1 state, which has two consecutive Hadamard gates applied to it, followed by a measurement in the standard basis. This can be represented using the circuit diagram below.
+
+|1 H H
+
+Figure 4.1: Quantum circuit representing two Hadamard gates followed by a measurement on a qubit initialized to the |1 state.
+
+The operations in Figure 4.1 are simple enough that we’d have no trouble writing out the matrices and vectors explicitly, but as we add more qubits to our system and allow for multi-qubit operations, matrix representations quickly become unwieldy (see the ﬁnal two gates in Table 4.1). Quantum circuits give us a tool for succinctly describing all manner of complicated quantum transformations.
+Quantum circuits allow for operations on an arbitrary number of qubits. Here is a circuit containing a two-qubit gate, labeled U , which is followed by a Hadamard on the ﬁrst qubit and then measurements on both qubits.
+
+|0
+
+H
+
+U
+
+|0
+
+Figure 4.2: A generic two qubit operation followed by a Hadamard on the ﬁrst qubit and a pair of measurements.
+In some contexts it is useful to allow our circuits to have some additional “workspace,” perhaps to save intermediate results in a calculation. To enlarge
+
+30 LECTURE 4. QUANTUM GATES, CKTS, ZENO AND E-V BOMB
+a system in this manner we can add new qubits (typically all assumed to be initialized to |0 ) to the system which are called ancilla qubits.
+One ﬁnal notational convention we’ll introduce in this section is for controlled gates. This includes the CNOT gate that we saw ﬁrst in Section 2.1. A controlled gate can be split into two parts, the control and the target. We represent a control qubit using a thick solid dot on a wire. We then draw a vertical line connecting to a gate on another qubit(s) which we wish to control. In the ﬁgure below a pair of arbitrary qubits (meaning we won’t specify the input ahead of time) has a series of controlled gates applied.
+••
+U•
+Figure 4.3: Diﬀerent types of controlled operations. The ﬁrst gate is a CNOT with the ﬁrst qubit as the control and the second qubit as the target. Notice the special notation (⊕) for the target of the CNOT gate. The second is a controlled-U operation, where U is arbitrary. This operation applies U if the control qubit is |1 and does nothing otherwise. The ﬁnal gate is a CNOT gate with second qubit as the control and the ﬁrst as the target. Control can run in either direction up or down.
+There are other notational conventions used for various gates relevant to quantum information, more than we can go through in detail. For a summary of the most common ones that we’ll come across during the course see Table 4.1.1
+4.3 Quantum Zeno Eﬀect
+There are several interesting phenomena that already happen in the quantum mechanics of one qubit. Suppose we have a qubit in the state |0 . and let’s say we want to put it in the |1 state without using any unitary transformations. For some small , we can measure the qubit in a basis
+1Also, for more information on typesetting quantum circuits in LATEX see the package “qcircuit” on CTAN. https://ctan.org/tex-archive/graphics/qcircuit
+
+4.3. QUANTUM ZENO EFFECT
+
+31
+
+Gate NOT/X
+Z Y H S T √ NOT Rθ Rφ
+
+Common Name Pauli-X or NOT Pauli-Z or Phase-Flip
+Pauli-Y Hadamard Phase Gate
+T Gate Square-Root of NOT
+Rotation Gate Phase-Shift
+
+CNOT
+
+Controlled-NOT or CNOT
+
+CPHASE/CZ
+
+Controlled-Z
+
+SWAP
+
+Swap Gate
+
+CCNOT
+
+Toﬀoli or Controlled-Controlled-NOT
+
+C-SWAP Fredkin or Controlled-SWAP
+
+Circuit Representation NOT or X Z Y H S T √ NOT Rθ Rφ
+•
+
+• or • or Z
+
+•
+
+Z
+
+•
+
+× ×
+
+• •
+
+• × ×
+
+Matrix
+
+01 10
+
+10 0 −1
+
+0 −i i0
+
+11 1 −1
+
+10 0i
+
+10 0 eiπ/4
+
+1+i 1−i 1−i 1+i
+
+cos (θ) − sin (θ) sin (θ) cos (θ)
+
+10 0 eiφ
+
+1 0 0 0
+0 1 0 0 0 0 0 1
+0010
+
+1 0 0 0 
+
+0 1 0 0 
+
+0 0 1
+
+0
+
+ 
+
+0 0 0 −1
+
+1 0 0 0
+0 0 1 0 0 1 0 0
+0001
+
+1 0 0 0 0 0 0 0
+0 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 1
+00000010
+
+1 0 0 0 0 0 0 0
+0 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 1 0 0
+00000001
+
+Table 4.1: Circuit representations for some commonly used gates in quantum information theory.
+
+32 LECTURE 4. QUANTUM GATES, CKTS, ZENO AND E-V BOMB
+that’s rotated from the {|0 , |1 } by an angle . The probability of getting the qubit to move by
+increases as decreases.
+
+P (|v ) = | 0|v |2 = | cos ( )|2 ≈ 1 − 2 |v = cos ( ) |0 + sin ( ) |1
+
+P (|w ) = | 0|w |2 = | sin ( )|2 ≈ 2
+
+|w = − sin ( ) |0 + cos ( ) |1
+
+(4.4)
+
+So repeating this process ≈ 1/ times, and rotating the measurement basis
+
+by an additional angle each time, we could slowly drag the qubit from |0
+
+to |1 . What’s the likelihood that we’d ever get a measurement outcome that wasn’t the one we wanted? By the union bound, it’s of order (1/ ) × 2 = , so
+
+can be made arbitrarily small. This is called The Quantum Zeno Eﬀect,
+
+and one of its discoverers was Alan Turing.
+
+Perhaps an everyday-life analog would be asking a stranger to have coﬀee with you, then to go dancing, etc.—there’s a higher probability of success than if you just immediately ask them to marry you!
+
+Another interesting variant of the same kind of eﬀect is called the Watched Pot Eﬀect. Say we want to keep a qubit at |0 , but it keeps rotating towards |1 (it’s drifting). If we keep measuring it in the {|0 , |1 } basis every time the qubit has drifted by an angle , the odds of it jumping to |1 at any given measurement is only 2. So if we repeat the measurements ≈ 1 times, then the probability it ending up at |1 is only ≈ , even though it would have drifted to |1 with certainty had we not measured.
+
+4.4 The Elitzur-Vaidman Bomb
+Another interesting phenomenon is the Elitzur-Vaidman Bomb, a quantum eﬀect discovered in the early 1990’s.
+Say we’re at a quantum airport and there’s a piece of unattended luggage which could be a bomb, but opening the suitcase would trigger it. How do we check if there’s a bomb there without triggering it?
+Suppose the bomb is designed so it can accept a query made with a classical bit where b = 0 means we don’t query and b = 1 means we make a query. In that case one of two things happens, we either don’t make the query and learn nothing, or we make the query and risk setting oﬀ the bomb if in fact there is one. Not good!
+
+4.4. THE ELITZUR-VAIDMAN BOMB
+
+33
+
+This is the quantum airport though (IATA code BQP), so suppose instead that we can upgrade our bit to a qubit: |b = α |0 + β |1 . We’ll also assume that in the case there is no bomb, the state |b gets returned to you. If there is a bomb, the bomb measures in the {|0 , |1 } basis. If the outcome is |0 , then |0 is returned to you, while if the outcome is |1 , the bomb explodes.
+
+Figure 4.4: Sketch of the Elitzur-Vaidman Bomb protocol.
+
+What we can do is start with the |0 state and apply the rotation
+
+R=
+
+cos ( ) sin ( )
+
+− sin ( ) cos ( )
+
+,
+
+giving us cos ( ) |0 + sin ( ) |1 . If there’s a bomb, the probability it explodes
+
+is sin2 ( ) ≈ 2, otherwise we get back |0 . If there’s no bomb, we get back
+
+cos ( ) |0 + sin ( ) |1 .
+
+So repeating this process, each time applying R
+
+, about
+
+π 2
+
+times makes the
+
+total
+
+probability
+
+of
+
+setting
+
+oﬀ
+
+the
+
+bomb
+
+(if
+
+there
+
+is
+
+a
+
+bomb)
+
+only
+
+π 2
+
+sin2 (
+
+)
+
+≈
+
+π 2
+
+.
+
+Yet, by measuring our qubit to see whether it’s |0
+
+or |1 , we still learn
+
+whether or not a bomb was there. If there was a bomb then by the watched
+
+pot eﬀect the state will be |0 with high probability, and if there wasn’t then
+
+our repeated applications of R
+
+succeeded
+
+in
+
+rotating
+
+the
+
+state
+
+by
+
+π 2
+
+and
+
+our
+
+state is |1 . Of course, the catch is that this requires not merely a qubit on
+
+our end, but also a bomb that can be “quantumly interrogated”!
+
+Figure 4.5: Evolution of the qubit after multiple queries with no bomb.
+
+Lecture 5: The Coin Problem, Distinguishability, Multi-Qubit States and Entanglement
+
+5.1 The Coin Problem
+
+Say
+
+you
+
+have
+
+a
+
+coin,
+
+and
+
+you
+
+want
+
+to
+
+ﬁgure
+
+out
+
+if
+
+it’s
+
+fair
+
+(p
+
+=
+
+1 2
+
+)
+
+or
+
+if
+
+it’s
+
+biased
+
+(p
+
+=
+
+1 2
+
++
+
+). How would you go about doing this?
+
+The classical approach to solving this problem would be to ﬂip the coin
+
+over and over about
+
+1
+2
+
+times, keeping track of the number of heads and tails
+
+and appealing to the Law of Large Numbers. Standard probability stuﬀ. This
+
+requires
+
+about
+
+log (
+
+1
+2
+
+)
+
+bits
+
+of
+
+memory
+
+to
+
+store
+
+the
+
+running
+
+totals.
+
+In fact,
+
+there’s a theorem by Hellman and Cover from the 70s that says that any
+
+protocol to solve this problem requires at least that many bits for storage.
+
+Figure 5.1: Distribution for the coin-ﬂip probability. Since the standard error
+
+scales
+
+like
+
+√1 n
+
+,
+
+where
+
+n
+
+is
+
+the
+
+number
+
+of
+
+coin
+
+ﬂips,
+
+if
+
+we
+
+want
+
+to
+
+distinguish
+
+reliably between two distributions whose means are separated by we need
+
+√1 n
+
+∼
+
+→n∼
+
+1
+2
+
+coin
+
+ﬂips.
+
+What if instead we used quantum states? We can start with a qubit in
+
+34
+
+5.2. DISTINGUISHABILITY OF QUANTUM STATES
+
+35
+
+the |0 state, and consider the two rotations R and R− , which rotate by and − radians respectively. We can repeatedly ﬂip the coin, and if it lands
+
+tails apply R (rotating clockwise) and if it lands heads apply R− (rotating
+
+counterclockwise).
+
+After many ﬂips (∼
+
+1
+2
+
+)
+
+we
+
+can
+
+then
+
+measure
+
+the
+
+qubit
+
+and
+
+statistically infer that if it’s in the |0 state the coin was most likely fair, while
+
+if it’s in the |1 state the coin is most likely biased. You might raise a few
+
+objections about the protocol:
+
+Won’t counting out the right number of steps again require a lot of storage?
+– No. We can give a protocol with a half-life (some independent probability of halting at each step) causing it to repeat approximately the number of times we want it to.
+What about if the qubit drifts by a multiple of π? Won’t that make a biased coin look fair?
+– That’s possible, but we can make it so that a biased coin is more likely to land on |1 than a fair coin.
+
+This is our ﬁrst example of a quantum protocol getting a resource advan-
+
+tage: the quantum solution uses 1 qubit of storage as opposed to the classical
+
+solution’s
+
+log
+
+(
+
+1
+2
+
+)
+
+bits.
+
+This result was shown by Professor Aaronson and his former student Andy Drucker. It wasn’t a particularly hard problem, but no one had asked the question before. There’s still “low hanging fruit,” even in the mechanics of a single qubit!
+
+5.2 Distinguishability of Quantum States
+Given two orthogonal quantum states |v and |w , there’s a basis we can measure in which distinguishes them with certainty. Given a pair of states which are co-linear (like |v and − |v ) however, they are indistinguishable.
+This points us towards the magnitude of the inner product | v|w | as a good measure of the distinguishability for arbitrary pure states. Suppose we’re given states like those in Figure 5.4 and we want to know: What measurement would minimize the chance of making a mistake in diﬀerentiating |v from |w , assuming that being given either is equally likely?
+
+36
+
+LECTURE 5. THE COIN PROBLEM, INNER PRODUCTS, . . .
+
+Figure 5.3: Co-linear states
+Figure 5.2: Orthogonal states
+You may want to measure in the |v , |v⊥ basis, as it would eliminate one kind of error completely (not getting |v ensures the state was |w ). But if you just want to maximize the probability of getting the right answer, and if |v and |w are equally likely, then there’s a better way, illustrated in Figure 5.5. Take the bisector of |v and |w and deﬁne the measurement basis by using the states 45◦ to either side. When we perform the measurement in this basis we output the original vector closest to the measurement result as the outcome.
+
+Figure 5.4: Nonorthogonal states |v and |w .
+
+Figure 5.5: Optimal measurement basis for minimizing the error of distinguishing nonorthogonal states |v and |w .
+
+5.3. MULTI-QUBIT STATES AND OPERATIONS
+
+37
+
+5.3 Multi-Qubit States and Operations
+
+A general state of two qubits is:
+
+|ψ = α |00 + β |01 + γ |10 + δ |11
+where the probabilities of the four outcomes are given by the Born rule, as with a single qubit:
+
+P (|00 ) = |α|2 P (|10 ) = |γ|2
+
+P (|01 ) = |β|2 P (|11 ) = |δ|2
+
+In principle there’s no distance limitation between entangled qubits. One qubit could be with you on Earth, and the other could be with your friend on the moon. In such a case, though, you’d only be able to measure the ﬁrst qubit. The probability of getting |0 is |α|2 + |β|2 because those are the amplitudes compatible with the ﬁrst qubit being |0 . The probability of getting |1 is |γ|2 + |δ|2.
+Suppose I measure the ﬁrst qubit and get the outcome |0 . What can I say about the second qubit?
+Well, we’ve narrowed down the possibilities for the joint state to |00 and |01 . The state is thus now in the superposition
+
+α |0 + β |1
+
+|0 ⊗
+
+,
+
+|α|2 + |β|2
+
+(5.1)
+
+where the factor of |α|2 + |β|2 in the denominator ensures that the result is properly normalized. This is called the Partial Measurement Rule. This is actually the last “basic rule” of quantum mechanics that we’ll see in the course; everything else is just a logical consequence of rules we’ve already covered.
+
+5.3.1 Multi-Qubit Operations
+
+One of the most common 2-qubit operations we’ll encounter is one we’ve already seen: the CNOT gate, which ﬂips the second bit if and only if the ﬁrst bit is 1. Recall that the matrix corresponding to this operation is given by
+
+1 0 0 0
+
+0 0
+
+1 0
+
+0 0
+
+0 1
+
+.
+
+0010
+
+(5.2)
+
+38
+
+LECTURE 5. THE COIN PROBLEM, INNER PRODUCTS, . . .
+
+What if instead we wanted to apply an operation where we do nothing to the ﬁrst qubit and apply a NOT to the second qubit? The matrix corresponding to this operation is
+
+0 1 0 0
+
+1 0
+
+0 0
+
+0 0
+
+0 1
+
+.
+
+0010
+
+which can be written in tensor product notation as
+
+(5.3)
+
+I ⊗ NOT =
+
+1 0
+
+0 1
+
+⊗
+
+0 1
+
+1 0
+
+(5.4)
+
+Likewise, if we want to apply a NOT to the ﬁrst qubit and do nothing to the second qubit we can apply NOT ⊗ I, which in matrix representation is
+
+00 01 10 11
+
+
+00
+
+0
+
+0
+
+1
+
+0
+
+NOT ⊗ I =
+
+01 0
+
+ 10
+
+1
+
+0 0
+
+0 0
+
+1
+
+0
+
+ 
+
+11 0 1 0 0
+
+(5.5)
+
+Remember that rows represent input amplitudes and columns represent output amplitudes, so for NOT ⊗ I the amplitude on 00 in the input is the amplitude on 10 in the output.
+Very often in quantum information we’ll want to take a group of qubits and perform an operation on one of them: say, “Hadamard the third qubit.” What that really means is applying the unitary matrix I ⊗ I ⊗ H ⊗ I ⊗ · · · ⊗ I. The desired operation on the relevant qubit(s) is tensor-producted with the identity operation on all the other qubits.
+What’s H ⊗ H?
+
+1 1 1 1 
+1 1 −1 1 −1 2 1 1 −1 −1
+1 −1 −1 1
+
+(5.6)
+
+Why should it look like this? Let’s look at the ﬁrst row: H ⊗ H |00 = |++ . For the second row, H ⊗ H |01 = |+− , and so on. All of the two-qubit unitaries we’ve seen were built up using tensor products of single-qubit unitaries, except for the CNOT, where the ﬁrst qubit aﬀects the second. We’ll need operations like CNOT in order to have one qubit aﬀect another.
+
+5.3. MULTI-QUBIT STATES AND OPERATIONS
+
+39
+
+5.3.2 Entanglement
+Let’s see the multi-qubit operations of Section 5.3.1 in action by calculating the result of applying the circuit below. The sequence of operations in Figure 5.6 and their eﬀects on the input are given in ket notation in Equation 5.7 and in vector notation in Equation 5.8.
+
+|0 H •
+
+|0
+Figure 5.6: Circuit for producing a Bell pair.
+
+|00 → |+ ⊗ |0 = |00 √+ |10 → |00 √+ |11
+
+2
+
+2
+
+(5.7)
+
+1
+
+ √1   √1 
+
+2
+
+2
+
+(CNOT)(H
+
+⊗
+
+I)
+
+0 0
+0
+
+→
+
+CNOT
+
+0
+
+ 
+
+√1 2
+
+ 
+
+0
+
+→
+
+0
+
+ 
+
+0
+
+ 
+
+√1 2
+
+(5.8)
+
+The action of the CNOT can also be written as |x, y → |x, y ⊕ x . The state that this circuit ends on, |00√+|11 , is called the Singlet or the Bell Pair
+2
+or the EPR Pair. This state is particularly interesting because measuring the ﬁrst qubit collapses the state of the second qubit. The state can’t be factored into a tensor product of the ﬁrst qubit’s state and the second qubit’s state. Such a state is called entangled , which for pure states simply means: not decomposable into a tensor product.
+A state that’s not entangled is called unentangled or separable or a product state (for pure states, which are the only kind being discussed at this point, all three of these mean the same thing).
+The basic rules of quantum mechanics, which we saw earlier, force entanglement to exist. It was noticed quite early in the history of the ﬁeld. It turns out that most states are entangled.
+As we mentioned earlier, entanglement was arguably what troubled Einstein the most about quantum mechanics. He thought that it meant that quantum mechanics must entail “spooky action at a distance.” That’s because, while typically particles need to be close to become entangled, once they’re entangled you can separate them to an arbitrary distance and they’ll
+
+40
+
+LECTURE 5. THE COIN PROBLEM, INNER PRODUCTS, . . .
+
+stay entangled (assuming nothing else is done to them). This has actually been demonstrated experimentally for distances of up to 150 miles (improved to a couple thousand miles by Chinese satellite experiments, while this course was being taught!).
+Let’s say that Alice and Bob entangle a pair of particles by setting their state to |00√+|11 . Then Alice brings her particle to the moon while Bob stays on
+2
+Earth. If Alice measures her particle, she can instantaneously know whether Bob will observe a |0 or a |1 when he measures his.
+
+Figure 5.7: We often denote shared entanglement between two parties with a squiggly line (you know, cause entanglement is “spooky” and “weird”).
+
+This bothered Einstein, but others thought that it wasn’t that big a deal. After all, Alice doesn’t get to control the outcome of her measurement! She sees |0 and |1 with equal probability, which means that in this case, the “spooky action” can be explained as just a correlation between two random variables, as we could already see in the classical world. However, a famous 1935 paper of Einstein, Podolsky, and Rosen brought up a further problem: namely, there are other things Alice could do instead of measuring in the {|0 , |1 } basis.
+What happens if Alice measures in the {|+ , |− } basis? She’ll get either |+ or |− , as you might expect. Indeed, we can model the situation by Alice Hadamarding her qubit and then measuring in the {|0 , |1 } basis. Alice Hadamarding gives us the state
+
+|00 + |11
+
+|00 + |01 + |10 − |11
+
+(H ⊗ I)
+
+=
+
+.
+
+2
+
+2
+
+So now, applying the partial measurement rule what is Bob’s state? If Alice sees |0 , then Bob’s qubit collapses to
+
+|0 + |1 √ = |+ . 2
+Conversely, if Alice sees |1 then Bob’s qubit collapses to
+
+|0 − |1 √ = |− . 2
+
+5.3. MULTI-QUBIT STATES AND OPERATIONS
+
+41
+
+Einstein, Podolsky and Rosen went on to talk about how this is more troubling than before. If Alice measures in the {|0 , |1 } basis, then Bob’s state collapses to |0 or |1 , but if she measures in the {|+ , |− } basis, then Bob’s state collapses to |+ or |− . And that looks a lot like faster-than-light communication!
+How can we explain this? One thing we can do is ask “what happens if Bob makes a measurement?”
+In the case where Alice measured her qubit in the {|0 , |1 } basis, Bob will see |0 or |1 with equal probability if he measures his qubit in the same basis. In the case where Alice measured her qubit in the {|+ , |− } basis, Bob will still see |0 or |1 with equal probability if he measures his qubit in the {|0 , |1 } basis (as an exercise, check this).
+So, at least in this case, the probability that Bob sees |0 or |1 is the same regardless of what Alice chooses to do. So, it looks like there might be something more general going on here! In particular, a diﬀerent description should exist of Bob’s part of the state that’s totally unaﬀected by Alice’s measurements—thereby making manifest the principle of no faster-than-light communication. Which brings us to the next lecture. . .
+
+Lecture 6: Mixed States
+So far we’ve only talked about pure states (i.e., isolated superpositions), but you can also have quantum superposition layered together with regular, old probabilistic uncertainty. This becomes extremely important when we talk about states where we’re only measuring one part. Last time we discussed the Bell Pair, and how if Alice measures her qubit in any basis, the state of Bob’s qubit collapses to whichever state she got for her qubit. Even so, there’s a formalism that helps us see why Bob can’t do anything to learn which basis Alice makes her measurement in, and more generally, why Alice can’t transmit any information instantaneously—in keeping with special relativity. This is the formalism of. . .
+6.1 Mixed States
+Mixed states in some sense are just probability distributions over quantum superpositions. We can deﬁne a mixed state as a distribution over quantum states, {pi, |ψi }, meaning that with probability pi the state is |ψi .
+Note that the |ψi ’s don’t have to be orthogonal
+Thus, we can think of a pure state as a degenerate case of a mixed state where all the probabilities are 0 or 1. The tricky thing about mixed states is that diﬀerent probability distributions over pure states, can give rise to exactly the same mixed state (we’ll see an example shortly). But to make manifest why information doesn’t travel faster than light, we need a representation for mixed states that’s unique. This representation is called Density Matrices.
+42
+
+6.1. MIXED STATES
+
+43
+
+6.1.1 Density Matrices
+The density matrix representation of a mixed state {pi, |ψi } is given by
+
+ρ = pi |ψi ψi|
+i
+
+(6.1)
+
+where |ψi ψi| denotes the outer product of |ψ with itself. The outer product is the matrix which you get by multiplying
+
+ α0
+
+|α0|2
+
+
+
+   
+
+α1 ...
+
+   
+
+α0∗
+
+α1∗
+
+· · · αN∗ −1
+
+ =
+ 
+
+. . . αiαj∗ αjαi∗ . . .
+
+ .  
+
+αN −1
+
+|αN −1 |2
+
+(6.2)
+
+Note that αiαj∗ = (αi∗αj)∗, which means that the matrix is its own conjugate transpose ρ = ρ†. This makes ρ a Hermitian Matrix. For the standard basis
+states, for example, we get
+
+|0
+
+0| =
+
+1 0
+
+0 0
+
+and
+
+|1
+
+1| =
+
+0 0
+
+0 1
+
+.
+
+Therefore, an even mixture of them would be
+
+Similarly,
+
+|0
+
+0| + |1 2
+
+1| =
+
+1
+2
+0
+
+0
+1 2
+
+I =.
+2
+
+(6.3)
+
+11
+
+|+
+
++| =
+
+2 1
+
+2 1
+
+22
+
+|−
+
+−| =
+
+1
+
+2
+
+−
+
+1 2
+
+−
+
+1 2
+
+1
+
+2
+
+and
+
+|+
+
++| + |− 2
+
+−| =
+
+1
+2
+0
+
+0
+1 2
+
+I =.
+2
+
+(6.4)
+
+Notice that an equal mixture of |0 and |1 is diﬀerent from an equal
+
+superposition of |0 and |1 (a.k.a. |+ ), and so they have diﬀerent density
+
+matrices. However, the mixture of |0 and |1 and the mixture of |+ and |−
+
+have the same density matrix, which makes sense because Alice converting
+
+between the two bases in our Bell pair example should maintain Bob’s density
+
+matrix representation of his state.
+
+44
+
+LECTURE 6. MIXED STATES
+
+In fact, this is true of whichever basis Alice chooses: for any two orthogonal vectors |v and |w , we have that
+
+|v v| + |w w| I
+
+=.
+
+2
+
+2
+
+(6.5)
+
+Measuring ρ in the basis {|0 · · · |N − 1 } gives us outcome |i with probability P (|i ) = ρii = i|ρ|i . So the diagonal entries of the density matrix directly represent probabilities.
+
+You don’t need to square them or anything because the Born
+rule is already encoded in the density matrix (i.e. αiαi∗ = |αi|2)
+
+In particular, a density matrix that’s diagonal is just a fancy way of writing a classical probability distribution.
+
+p0
+
+0
+
+ 
+
+...
+
+ 
+
+0
+
+pN −1
+
+(6.6)
+
+A pure state written as a density matrix, for example |+ +|, would look
+
+11
+
+like
+
+2 1
+
+2 1
+
+, a matrix of rank one.
+
+Indeed, a density matrix has rank 1 if and
+
+22
+only if it represents a pure state.
+
+What if we want to measure a density matrix in a diﬀerent basis? Measur-
+
+ing ρ in the basis {|v , |w } will give P (|v ) = v|ρ|v and P (|w ) = w|ρ|w .
+
+You can think of a density matrix as encoding not just one but inﬁnitely many probability distributions, because you can measure in any basis.
+
+The matrix I/2 that we’ve encountered above as the even mixture of |0 and |1 (and also of |+ and |− ) is called the Maximally Mixed State. This state is basically just the outcome of a classical coin ﬂip, and it has a special property: regardless of the basis we measure it in, both outcomes will be equally likely. So for every basis {|v , |w } we get the probabilities
+
+I
+
+1
+
+v| |v = v|v
+
+2
+
+2
+
+I
+
+1
+
+w| |w = w|w
+
+2
+
+2
+
+1 =,
+2 1 =. 2
+
+6.1. MIXED STATES
+
+45
+
+This explains why Alice, no matter what she tries, is unsuccessful in sending a message to Bob by measuring her half of a Bell pair. Namely, because the maximally mixed state in any other basis is still the maximally mixed state. The generalization of this fact to any state shared by Alice and Bob and to any operation performed by Alice is called the No-Communication Theorem.
+So how do we handle unitary transformations with density matrices? Since ρ = i pi |ψi ψi|, applying U to ρ means that ρ gets mapped to
+
+pi(U |ψi )(U |ψi )† = piU |ψi ψi| U † = U
+
+pi |ψi ψi| U † = U ρU †.
+
+i
+
+i
+
+i
+(6.7)
+
+You can pull out the U ’s since it’s the same one applied to each state in the
+
+mixture.
+
+It’s worth noting that getting n2 numbers in the density matrix isn’t some
+
+formal artifact; we really do need all those extra parameters. What do the
+
+oﬀ-diagonal entries represent?
+
+11
+
+|+
+
++| =
+
+2 1
+
+2 1
+
+22
+
+The oﬀ-diagonal entries are where the “quantumness” of the state re-
+
+sides. They’re where the potential interference between |0 and |1 is repre-
+
+sented. The oﬀ-diagonal entries can vary depending on relative phase: |+ +|
+
+has positive oﬀ-diagonal entries, |− −| has negative oﬀ-diagonal entries and
+
+1 −i
+
+|i
+
+i| =
+
+2 i
+
+2 1
+
+has oﬀ-diagonal entries of opposite signs. Later we’ll see that
+
+22
+as a quantum system interacts with the environment, the oﬀ-diagonal entries
+
+tend to get pushed down toward 0.
+
+The density matrices in experimental quantum informa-
+
+1
+
+tion papers typically look like
+
+2 ∗
+
+1 . The bigger the oﬀ-
+
+2
+
+diagonal values, the better the experiment, because it rep-
+
+resents them seeing more of the quantum eﬀect! A caveat
+
+though: oﬀ-diagonal entries are basis-dependent. In fact,
+
+as we’ll see, they can always be made 0 by a suitable change
+
+of basis.
+
+46
+
+LECTURE 6. MIXED STATES
+
+6.1.2 Properties of Density Matrices
+Which matrices can arise as density matrices? We’re eﬀectively asking: what constraints does the equation ρ = i pi |ψi ψi| put on the matrix ρ? Well, such a ρ must be:
+
+Square Hermitian Trace 1 (which is to say
+
+i ρii = 1)
+
+Could M =
+
+1
+2
+−10
+
+−10
+1 2
+
+be a density matrix?
+
+No! Measuring this in the {|+ , |− } basis would give +|M |+ = 19/2. Bad!
+
+Remember that you can always transform ρ to U ρU †, whose diagonal then
+
+has to be a probability distribution. If we want that condition to hold for all
+
+U , then we need to add the restriction:
+
+All eigenvalues are non-negative (ρ is positive-semideﬁnite or PSD)
+
+As a refresher, for the matrix ρ, the eigenvectors |x are the vectors that satisfy the equation ρ |x = λ |x for some eigenvalue λ. If we had an eigenvector |x with a negative eigenvalue then the probability x|ρ|x = λ would be negative, which is nonsense.
+Could we have missed a condition? Let’s check. We claim: any Hermitian PSD matrix with trace 1 can arise as a density matrix of a quantum state.
+For such a ρ, we can represent it in the form ρ = i λi |ψi ψi| where the |ψi are the (normalized) eigenvectors of ρ. Then ψi|ρ|ψi = λi, so the λi’s sum to T r(ρ) = 1. This process of obtaining eigenvalues and eigenvectors is called eigendecomposition. We know the eigenvalues will be real because the matrix is Hermitian and they’re non-negative because the matrix is PSD. For every density matrix ρ, there’s a U such that U ρU † is diagonal (with ρ’s eigenvalues along it’s diagonal). Namely, the U that switches between the standard basis and ρ’s eigenbasis.
+One important quantity you can always compute for density matrices is the rank deﬁned as
+
+rank(ρ) = The number of non-zero eigenvalues λ (with multiplicity). (6.8)
+A density matrix of rank n might look, for example, like that in Equation 6.6, while a density matrix of rank 1 represents a pure state.
+
+6.1. MIXED STATES
+
+47
+
+We know from linear algebra that the rank of an n × n matrix is always at most n. Physically, this means that every n-dimensional mixed state can be written as a mixture of at most n pure states.
+In general, rank tells you the minimum number of pure states that you have to mix to reach a given mixed state.
+
+6.1.3 Partial Trace and Reduced Density Matrices
+
+Now, consider the 2-qubit pure state
+
+|00 + |01 + |10
+
+√
+
+.
+
+3
+
+(6.9)
+
+We’ll give the ﬁrst qubit to Alice and the second to Bob. How does Bob calculate the density matrix corresponding to his system, also called the Reduced Density Matrix or Local Density Matrix? Start by picking some orthogonal basis for Alice’s side. The state can be rewritten as
+
+2
+
+1
+
+|0 |+ + |1 |0 ,
+
+3
+
+3
+
+which lets you calculate Bob’s density matrix as
+
+2 |+
+3
+
+1 +| + |0
+3
+
+2 0| =
+3
+
+1 2 1 2
+
+1 2 1 2
+
+1 +
+3
+
+1 0
+
+0 0
+
+=
+
+2 3 1 3
+
+1 3 1 3
+
+In general, if you have a bipartite pure state, it’ll look like |ψ = and Bob’s reduced density matrix can be obtained using
+
+N −1 i,j=0
+
+αi,j
+
+|i
+
+|j
+
+(ρB)j,j =
+
+αi,j αi∗,j .
+
+i
+
+(6.10)
+
+The process of going from a pure state of a composite system, to the mixed state of part of the system, is called tracing out.
+The key points:
+
+A density matrix encodes all of the physically observable information about a quantum system.
+– Two quantum states will lead to diﬀerent probabilities for some measurement iﬀ they have diﬀerent density matrices.
+No-Communication Theorem
+
+48
+
+LECTURE 6. MIXED STATES
+
+– If Alice and Bob share an entangled state, nothing Alice chooses to do will have any eﬀect on Bob’s reduced density matrix.
+
+In other words, there’s no observable eﬀect on Bob’s end. Which is the fundamental reason why quantum mechanics is compatible with the limitations of relativity.
+
+We’ve already seen particular examples of both statements. But both of them hold in full generality, and you’ll prove that in your homework!
+OK, just to get you started a bit: recall that the No-Communication Theorem says that, if Alice and Bob share an entangled state
+
+N −1
+
+|ψ =
+
+αi,j |i Alice |j Bob ,
+
+i,j=0
+
+there’s nothing that Alice can do to her subsystem that aﬀects Bob’s reduced density matrix. You already have the tools to prove this: just calculate Bob’s reduced density matrix, then apply a unitary transformation to Alice’s side, then see if Bob’s density matrix changes. Or have Alice measure her side, and see if Bob’s reduced density matrix changes.
+
+Note that if we condition on the outcome of Alice’s measurement, then we do need to update Bob’s local density matrix to reﬂect the new knowledge: if Alice sees i then Bob sees j, etc. . . But that’s not terribly surprising, since the same would also be true even with classical correlation! In particular, this doesn’t provide a mechanism for fasterthan-light communication.
+
+To review, we’ve seen three diﬀerent types of states in play, each more general than the last:
+
+Basis States or Classical States – Individual states in some computational basis e.g. |i .
+Pure States – Superpositions of basis states |ψ = i αi |i
+Mixed States – Classical probability distributions over pure states ρ = i pi |ψi ψi|.
+
+6.1. MIXED STATES
+
+49
+
+Which represents the actual physical reality: pure or mixed states? It’s complicated. Sometimes we use density matrices to represent our probabilistic ignorance of a pure state. But when we look at part of an entangled state, a mixed state is the most complete representation possible that only talks about the part that we’re looking at. We’ll generally just focus on what these representations are useful for.
+
+Lecture 7: The Bloch Sphere, NoCloning Theorem and Wiesner’s Quantum Money Scheme
+
+7.1 The Bloch Sphere
+
+The Bloch Sphere is a geometric representation of the set of all possible
+
+mixed states of a qubit. We’ve often drawn the state of a qubit as a point on
+
+the unit circle, which is already a little awkward: half of the circle is going to
+
+waste since |ψ and − |ψ both represent the same physical state (they have
+
+the same density matrix).
+
+Instead, what if we chose a representation where vectors that pointed in
+
+opposite directions were orthogonal? With this choice of convention we get
+
+the Bloch sphere, as seen in Figure 7.1.
+
+We can see that |+ and |− should be between |0 and |1 . Then we can
+
+add |i and |−i as a third dimension. In this representation points on the surface of the sphere are pure states, such that if they’re 180◦ apart they’re
+
+orthogonal.
+
+What about mixed states? Well we know that the maximally mixed state,
+
+I 2
+
+,
+
+can
+
+be
+
+deﬁned
+
+as
+
+|0 0| + |1 1| |+ +| + |− −| |i i| + |−i −i|
+
+,
+
+, or
+
+.
+
+2
+
+2
+
+2
+
+More generally we can deﬁne the maximally mixed state as
+
+|v
+
+v|+|v⊥ 2
+
+v⊥|
+
+for
+
+any orthogonal pair of states |v and |v⊥ . The sum of any two of these vectors
+
+on the sphere is the origin.
+
+More generally, we can in this way represent any mixed state as a point
+
+inside of the sphere. A mixture of any states |v and |w , represented as points
+
+on the surface of the sphere, will be a point on the line segment connecting
+
+50
+
+7.1. THE BLOCH SPHERE
+
+51
+
+Figure 7.1: The Bloch sphere representation of a qubit state. Antipodal points
+
+on the surface of the sphere correspond to orthogonal states. Pure states live
+
+on the surface of the sphere while mixed states correspond to points in the
+
+interior. The center of the sphere is a special point and corresponds to the
+
+maximally
+
+mixed
+
+state
+
+I 2
+
+.
+
+the two.
+
+We can show geometrically that every 1-qubit mixed state can be written as
+
+a mixture of only two pure states. Why? Because you can always draw a line
+
+that connects any pure state you want to some point in the sphere representing
+
+a mixed state, and then see which other pure state the line intersects on its
+
+way out. The point can then be described as some convex combination of the
+
+vectors representing the pure states. This is visually represented in Figure 7.2.
+
+Experimentalists love the Bloch sphere, because it works identically to
+
+how
+
+spin
+
+works
+
+with
+
+electrons
+
+and
+
+other
+
+spin-
+
+1 2
+
+particles.
+
+You can measure
+
+the particle’s “spin” relative to any axis of the sphere, and the result will be
+
+that the electron is spinning either clockwise or counterclockwise relative to
+
+the axis. The particle’s spin state is literally a qubit, which collapses to one
+
+of the two possible spin states on measurement.
+
+The
+
+weird
+
+part
+
+about
+
+spin-
+
+1 2
+
+particles
+
+is
+
+that
+
+you
+
+could
+
+have
+
+asked
+
+the
+
+direction of the spin relative to any other axis and still would have gotten that
+
+it was either clockwise or counter-clockwise relative to that axis. So what’s
+
+really going on: what’s the real spin direction? Well, the actual state is just
+
+some point on the Bloch sphere, so there is a “real spin direction,” but there’s
+
+also no measurement that reliably tells us that direction. The crazy part here
+
+52
+
+LECTURE 7. BLOCH SPHERE, NO-CLONING. . .
+
+Figure 7.2: A mixed state of a qubit can always be represented by a convex combination of pure states on the surface of the Bloch sphere. To get one such (there are inﬁnitely many) representation, pick some state on the surface |v and draw a line through |v and the point representing the state ρ. The other point on the surface gives |w , the other state in the mixture. The relative lengths of the line segments between |v and ρ and between |w and ρ give the weights of the mixture.
+
+7.1. THE BLOCH SPHERE
+
+53
+
+is how the three-dimensionality of the Bloch sphere perfectly syncs up with the three-dimensionality of actual physical space.
+
+7.1.1 Quantum Gates in the Bloch Sphere Representation
+It’s often useful to visualize the eﬀect of quantum gates geometrically by mapping their behavior to corresponding changes on the Bloch sphere. In the Bloch sphere representation, every quantum gate can be described as a 3D rotation by some angle θ about some axis deﬁned by the eigenvectors of the gate. Some examples of this can be seen in Figure 7.3.
+
+Figure 7.3: Applying gates X, Y , Z or H is the same as doing a half-turn about their respective axes. S corresponds to a quarter turn around the Zaxis (in the |+ to |1 direction). T 2 = S, so T corresponds to an eighth turn around the Z-axis. Rπ/4 corresponds to a quarter turn about the Y -axis.
+
+54
+
+LECTURE 7. BLOCH SPHERE, NO-CLONING. . .
+
+7.2 The No-Cloning Theorem
+
+We’ve seen how entanglement seems to lead to “non-local eﬀects,” like for the state |00√+|11 , where if Alice measures her qubit then she learns the state
+2
+of Bob’s. The reason that Alice isn’t communicating faster than light boils down to Bob not being able to tell if his qubit’s state is in the {|0 , |1 } basis or the {|+ , |− } basis. But what if Bob could make unlimited copies of his qubit? He could ﬁgure out which state he had through repeated measurements, and so he’d be able to tell what basis Alice measured in. Faster than light communication!
+Learning a classical description of a quantum state, given lots of copies of the state, is called Quantum State Tomography.
+It turns out that we can prove that a procedure to reliably copy an unknown quantum state cannot exist. It’s easy to prove, but it’s a fundamental fact about quantum mechanics. In fact, we already saw one proof: namely, cloning would imply superluminal communication, which would violate the No-Communication theorem that you proved in the homework! But let’s see more directly why cloning is impossible.
+Let’s try to clone a single qubit, |ψ = α |0 + β |1 . In our quantum circuit we want to apply some unitary transformation that takes |ψ and an ancilla as input, and produces two copies of |ψ as output.
+
+|ψ
+
+|ψ
+
+U
+
+|0
+
+|ψ
+
+Algebraically our cloner U would need to implement the transformation
+
+(α |0 + β |1 ) ⊗ |0 → (α |0 + β |1 ) ⊗ (α |0 + β |1 ) = α2 |00 + αβ |01 + αβ |10 + β2 |11 .
+
+In matrix notation this looks like
+
+ α2  α
+
+αβ αβ
+
+=
+
+U
+
+0
+
+β
+
+ 
+
+.
+
+β2
+
+0
+
+(7.1) (7.2)
+
+7.2. THE NO-CLONING THEOREM
+
+55
+
+The problem? This transformation isn’t linear (it has quadratic terms), so it
+
+can’t be unitary!
+
+To clarify, a known procedure that outputs some state |ψ can be rerun to
+
+get many copies of |ψ . What the No-Cloning Theorem says is that if |ψ is
+
+given to you but is otherwise unknown then you can’t make a copy of it.
+
+Another clariﬁcation: CNOT seems like a copying gate—as it maps |00 →
+
+|00 and |10 → |11 . So why doesn’t it violate the No-Cloning Theorem?
+
+Because it only copies if the input state is |0 or |1 . Classical information can
+
+be copied. Doing CNOT on |+ |0 produces the Bell pair |00√+|11 ; this sort of 2
+copies the ﬁrst qubit in an entangled way, but that’s diﬀerent than making a
+
+copy
+
+of
+
+|+
+
+.
+
+Having
+
+two
+
+qubits
+
+in
+
+the
+
+local
+
+state
+
+I 2
+
+is
+
+not
+
+the
+
+same
+
+as
+
+having
+
+two in the state |+ . In general, for any orthonormal basis you can clone the
+
+basis vectors, if you know that your input state is one of them.
+
+Since the No-Cloning Theorem is so important, we’ll present another proof
+
+of it. A unitary transformation can be deﬁned as a linear transformation that
+
+preserves inner product. Which is to say that the angle between |v and |w
+
+is the same as the angle between U |v and U |w . Thus v|U †U |w = v|w .
+
+What would a cloning map do to this inner product? Let | v|w | = c; then
+
+|( v| ⊗ v|)(|w ⊗ |w )| = | v|w v|w | = c2.
+Now, c only ever equals c2 if c = 0 or c = 1, so the transformation can only copy perfectly if |v and |w belong to the same orthonormal basis.
+There’s a fact in classical probability that provides a nice analog to the No-Cloning Theorem. If we’re given the outcome of a coin ﬂip—from a coin that lands heads with some unknown probability p—can we simulate a second independent ﬂip of the same coin without having access to the coin? To do so we’d need a stochastic S matrix whose eﬀect is
+
+ p2   p 
+
+p(1 p(1
+
+− −
+
+p) p)
+
+=
+
+S
+
+ 1
+
+0 −
+
+ p
+
+(1 − p)2
+
+0
+
+but once again the transformation we’d need isn’t even linear, let alone stochastic.
+
+The No-Cloning Theorem has all sorts of applications to science ﬁction, because you can’t make arbitrary copies of a physical system (say for teleporting yourself ) if any of the relevant information (say, in your brain) were encoded
+
+56
+
+LECTURE 7. BLOCH SPHERE, NO-CLONING. . .
+
+in quantum states that didn’t belong to a known orthogonal basis.
+
+7.3 Quantum Money
+Quantum Money is a striking application of the No-Cloning Theorem. In some sense it was the ﬁrst idea in quantum information and was involved in the birth of the ﬁeld. The original quantum money scheme was proposed by Wiesner in 1969, though it was only published in the 80’s.
+Wiesner had left research by then and had chosen to become a manual laborer.
+Wiesner realized that the quantum No-Cloning Theorem—though it wasn’t yet called that—could be useful to prevent counterfeiting of money. In practice, mints use special ink, watermarks, etc. . . , but all such devices basically just lead to an arms race with the counterfeiters. So Wiesner proposed using qubits to create money that would be physically impossible to counterfeit. The immediate problem is that a money scheme needs not only unclonability but also veriﬁability—that is, you need to be able to check whether a bill is genuine. How did Wiesner solve this problem?
+7.3.1 Wiesner’s Quantum Money Scheme
+The bank prints quantum bills (we’ll assume for simplicity that they’re all same denomination). Each bill has:
+A classical serial number s ∈ {0, 1}m A quantum state |ψf(s)
+– The qubits in this state are unentangled, and each will always be in one of four states: |ψ00 = |0 , |ψ01 = |1 , |ψ10 = |+ , or |ψ11 = |− .
+The bank maintains a giant database that stores for each bill in circulation the classical serial number s as well as a string f (s) that encodes what the quantum state attached to bill is supposed to be.
+Wiesner’s scheme, like all quantum money schemes, has an important practical problem though: you need to ensure
+
+7.3. QUANTUM MONEY
+
+57
+
+that the qubits in a bill don’t lose their state (coherence). With current technology, qubits in a lab decohere in anywhere from nanoseconds to an hour. Qubits stored in a wallet would decohere much faster!
+
+To verify a bill, you bring it back to the bank. The bank veriﬁes the bill
+
+by looking at the serial number, and then measuring each qubit in the bill
+
+in the basis in which it was supposed to be prepared. That is, if the qubit
+
+was supposed to be |0 or |1 , then measure in the {|0 , |1 } basis; if it was
+
+supposed to be |+ or |− , then measure in the {|+ , |− } basis. For each
+
+measurement, check that you get the expected outcome.
+
+Consider a counterfeiter who doesn’t know which basis each qubit is sup-
+
+posed to be in, so they guess the bases uniformly at random. They only have
+
+a
+
+(
+
+1 2
+
+)n
+
+chance
+
+of
+
+making
+
+all
+
+n
+
+guesses
+
+correctly.
+
+Of
+
+course
+
+one
+
+could
+
+imagine
+
+a more sophisticated counterfeiter, but it’s possible to prove that regardless of
+
+what the counterfeiter does, if they map a single input bill to two output bills
+
+then
+
+the
+
+output
+
+bills
+
+will
+
+both
+
+pass
+
+veriﬁcation
+
+with
+
+probability
+
+at
+
+most
+
+(
+
+3 4
+
+)n.
+
+Wiesner didn’t actually prove the security of his scheme at the time he proposed it. Professor Aaronson asked about it on Stack Exchange a few years ago which prompted Molina, Vidick, and Watrous to write a paper that formally proved the scheme’s security.
+
+Lecture 8: Quantum Money and Quantum Key Distribution
+8.1 Quantum Money Attacks
+Last time we discussed how classical money is copyable and described a scheme for making money uncopyable through an application of the No-Cloning Theorem. Let’s consider a counterfeiter who wants to take a copy of a legitimate bill B and submit it for veriﬁcation. Say the counterfeiter decides to measure all qubits in the {|0 , |1 } basis. They then make a new bill with the classical serial number copied and the quantum state given by the measurement results in the {|0 , |1 } basis of the original state.
+
+Figure 8.1: Possible result of counterfeiter trying to clone a bill by measuring each qubit in the standard basis.
+
+When the bank goes to measure each qubit they’ll ﬁnd that the ones that
+
+should be in the {|0 , |1 } basis are correct all of the time. But, the ones that
+
+should be in the {|+
+
+, |−
+
+} basis are correct on both bills only
+
+1 4
+
+of the time.
+
+Thus the probability that the counterfeiter succeeds (i.e., that both bills pass
+
+veriﬁcation)
+
+is
+
+(
+
+5 8
+
+)n.
+
+As we mentioned last time, it was shown in 2012 that any
+
+possible
+
+attack
+
+succeeds
+
+with
+
+probability
+
+at
+
+most
+
+(
+
+3 4
+
+)n.
+
+58
+
+8.1. QUANTUM MONEY ATTACKS
+
+59
+
+8.1.1 Interactive Attacks
+There’s a clever attack on Wiesner’s scheme based around the assumption that, after veriﬁcation, the bank returns the bill regardless of whether or not it passed veriﬁcation. We can start with a legitimate bill, then repeatedly go to the bank and ask them to verify it, manipulating each of the bill’s qubits one at a time. For example, if we set the ﬁrst qubit to |0 and the bill still passes veriﬁcation each and every time then we’ve learned that the ﬁrst qubit should be |0 . Otherwise, we can successively try setting the ﬁrst qubit to |1 , |+ and |− and see which choice makes the bank consistently happy. Then, once we know, we move on to toggling the second qubit and so on.
+OK, but surely the bank wouldn’t be so na¨ıve as to return the bill even if it fails veriﬁcation! We should assume instead that if veriﬁcation fails (or fails often enough), then the bank alerts the police or something. Can we come up with an attack that works even then? A recent paper by Nagaj and Sattath points out that we can!
+Recall the Elitzur-Vaidman Bomb discussed in Section 4.4. The general idea is that by making a succession of measurements, none of which reveals that much by itself, we can with a high probability of success learn whether a system is a certain state, without triggering the “bad event” that would happen if the system were actually measured to be in that state (such as a bomb going oﬀ). Nagaj and Sattath applied a similar idea to quantum money.
+
+Elitzur-Vaidman Bomb Attack
+Let |ψi be the qubit of the banknote we want to learn. The protocol for the Elitzur-Vaidman bomb attack goes as follows:
+
+Initialize a qubit |c to |0 .
+
+Repeat
+
+π 2
+
+times:
+
+– Apply the rotation gate R to |c .
+
+– Apply a CNOT gate to |c |ψi . – Send bill to the bank for veriﬁcation
+
+Suppose |ψi = |0 . Then each time we apply CNOT, we get
+
+CN OT (cos ( )) |0 + sin ( ) |1 ) |0 = cos ( )) |00 + sin ( ) |11 . (8.1)
+Following the measurement of the bill, most of the time |c will snap back to |0 . At each step the probability of getting caught (i.e. failing veriﬁcation) is
+
+60
+
+LECTURE 8. QUANTUM MONEY AND QKD
+
+sin2 ( ) ≈
+
+2.
+
+Thus the total probability of getting caught after the
+
+π 2
+
+iterations
+
+is upper-bounded by
+
+2π 2
+
+= O( ) by the union bound. A similar analysis can be
+
+done if |ψi is |1 or |− ; we’re unlikely to get caught, and |c keeps “snapping
+
+back” to |0 . But if |ψi = |+ then something diﬀerent happens; in that case
+
+the CNOT gate has no eﬀect, so |c gradually rotates from |0 to |1 . So, when
+
+we measure at the end we can distinguish |+ from the other states because
+
+it’s the only one that causes |c to rotate to |1 . By symmetry we can give
+
+analogous procedures to recognize the other three possible states for |ψi . So then we just iterate over all n qubits in the bill, learning them one by one just
+
+like in the previous interactive attack on Wiesner’s scheme.
+
+Can Wiesner’s scheme be ﬁxed to patch this vulnerability? Yes! The bank can just give the customer a new bill (of the same value) after each veriﬁcation, instead of the bill that was veriﬁed.
+
+There’s an additional problem with Wiesner’s scheme, as we’ve seen it. Namely, it requires the bank to hold a huge amount of information, one secret for every bill in circulation. However, a paper by Bennett, Brassard, Breidbart and Wiesner, from 1982, points out how to circumvent this by saying: let f be a pseudorandom function with a secret key k, so that for any serial number s, the bank can compute fk(s) for itself rather than needing to look it up. Of course the bank had better keep k itself secret—if it leaks then out the entire money system collapses! But assuming that k remains a secret, why is this secure?
+
+We use a reduction argument. Suppose that the counterfeiter can copy money by some means. What does that say about fk? If fk were truly random, then the counterfeiter wouldn’t have succeeded, by the security of Weisner’s original scheme. So by checking whether the counterfeiter succeeds, we can distinguish fk from a random function. So fk wasn’t very good at being pseudorandom! Note that with this change, we give up on information-theoretic security of the sort that we had with Wiesner’s original scheme. Now we “only” have security assuming that it’s computationally intractable to distinguish fk from random. Moreover, a recent result by Prof. Aaronson shows that some computational assumption is necessary if we don’t want the bank to have to store a giant database.
+
+However, even after we make the improvements above, Wiesner’s scheme still has a fundamental problem, which is that to verify a bill you need to take it back to the bank. If you have to go to the bank, then arguably you might as well have used a credit card or something instead! The point of cash is supposed to be that we don’t need a bank to complete a transaction. This leads to the concept of Public-Key Quantum Money.
+
+8.2. QUANTUM KEY DISTRIBUTION
+
+61
+
+8.1.2 Public-Key Quantum Money
+Public-Key Quantum Money refers to quantum money schemes in which anyone can verify a bill using a “public key,” but where a bill can only be produced or copied by using a “private key” known only to the bank. For formal deﬁnitions see (Aaronson 2009), (Aaronson, Christiano 2012). With this sort of scheme you’ll always need computational assumptions on the power of the counterfeiter in addition to the structure of quantum mechanics. Why? Because a counterfeiter with inﬁnite computational power could always just try every possible quantum state (or an approximation thereof) on the appropriate number of qubits until it found one that made the public veriﬁcation procedure accept.
+
+8.2 Quantum Key Distribution
+Now we’ll discuss something closely related to quantum money, but that doesn’t require storing quantum states for long times, and that for that reason is actually practical today (though so far there’s only a tiny market for it). Key distribution is a fundamental task in cryptography. It just means causing two agents, Alice and Bob, to share a secret key (without loss of generality, a uniformly random string) when they didn’t have one before. Once Alice and Bob share a long enough key, they can then exchange secret messages using the central technique in cryptography called the One-Time Pad, which works as follows:
+Given that Alice and Bob have a shared key k ∈ {0, 1}n, Alice can take her secret message m ∈ {0, 1}n and encode it by the ciphertext c = m⊕k, where ⊕ denotes the bit-wise XOR. Bob, after receiving c, can decode the message using his copy of the secret key, using the fact that c ⊕ k = m ⊕ k ⊕ k = m.
+As its name implies, the One-Time Pad can only be used once securely with a given key, so it requires a large amount of shared key. In fact, in the classical world Claude Shannon proved that if they want to communicate securely, Alice and Bob either need a shared secret key that’s at least as long as all the messages that they want to send, or else they must make computational assumptions about the eavesdropper “Eve”. The great discovery of Quantum Key Distribution (QKD) was that quantum mechanics lets us get secure key distribution with no need for computational assumptions! We do, however, need communication channels capable of sending quantum states.
+
+62
+
+LECTURE 8. QUANTUM MONEY AND QKD
+
+In cryptography, besides secrecy, an equally important goal is authentication. However, we’re only going to deal with secrecy in this course.
+
+The BB84 Protocol
+In this section we’ll describe the BB84 scheme, the ﬁrst full quantum key distribution scheme. This scheme was proposed by Bennett and Brassard in 1984, though it was partly anticipated in Wiesner’s paper (the same one that introduced quantum money!). It circumvents the issues we’ve seen in maintaining a qubit’s coherence for a long time because it only requires coherence for the time it takes for communication between Alice and Bob.
+There are companies and research groups that are already doing quantum key distribution through ﬁber optic cables over up to about 10 miles and through free-space nearly 90 miles. In addition, just a few years ago, in 2017, a team from China demonstrated QKD over distances of thousands of miles by sending photons to and from a satellite that was launched into space for that express purpose.
+The basic idea is that you’re trying to establish some shared secret knowledge and you want to know for certain that no eavesdroppers on the channel can uncover it. You’ve got a channel to transmit quantum information and a channel to transmit classical information. In both eavesdroppers may be able to listen in (no secrecy). But, in the classical channel we’ll assume you at least have authentication; Bob knows that any messages really come from Alice and vice versa. The BB84 protocol proceeds as follows:
+Alice chooses uniformly at random a pair of strings x, y ∈ {0, 1}n. Alice then generates an n-qubit state |ψ where Alice uses the bits of y to determine which basis to encode her qubits in (0 for {|0 , |1 } and 1 for {|+ , |− }), and she uses the bits of x to determine the element of that basis (0 → |0 / |+ and 1 → |1 / |− ). Alice sends the quantum state |ψ to Bob. Bob picks a string y uniformly at random from {0, 1}n. Bob uses the bits of y to determine the basis in which to measure each of the qubits sent from Alice. He then records the results of the measurements in the string x (|0 / |+ → 0 and |1 / |− → 1).
+
+8.2. QUANTUM KEY DISTRIBUTION
+
+63
+
+Now Alice and Bob share which bases they picked to encode and measure the state |ψ (the strings y and y ). They discard any bits of x and x for which they didn’t pick the same basis (which will be about half the bits). What remains of x and x is now their shared secret key.
+
+Figure 8.2: Sketch of the BB84 protocol.
+In Figure 8.2 we roughly sketch the protocol visually. At this point we consider an eavesdropper Eve who was watching the qubits
+as they were sent over. The whole magic of using qubits is that if Eve tries to measure the qubits then she inherently changes what Bob receives! Sure, if she measures a |0 or |1 and the qubit was prepared in the {|0 , |1 } basis then the qubit doesn’t change. But, what if she’s unlucky and measures a qubit in a basis it wasn’t prepared in? Eventually she almost certainly will be unlucky and have this happen.
+In more detail, suppose Alice sent |+ and Eve measures in the wrong basis and sees |0 , which gets passed along to Bob. Then, even if Bob measures in the {|+ , |− } basis (i.e., the “right” basis), he has a 50% chance of measuring |+ and a 50% chance of measuring |− . In the latter case Alice and Bob will be able to see that the channel was tampered with. So, Alice and Bob can verify that no one listened in to their qubit transmission by making sure that the portion of their qubits that should match, do match. Of course, after Alice and Bob discuss those qubits over the channel they aren’t going to be secret anymore! But they’ve still got all the others. If a large enough fraction of the qubits didn’t match then Alice and Bob deduce that Eve eavesdropped. So then they can just keep trying again and again until they can get a batch where no one listened in. At worst, Eve can prevent Alice and Bob from ever communicating by listening in constantly. But we can prevent a situation where Alice and Bob think their shared key is secure even though it isn’t. Again, once Alice and Bob share a secret key, they can then use some
+
+64
+
+LECTURE 8. QUANTUM MONEY AND QKD
+
+classical encryption scheme, like the One-Time Pad, or a scheme that depends on computational assumptions (if they want to make their shared secret key last longer).
+
+Lecture 9: Superdense Coding
+
+9.1 Superdense Coding
+
+Superdense Coding is the ﬁrst protocol we’ll see that requires entanglement. Basic information theory (Shannon) tells us that “by sending n bits, you can’t communicate more than n bits of information.” Now, by contrast, we’ll see how Alice can send Bob two classical bits by sending him only one qubit, though there is a catch: Alice and Bob must share some entanglement ahead of time. In the scenario with no prior entanglement, Alice can’t send more than one bit per qubit—–a fundamental result known as Holevo’s Theorem. We’re not going to prove Holevo’s theorem here, but the intuition is pretty simple; if Alice sends |ψ = α |0 + β |1 to Bob he can only measure it once in some basis and then the rest of the information in |ψ is lost.
+Instead, let’s suppose that Alice and Bob share a Bell pair in advance |ψ = |00√+|11 . We claim that Alice can manipulate her half, then send her
+2
+half to Bob and ﬁnally Bob can measure both qubits and get two bits of information from Alice. The key is to realize that Alice can get three diﬀerent states, all of them orthogonal to the original Bell pair and to each other, by applying the following gates to her qubit
+
+(X ⊗ I) (Z ⊗ I) (Z ⊗ I)(X ⊗ I)
+
+|00 √+ |11 2
+|00 + |11 √ 2
+|00 √+ |11 2
+
+= |01 √+ |10 2
+
+|00 − |11
+
+=
+
+√
+
+2
+
+= |01 √− |10 2
+
+(9.1)
+
+These three states, together with |00√+|11 , form an orthonormal basis. So, 2
+suppose Alice wants to transmit two bits x, and y:
+
+If x = 1, she applies the X gate.
+
+65
+
+66
+
+LECTURE 9. SUPERDENSE CODING
+
+If y = 1, she applies a Z gate. Then she sends her qubit to Bob.
+
+For Bob to decode this transformation, he’ll want to use the transformation
+
+1 0 0 1 
+
+1 √
+2
+
+1 0
+
+0 −1
+
+0 1
+
+−1
+
+0
+
+ 
+
+,
+
+0 1 −1 0
+
+which corresponds to the circuit
+
+(9.2)
+
+•H
+So, Alice transforms the Bell pair into one of the four orthogonal states above, then Bob decodes that two-qubit state into one of the four possible combinations of |0 and |1 , corresponding to the original bits x and y. For example, if Bob receives |01√−|10 , then applying CNOT gets him |1 ⊗ |− and
+2
+the then Hadamard gives him |1 ⊗ |1 . If Bob receives |00√−|11 , then applying 2
+CNOT gets him |0 ⊗ |+ and the Hadamard then gives him |0 ⊗ |1 . Naturally, we could ask: if Alice and Bob had even more pre-shared en-
+tanglement, could Alice send an arbitrarily large amount of information by transmitting only one qubit? There’s a theorem that says no. It turns out that given a qubit and any number of pre-shared entangled qubits (ebits), you can send two bits of classical information, but no more. That is, we can write the inequality
+
+1 qubit + 1 ebit ≥ 2 bits,
+
+(9.3)
+
+but, we can’t write 1 qubit + ebits ≥ k bits for any k > 2. As far as quantum speed-ups go, a factor of two isn’t particularly impressive, but it is pretty cool that it challenges the most basic rules of information theory established by Shannon himself.
+
+Lecture 10: Teleportation, Entanglement Swapping, GHZ State and The Monogamy of Entanglement
+
+10.1 Quantum Teleportation
+
+Quantum Teleportation is a foundational discovery from 1991 that came as a great surprise. Science journalists still love it given its irresistible name. In this lecture we’ll see what it can and can’t do. Firstly, what does teleportation mean? You might think it implies sending qubits instantaneously over vast distances, but that can’t be done, as it violates the causal structure of the universe dictated by the laws of special relativity. So we’re only going to send qubits at most at the speed of light, no faster. Of course, there are other ways to move qubits at the speed of light or slower, like just picking them up and moving them, or putting them on a bus! (It doesn’t sound as sexy that way.) OK, but what if you only had a phone line, or a standard Internet connection? That would let you send classical bits, but not qubits. With teleportation, though, we’ll achieve something surprising. We’ll show that it’s possible for Alice and Bob to use pre-shared entanglement plus classical communication to perfectly transmit a qubit.
+The inequality here is almost the converse of the one for superdense coding:
+
+1 ebit + 2 bits ≥ 1 qubit
+
+(10.1)
+
+Which is to say, you need one pair of entangled qubits plus two classical bits in order to transmit one qubit. This can also be shown to be optimal. So, let’s say Alice wants to get a qubit over to Bob, without using a quantum communication channel, but with a classical channel together with preshared
+
+67
+
+68 LECTURE 10. TELEPORTATION, ENTANGLEMENT SWAPPING. . .
+
+entanglement. How should Alice go about this? Once the question is posed, you can play around with diﬀerent combinations of operations and you’d eventually discover that what works is this:
+
+|ψ
+
+•H
+
+ |00 √+|11 
+2
+
+Figure 10.1: Quantum circuit for performing quantum teleportation protocol.
+where |ψ = α |0 + β |1 is the state Alice wishes to send. The top two qubits in the circuit above are Alice’s. At the end, will Alice also have |ψ ? No. A logical consequence of the No-Cloning Theorem is that there can only be one copy of the qubit. Could we hope for a similar protocol without sending classical information? No, because of the No-Communication Theorem.
+Now let’s analyze the behavior of the circuit in Figure 10.1 in more detail. The qubit Alice wants to transmit is |ψ = α |0 + β |1 . The combined state of her qubit, along with the entangled Bell Pair she shares with Bob is
+
+(α |0 + β |1 ) ⊗ |00 √+ |11
+
+α |000 =
+
++ α |011 √+ β |100
+
++ β |111
+
+.
+
+(10.2)
+
+2
+
+2
+
+Following the CNOT the state of the system is
+
+α |000 + α |011 √+ β |110 + β |101 . 2
+
+(10.3)
+
+Next, Alice applies a Hadamard to her ﬁrst qubit which results in the state
+
+√1 (α |+00 + α |+11 + β |−10 + β |−01 ) 2 1 = (α |000 + α |100 + α |011 + α |111 + β |010 − β |110 + β |001 − β |101 ) 2 (10.4)
+Finally, Alice measures both of her qubits in the {|0 , |1 } basis. This leads to four possible outcomes for the state of Bob’s qubit conditioned on her
+
+10.1. QUANTUM TELEPORTATION
+
+69
+
+measurement results, as shown in Table 10.1. We’re deducing information about by Bob’s state by using the partial measurement rule. E.g., if Alice sees |00 , then we narrow down the state of the entire system to the possibilities that ﬁt, namely |000 and |001 .
+
+If Alice Sees:
+
+00
+
+01
+
+10
+
+11
+
+Then Bob’s qubit is: α |0 + β |1 α |1 + β |0 α |0 − β |1 α |1 − β |0
+
+Table 10.1: Summary of Bob’s output state conditioned on Alice’s measurement results.
+
+What is Bob’s state, if he knows that Alice measured, but doesn’t know the measurement outcome? It’s an equal mixture of all four possibilities, which is just the Maximally Mixed State. This makes sense given the No-Communication Theorem! Until Alice sends information over, Bob’s qubit can’t possibly depend on |ψ .
+Next, Alice tells Bob her measurement results via a classical channel and Bob uses the information to “correct” his qubit to |ψ . If the ﬁrst bit sent by Alice is 1 then Bob applies Z, and if the second bit sent by Alice is 1 then Bob applies X. These transformations will bring Bob’s qubit to the state |ψ = α |0 + β |1 . That means they’ve successfully transmitted a qubit without a quantum channel!
+Note this protocol never assumed that Alice knew what |ψ was.
+For the protocol to work, Alice had to measure her syndrome bits and communicate the result to Bob. These measurements were destructive (since we can’t ensure that they’ll be made in a basis orthonormal to |ψ ), and thus Alice doesn’t have |ψ at the end. Alice and Bob also “use up” their Bell pair in the process of teleporting |ψ .
+Something to think about: Where is |ψ after Alice’s measurement, but before Bob does his operations?
+
+70 LECTURE 10. TELEPORTATION, ENTANGLEMENT SWAPPING. . .
+FAQ
+How do people come up with this stuﬀ ? Well it’s worth pointing out that quantum mechanics was discovered in
+1926 and that quantum teleportation was only discovered in the 90’s. These sorts of protocols can be hard to ﬁnd. Sometimes someone tries to prove that something is impossible, and in doing so eventually ﬁgures out a way to get it done. . . Aren’t we fundamentally sending inﬁnitely more information than two classical bits if we’ve sent over enough information to perfectly describe an arbitrary qubit, since the qubit’s amplitudes could be arbitrary complex numbers?
+In some sense, but at the end of the day, Bob only really obtains the information that he can measure, which is signiﬁcantly less. Amplitudes may “exist” physically, but they’re diﬀerent from other physical quantities like length, in that they seem to act a lot more like probabilities. Like, there’s a state of a single qubit α |0 + β |1 such that the binary encoding of β corresponds to the complete works of Shakespeare—–the rules of quantum mechanics don’t put a limit on the amount of information that it takes to specify an amplitude. With that said, we could also encode the complete works of Shakespeare into the probability that a classical coin lands heads! In both cases, the works of Shakespeare wouldn’t actually be retrievable by measuring the system, assuming we didn’t have an immense number of copies of it.
+10.1.1 Multi-Qubit Teleportation and Entanglement Swapping
+Can we go further? What would it take to teleport an arbitrary quantum state, say of n qubits? To answer this question, let’s notice that nothing said that a qubit that’s teleported has to be unentangled with the rest of the world. You could run the protocol and have |ψ be half of another Bell pair. That would entangle the fourth qubit to Bob’s qubit (you can check this via calculation). This operation is depicted in Figure 10.2. This is not a particularly interesting operation since it lands you where you started with one qubit of entanglement between Alice and Bob, but it does have an interesting implication. It suggests that it should be possible to teleport an arbitrary n-qubit entangled state, by simply teleporting the qubits one at a time, thus using n ebits of preshared entanglement and 2n bits of classical communication. Indeed, it’s not hard to check that this works.
+One further consequence of this is that two qubits don’t need to interact
+
+10.1. QUANTUM TELEPORTATION
+
+71
+
+Figure 10.2: Diagrammatic depiction of teleportation in which Alice uses one ebit of pre-shared entanglement with Bob to teleport over one half of some arbitrary entangled state that she has control of.
+directly to become entangled. In some sense, we already knew that. Consider, for example, the following circuit:
+H•
+× ×
+The ﬁnal gate in this circuit is a SWAP gate between the last two qubits. Note that the ﬁrst and third end up entangled even though there’s never “direct” contact between them. The second qubit serves as an intermediary.
+What does it take for Alice and Bob to get entangled? The obvious way is for Alice to create a Bell pair and then send one of the qubits to Bob. In most real-world experiments the entangled qubits are created somewhere between Alice and Bob and then one qubit is sent to each.
+Anyway, teleportation leads to a more surprising protocol than this, called Entanglement Swapping. Imagine we have four parties: Alice, Bob, Charlie and Diane. Alice and Bob share a Bell pair, as do Alice and Charlie and Charlie and Diane, as depicted in Figure 10.3. Now suppose that Alice teleports her half of the Bell pair that she shares with Charlie to Bob, and that Charlie
+
+72 LECTURE 10. TELEPORTATION, ENTANGLEMENT SWAPPING. . . teleports his half of the Bell pair that he shares with Alice to Diane. The result of this series of teleportations is that Bob and Diane now both have one half of a Bell pair—even though the two qubits Bob and Diane possess were never in causal contact with one another!
+Figure 10.3: Entanglement swapping procedure depicted. Initially Alice and Bob share a Bell pair, as do Charlie and Diane and Alice and Charlie. Following a pair of teleportations from Alice to Bob and from Charlie to Diane we ﬁnd that Bob and Diane now share a Bell pair (even though they never interacted directly).
+This process has been used in real experiments, such as the recent “loophole-free Bell tests,” which we’ll learn about later in the course. Quantum teleportation itself has been demonstrated experimentally many times.
+10.1.2 The GHZ State and Monogamy of Entanglement
+We’ve seen the Bell pair, and what it’s good for. There’s a 3-qubit analogue of it called the GHZ state, |000√+|111 . We’ll see the GHZ state again later in the
+2
+
+10.1. QUANTUM TELEPORTATION
+
+73
+
+course, but for now we’ll use it to illustrate an interesting conceptual point. Let’s say that Alice, Bob, and Charlie hold random bits, which are either all 0 or all 1 (so, they’re classically correlated). If all three of them get together, they can see that their bits are correlated and the same is true even if only two of them are together.
+Now suppose instead that the three players share a GHZ state. With all three of them together they can see that the state is entangled, but what if Charlie is gone? Can Alice and Bob see that they’re entangled with each other? No. To see this observe that by the No-Communication Theorem, Charlie could’ve measured without Alice and Bob knowing. But, if he did, then Alice and Bob would clearly have classical correlation only: either both |0 ’s (if Charlie got the measurement outcome |0 ) or both |1 (if Charlie got |1 ). From this it follows that Alice and Bob have only classical correlation regardless of whether Charlie measured or not.
+A diﬀerent way to see this is to look at the reduced density matrix of the state shared by Alice and Bob,
+
+1
+2
+
+0
+
+0
+
+0
+
+ρAB
+
+=
+
+0 0
+
+0 0
+
+0 0
+
+0 0
+
+.
+
+0
+
+0
+
+0
+
+1 2
+
+Notice that this is diﬀerent than the density matrix of a Bell pair,
+
+1
+2
+
+0
+
+0
+
+1
+2
+
+ρBell
+
+=
+
+0 0
+
+0 0
+
+0 0
+
+0 0
+
+.
+
+1 2
+
+0
+
+0
+
+1 2
+
+This is one illustration of a general princi-
+
+ple called the Monogamy of Entanglement.
+
+Simply put, if Alice has a qubit that is max-
+
+imally entangled with Bob’s qubit, then that
+
+qubit can’t also be maximally entangled with
+
+Charlie’s qubit. With the GHZ state, you can
+
+only see the entanglement if you have all three
+
+qubits together. This is sometimes analogized to
+
+the Borromean Rings, an arrangement of three
+
+rings with the property that all three are linked together, but removing any
+
+one ring unlinks the other two.
+
+There are other 3-qubit states that behave diﬀerently than the GHZ state. In the W state, |100 +|0√10 +|001 , there’s some entanglement between Alice and
+3
+
+74 LECTURE 10. TELEPORTATION, ENTANGLEMENT SWAPPING. . .
+Bob, and there’s some entanglement between Alice and Charlie, but neither pair is maximally entangled.
+In the next lecture, we’ll make more rigorous precisely what we mean by saying Alice and Bob share “some” entanglement when we talk about how to quantify entanglement.
+
+Lecture 11: Quantifying Entanglement
+
+How do you quantify how much entanglement there is between two quantum systems? It’s worth noting that we get to decide what we think a measure of entanglement ought to mean. We’ve seen how it can be useful to think of Bell pairs as a resource, so we can phrase the question as “how many ‘Bell pairs of entanglement’ does a given state correspond to?”
+A priori, there could be diﬀerent incomparable kinds of entanglement that are good for diﬀerent things. That’s actually the case for entangled mixed states, or entangled pure states shared by three or more parties. But, for the special case of an entangled pure state shared by two parties, it turns out that there’s a single measure of entanglement which counts the number of Bell pairs needed to form the state, or equivalently the number of Bell pairs that can be extracted from it.
+So, given a bipartite state
+
+αij |i A |j B ,
+ij
+
+(11.1)
+
+how do we calculate many Bell pairs it’s worth? Our ﬁrst observation is that given any bipartite pure state you can always ﬁnd a change of basis on Alice’s side and another change of basis on Bob’s side that puts the state into the simpler form
+
+λi |vi |wi ,
+i
+
+(11.2)
+
+where the set of states {|vi } form an orthonormal basis and likewise for the set
+
+75
+
+76
+
+LECTURE 11. QUANTIFYING ENTANGLEMENT
+
+of states {|wi }—though the sets of states {|vi } and {|wi } are not necessarily orthonormal with respect to each other. We call the form of the state in Equation 11.2 the Schmidt Decomposition or Schmidt Form.
+
+11.1 Schmidt Decomposition
+
+Suppose we have a quantum state written in the form ij αij |i A |j B. Then we can rewrite the coeﬃcients αij in matrix form, given by
+
+ α0,0 α0,1 · · · α0,n−1 
+
+ α1,0 α1,1
+
+
+
+A=  
+
+...
+
+...
+
+.  
+
+αn−1,0
+
+αn−1,n−1
+
+(11.3)
+
+We can then use the Singular Value Decomposition (SVD) to rewrite our matrix as A = U ΛV †, where U and V are n × n unitary matrices, and
+Λ is an n × n diagonal matrix whose entries we call the singular values of A. Rearranging the factorization we ﬁnd that Λ = U †AV , and so the changes of
+basis which Alice and Bob would need to perform in order to get their state into Schmidt form are given by U † and V respectively.
+
+Note that while we won’t prove it here there are eﬃcient algorithms for calculating the SVD of a matrix and these are available out-of-the-box in any linear algebra software.
+
+Measuring in the {|vi |wi } basis would yield the probability distribution |λ0|2, · · · , |λn−1|2 .
+
+11.2 Von Neumann Entropy
+
+Recall that for a classical probability distribution P = [p0, · · · , pn−1] , its Shannon entropy is
+
+n−1
+
+1
+
+H(P ) = pi log2
+i=0
+
+pi
+
+.
+
+(11.4)
+
+There’s a generalization of this measure that works for quantum states
+
+11.2. VON NEUMANN ENTROPY
+
+77
+
+(both pure and mixed), called the von Neumann Entropy. The von Neumann entropy of a mixed state ρ is
+
+n−1
+
+1
+
+S(ρ) = γi log2
+i=0
+
+γi
+
+(11.5)
+
+where {γi} are the eigenvalues of ρ. If you diagonalize a density matrix, the diagonal represents a probability distribution over n possible outcomes (corresponding to the eigenstates of ρ), and taking the Shannon entropy of that distribution gives you the von Neumann entropy of your quantum state. Note that physicists often use an alternate convention for the von Neumann entropy using the natural logarithm rather than base-2 (we’ll always use base-2 in this course).
+Another way we can think about the von Neumann entropy is as follows. Say you looked at all the possible probability distributions that could arise by measuring the mixed state ρ in all possible orthogonal bases. Then the von Neumann entropy of ρ is the minimum of the Shannon entropies of all those distributions,
+
+S(ρ) = min H diag U ρU † , U
+
+(11.6)
+
+where diag(A) is the length-n vector obtained from the diagonal of the n × n
+
+matrix A. This alternative deﬁnition makes it immediately clear that the
+
+von Neumann entropy of any pure state |ψ is 0, because there’s always some
+
+measurement basis (namely, a basis containing |ψ ) that returns a deﬁnite
+
+outcome.
+
+For example, you could choose to measure the state |+ in the {|0 , |1 }
+
+basis and you’ll have complete uncertainty and a Shannon entropy of 1. But,
+
+if you measure |+ in the {|+ , |− } basis you’ll have a Shannon entropy of 0
+
+because you’ll always get the outcome |+ . As such, the von Neumann entropy
+
+of |+ is 0. By contrast, the von Neumann entropy of the maximally mixed
+
+state,
+
+I 2
+
+,
+
+is
+
+1;
+
+similarly,
+
+the
+
+von
+
+Neumann
+
+Entropy
+
+of
+
+the
+
+n-qubit
+
+maximally
+
+mixed state is n.
+
+11.2.1 Entanglement Entropy
+We can now begin to answer the question posed at the start of this lecture: how do you quantify how much entanglement there is between two quantum
+
+78
+
+LECTURE 11. QUANTIFYING ENTANGLEMENT
+
+systems? Suppose Alice and Bob share a bipartite pure state
+
+|ψ = αij |i A |j B .
+ij
+
+(11.7)
+
+To quantify the entanglement of this state we’ll use a measure called the Entanglement Entropy. The entanglement entropy of a (pure) bipartite state is given by
+
+E(|ψ ) = S(ρA) = S(ρB) = H( |λ0|2, · · · , |λn−1|2 )
+
+(11.8)
+
+where ρA an ρB are the reduced density matrices corresponding to Alice and Bob’s subsystems respectively and where |λ0|2, · · · , |λn−1|2 is the probability distribution corresponding to the Schmidt form of Alice and Bob’s shared state. This deﬁnition has the desirable properties that the entanglement entropy of any product state |ψ ⊗ |φ is 0 and the entanglement entropy of a Bell pair |00√+|11 is 1.
+2
+You can think of the entanglement entropy of a state as either the number of Bell pairs it would take to create it or as the number of Bell pairs that you can extract from it. It’s not immediately obvious that these numbers are the same, but for pure states they are. For mixed states they need not be!
+As an example, suppose Alice and Bob share the state
+
+3
+
+4
+
+|ψ = |0 |+ + |1 |− .
+
+5
+
+5
+
+Then we can calculate the entanglement entropy using any of the three equivalent deﬁnitions in Equation 11.8. In this case we already have the state written in Schmidt form, so we can directly use the last deﬁnition in Equation 11.8:
+
+32
+
+E(|ψ ) = 5
+
+log2
+
+52
+
+42
+
+3
+
++ 5
+
+log2
+
+52 ≈ .942.
+4
+
+This means that if Alice and Bob shared 1000 copies of |ψ , they’d be able to teleport about 942 qubits. We can also conﬁrm that the other two deﬁnitions for the entanglement entropy, in terms of the von Neumann entropies of Alice and Bob’s reduced density matrices, do in fact give the same value. Suppose Bob measures his state in the {|+ , |− } basis. Bob sees |+ with probability 9/25, in which case Alice’s qubit is |0 , and he sees |− with probability 16/25, in which case Alice’s qubit is |1 . As such, the reduced density matrix for Alice’s qubit is
+
+11.3. MIXED STATE ENTANGLEMENT
+
+79
+
+ρA = 9 |0
+
+16 0| + |1
+
+1| .
+
+25
+
+25
+
+Likewise, suppose Alice measures her qubit in the {|0 , |1 } basis. Alice will see |0 with probability 9/25, in which case Bob’s qubit is |+ , and she’ll see |1 with probability 16/25, in which case Bob’s qubit is |− . As such, the reduced density matrix for Bob’s qubit is
+
+ρB = 9 |+
+
+16 +| + |−
+
+−| .
+
+25
+
+25
+
+Both of these reduced density matrices are already diagonalized and so we can immediately see that they share the same eigenvalues—though they have different eigenvectors. Moreover, the values of the eigenvalues correspond exactly to the values of the squared coeﬃcients of the Schmidt form of the state. As such, we’ll ﬁnd precisely the same value for the entanglement entropy regardless of whether we calculate it by ﬁnding the Schmidt form of a given state or by ﬁnding one of the reduced density matrices. In practice, this means you should feel free to use whichever method is most convenient.
+
+11.3 Mixed State Entanglement
+For bipartite mixed states, there are two values to consider. The Entanglement of Formation, EF (ρ), is the number of ebits needed per copy of ρ created in the asymptotic limit of a large number of copies of ρ. We assume Alice and Bob are allowed unlimited local operations and classical communication (called “LOCC” in the lingo) for free in any protocols they use. The Distillable Entanglement, ED(ρ), is the number of ebits that Alice and Bob can extract per copy of ρ in the asymptotic limit where they have many copies of ρ, again assuming LOCC is free.
+Clearly EF ≥ ED, since if you could ever get out more entanglement than you put in it would give you a way to increase entanglement arbitrarily using LOCC, which is easily seen to be impossible. But, what about the other direction? It turns out that there exist bipartite pure states for which EF ED, which is to say that those states take a lot of entanglement to make, but then you can only extract a small fraction of the entanglement that you put in. There are even states (called bound entangled states) for which EF > 0, but ED = 0. A detailed treatment of such states is beyond the scope of this course.
+
+80
+
+LECTURE 11. QUANTIFYING ENTANGLEMENT
+
+We call a bipartite mixed state ρ separable if there’s any way to write it as a mixture of product states,
+
+ρ = pi |vi vi| ⊗ |wi wi| .
+i
+
+(11.9)
+
+A mixed state is called entangled if and only if it’s not separable. This condition is subtle, as it sometimes happens that a density matrix looks entangled, but it turns out there’s some non-obvious decomposition which shows it’s actually separable. It’s important to note that the converse of the separability criterion in Equation 11.9 is not true. That is, being able to decompose a mixed state into a convex combination of entangled states does not imply that the mixed state is entangled. A simple counterexample is the two-qubit maximally mixed state
+
+I |00 00| + |01 01| + |10 10| + |11 11|
+
+=
+
+.
+
+4
+
+4
+
+(11.10)
+
+This state clearly satisﬁes the criterion in Equation 11.9, and so this state is separable. However, we can also write the maximally mixed state as
+
+I 13
+
+= 44
+
+|φi φi| ,
+
+i=0
+
+where the |φi ’s are each one of the 4 Bell states
+
+|00 + |11
+
+|φ0 =
+
+√ 2
+
+|01 + |10 |φ2 = √
+2
+
+|00 − |11
+
+|φ1 =
+
+√ 2
+
+|01 − |10 |φ3 = √
+2
+
+In a sense we got some initial intuition about the diﬃculty of this problem in Lectures 6 and 7, where we saw that even for the case of a one-qubit mixed state there are an inﬁnite number of decompositions as convex combinations of pure states. Indeed, in 2003 Leonid Gurvits proved a pretty crazy fact: if you’re given as input a density matrix ρ for a bipartite state, then deciding whether ρ represents a separable or entangled state is an NP-hard problem! As a result, unless P = NP, there can be no “nice characterization” for telling apart entangled and separable bipartite mixed states—–in contrast to the situation with bipartite pure states.
+
+This helps to explain why there are endless paper writing
+
+11.3. MIXED STATE ENTANGLEMENT
+
+81
+
+opportunities in trying to classify diﬀerent types of entanglement. . .
+
+Lecture 12: Interpretations of Quantum Mechanics
+At this point in the course, we’re ﬁnally in a position to step back and ask, what is quantum mechanics telling us about reality? It should be no surprise that there isn’t a consensus on this question (to put it mildly)! But, regardless of your own views, it’s important to know something about the various positions people have defended over the years, as the development of these positions has sometimes gone hand in hand with breakthroughs in quantum mechanics. We’ll see an example of this later with the Bell inequality, and arguably quantum computing itself is another example. Most discussions about the implications of quantum mechanics for our understanding of reality center around the so-called Measurement Problem. In most physics texts (and in this class for that matter) measurement is introduced as just a primitive operation whose implications we don’t try to understand more deeply. However, there’s a fundamental weirdness about measurement in QM, which stems from the fact that the theory seems to demand both:
+Unitary evolution in which |ψ → U |ψ . Measurements in which a state collapses to some outcome |i with probability | ψ|i |2.
+In other words, quantum mechanics seems to work in a way that’s deterministic, reversible, and continuous most of the time, except during measurement which is the only time we see it work in a way that’s probabilistic, irreversible, and discontinuous. So we can phrase the question as: How does the universe know when to apply unitary evolution and when to apply measurement? People have argued about the correct interpretation of quantum mechanics for almost 100 years. The discussion is sometimes compared to the discussion about the nature of consciousness (which has gone on for millennia) in that they both tend to devolve into people talking in circles around each other. But, it’s nonetheless worthwhile to understand the main schools of thought.
+82
+
+12.1. THE COPENHAGEN INTERPRETATION
+
+83
+
+12.1 The Copenhagen Interpretation
+The Copenhagen Interpretation was the preferred interpretation of most of the founders of quantum mechanics. It’s closely associated with Niels Bohr and his institute in Copenhagen (hence the name) and with Werner Heisenberg. Note that the diﬀerent founders said diﬀerent and sometimes contradictory things, sometimes in very abstruse language, so it’s notoriously hard to pin down what the “Copenhagen Interpretation” actually is! Essentially though, the Copenhagen viewpoint is that there are two diﬀerent worlds (or parts of reality): the quantum world and the classical world. We live in the classical world where objects have deﬁnite locations and states and where objects can be measured without signiﬁcantly altering them. But, in doing experiments we’ve discovered that there also exists the quantum world “beneath” ours which obeys very diﬀerent rules. Measurement in this view is the operation that bridges the two worlds. It lets us “peek under the hood” into the quantum world and see what’s going on.
+Bohr wrote long tracts in which he argues that even making statements about the outcomes of quantum measurements presupposes that there must be a classical world in which those statements can be sensibly made. So, there’s some “boundary” or “cut” between the quantum and classical worlds. The exact location of this boundary might be fuzzy and might vary depending on what sort of question we’re asking. In any case, we should never make the error of insisting that our commonsense classical concepts remain valid on the quantum side of the boundary. Believers in the Copenhagen interpretation tend to say things like “if this doesn’t make sense to you, then you’re just stuck in the old classical way of thinking, and you need to change; the problem is not with quantum mechanics, it’s with you.”
+
+12.1.1 “Shut Up and Calculate”
+Our next option is closely related to the Copenhagen interpretation. This is probably one of the preferred “interpretations” for many physicists, chemists and others who work with quantum mechanics. It says that at the end of the day quantum mechanics works and it correctly predicts the results of experiments. This is all we can reasonably ask of a scientiﬁc theory, or at least all that it’s fruitful to ask. Prof. Aaronson likes to say that the Copenhagen interpretation is basically just shut up and calculate (SUAC) without the SU part! Copenhagen starts from the idea that “it’s pointless to philosophize about what this means,” but then elevates that to a philosophy which of course is a little ironic.
+
+84 LECTURE 12. INTERPRETATIONS OF QUANTUM MECHANICS
+While the SUAC view has some obvious practical advantages, it seems clear that it can’t satisfy people’s curiosity forever. This is not only because science has always aspired to understand what the world is like, with experiments and predictions a means to that end. A second reason is that as experimenters become able to create ever larger and more complicated quantum superpositions—in eﬀect “breaching” the Copenhagen boundary between the quantum and classical worlds—it becomes less and less viable to “quarantine” quantum mechanics as simply a weird mathematical formalism that happens to work for predicting the behavior of electrons and photons. The more QM impinges on the world of our everyday experience, the more it seems necessary to come to terms with whatever it says about that world.
+12.2 Schro¨dinger’s Cat and Wigner’s Friend
+There were physicists in the 20’s and 30’s who never accepted the Copenhagen interpretation, the most famous of whom were Einstein and Schro¨dinger. Between them they came up with various thought experiments designed to try and show just how untenable it is to have a rigid boundary between the quantum and classical worlds. By far the most famous example is Schro¨dinger’s Cat, which ﬁrst appears with Einstein remarking in a letter that if you think of a pile of gunpowder as being inherently unstable you could model it as a quantum state which looks like
+| √+ | 2
+Then, Schro¨dinger adds some ﬂair by asking what happens if we create a quantum state that corresponds to a superposition of states, in one of which a cat is alive and the other the cat is dead? (Or perhaps a superposition of happy and sad, √1 (| + | ), if you prefer a less grisly thought experiment).
+2
+He isolates the state of the cat from the external environment by putting it in a box. The point of Einstein and Schr¨odinger’s thought experiment is that the formal rules of quantum mechanics apply whenever you have distinguishable states, regardless of their size. In particular, they say that in principle you can create arbitrary linear combinations of such states. By the time we’re talking about something as big as a cat, it seems patently obvious that we should have to say something about the nature of what’s going on before measurement. Otherwise we’d devolve into extreme solipsism—saying, for example, that the cat only exists once we’ve opened the box to observe it.
+
+12.3. DYNAMICAL COLLAPSE
+
+85
+
+Wigner’s Friend is a similar thought experiment proposed by the theoretical physicist Eugene Wigner in 1961. Suppose that Wigner could be put into an equal superposition of thinking one thought and thinking another one (say wanting either pancakes or eggs for breakfast), which we model as
+
+|Wigner0
+
++ √
+
+|Wigner1
+
+| =
+
++| √
+
+.
+
+2
+
+2
+
+Now, consider the joint state of Wigner and a friend who is capable of measuring the state of Wigner’s mind, but hasn’t done so yet.
+
+|Wigner’s Friend
+
+⊗
+
+|Wigner0
+
++ √
+
+|Wigner1
+
+=
+
+2
+
+|Wigner’s Friend
+
+|Wigner0
+
++ |Wigner’s Friend √
+
+|Wigner1
+
+2
+
+From Wigner’s point of view, he’s thinking one thought or the other one. But, from his friend’s point of view, Wigner isn’t thinking either of them until a measurement gets made. After Wigner’s friend makes a measurement, the state of his own mind will change to either a state in which he saw that Wigner wanted pancakes or one where he saw Wigner wanted eggs. At that point we’ll have an entangled state like
+
+|Wigner’s Friend0
+
+|Wigner0
+
++ |Wigner’s √
+
+Friend1
+
+|Wigner1
+
+2
+
+But then what happens if another friend comes along, and then another? The point is to highlight an apparent incompatibility between the perspectives of diﬀerent observers. It seems like either we need to retreat into a sort of solipsism—holding that an event that happened for Wigner might not have happened for his friend—or else we need some way of regarding the measurement as ﬁctitious.
+
+12.3 Dynamical Collapse
+If quantum mechanics doesn’t make sense to us, it’s worth at least considering the possibility that it’s not a complete theory. That is, maybe it does a good job of describing microscopic systems but there are additional unaccountedfor rules needed to describe reality as a whole. Perhaps there may be some physics that we haven’t discovered yet which would show that qubits normally evolve via unitary transformations, but that for suﬃciently large systems the
+
+86 LECTURE 12. INTERPRETATIONS OF QUANTUM MECHANICS
+
+superposition states tend to spontaneously collapse to some classical state. In that case, we could view collapse as a straightforward physical process that turns pure states into mixed states. Theories which posit the existence of such an undiscovered collapse mechanism are generally referred to as Dynamical Collapse Theories. In order to make contact with existing quantum theory, dynamical collapse theories generally suppose that the new mechanism has the eﬀect of physically instantiating the collapse of superposition states to classical outcomes with probabilities given by the Born rule. That is,
+
+αi |i → |i
+i
+
+with probability |αi|2
+
+In the Schr¨odinger’s cat example, dynamical collapse theories would say that it doesn’t matter how isolated the box is, there is some yet-unknown physical law that says that a system that big would quickly evolve into a mixed state.
+
+| √+ |
+
+| →
+
+|+|
+
+|
+
+2
+
+2
+
+Note that in principle, there’s a measurement that can distinguish the two states above.
+
+Such a measurement would admittedly be absurdly hard to implement. In fact, a recent result by Prof. Aaronson says informally that if you have the technological capability to distinguish the two states above, then you also have the technological capability to rotate between the cat’s “alive” and “dead” states. For this reason, the Schr¨odinger’s cat experiment involves far less animal cruelty than most people say! If you can do the experiment at all and prove that you did it, then you can also bring a dead cat back to life!
+
+Setting aside technological diﬃculties, for us the relevant point is that in saying that a superposition state can evolve to a mixed state we’re necessarily proposing new physics. This prediction is diﬀerent from what we’d ﬁnd using standard quantum mechanics and so in principle has testable implications. In other words, this isn’t really interpreting quantum mechanics so much as it’s proposing a rival theory! Physicists have a high bar for such proposals; the burden of proof is on the person proposing the new law to explain in quantitative detail how it works. In this case that would mean giving a criterion for exactly which systems are “big” enough, or whatever, to trigger a collapse like
+
+12.3. DYNAMICAL COLLAPSE
+
+87
+
+the above—ideally deriving that criterion from more fundamental laws. Some suggestions include:
+Collapse happens when some number of atoms get involved. Collapse happens after a certain total mass is reached. Collapse happens when a system reaches a certain level of “complexity.”
+On their face all these views seem contradictory to our understanding of physics which relies on reductionism; each atom’s dynamics obey the same set of simple equations regardless of how big or complicated a system the atom might be part of.
+
+12.3.1 Ghirardi-Rimini-Weber (GRW) Theory
+Ghirardi-Rimini-Weber (GRW) Theory avoids the contradiction with reductionist principles by positing that each atom has some tiny probability of collapsing at each point in time. For a system like Schr¨odinger’s cat, we only need one atom to collapse in order to cause the entire cat to collapse to the “alive” or “dead” states. This is consistent with the usual partial measurement rule of quantum mechanics. By analogy, measuring just one qubit of
+|0 · · · 0 √+ |1 · · · 1 2
+will cause all of the qubits to collapse to either |0 · · · 0 or |1 · · · 1 . While the probability for some given atom to collapse is minuscule, with a suﬃciently large number of atoms in our system (say ∼ 1023 for a typical cat) the probability that at least one of the atoms has collapsed can be overwhelming. In the GRW proposal, macroscopically large superposition states (often called catstates) are inherently unstable—the bigger the system, the shorter expected lifetime of maintaining a Schro¨dinger-cat-like state.
+
+12.3.2 Penrose Theory
+
+Penrose Theory is an alternative approach to dynamical collapse which says that superpositions spontaneously collapse when the superposed objects have a suﬃciently large mass and are separated by a suﬃciently large distance. Why mass and distance? Say we have a large massive object in a superposition of two diﬀerent spatial locations:
+
+1 √|
+
+...
+
++ | ...
+
+.
+
+2
+
+88 LECTURE 12. INTERPRETATIONS OF QUANTUM MECHANICS
+General relativity tells us that mass curves nearby space-time in a manner analogous to a weight deforming a mattress. This means that a mass in one location would make spacetime curve diﬀerently than the same mass in a diﬀerent location. The thing is, no one really knows how to combine general relativity and quantum mechanics; it’s one of the biggest unsolved problems in physics. Ordinary quantum mechanics presupposes a ﬁxed space and time, or at the very least ﬁxed causal structure. In terms of quantum circuits, if you like, we require the ability to assign to a collection of qubits some deﬁnite order to the gates acting on those qubits. No one quite knows what it means to have a quantum superposition of diﬀerent causal structures—yet, that seems to be what we’d be talking about in the situation with the widely-separated masses. So, Penrose’s proposal is basically that this could be the place where quantum mechanics breaks down and is superseded by a more complete theory that includes gravitationally-induced “spontaneous collapses.”
+Penrose then has further ideas about how all of this might be related to consciousness, which we won’t go into.
+One diﬃculty with dynamical collapse theories is that experimental groups have continued to produce examples of larger and larger states in superposition. As long as that continues, it seems like the believers in these theories will always need to be on the defensive—adjusting their answers to questions like “how much mass is enough to collapse a state?” to avoid contradicting the latest experiments. Early in this course we discussed the signiﬁcance of the double-slit experiment performed with photons. In 1999 the Zeilinger group the University of Vienna managed to perform the double-slit experiment with buckyballs (molecules with 60 carbon atoms and hundreds of electrons). In 2019 a collaborative eﬀort between experimentalists at the University of Vienna and the University of Basel successfully performed the experiment with large organic molecules consisting of ∼ 2000 atoms.
+Superconducting Circuits
+Beyond the double-slit experiment, another quantum phenomenon which is routinely used today to perform experiments with a macroscopically large number of particles is superconductivity. If you take a metallic coil (made of aluminum, for example) that is perhaps a micrometer across and cool it to nearly absolute zero, it is possible to induce a dissipationless current ﬂow in a superposition of clockwise or counterclockwise around the coil. A picture of such a loop can be found in Figure 12.1. The number of electrons constituting
+
+12.3. DYNAMICAL COLLAPSE
+
+89
+
+this current can number in the billions or trillions and so this is an example of a quantum superposition involving billions of particles!
+
+Figure 12.1: Scanning electron microscope (SEM) image of a superconducting ﬂux qubit fabricated at the NTT Basic Research Lab in Japan, from DOI:10.1142/9789812774705 0003. When cooled to near absolute zero temperature the current in the loop can be in a superposition of circulating clockwise and counter-clockwise.
+We’ll come back to these superconducting coils at the end of the course as they’re an important technology for quantum computers.
+Limitations of Dynamical Collapse
+Penrose made a speciﬁc prediction for the mass scale at which collapse happens— about 1 Planck mass, which is roughly the mass of a dust mite—which might be testable in our lifetime. But, with GRW the prediction is basically just made to avoid contradicting any existing experiments.
+One position, popular among quantum computing skeptics, says that:
+Perhaps a frog can be in a superposition of two states. However, a complex quantum computer wouldn’t work because quantum systems spontaneously collapse after they achieve “suﬃcient complexity” (whatever that means).
+This position is interesting because it could be falsiﬁed by building a scalable quantum computer. Making potentially falsiﬁable claims is what enables us to move these discussions from the realm of philosophy to science.
+
+90 LECTURE 12. INTERPRETATIONS OF QUANTUM MECHANICS
+But what happens if we keep doing experiments and quantum mechanics keeps perfectly describing everything we see? In particular, suppose we don’t want to add any new physical laws but, we also insist on being scientiﬁc realists—holding that there exists a real state of the universe and that the job of physics is to describe that state, not just to predict the results of measurements. The next interpretation is an attempt to satisfy those constraints by getting rid of a fundamental role for measurement altogether.
+
+12.4 The Many-Worlds Interpretation
+
+In 1957 Hugh Everett III, then a PhD student working under John Archibald Wheeler at Princeton, proposed a new interpretation of quantum mechanics he called the “relative state formulation.” We now refer to this interpretation as the Many-Worlds Interpretation (MWI) of quantum mechanics. This famous view holds that the entire universe has a single quantum state |ψ and the entire history of the universe is just the result of the vector |ψ undergoing unitary evolution.
+In the MWI what we call “measurement” or “collapse” is a result of quantum systems becoming entangled with each other when they interact. In particular, your brain—not to mention your measuring apparatus, the air molecules in the room, etc. . . —all become entangled with the quantum system that you’re measuring. You can think of it as a giant CNOT gate with the system you’re observing as the control qubit and you and the environment as the target qubit. This situation is analogous to what we saw in the Wigner’s friend though experiment.
+
+|0 + |1 √
+
+|You
+
+|0 →
+
+|You0
+
++ √
+
+|1
+
+|You1
+
+2
+
+2
+
+The thing is, if you take this view seriously it implies that you yourself have now “branched” into two possibilities, one where you observed the qubit in the |0 state and another where you observed the qubit in the |1 state. Because unitary evolution is linear, these two branches are unlikely ever to interfere with each other again, or at least not for many quadrillions of years (more about that later). So, we might imagine, your experience is as if only one of the branches was realized—but, in truth neither branch is more real than the other.
+
+12.4. THE MANY-WORLDS INTERPRETATION
+
+91
+
+More generally, according to MWI the universe “branches” each and every time a microscopic quantum state gets ampliﬁed to have macroscopic eﬀect— even if there’s no one around to observe the ampliﬁcation (e.g., if it’s in the interior of the Sun or something). There’s a staggering amount of branching happening! So for example, there are some branches of the quantum state of the universe where Austin is sunny at a speciﬁc moment one month from now, others where it’s rainy, others where it’s been destroyed in a nuclear war, etc., and no one of these branches is more “real” than the rest.
+Some variants of the MWI choose words carefully to avoid sounding like there’s literal branching into diﬀerent, equally-real worlds of experience, but that’s basically what they all imply. In fact, when Everett ﬁrst came up with MWI as a grad student at Princeton, John Wheeler told him to remove from his paper all references to the physical reality of parallel worlds, because Bohr and his friends had strenuously objected to the idea. Everett did so, and partly as a result it 15 years for the rest of the physics community to rediscover Everett’s proposal and understand what it meant.
+After publishing his thesis about MWI Everett left theoretical physics to become a nuclear war strategist for the Pentagon. One of the only public lectures he ever gave on MWI was here at UT Austin, decades later, when people were ﬁnally coming around to the idea. David Deutsch, the biggest current advocate of the MWI and one of the founders of quantum computing, was there.
+One issue that we should return to is interference between branches of the wavefunction. If diﬀerent branches could interfere with each other, it would be as if not just the future but the past was constantly shifting, with destructively interfering paths (and their respective histories) having ﬂeeting existences. There would be no deﬁnite history of things that happened and were recorded. To avoid this we need the |0 |You0 branch to not aﬀect the |1 |You1 branch and vice versa. Both branches might be equally real, but once you’re in one of the branches you ought to be able to continue doing physics as if your branch was the only real one. Fortunately, the usual rules of quantum mechanics ensure this is the case; we don’t need to add anything extra. Recall that to calculate the amplitude of a given basis state following some sequence
+
+92 LECTURE 12. INTERPRETATIONS OF QUANTUM MECHANICS
+of unitary transformations, you add up a contribution from every possible path that ends at that state. We saw an example of this in process in Figure 3.2. Interference happens only if two diﬀerent paths lead to exactly the same outcome—meaning every single atom in the universe in the exact same state. While that’s not impossible, it’s massively “thermodynamically disfavored,” which basically means that it’s unlikely to happen for the same reason an egg unscrambling itself is unlikely to happen. In fact, the constant proliferation of branches—the way the universe’s state, |ψ , constantly sprouts new branchs but almost never recombines them—can be seen as literally an instance of the Second Law of Thermodynamics in action, a process that constantly increases the universe’s entropy.
+Interestingly, if we also believed that the universe was only ﬁnitely large— and in particular that it could be fully described by the unitary evolution of a ﬁnite number of qubits (say 10122 of them)—then eventually we’d run out of room and the branches would necessarily start colliding with each other. Even under that assumption, there doesn’t seem to be any reason for this to happen even in (say) the next 10100 years.
+We said before that measurement is the one random and irreversible part of quantum mechanics. However, the MWI denies that even that part is random or irreversible. After applying a unitary transformation U which induces a branching corresponding to a “measurement”, we could in principle always apply U † to unperform the “measurement.” Just like with unscrambling an egg though, thermodynamics isn’t going to make it easy.
+Let’s now discuss some of the most common other questions people have about Many Worlds.
+Even if we accept that “measurements” have no fundamental physical status— still, where do the apparent probabilities come from? That is, why does measuring a qubit α |0 + β |1 in the {|0 , |1 } basis yield the outcomes |0 and |1 with probabilities |α|2 and |β|2 respectively?
+It’s not enough to say that sometimes we see |0 and sometimes we see |1 , quantum mechanics gives very speciﬁc probabilities for each of these events to occur. If the world is just branching once for each observation, then how can we justify these probabilities as corresponding to anything meaningful? Does an “|α|2 fraction of your soul” go down one branch while a “|β|2 fraction of your soul” goes down the other?
+Some philosophers don’t like this because if all the worlds are equally real, then why wouldn’t they just occur with equal probabilities? Why bother with amplitudes at all? Everett’s response was to argue that if the universe branched many times in succession then in “almost all branches” (where “almost all” is measured by amplitude) it would look like the Born probability
+
+12.4. THE MANY-WORLDS INTERPRETATION
+
+93
+
+rule was obeyed. But, many people in the past half-century have been unsatisﬁed with that argument, seeing it as circular—as it essentially smuggles the Born rule into the deﬁnition of “almost all branches”! So, proponents have continued to look for something better.
+There are many arguments, which we won’t go into here, that try to formalize the intuition that the Born probabilities are naturally “baked into” how quantum mechanics works. After all, unitary evolution already singles out the 2-norm as special by preserving it, so then why shouldn’t the probabilities also be governed by the 2-norm? More pointedly, one can argue that, if the probabilities were governed by something other than the 2-norm, then we’d get bizarre eﬀects like faster-than-light communication. But, while these arguments help explain why the Born rule is perhaps the only choice of probability rule that makes internal mathematical sense, they still leave slightly mysterious how probability enters at all into Everett’s vision of a deterministically evolving wavefunction. In Everett’s defense, one could ask the same questions—where do these probabilities come from? why should they follow the Born rule, rather than some other rule? —in any interpretation, not just in MWI.
+If there’s no experiment that could diﬀerentiate the Copenhagen Interpretation from Many Worlds, why bother arguing about it?
+Many Worlders say that the opponents of Galileo and Copernicus could also claim the same about the Copernican versus Ptolemaic theories, since Copernican heliocentrism made no diﬀerence to the predictions of celestial movement. Today we might say that the Copernican view is better since if you were to ﬂy outside of the solar system and see all the planets (including Earth) rotating around the far more massive sun, you’d realize that the Copernican was closer to reality; it’s only our parochial situation of living on Earth that ever motivated geocentrism in the ﬁrst place. If we push this analogy further, it might be harder to think of anything similar for the Many Worlds interpretation, since quantum mechanics itself explains why we can’t really get outside of the state |ψ to see the branching—or even get outside our own branch to interact in any way with the other decoherent branches.
+There is one neat way you could imagine diﬀerentiating the two, though. Before we talked about doing the double-slit experiment with larger and larger systems. Bringing that thread to its logical conclusion, what if we could run the double-slit experiment with a person going through the slits? It seems like it would then be necessary to say that “observers” can indeed exist in superpositions of having one experience and having a diﬀerent one. This is what the MWI said all along, but it seems to put a lot of rhetorical strain on the Copenhagen interpretation. If you talk to modern Copenhagenists about
+
+94 LECTURE 12. INTERPRETATIONS OF QUANTUM MECHANICS
+this they’ll often take a quasi-solipsistic view, saying that if this experiment were run “the person behaving quantumly doesn’t count as an observer; only I, the experimenter, do.” Of course, the Wigner’s Friend thought experiment was trying to get at this same diﬃculty.
+
+Figure 12.2: Potential experimental design for double-slit experiment using people. Best of luck to the future physicists who need to get this past their university’s IRB.
+
+Let’s say I buy into the argument that the universe keeps branching. In what basis is this branching occurring?
+This third question is called the Preferred Basis Problem. We talked about Schro¨dinger’s cat as branching into the | state and the | state. But mathematically we could equally well have decomposed the cat’s state in a basis like:
+
+| +| √ 2
+
+| −| √ 2
+
+So, is there anything besides our intuition to “prefer” the ﬁrst decomposition over the second one? There’s a whole ﬁeld of physics that tries to answer questions like these, called Decoherence Theory. The central idea is that there are certain bases whose states tend to be robust to interactions with the environment; most bases, however, don’t have this property. In the example above, decoherence theory would explain that an alive cat doesn’t easily decohere if you poke it, but a cat in the √1 (| + | ) state does, because the |
+2
+and | branches interact diﬀerently with the environment. This, according to decoherence theory, is more-or-less how the laws of physics pick out certain bases as being special.
+
+12.4. THE MANY-WORLDS INTERPRETATION
+
+95
+
+From the standpoint of decoherence theory we can say that an event has “deﬁnitely happened” only if there exist many records of the event spread through the environment, so that it’s no longer feasible to erase them all.
+This is perhaps best compared to putting an embarrassing picture on Facebook. If only a few friends share it, you can still take it down. On the other hand, if the picture goes viral, then the cat is out of the bag and deleting all the copies becomes next to impossible.
+
+Lecture 13: Hidden Variables and Bell’s Inequality
+13.1 Hidden Variable Theories
+In the last lecture we discussed four diﬀerent attitudes people take toward quantum mechanics: Copenhagen, “Shut Up and Calculate,” Dynamical Collapse, and Everett’s Many-Worlds Interpretation. You might think that all the options we’ve seen so far are bizarre and incomprehensible, and wonder if we could come up with a theory that avoids all of the craziness. One strategy for the development of such a theory is the introduction of hidden variables in the system. These hidden variables are typically additional degrees of freedom which we either don’t have access to or haven’t yet discovered. The resulting theories are called Hidden Variable Theories.
+Hidden variable theories supplement quantum state vectors with the addition of hidden ingredients. The idea is to have a state, like α |0 + β |1 , represent “merely” a way of making a prediction about what the universe has already set the result of measuring the qubit to be: either |0 or |1 .
+13.1.1 Bohmian Mechanics
+The most famous hidden-variable theory is Bohmian Mechanics, which was developed by David Bohm in the 1950s. It’s also called the “de Broglie-Bohm theory,” because it turns out that Louis de Broglie had the exact same idea in the 1920s—although de Broglie quickly disavowed it after the idea faced a poor reception from other quantum mechanics pioneers.
+Normal quantum mechanics says that a particle is in a superposition of locations, which we can use to calculate the probability that the particle will be found in one place or another when measured—and moreover, that this superposition exhausts what can be said about the particle’s location. But, while keeping that superposition as part of physics, we now want to say that there’s
+96
+
+13.1. HIDDEN VARIABLE THEORIES
+
+97
+
+also a “real place” where the particle is, even before anyone measures it. To make that work we need to give a rule for how the superposition “guides” the real particle. This rule should have the property that, if anyone does measure the particle, they’ll ﬁnd exactly the result that quantum mechanics predicted for it—since we certainly don’t want to give up on quantum mechanics’ empirical success!
+At ﬁrst, you might think that it would be tricky to ﬁnd such a rule; indeed, you might wonder whether such a rule is possible at all. However, the real problem turns out to be more like an embarrassment of riches! There are inﬁnitely many possible rules that could satisfy the above property—and by design, they all yield exactly the same predictions as standard quantum mechanics. So there’s no experimental way to know which one is correct.
+To explain this in a bit more detail, let’s switch from particle positions back to the discrete quantum mechanics that we’re more comfortable with in this course. Suppose we have a quantum pure state, represented as an amplitude vector in some ﬁxed basis. Then when we multiply by a unitary transformation, suppose we want to be able to say: “this is the basis state we were really in before the unitary was applied, and this is the one we’re really in afterwards.” In other words, we want to take the equation
+
+ 
+
+ 
+
+β0
+
+U0,1 · · · U0,n−1
+
+α0
+
+ 
+
+...
+
+= 
+
+...
+
+...
+
+ 
+
+...
+
+ 
+
+βn−1
+
+Un−1,1
+
+Un−1,n−1 αn−1
+
+and map it to an equation
+
+(13.1)
+
+ |β0|2  
+
+ 
+
+|α0|2
+
+
+
+ 
+
+...
+
+=
+
+S
+
+ 
+
+
+
+
+
+...
+
+ 
+
+|βn−1|2
+
+|αn−1|2
+
+(13.2)
+
+for some choice of stochastic matrix S (possibly depending on the input and output vectors). There are many, many such matrices S. For example, you could put [|β0|2, · · · , |βn−1|2] in every column, which would say that you’re always jumping randomly around, but in a way that preserves the Born rule. You could have been in a diﬀerent galaxy one Planck time (∼ 10−43 seconds) ago; now you’re here (with ﬁctitious memories planted in your brain); who knows where you’ll be a Planck time from now?
+Bohm, however, thought not about this discrete setting, but mostly about the example of a particle moving around in continuous Euclidean space. In the latter case it turns out that one can do something nice that isn’t possible
+
+98 LECTURE 13. HIDDEN VARIABLES AND BELL’S INEQUALITY
+with ﬁnite-dimensional unitary matrices. Namely, one can give a deterministic rule for how the particle moves around—a diﬀerential equation—that still reproduces the Born rule at every instant in time, provided only that it reproduces the Born rule at any one time. More poetically, “God needs to use a random-number generator to initialize the hidden variables at the beginning of time”—say, at the Big Bang—but afterwards, they just follow the diﬀerential equation. Furthermore, while the choice of diﬀerential equation isn’t quite unique, in simple scenarios (like a particle moving around in space) there’s one choice that seems better, simpler, and more motivated than the rest.
+However, in thinking through the implications of Bohmian mechanics, Bohm and others noticed lots of weird things. It looks very elegant with just one particle, but new issues arise when there are two entangled particles. Bohmian mechanics says that you need to give a deﬁnite position for both particles, but people noticed that acting on Alice’s particle would instantaneously change the Bohmian position of Bob’s particle, however far away the particles were—even while Bob’s density matrix remained unchanged because of the No-Communication Theorem. Because of these instantaneous changes in the Bohmian position, we refer to Bohmian mechanics as a Nonlocal Hidden Variable Theory.
+While unsettling, this still wouldn’t be useful for fasterthan-light communication, since the Bohmian hidden variables are explicitly designed to have no measurable eﬀects beyond the eﬀects we’d predict using the quantum state itself.
+When Bohm proposed his interpretation, he was super eager for Einstein (whose objections to quantum mechanics we’ve discussed previously) to accept it, but Einstein didn’t really go for it, probably because of this nonlocality problem. What Einstein really seems to have wanted (in modern terms) is a Local Hidden Variable Theory where hidden variables not only exist, but can be localized to speciﬁc points in space and are only inﬂuenced by things happening close to them.
+13.1.2 Local Hidden Variable Theories
+Imagine that when an entangled pair, |00√+|11 , is created the qubits secretly 2
+ﬂip a coin and decide, “if anyone measures us in the {|0 , |1 } basis let’s both be |0 .” More broadly, imagine that they agree in advance on such answers for all questions that could be asked (i.e., all bases in which they could possibly
+
+13.2. THE CHSH GAME
+
+99
+
+be measured), and that each qubit carries around its own local copy of the answers.
+This is not Bohmian mechanics. In fact, around 1963 John Bell wrote a paper that drew attention to the nonlocal character of Bohmian mechanics. Bell remarked that it would be interesting to prove that all hidden variable theories must be nonlocal. In other words that nonlocality isn’t just some defect of Bohm’s proposal, but inherent to hidden variable theories in general. The paper has a footnote saying that as the paper was going to press, such a proof was found. This was the ﬁrst announcement of one of the most famous discoveries ever made about quantum mechanics, what we now call Bell’s Theorem.
+Einstein and others had already touched on the idea of local hidden variable theories in their philosophical debates in the 1930s. Bell was the ﬁrst to ask: do local hidden variables have any empirical consequences that disagree with the predictions of quantum mechanics? Is there an actual experiment that could rule out the possibility of local hidden variables? Bell came up with such an experiment. We’ll describe it diﬀerently from how Bell did originally—more computer sciencey—as a game with two cooperating players named (what else?) Alice and Bob, where the achievable win probability can be improved through shared entanglement (to a value higher than is possible classically). This game is called the CHSH Game.
+
+13.2 The CHSH Game
+The CHSH Game is named after four people (Clauser, Horne, Shimony, and Holt) who in 1969 wrote a paper saying “this is how to think about what Bell did.” The game itself doesn’t involve quantum mechanics, but quantum mechanics can help us win it.
+The CHSH game could be seen as a precursor to quantum computing, in that it’s one of the ﬁrst cases where people looked to see which information processing tasks quantum mechanics helps us solve better—and where they enforced a conceptual separation between the task itself (which is classical) and the strategy to solve it (which can be quantum).
+The idea is that Alice and Bob are placed in separate rooms and are both given a challenge bit (x and y, respectively) by a referee, Charlie. The challenge bits are chosen uniformly at random, and independently of each other. Alice
+
+100 LECTURE 13. HIDDEN VARIABLES AND BELL’S INEQUALITY
+
+sends an answer bit, a, back to the referee and Bob sends back an answer bit b. Alice and Bob “win” the game iﬀ
+
+a + b = xy (mod 2).
+
+(13.3)
+
+Alice and Bob are allowed to agree on a strategy in advance (in other words correlate their answers) and to share random bits. This situation is shown in Figure 13.1.
+
+Figure 13.1: Diagrammatic depiction of the CHSH game. Charlie, the referee, prepares two challenge bits x and y uniformly at random and sends them to Alice and Bob respectively. Alice and Bob in response send bits a and b respectively (which could depend on their inputs) back to Charlie with the goal of having a + b = xy (mod 2). In other words, Alice and Bob want to select bits such that the parity of their selected bits is equal to the AND of their input bits.
+A classical strategy to maximize winning probability is simply that Alice and Bob always send the referee a = b = 0, regardless of what x and y are. In this case, Alice and Bob win 75% of the time, losing only if x and y are both 1. To prove that this is optimal the ﬁrst step is to notice that, without loss of generality, Alice and Bob’s strategy can be assumed to be deterministic (i.e., to involve no random bits besides x and y themselves). Any probabilistic strategy is equivalent to a mixture of deterministic ones. As such, the win probability for a probabilistic strategy is the weighted average over all the deterministic strategies the probabilistic strategy employs. There must be some deterministic strategy in the mixture that does at least as well as the average, so we can derandomize the protocol without negatively impacting the overall success probability; this is called a convexity argument. This convexity
+

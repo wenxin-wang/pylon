@@ -1,0 +1,16 @@
+Title:          Abstract Interpretation: A Unified Lattice Model for Static Analysis of Programs by Construction Or Approximation of Fixpoints
+Subject:        Fourth ACM Symposium on Principles of Programming Languages
+Keywords:       A program denotes computations in some universe of objects. Abstract interpretation of programs consists in using that denotation to describe computations in another universe of abstract objects, so that the results of abstract execution give some information on the actual computations. An intuitive example (which we borrow from Sintzoff [72]) is the rule of signs. The text -1515 * 17 may be understood to denote computations on the abstract universe {(+), (-), (_+/-_)} where the semantics of arithmetic operators is defined by the rule of signs. The abstract execution -1515 * 17 => -(+) * (+) => (-) * (+) => (-), proves that -1515 * 17 is a negative number. Abstract interpretation is concerned by a particular underlying structure of the usual universe of computations (the sign, in our example). It gives a summary of some facets of the actual executions of a program. In general this summary is simple to obtain but inaccurate (e.g. -1515+17 => -(+)+(+) => (-)+(+) => (_+/-_)). Despite its fundamentally incomplete results abstract interpretation allows the programmer or the compiler to answer questions which do not need full knowledge of program executions or which tolerate an imprecise answer, (e.g. partial correctness proofs of programs ignoring the termination problems, type checking, program optimizations which are not carried in the absence of certainty about their feasibility, . . .).
+Author:         P. Cousot and R. Cousot
+Creator:        Sony Electronic Publishing Services
+Producer:       Acrobat PDFWriter 2.01 for Windows
+CreationDate:   Mon Mar 31 17:06:14 1997
+ModDate:        Thu May 23 15:17:37 2002
+Tagged:         no
+Form:           none
+Pages:          15
+Encrypted:      no
+Page size:      617 x 793 pts (rotated 0 degrees)
+File size:      1184973 bytes
+Optimized:      yes
+PDF version:    1.3

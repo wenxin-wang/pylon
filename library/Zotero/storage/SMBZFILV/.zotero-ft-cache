@@ -1,0 +1,258 @@
+Reproducible Software Deployment with GNU Guix
+Ludovic Courte` s
+PRACE/Inria HPC School Bordeaux, November 2019
+
+https://www.acm.org/publications/policies/artifact-review-badging
+
+https://rescience.github.io/
+
+http://reproducibility.cs.arizona.edu/
+
+HPC = cutting edge?
+
+Approach #2: “Preserve the mess”.
+– Arnaud Legrand (Inria reproducibility WG)
+
+https://www.hpcwire.com/2016/10/20/singularity-containers-easing-scientific-computing
+
+whale oil? strawberry?
+
+Containers
+lack transparency
+courtesy of Ricardo Wurmus
+
+https://hpc.guix.info
+
+Guix is available on your nearby cluster!
+Max Delbru¨ ck Center (DE) UMC Utrecht (NL) University of Queensland (AU) PlaFRIM (FR): Bordeaux GriCAD (FR): Grenoble CCIPL (FR): Nantes
+
+Guix is available on your nearby cluster!
+Max Delbru¨ ck Center (DE) UMC Utrecht (NL) University of Queensland (AU) PlaFRIM (FR): Bordeaux GriCAD (FR): Grenoble CCIPL (FR): Nantes MCIA? CINES? IDRIS? ...
+
+guix install gcc-toolchain openmpi hwloc eval ‘guix package --search-paths=prefix‘ guix package --roll-back guix install --profile=./experiment \
+gcc-toolchain@5.5 hwloc@1
+
+guix package --manifest=my-packages.scm
+(specifications->manifest ’("gcc-toolchain" "openmpi" "scotch" "mumps"))
+
+bob@laptop$ guix package --manifest=my-packages.scm bob@laptop$ guix describe
+guix cabba9e repository URL: https://git.sv.gnu.org/git/guix.git commit: cabba9e15900d20927c1f69c6c87d7d2a62040fe
+
+bob@laptop$ guix package --manifest=my-packages.scm bob@laptop$ guix describe
+guix cabba9e repository URL: https://git.sv.gnu.org/git/guix.git commit: cabba9e15900d20927c1f69c6c87d7d2a62040fe
+alice@supercomp$ guix pull --commit=cabba9e alice@supercomp$ guix package --manifest=my-packages.scm
+
+travel in space and time!
+
+https://gitlab.inria.fr/guix-hpc/guix-hpc/ StarPU Chameleon PaSTiX NewMadeleine EZTrace Simgrid ...
+
+guix pull --channels=hpc-channels.scm
+(cons (channel (name ’guix-hpc) (url "https://gitlab.inria.fr/guix-hpc/guix-hpc.git") (branch "master"))
+%default-channels)
+
+guix pull --channels=hpc-channels.scm
+(cons (channel (name ’guix-hpc) (url "https://gitlab.inria.fr/guix-hpc/guix-hpc.git") (commit "cabba93"))
+%default-channels)
+
+(define pastix (package (name "pastix") (home-page "https://gitlab.inria.fr/solverstack/pastix") (source (origin (method git-fetch) (uri (git-reference (url home-page) (commit "2f30ff07a") (recursive? #t))) (sha256 (base32 "106rf402cvfdhc2yf...")))) ...))
+
+(define pastix (package (name "pastix") (home-page "https://gitlab.inria.fr/solverstack/pastix") (source (origin (method git-fetch) (uri (git-reference (url home-page) (commit "2f30ff07a") (recursive? #t))) (sha256 (base32 "106rf402cvfdhc2yf...")))) ...))
+https://www.softwareheritage.org/2019/04/18/software-heritageand-gnu-guix-join-forces-to-enable-long-term-reproducibility/
+
+$ git clone https://.../petsc $ cd petsc $ guix environment petsc [env]$ ./configure && make
+
+$ guix environment --ad-hoc \ python python-numpy python-scipy \ -- python3
+
+$ guix pack \ jupyter jupyter-guile-kernel
+... /gnu/store/...-pack.tar.gz
+
+$ guix pack --relocatable \ jupyter jupyter-guile-kernel
+... /gnu/store/...-pack.tar.gz
+
+$ guix pack --format=squashfs \ jupyter jupyter-guile-kernel
+... /gnu/store/...-singularity-image.tar.gz
+
+$ guix pack --format=docker \ jupyter jupyter-guile-kernel
+... /gnu/store/...-docker-image.tar.gz
+
+LOL
+
+guix pack hwloc \ --with-source=./hwloc-2.1rc1.tar.gz
+guix install mumps \ --with-input=scotch=pt-scotch
+
+Wrap-up.
+
+reproduce software environments declare & publish complete environments beyond replication: precision experimentation a foundation for “deployment-aware” apps
+
+Let’s add
+reproducible deployment to our best practices book.
+
+https://hpc.guix.info ludovic.courtes@inria.fr | @GuixHPC
+
+Bonus slides!
+
+$ guix build hwloc isolated build: chroot, separate name spaces, etc.
+
+$ guix build hwloc /gnu/store/ h2g4sf72... -hwloc-1.11.2
+hash of all the dependencies
+
+$ guix build hwloc /gnu/store/ h2g4sf72... -hwloc-1.11.2
+$ guix gc --references /gnu/store/...-hwloc-1.11.2 /gnu/store/...-glibc-2.24 /gnu/store/...-gcc-4.9.3-lib /gnu/store/...-hwloc-1.11.2
+
+$ guix build hwloc /gnu/store/ h2g4sf72... -hwloc-1.11.2
+$ guix gc --references /gnu/store/...-hwloc-1.11.2 /gnu/store/...-glibc-2.24 /gnu/store/...-gcc-4.9.3-lib /gnu/store/..(.n-ehawlrloyc)-b1i.t-1i1d.e2ntical for everyone
+
+https://github.com/canonical-websites/snapcraft.io/issues/651
+
+https://lwn.net/Articles/752982/
+
+hwloc-1.11.2
+
+cairo-1.14.6
+
+numactl-2.0.11
+
+poppler-0.43.0
+
+cairo-1.14.6
+
+gobject-introspection-1.48.0
+
+libspectre-0.2.7
+
+glib-2.48.0
+
+ghostscript-9.14.0
+
+openjpeg-1.5.2
+
+tzdata-2015g
+
+bash-4.3.42
+
+python-wrapper-3.4.3
+
+libpaper-1.1.24
+
+lcms-2.6
+
+bison-3.0.4
+
+coreutils-8.25
+
+python-2.7.11
+
+python-3.4.3
+
+pcre-8.38
+
+libjpeg-8d
+
+libtiff-4.0.6
+
+flex-2.6.0
+
+libcap-2.24
+
+acl-2.2.52
+
+libffi-3.2.1
+
+tk-8.6.4
+
+gdbm-1.12
+
+bzip2-1.0.6
+
+sqlite-3.12.2
+
+libjpeg-9a
+
+bison-2.7.1
+
+indent-2.2.10
+
+gmp-6.1.0
+
+attr-2.4.47
+
+libxft-2.3.2
+
+tcl-8.6.4
+
+readline-6.3
+
+m4-1.4.17
+
+libxrender-0.9.9
+
+dbus-1.10.8
+
+gettext-0.19.8
+
+libxext-1.3.3
+
+fontconfig-2.11.94
+
+ncurses-6.0
+
+libx11-1.6.3 expat-2.1.1
+
+gs-fonts-8.11
+
+freetype-2.6.3
+
+pixman-0.34.0
+
+xextproto-7.3.0
+
+xtrans-1.3.5
+
+kbproto-1.0.7
+
+libxcb-1.11
+
+libpng-1.5.26
+
+renderproto-0.11.1
+
+libxdmcp-1.1.2
+
+libxau-1.0.8
+
+xcb-proto-1.11
+
+libxslt-1.1.29
+
+inputproto-2.3.1
+
+libpthread-stubs-0.3
+
+xproto-7.0.28
+
+libgcrypt-1.7.0
+
+python-minimal-wrapper-3.4.3
+
+util-macros-1.19.0
+
+libgpg-error-1.22
+
+python-minimal-3.4.3
+
+libxml2-2.9.4
+
+libpciaccess-0.13.4
+
+pkg-config-0.29
+
+openssl-1.0.2h
+
+zlib-1.2.8
+
+perl-5.22.1
+
+Copyright c 2010, 2012–2019 Ludovic Courte` s ludo@gnu.org.
+GNU Guix logo, CC-BY-SA 4.0, https://gnu.org/s/guix/graphics. Smoothie image and hexagon image c 2019 Ricardo Wurmus, CC-BY-SA 4.0. Hand-drawn arrows by Freepik from ﬂaticon.com. DeLorean time machine picture c 2014 Oto Godfrey and Justin Morton, CC-BY-SA 4.0, https://commons.wikimedia.org/wiki/File:TeamTimeCar.com- BTTF_DeLorean_Time_Machine- OtoGodfrey.comJMortonPhoto.com- 07.jpg. Copyright of other images included in this document is held by their respective owners.
+This work is licensed under the Creative Commons Attribution-Share Alike 3.0 License. To view a copy of this license, visit https://creativecommons.org/licenses/by-sa/3.0/ or send a letter to Creative Commons, 171 Second Street, Suite 300, San Francisco, California, 94105, USA. At your option, you may instead copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.3 or any later version published by the Free Software Foundation; with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts. A copy of the license is available at https://www.gnu.org/licenses/gfdl.html. The source of this document is available from https://git.sv.gnu.org/cgit/guix/maintenance.git.
+

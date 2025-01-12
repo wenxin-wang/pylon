@@ -1,0 +1,491 @@
+
+Stack Overflow
+
+    Products
+    Customers
+    Use cases
+
+    Stack Overflow Public questions and answers
+    Teams Private questions and answers for your team
+    Enterprise Private self-hosted questions and answers for your enterprise
+    Talent Hire technical talent
+    Advertising Reach developers worldwide
+
+Loading…
+
+    Log in Sign up
+    current community
+        Stack Overflow
+        help chat
+        Meta Stack Overflow
+    your communities
+    Sign up or log in to customize your list.
+    more stack exchange communities
+    company blog
+
+By using our site, you acknowledge that you have read and understand our Cookie Policy , Privacy Policy , and our Terms of Service .
+Dismiss
+Dark mode beta
+
+You’ve been asking for dark mode for years .
+The dark mode beta is finally here.
+
+Change your preferences any time.
+
+    Home
+        Public
+        Stack Overflow
+        Tags
+        Users
+        Jobs
+        Teams
+        What’s this?
+        Free 30 Day Trial
+
+Teams
+
+Q&A for Work
+
+Stack Overflow for Teams is a private, secure spot for you and your coworkers to find and share information.
+Learn more
+Reading GHC Core
+Ask Question
+Asked 8 years, 11 months ago
+Active 1 year, 11 months ago
+Viewed 16k times
+189
+154
+
+Core is GHC's intermediate language. Reading Core can help you better understand the performance of your program. Someone asked me for documentation or tutorials on reading Core, but I couldn't find much.
+
+What documentation is available for reading GHC Core?
+
+Here's what I've found so far:
+
+    Write Haskell as fast as C: exploiting strictness, laziness and recursion
+    Haskell as fast as C: working at a high altitude for low level performance
+    RWH: Chapter 25. Profiling and optimization
+    High-Performance Haskell talk at CUFP (slide 65-80)
+
+performance compiler-construction haskell ghc
+share
+Share a link to this question
+Copy link
+| improve this question | follow
+Follow this question to receive notifications
+| | | |
+edited May 25 '11 at 8:21
+Don Stewart
+132k 33 33 gold badges 346 346 silver badges 458 458 bronze badges
+asked May 25 '11 at 7:46
+tibbe tibbe
+8,085 4 4 gold badges 27 27 silver badges 53 53 bronze badges
+
+    See also stackoverflow.com/questions/6048194/… –  Don Stewart May 25 '11 at 8:21
+    skillsmatter.com/skillscasts/… might be useful, too. –  Erik Kaplun Oct 25 '15 at 23:00
+
+add a comment  | 
+4 Answers 4
+Active Oldest Votes
+267
+
+GHC Core is the System FC language into which all Haskell is translated. The (approximate) grammar for Core is given by:
+
+enter image description here
+
+Core is closely related to the simpler and better known System F . All transformations GHC does on the Core level are type-preserving refactorings of this Core representation, to improve performance. And, not so well known, you can write directly in Core to program GHC.
+
+GHC Core fits in the compiler pipeline (as it was in 2002, sans-LLVM and CMM):
+
+enter image description here
+
+The primary documents to learn about GHC Core are:
+
+    An External Representation for the GHC Core Language , Tolmach, 2001
+    ghc/compiler/CoreSyn , the GHC definition itself
+    Secrets of the Glasgow Haskell Compiler inliner , Peyton Jones and Marlow, 1999. Core is described in Section 2.3, including details on the occurrence analysis annotations.
+    A transformation-based optimiser for Haskell , Peyton Jones and Santos, 1998. Core is described in S3, including a discussion of polymorphism and operational readings of Core.
+
+Related material that can aid understanding:
+
+    The GHC -fext-core output
+    I spent a lot of time learning Core by reading GHC source. Some is described in my undergraduate thesis from 2002, from page 16.
+    From using the ghc-core tool, to generate Core in a format I find pleasing.
+
+Core in turn is translated into STG code, which looks something like:
+
+enter image description here
+
+The funny names in Core are encoded in the "Z-encoding":
+
+enter image description here
+
+GHC Core's types and kinds (from Tolmach's paper):
+
+enter image description here
+
+Finally, GHC's primops appear regularly in GHC Core output, when you have optimized your Haskell down to the basic instructions GHC knows about. The primop set is given as a set of Core functions in a pre-processed file.
+share
+Share a link to this answer
+Copy link
+| improve this answer | follow
+Follow this answer to receive notifications
+| | | |
+edited May 16 '18 at 1:23
+Flip
+4,053 1 1 gold badge 24 24 silver badges 38 38 bronze badges
+answered May 25 '11 at 8:20
+Don Stewart Don Stewart
+132k 33 33 gold badges 346 346 silver badges 458 458 bronze badges
+
+    60
+    Every single answer you give is always ridiculously complete. Have another up-vote and keep it up; I'm leaning heaps. –  Robert Massaioli May 26 '11 at 3:46
+    2
+    The amount of CC-wiki documentation that Don and the general Haskell community has released via SO is staggering. Keep up the good Q's and A's, everybody! –  Dan Burton May 26 '11 at 22:37
+    3
+    I know it's mentioned, but I think the usefulness of ghc-core should be emphasized in the answer. –  Nikita Volkov Apr 29 '13 at 8:57
+
+add a comment  | 
+24
+
+A tip: If you don't care about type annotations and coercions use -ddump-simpl together with the -dsuppress-all option. The Core output should be much more readable.
+share
+Share a link to this answer
+Copy link
+| improve this answer | follow
+Follow this answer to receive notifications
+| | | |
+answered May 26 '11 at 15:08
+nominolo nominolo
+4,905 1 1 gold badge 21 21 silver badges 30 30 bronze badges
+
+    5
+    -dsuppress-all is really useful. You can also use -dsuppress-coercions if you only want to get rid of casts (useful when there are lots of newtypes around). –  tibbe May 26 '11 at 18:39
+
+add a comment  | 
+8
+
+Although not exactly the GHC Core language, as Don mentions the STG language is quite similar. I recently went through the exercise of proving type safety of the STG language + machine, and afterwards I found I could understand Core easily.
+
+The text I used to learn STG is quite accessible: Implementing Lazy Functional Languages on Stock Hardware: The Spineless Tagless G-machine by Simon Peyton-Jones. Much of the paper is concerned with implementation details, but I recommend section 4 in particular as a top-to-bottom explanation of the STG language that gives motivations for some of the counter-intuitive design decisions and provides translations of familiar examples like map .
+share
+Share a link to this answer
+Copy link
+| improve this answer | follow
+Follow this answer to receive notifications
+| | | |
+answered May 26 '11 at 3:57
+acfoltzer acfoltzer
+5,480 28 28 silver badges 48 48 bronze badges
+
+    STG is a much lower level than Core. The compilation pipeline is: Haskell -> Core -> STG -> C-- -> Machine Code –  Akangka Oct 1 '19 at 14:58
+
+add a comment  | 
+3
+
+"An External Representation for the GHC Core Language" is a document which can be found in the installation of ghc ( share/doc/ghc/core.pdf ) or on the internet .
+share
+Share a link to this answer
+Copy link
+| improve this answer | follow
+Follow this answer to receive notifications
+| | | |
+answered May 25 '11 at 8:01
+Roman Cheplyaka Roman Cheplyaka
+32.4k 5 5 gold badges 63 63 silver badges 109 109 bronze badges
+
+add a comment  | 
+Your Answer
+
+Thanks for contributing an answer to Stack Overflow!
+
+    Please be sure to answer the question . Provide details and share your research!
+
+But avoid …
+
+    Asking for help, clarification, or responding to other answers.
+    Making statements based on opinion; back them up with references or personal experience.
+
+To learn more, see our tips on writing great answers .
+Draft saved
+Draft discarded
+Sign up or log in
+Sign up using Google
+Sign up using Facebook
+Sign up using Email and Password
+Submit
+Post as a guest
+Name
+Email
+
+Required, but never shown
+Post as a guest
+Name
+Email
+
+Required, but never shown
+Post Your Answer Discard
+
+By clicking “Post Your Answer”, you agree to our terms of service , privacy policy and cookie policy
+Not the answer you're looking for? Browse other questions tagged performance compiler-construction haskell ghc or ask your own question .
+The Overflow Blog
+
+    Feedback Frameworks—“The Loop”
+
+    Podcast 228: The Great, Big Bluetooth Trace
+
+Featured on Meta
+
+    Feedback on Q2 2020 Community Roadmap
+
+    Technical site integration observational experiment live on Stack Overflow
+
+    Dark Mode Beta - help us root out low-contrast and un-converted bits
+
+    Question Close Updates: Phase 1
+
+Linked
+48
+Good introductory text about GHC implementation?
+46
+How do you write data structures that are as efficient as possible in GHC?
+32
+Understanding GHC assembly output
+7
+haskell list comprehension performance
+84
+How to read this GHC Core “proof”?
+23
+Is it possible to make GHC optimize (deforest) generic functions such as catamorphisms?
+8
+Why does a strict length function perform noticeably faster?
+11
+How do I optimise this Haskell limit order book (with code, reports, graphs)?
+3
+What does Core Haskell applying types to functions mean?
+3
+Haskell type of specific data constructor
+see more linked questions…
+Related
+10
+Reasoning about performance in Haskell
+304
+What does the `forall` keyword in Haskell/GHC do?
+147
+Why is GHC so large/big?
+48
+Good introductory text about GHC implementation?
+180
+What optimizations can GHC be expected to perform reliably?
+18
+When is unsafeInterleaveIO unsafe?
+392
+Transitivity of Auto-Specialization in GHC
+84
+How to read this GHC Core “proof”?
+20
+Using GHC API to compile Haskell sources to CORE and CORE to binary
+232
+Why is Haskell (GHC) so darn fast?
+Hot Network Questions
+
+    One word translation for spiraling or ballooning
+    How can I frighten my enemies besides using spells?
+    Gauss' law paradox
+    Should a bank/financial service use external URL shortener services?
+    How can I explain a device that blurs vision within a localized area?
+    Big-Oh of recursive function
+    Is EMT or PVC more durable under a porch that gets rain?
+    How does c++ nullptr implementation work?
+    Accompanist qualities?
+    Do I really need to pamper myself with a stand?
+    What happens if a player asks to roll an Ability Check?
+    How is Regression different from Econometrics?
+    What is the origin of 甩锅 ("to pass the buck")?
+    Missed April 15th deadline to accept grad school offer. What can I do?
+    Lowering a Character Level
+    Chic Le (Freak - Freak Out!)
+    Determine hollow marble with least number of weighings
+    Why does a rubber band become a lighter color when stretched?
+    Why can't I just let customers connect directly to my database?
+    Understanding definition of NP and co-NP
+    LetsEncrypt Certificate for Internal Site
+    Explain the concepts 沙雕 and 沙雕图
+    Layering unicast addressing over multicasts
+    Disable "T" ligature in LuaLaTeX
+
+Question feed
+Subscribe to RSS
+Question feed
+
+To subscribe to this RSS feed, copy and paste this URL into your RSS reader.
+lang-hs
+Stack Overflow
+
+    Questions
+    Jobs
+    Developer Jobs Directory
+    Salary Calculator
+    Help
+    Mobile
+    Disable Responsiveness
+
+Products
+
+    Teams
+    Talent
+    Advertising
+    Enterprise
+
+Company
+
+    About
+    Press
+    Work Here
+    Legal
+    Privacy Policy
+    Contact Us
+
+Stack Exchange
+Network
+
+    Technology
+    Life / Arts
+    Culture / Recreation
+    Science
+    Other
+
+    Stack Overflow
+    Server Fault
+    Super User
+    Web Applications
+    Ask Ubuntu
+    Webmasters
+    Game Development
+
+    TeX - LaTeX
+    Software Engineering
+    Unix & Linux
+    Ask Different (Apple)
+    WordPress Development
+    Geographic Information Systems
+    Electrical Engineering
+
+    Android Enthusiasts
+    Information Security
+    Database Administrators
+    Drupal Answers
+    SharePoint
+    User Experience
+    Mathematica
+
+    Salesforce
+    ExpressionEngine® Answers
+    Stack Overflow em Português
+    Blender
+    Network Engineering
+    Cryptography
+    Code Review
+
+    Magento
+    Software Recommendations
+    Signal Processing
+    Emacs
+    Raspberry Pi
+    Stack Overflow на русском
+    Code Golf
+
+    Stack Overflow en español
+    Ethereum
+    Data Science
+    Arduino
+    Bitcoin
+    Software Quality Assurance & Testing
+    Sound Design
+
+    Windows Phone
+    more (27)
+
+    Photography
+    Science Fiction & Fantasy
+    Graphic Design
+    Movies & TV
+    Music: Practice & Theory
+    Worldbuilding
+    Video Production
+
+    Seasoned Advice (cooking)
+    Home Improvement
+    Personal Finance & Money
+    Academia
+    Law
+    Physical Fitness
+    Gardening & Landscaping
+
+    Parenting
+    more (11)
+
+    English Language & Usage
+    Skeptics
+    Mi Yodeya (Judaism)
+    Travel
+    Christianity
+    English Language Learners
+    Japanese Language
+
+    Chinese Language
+    French Language
+    German Language
+    Biblical Hermeneutics
+    History
+    Spanish Language
+    Islam
+
+    Русский язык
+    Russian Language
+    Arqade (gaming)
+    Bicycles
+    Role-playing Games
+    Anime & Manga
+    Puzzling
+
+    Motor Vehicle Maintenance & Repair
+    Board & Card Games
+    Bricks
+    Homebrewing
+    Martial Arts
+    The Great Outdoors
+    Poker
+
+    Chess
+    Sports
+    more (16)
+
+    MathOverflow
+    Mathematics
+    Cross Validated (stats)
+    Theoretical Computer Science
+    Physics
+    Chemistry
+    Biology
+
+    Computer Science
+    Philosophy
+    Linguistics
+    Psychology & Neuroscience
+    Computational Science
+    more (8)
+
+    Meta Stack Exchange
+    Stack Apps
+    API
+    Data
+
+    Blog
+    Facebook
+    Twitter
+    LinkedIn
+
+site design / logo © 2020 Stack Exchange Inc; user contributions licensed under cc by-sa 4.0 with attribution required . rev 2020.4.17.36630
+Stack Overflow works best with JavaScript enabled
+ 
