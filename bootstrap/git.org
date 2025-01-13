@@ -1,0 +1,26 @@
+#+TITLE: Git
+
+* Credentials
+
+If I want to write to this repo at a different (somewhat) trusted place,
+I need write-access to it. Since I do not really understand how to use
+yubikey & gpg, I hestitate to use them, especially where I think that
+the repo do not have much value to whoever has access to.
+
+So I prefer git credentials with https connection.
+
+** Plaintext store
+
+Generate the git config, see [[https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage]]
+for the input format.
+
+#+begin_src bash
+  git credential-store --file ~/some_file store
+#+end_src
+
+Add the following lines to my git config
+
+#+begin_quote
+  [credential]
+    helper = store --file ~/some_file
+#+end_quote
