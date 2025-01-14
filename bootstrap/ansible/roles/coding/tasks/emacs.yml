@@ -1,0 +1,29 @@
+---
+- name: install emacs for archlinux
+  become: true
+  when: ansible_facts['distribution'] == 'Archlinux'
+  ansible.builtin.package:
+    name:
+      - emacs
+    state: present
+
+- name: spacemacs
+  block:
+    - name: clone spacemacs
+      ansible.builtin.git:
+        repo: 'https://github.com/syl20bnr/spacemacs'
+        dest: ~/src/coding/spacemacs
+        version: master
+        update: false
+
+    - name: link .spacemancs
+      ansible.builtin.file:
+        src: ~/pylon/bootstrap/emacs/spacemacs
+        dest: ~/.spacemacs
+        state: link
+
+    - name: use spacemacs by default
+      ansible.builtin.file:
+        src: ~/src/coding/spacemacs
+        dest: ~/.emacs.d
+        state: link
