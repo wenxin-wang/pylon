@@ -1,6 +1,6 @@
 ---
 - name: setup `apt` package manager
-  when: ansible_facts['distribution'] == 'Debian'
+  when: ansible_facts['distribution'] in ['Debian', 'Ubuntu']
   block:
     - name: do not download translations
       become: true

@@ -10,6 +10,12 @@
 
 已经下载安装好 inventory，见 [[../inventory.org]] 。
 
+检查 ~ansible-playbook --version~。如果 Ansible 版本为 2.9，需要额外执行
+#+begin_src bash
+ansible-galaxy collection install community.general
+#+end_src
+
+
 * Playbooks
 
 playbook 按目的划分，例如基础包管理器配置，出口接入配置，开发环境配置。
