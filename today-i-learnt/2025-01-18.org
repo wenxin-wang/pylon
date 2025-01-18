@@ -1,0 +1,17 @@
+* Convival software
+
+https://codeberg.org/khinsen/science-in-the-digital-era/src/commit/5a48e50cf60fa7ea78d9111bf2465e416902e8a1/pages/Convivial%20software.md
+
+从 CLOG 一路逛来，这个作者关注“可解释的软件”，也有推荐 Glamorous Toolkit。说明用这些关键词可以找到有相似想法的人。
+
+Convival software 是指支持用户自己定制修改的软件，因此它首先要是可解释可理解的。学习到了一个新的词汇。
+
+https://codeberg.org/khinsen/science-in-the-digital-era/src/commit/5a48e50cf60fa7ea78d9111bf2465e416902e8a1/pages/The%20cognitive%20surface%20of%20software.md
+
+作者使用“认知界面”这个词来定义软件给人呈现的界面或接口。
+
+https://codeberg.org/khinsen/science-in-the-digital-era/src/commit/5a48e50cf60fa7ea78d9111bf2465e416902e8a1/pages/Reusable%20vs.%20re-editable%20components.md
+
+这些链接里都有值得一读的引用。尤其是下面这个作者参与的项目，整理了很多“可解释”或“可编辑”的软件工具。
+
+https://malleable.systems/catalog/
