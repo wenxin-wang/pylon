@@ -22,9 +22,18 @@
     community.general.pacman:
       update_cache: yes
 
-  - name: Gather the package facts
-    ansible.builtin.package_facts:
-      manager: pacman
+  - name: Add user `aur_builder` for auto installation of AUR packages as non-root user
+    user: name=aur_builder
+    become: true
+
+  - name: Ensure that `aur_builder` can call pacman without password
+    become: true
+    lineinfile:
+       path: /etc/sudoers.d/aur_builder-allow-to-sudo-pacman
+       state: present
+       line: "aur_builder ALL=(ALL) NOPASSWD: /usr/bin/pacman"
+       validate: /usr/sbin/visudo -cf %s
+       create: yes
 
   - name: install devel packages for aur manager
     become: true
@@ -36,25 +45,9 @@
       state: present
 
   - name: Install yay for AUR
-    when: "'yay' not in ansible_facts.packages"
-    block:
-      - name: Create temporary build directory for yay
-        ansible.builtin.tempfile:
-          state: directory
-          suffix: yay_build
-        register: yay_build_tmp_dir
-      - name: checkout yay repo
-        ansible.builtin.git:
-          repo: 'https://aur.archlinux.org/yay.git'
-          dest: '{{ yay_build_tmp_dir.path }}/yay'
-          depth: 1
-      - name: build yay
-        ansible.builtin.command:
-          cmd: makepkg -si --noconfirm
-          chdir: '{{ yay_build_tmp_dir.path }}/yay'
-    always:
-      - name: Clean up temporary build directory for yay
-        check_mode: no
-        ansible.builtin.file:
-          path: '{{ yay_build_tmp_dir.path }}'
-          state: absent
+    become: yes
+    become_user: aur_builder
+    kewlfft.aur.aur:
+      name: yay
+      use: makepkg
+      state: present
