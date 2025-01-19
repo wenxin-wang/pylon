@@ -1,0 +1,14 @@
+---
+- name: Install goldendict for archlinux
+  when: ansible_facts['distribution'] == 'Archlinux'
+  become: yes
+  become_user: aur_builder
+  kewlfft.aur.aur:
+    name: goldendict
+    state: present
+
+- name: Config goldendict
+  ansible.builtin.file:
+    src: ~/pylon/bootstrap/learning/goldendict
+    dest: ~/.config/goldendict
+    state: link
