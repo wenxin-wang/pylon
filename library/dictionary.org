@@ -1,0 +1,15 @@
+#+TITLE: 词典
+
+* Linux
+
+使用 goldendict。
+
+Archlinux 只有 AUR 里有源码包，安装好慢。
+
+* Android
+
+Qdict 可以读 stardict 格式字典，扫描也很方便，但是 ReadEra 没有集成。
+
+DictTango 在 ReadEra 里有集成，但是似乎不支持 stardict 格式字典，也没法直接扫描 APP 目录之外的词典内容。
+
+先将就下吧。
