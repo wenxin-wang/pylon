@@ -22,8 +22,12 @@
         dest: ~/.spacemacs
         state: link
 
-    - name: use spacemacs by default
-      ansible.builtin.file:
-        src: ~/src/coding/spacemacs
-        dest: ~/.emacs.d
-        state: link
+    - name: install spacemacs desktop file
+      ansible.builtin.copy:
+        src: ~/pylon/bootstrap/emacs/spacemacs.desktop
+        dest: ~/.local/share/applications/spacemacs.desktop
+
+    - name: install spacemacs desktop icon
+      ansible.builtin.copy:
+        src: ~/src/coding/spacemacs/core/banners/img/spacemacs.png
+        dest: ~/.local/share/icons/spacemacs.png
