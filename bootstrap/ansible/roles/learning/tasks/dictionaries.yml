@@ -4,7 +4,7 @@
   become: yes
   become_user: aur_builder
   kewlfft.aur.aur:
-    name: goldendict
+    name: goldendict-ng
     state: present
 
 - name: Config goldendict
