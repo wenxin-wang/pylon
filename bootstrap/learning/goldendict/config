@@ -6,22 +6,22 @@
   <sounddir icon="" name="Dictionaries">/home/wenxin/pylon/library/Dictionaries</sounddir>
  </sounddirs>
  <dictionaryOrder id="0" name="">
-  <dictionary name="Webster's Revised Unabridged Dictionary (1913)">334ba81e03437c9cb0ef842b6b3fb4db</dictionary>
-  <dictionary name="牛津高阶英汉双解词典（第9版）">1a74b0caeaafc04cc50c65aa01156709</dictionary>
-  <dictionary name="The 21st Century Unabridged English-Chinese Dictionary">7e4e9ef892ec6c5834ffd6352bd63e63</dictionary>
-  <dictionary name="21世纪英汉汉英双向词典">690093beb62b3cc84114abd4837ff8c8</dictionary>
-  <dictionary name="朗道汉英字典5.0">885aae225ddde8c8524e4843ba8060bf</dictionary>
-  <dictionary name="朗道英汉字典5.0">aa9941caad5736b41bb3c0257f27a633</dictionary>
-  <dictionary name="牛津英汉双解美化版">c4ccb37f3b30cd7e343e26c06370a371</dictionary>
-  <dictionary name="林语堂当代汉英词典-繁简索引">5431906f9523098b304fe4aaf520ca29</dictionary>
-  <dictionary name="中華成語大詞典[49450](090316)">9edbbac41ee78c15c5a151a3932701ee</dictionary>
-  <dictionary name="现代汉语词典">398c01c758c4121c10d95bd539dc6fdf</dictionary>
-  <dictionary name="现代英汉汉英综合大辞典">82d858b18ff999f1d86fa622905f826d</dictionary>
+  <dictionary name="Webster's Revised Unabridged Dictionary (1913)&#xa;">a60c6f4e2380bb323d4690c1c777f7af</dictionary>
+  <dictionary name="牛津高阶英汉双解词典（第9版）">d2304c4505c9ef37171fd9fd49151f2f</dictionary>
+  <dictionary name="The 21st Century Unabridged English-Chinese Dictionary">5f9919b20a4fcb9f258404732b49b475</dictionary>
+  <dictionary name="中華成語大詞典[49450](090316)">2323221297c34f4ded9e84d6ee2ad456</dictionary>
+  <dictionary name="林语堂当代汉英词典-繁简索引">a4e76fabfce2adeb85c6a2c3e786d032</dictionary>
+  <dictionary name="现代汉语词典">420e3e058ef4f1fd6359b9008f3e6a65</dictionary>
+  <dictionary name="现代英汉汉英综合大辞典">43e6f96553ef87c51bf2e8c499959086</dictionary>
+  <dictionary name="21世纪英汉汉英双向词典&#xa;">60d65be2d95740714829682b96d47b3f</dictionary>
+  <dictionary name="朗道汉英字典5.0&#xa;">e42282cd7c98761b2a91e8c8358c22e0</dictionary>
+  <dictionary name="朗道英汉字典5.0&#xa;">33c9e16f77039d25d353745f4a5942a4</dictionary>
+  <dictionary name="牛津英汉双解美化版&#xa;">7007fc9e42246bad7f11075770819be2</dictionary>
+  <dictionary name="SoundEn">926af35bcc43b8b8c35050f740f30c91</dictionary>
   <dictionary name="English Wikipedia">ae6f89aac7151829681b85f035d54e48</dictionary>
   <dictionary name="English Wiktionary">affcf9678e7bfe701c9b071f97eccba3</dictionary>
   <dictionary name="dict.org">6eb6f7a1df225e1cfdcd4cf8e9e4771b</dictionary>
-  <dictionary name="SoundEn">5868624bf79f5bb978d28c66660c4de1</dictionary>
-  <dictionary name="Dictionaries">763cc06f72ffee1e4b384dc5a3104319</dictionary>
+  <dictionary name="Dictionaries">35330226e7895415b0dc76dd8316fa6f</dictionary>
   <mutedDictionaries/>
  </dictionaryOrder>
  <inactiveDictionaries id="0" name="">
@@ -43,8 +43,6 @@
   <romaji>
    <enable>0</enable>
    <enableHepburn>1</enableHepburn>
-   <enableNihonShiki>0</enableNihonShiki>
-   <enableKunreiShiki>0</enableKunreiShiki>
    <enableHiragana>1</enableHiragana>
    <enableKatakana>1</enableKatakana>
   </romaji>
@@ -63,16 +61,16 @@
   <languageCodes></languageCodes>
  </forvo>
  <mediawikis>
-  <mediawiki enabled="1" icon="" id="ae6f89aac7151829681b85f035d54e48" name="English Wikipedia" url="https://en.wikipedia.org/w"/>
-  <mediawiki enabled="1" icon="" id="affcf9678e7bfe701c9b071f97eccba3" name="English Wiktionary" url="https://en.wiktionary.org/w"/>
-  <mediawiki enabled="0" icon="" id="8e0c1c2b6821dab8bdba8eb869ca7176" name="Russian Wikipedia" url="https://ru.wikipedia.org/w"/>
-  <mediawiki enabled="0" icon="" id="b09947600ae3902654f8ad4567ae8567" name="Russian Wiktionary" url="https://ru.wiktionary.org/w"/>
-  <mediawiki enabled="0" icon="" id="a8a66331a1242ca2aeb0b4aed361c41d" name="German Wikipedia" url="https://de.wikipedia.org/w"/>
-  <mediawiki enabled="0" icon="" id="21c64bca5ec10ba17ff19f3066bc962a" name="German Wiktionary" url="https://de.wiktionary.org/w"/>
-  <mediawiki enabled="0" icon="" id="96957cb2ad73a20c7a1d561fc83c253a" name="Portuguese Wikipedia" url="https://pt.wikipedia.org/w"/>
-  <mediawiki enabled="0" icon="" id="ed4c3929196afdd93cc08b9a903aad6a" name="Portuguese Wiktionary" url="https://pt.wiktionary.org/w"/>
-  <mediawiki enabled="0" icon="" id="f3b4ec8531e52ddf5b10d21e4577a7a2" name="Greek Wikipedia" url="https://el.wikipedia.org/w"/>
-  <mediawiki enabled="0" icon="" id="5d45232075d06e002dea72fe3e137da1" name="Greek Wiktionary" url="https://el.wiktionary.org/w"/>
+  <mediawiki enabled="1" icon="" id="ae6f89aac7151829681b85f035d54e48" lang="" name="English Wikipedia" url="https://en.wikipedia.org/w"/>
+  <mediawiki enabled="1" icon="" id="affcf9678e7bfe701c9b071f97eccba3" lang="" name="English Wiktionary" url="https://en.wiktionary.org/w"/>
+  <mediawiki enabled="0" icon="" id="8e0c1c2b6821dab8bdba8eb869ca7176" lang="" name="Russian Wikipedia" url="https://ru.wikipedia.org/w"/>
+  <mediawiki enabled="0" icon="" id="b09947600ae3902654f8ad4567ae8567" lang="" name="Russian Wiktionary" url="https://ru.wiktionary.org/w"/>
+  <mediawiki enabled="0" icon="" id="a8a66331a1242ca2aeb0b4aed361c41d" lang="" name="German Wikipedia" url="https://de.wikipedia.org/w"/>
+  <mediawiki enabled="0" icon="" id="21c64bca5ec10ba17ff19f3066bc962a" lang="" name="German Wiktionary" url="https://de.wiktionary.org/w"/>
+  <mediawiki enabled="0" icon="" id="96957cb2ad73a20c7a1d561fc83c253a" lang="" name="Portuguese Wikipedia" url="https://pt.wikipedia.org/w"/>
+  <mediawiki enabled="0" icon="" id="ed4c3929196afdd93cc08b9a903aad6a" lang="" name="Portuguese Wiktionary" url="https://pt.wiktionary.org/w"/>
+  <mediawiki enabled="0" icon="" id="f3b4ec8531e52ddf5b10d21e4577a7a2" lang="" name="Greek Wikipedia" url="https://el.wikipedia.org/w"/>
+  <mediawiki enabled="0" icon="" id="5d45232075d06e002dea72fe3e137da1" lang="" name="Greek Wiktionary" url="https://el.wiktionary.org/w"/>
  </mediawikis>
  <websites>
   <website enabled="0" icon="" id="b88cb2898e634c6638df618528284c2d" inside_iframe="1" name="Google En-En (Oxford)" url="https://www.google.com/search?q=define:%GDWORD%&amp;hl=en"/>
@@ -88,7 +86,6 @@
   <program commandLine="espeak %GDWORD%" enabled="0" icon="" id="2cf8b3a60f27e1ac812de0b57c148340" name="Espeak" type="0"/>
   <program commandLine="man -a --html=/bin/cat %GDWORD%" enabled="0" icon="" id="4f898f7582596cea518c6b0bfdceb8b3" name="Manpages" type="2"/>
  </programs>
- <voiceEngines/>
  <mutedDictionaries/>
  <popupMutedDictionaries/>
  <preferences>
@@ -147,8 +144,6 @@
    <port>3128</port>
    <user></user>
    <password></password>
-   <systemProxyUser></systemProxyUser>
-   <systemProxyPassword></systemProxyPassword>
   </proxyserver>
   <ankiConnectServer enabled="0">
    <host>127.0.0.1</host>
@@ -165,6 +160,7 @@
   <maxNetworkCacheSize>50</maxNetworkCacheSize>
   <clearNetworkCacheOnExit>1</clearNetworkCacheOnExit>
   <removeInvalidIndexOnExit>0</removeInvalidIndexOnExit>
+  <enableApplicationLog>0</enableApplicationLog>
   <maxStringsInHistory>500</maxStringsInHistory>
   <storeHistory>1</storeHistory>
   <alwaysExpandOptionalParts>1</alwaysExpandOptionalParts>
@@ -182,27 +178,25 @@
    <dialogGeometry></dialogGeometry>
    <disabledTypes></disabledTypes>
    <enabled>1</enabled>
-   <enablePosition>0</enablePosition>
    <maxDictionarySize>0</maxDictionarySize>
    <parallelThreads>2</parallelThreads>
   </fullTextSearch>
  </preferences>
  <lastMainGroupId>0</lastMainGroupId>
  <lastPopupGroupId>0</lastPopupGroupId>
- <popupWindowState>AAAA/wAAAAD9AAAAAAAAAgUAAAGTAAAABAAAAAQAAAAIAAAACPwAAAABAAAAAQAAAAEAAAAaAGQAaQBjAHQAaQBvAG4AYQByAHkAQgBhAHIDAAAAAP////8AAAAAAAAAAA==</popupWindowState>
- <popupWindowGeometry>AdnQywADAAAAAAWLAAACEgAAB7cAAAOkAAAFiwAAAhIAAAe3AAADpAAAAAAAAAAACgAAAAWLAAACEgAAB7cAAAOk</popupWindowGeometry>
+ <popupWindowState>AAAA/wAAAAD9AAAAAAAAAgUAAAGTAAAABAAAAAQAAAAIAAAACPwAAAACAAAAAQAAAAH/////AwAAAAD/////AAAAAAAAAAAAAAACAAAAAQAAABoAZABpAGMAdABpAG8AbgBhAHIAeQBCAGEAcgEAAAAA/////wAAAAAAAAAA</popupWindowState>
+ <popupWindowGeometry>AdnQywADAAAAAAWLAAACEgAAB7cAAAOkAAAFiwAAAhIAAAe3AAADpAAAAAAAAAAACAAAAAWLAAACEgAAB7cAAAOk</popupWindowGeometry>
  <pinPopupWindow>0</pinPopupWindow>
  <popupWindowAlwaysOnTop>0</popupWindowAlwaysOnTop>
- <mainWindowState>AAAA/wAAAAD9AAAAAgAAAAAAAABcAAAB0/wCAAAAAfsAAAAUAHMAZQBhAHIAYwBoAFAAYQBuAGUAAAAARwAAAdMAAACaAP///wAAAAEAAADMAAAB0/wCAAAAA/sAAAASAGQAaQBjAHQAcwBQAGEAbgBlAQAAAEcAAACYAAAAawD////7AAAAGgBmAGEAdgBvAHIAaQB0AGUAcwBQAGEAbgBlAQAAAOUAAACXAAAAawD////7AAAAFgBoAGkAcwB0AG8AcgB5AFAAYQBuAGUBAAABggAAAJgAAABrAP///wAAAjsAAAHTAAAABAAAAAQAAAAIAAAACPwAAAABAAAAAgAAAAIAAAAUAG4AYQB2AFQAbwBvAGwAYgBhAHIBAAAAAP////8AAAAAAAAAAAAAABoAZABpAGMAdABpAG8AbgBhAHIAeQBCAGEAcgEAAAJA/////wAAAAAAAAAA</mainWindowState>
- <mainWindowGeometry>AdnQywADAAAAAAN5AAABwQAABoUAAAPaAAADeQAAAcEAAAaFAAAD2gAAAAAAAAAACgAAAAN5AAABwQAABoUAAAPa</mainWindowGeometry>
+ <mainWindowState>AAAA/wAAAAD9AAAAAgAAAAAAAABcAAAB0/wCAAAAAfsAAAAUAHMAZQBhAHIAYwBoAFAAYQBuAGUAAAAARwAAAdMAAACpAP///wAAAAEAAADMAAABy/wCAAAAA/sAAAASAGQAaQBjAHQAcwBQAGEAbgBlAQAAAE8AAACZAAAAcQD////7AAAAGgBmAGEAdgBvAHIAaQB0AGUAcwBQAGEAbgBlAQAAAOkAAACXAAAAcQD////7AAAAFgBoAGkAcwB0AG8AcgB5AFAAYQBuAGUBAAABgQAAAJkAAABxAP///wAAAkAAAAHLAAAABAAAAAQAAAAIAAAACPwAAAABAAAAAgAAAAIAAAAUAG4AYQB2AFQAbwBvAGwAYgBhAHIBAAAAAP////8AAAAAAAAAAAAAABoAZABpAGMAdABpAG8AbgBhAHIAeQBCAGEAcgEAAAJv/////wAAAAAAAAAA</mainWindowState>
+ <mainWindowGeometry>AdnQywADAAAAAAMHAAAB5gAABhMAAAP/AAADBwAAAeYAAAYTAAAD/wAAAAAAAAAACAAAAAMHAAAB5gAABhMAAAP/</mainWindowGeometry>
  <dictInfoGeometry></dictInfoGeometry>
  <inspectorGeometry></inspectorGeometry>
- <dictionariesDialogGeometry>AdnQywADAAAAAAMBAAABSAAABugAAAPcAAADAQAAAXAAAAboAAAD3AAAAAAAAAAACgAAAAMBAAABcAAABugAAAPc</dictionariesDialogGeometry>
+ <dictionariesDialogGeometry>AdnQywADAAAAAAMAAAABVAAABukAAAPdAAADAQAAAXAAAAboAAAD3AAAAAAAAAAACAAAAAMBAAABcAAABugAAAPc</dictionariesDialogGeometry>
  <timeForNewReleaseCheck></timeForNewReleaseCheck>
  <skippedRelease></skippedRelease>
  <showingDictBarNames>0</showingDictBarNames>
- <usingSmallIconsInToolbars>0</usingSmallIconsInToolbars>
- <editDictionaryCommandLine></editDictionaryCommandLine>
+ <usingToolbarsIconSize>1</usingToolbarsIconSize>
  <maxHeadwordSize>256</maxHeadwordSize>
  <maxHeadwordsToExpand>0</maxHeadwordsToExpand>
  <headwordsDialog>
