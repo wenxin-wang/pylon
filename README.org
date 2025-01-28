@@ -9,6 +9,15 @@ Working states consist of knowledge, goal and current direction. Therefore this
 repository not only consists of "How"s (code), but also "Why"s (notes,
 handbooks) and references (reading materials).
 
+* Bootstrap
+
+#+begin_src bash
+  git clone https://github.com/wenxin-wang/pylon ~/pylon
+  cd ~/pylon
+  git annex init
+  git config annex.largefiles "(include=*.pdf or include=*.doc or include=*.docx or include=*.xls or include=*.xlsx)"
+#+end_src
+
 * Waypoints
 
 [[./bootstrap]] contains code and instructions on how to reproduce the working environment.
