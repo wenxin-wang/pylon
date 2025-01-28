@@ -23,7 +23,11 @@
       update_cache: yes
 
   - name: Add user `aur_builder` for auto installation of AUR packages as non-root user
-    user: name=aur_builder
+    user:
+      name: aur_builder
+      system: true
+      create_home: false
+      shell: /usr/bin/nologin
     become: true
 
   - name: Ensure that `aur_builder` can call pacman without password
