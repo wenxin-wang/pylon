@@ -1,0 +1,1 @@
+. virtualenvwrapper_lazy.sh

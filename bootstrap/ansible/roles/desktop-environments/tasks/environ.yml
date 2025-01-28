@@ -1,0 +1,51 @@
+---
+- name: Make systemd user session always use the same environment as our login shell.
+  become: true
+  ansible.builtin.copy:
+    src: etc/systemd/user-environment-generators/70-login-shell-profile.sh
+    dest: /etc/systemd/user-environment-generators/70-login-shell-profile.sh
+    mode: 0755
+
+- name: basic shell profiles
+  ansible.builtin.file:
+    src: "~/pylon/bootstrap/desktop-environments/{{ item }}"
+    dest: "~/.{{ item }}"
+    state: link
+  with_items:
+    - bashrc
+    - bash_profile
+    - profile
+
+- name: basic profiles
+  ansible.builtin.file:
+    src: "~/pylon/bootstrap/desktop-environments/profile.d/{{ item }}"
+    dest: "~/.profile.d/{{ item }}"
+    state: link
+  with_items:
+    - 61-paths.sh
+    - 70-dev.sh
+    - 71-git_askpass.sh
+    - 71-im.sh
+    - 71-pagers.sh
+    - 71-ssh_askpass.sh
+
+- name: basic bashrc
+  ansible.builtin.file:
+    src: "~/pylon/bootstrap/desktop-environments/bashrc.d/{{ item }}"
+    dest: "~/.bashrc.d/{{ item }}"
+    state: link
+  with_items:
+    - 61-misc.sh
+    - 62-sys.sh
+    - 70-dev.sh
+    - 90-docs.sh
+    - 99-cli.sh
+    - 99-deprecated.sh
+
+- name: .local folders
+  ansible.builtin.file:
+    path: "~/.local/share/{{ item }}"
+    state: directory
+  with_items:
+    - applications
+    - icons

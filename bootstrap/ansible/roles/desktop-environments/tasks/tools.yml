@@ -1,0 +1,7 @@
+---
+- name: install common utilities
+  become: true
+  ansible.builtin.package:
+    name:
+      - ranger
+    state: present
