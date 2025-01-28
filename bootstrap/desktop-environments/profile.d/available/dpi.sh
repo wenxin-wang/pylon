@@ -1,0 +1,3 @@
+# export QT_AUTO_SCREEN_SCALE_FACTOR=1
+# export GDK_SCALE=1.25
+# export GDK_DPI_SCALE=0.8
