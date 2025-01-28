@@ -46,12 +46,12 @@ mthd() {
 
 dtf() {
     if [ $# -eq 0 ]; then
-        touch $(date +%F)
+        touch $(date +%Y%m%dT%H%M%S)
 	return
     fi
     local f
     for f in $@; do
-        touch $(date +%F)-"$f"
+        touch $(date +%Y%m%dT%H%M%S)--"$f"
     done
 }
 
