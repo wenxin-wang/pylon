@@ -96,3 +96,42 @@ tmpfs           755M  116K  755M    1% /run/user/1000
 tmpfs           1.0M     0  1.0M    0% /run/credentials/systemd-journald.service
 tmpfs           1.0M     0  1.0M    0% /run/credentials/systemd-resolved.service
 #+end_quote
+
+*** 固定添加大文件
+
+#+begin_src bash
+  # 这个配置是加到 annex 中的，所以对每个 clone 都生效。
+  git annex config --set annex.largefiles '(include=*.pdf or include=*.doc or include=*.docx or include=*.xls or include=*.xlsx)'
+#+end_src
+
+#+begin_src python
+from pathlib import Path
+
+def _find_ext(p, exts):
+    for x in p.iterdir():
+        if not x.is_dir():
+            exts.add(x.suffix)
+        else:
+            _find_ext(x, exts)
+
+def find_ext(p):
+    exts = set()
+    _find_ext(p, exts)
+    return exts
+
+print(find_ext(Path()))
+#+end_src
+
+** 查找 remote 都有什么
+
+#+begin_src bash
+  # 很全
+  git annex list
+#+end_src
+
+
+** 拉取文件
+
+#+begin_src bash
+  git annex get --include=a/* --exclude=a/b/*
+#+end_src
