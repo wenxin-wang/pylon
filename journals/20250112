@@ -1,6 +1,5 @@
-* 2025-01-12
-
-** git-annex & zotero
+#+TITLE: Sunday, January 12 2025
+* git-annex & zotero
 
 今天简单整理了之前的 ansible 脚本，playbook 的目的变得更加上层了，不再关注发行版等细节。
 
@@ -20,7 +19,7 @@ reflink 支持 unlock 文件，既不浪费空间，又可以编辑文件。时�
 现在重新在电脑上配置好 Zotero 元数据和文档的本地同步，打开 Zotero 又看到那些积累
 （未读）的书，美好的回忆涌上心头，感觉很开心。
 
-** ansible dotfile 管理
+* ansible dotfile 管理
 
 尝试了下 ansible 的 `blockinfile` 模块，确认了它是幂等的，因此只要应用程序不把它
 们配置文件里的 block marker 去掉或者改变顺序，就可以用 ansible 来生成它们的配置
