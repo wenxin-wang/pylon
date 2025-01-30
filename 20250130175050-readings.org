@@ -1,0 +1,53 @@
+:PROPERTIES:
+:ID:       20250130T175049
+:END:
+#+title: readings
+
+* Someday
+
+** Emacs
+
+https://github.com/egh/zotxt-emacs?tab=readme-ov-file
+
+** Languages
+
+https://docs.julialang.org/en/v1/manual/integers-and-floating-point-numbers/
+
+https://leanpub.com/lovinglisp/read
+
+https://letoverlambda.com/index.cl/guest/chap1.html
+
+** Language design
+
+https://prescheme.org/references.html
+
+https://blog.stenmans.org/theBeamBook/#_how_to_read_this_book
+
+** Compilers
+
+http://factor-language.blogspot.com/2008/08/algorithm-for-escape-analysis.html?m=1
+
+https://bernsteinbear.com/blog/compiling-a-lisp-0/
+
+https://eli.thegreenplace.net/2013/11/05/how-to-jit-an-introduction
+
+https://www.reddit.com/r/Common_Lisp/comments/r6irib/has_anyone_tried_to_make_a_low_level_language_in/
+
+*** GPU
+
+https://developer.nvidia.com/blog/gpu-computing-julia-programming-language/
+
+https://nextjournal.com/sdanisch/julia-gpu-programming
+
+
+** GUI & dataflow
+
+https://opensource.janestreet.com/incremental/
+
+https://blog.janestreet.com/self-adjusting-dom/
+
+https://www.janestreet.com/tech-talks/intro-to-incr-dom/
+
+https://blog.janestreet.com/incrementality-and-the-web/
+
+[[https://www.umut-acar.org/research#h.x3l3dlvx3g5f][Self-adjusting computation]]
