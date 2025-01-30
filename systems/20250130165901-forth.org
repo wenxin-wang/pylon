@@ -1,0 +1,8 @@
+:PROPERTIES:
+:ID:       20250130T165901
+:END:
+#+title: Forth
+
+* 书
+
+https://www.forth.com/starting-forth/

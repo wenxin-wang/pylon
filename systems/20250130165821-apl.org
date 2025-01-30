@@ -1,0 +1,5 @@
+:PROPERTIES:
+:ID:       20250130T165821
+:END:
+#+title: APL
+
