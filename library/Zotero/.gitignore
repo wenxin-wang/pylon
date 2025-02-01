@@ -1,2 +1,4 @@
 *.bak
+/logs/
 /zotero.sqlite-journal
+/logs
