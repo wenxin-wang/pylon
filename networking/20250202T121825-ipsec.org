@@ -1,0 +1,28 @@
+:PROPERTIES:
+:ID:       20250202T121825
+:END:
+#+title: IPSec
+
+A real beast.
+
+* Good reads
+
+"It's just an astonishingly-complex suite of protocols." -- [[http://www.unixwiz.net/techtips/iguide-ipsec.html][An Illustrated Guide
+to IPsec]]
+
+* Caveats
+
+** Let's Encrypt
+
+Android 的 strongswan client 似乎需要：
+
+- x509 下面的 cert 是 fullchain.pem
+- x509ca 下面的 cert 是 ca cert（chain.pem）
+
+iOS 的原生 IKEv2 Client 要求：
+
+- certbot --key-type 选 rsa。现在默认是 ecdsa 了
+  - 按 chatgpt 的说法，iOS 支持 ecdsa 但是 必须要使用特定算法
+  - 但根据 https://github.com/strongswan/strongswan/discussions/1881 和
+    https://apple.stackexchange.com/questions/412089/ios-native-ikev2-client-and-ecdsa-server-certificates
+    看，iOS 可能根本不支持用 ecdsa 认证服务器
