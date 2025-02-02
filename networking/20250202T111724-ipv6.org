@@ -1,0 +1,16 @@
+:PROPERTIES:
+:ID:       20250202T111724
+:END:
+#+title: IPv6
+
+Fully of opportunity and surprises.
+
+* ULA
+
+如果上游提供的 prefix 经常变动，那么 ULA + NPTv6 看上去是个很好的方案，但是实际
+操作系统会按 [[https://datatracker.ietf.org/doc/html/rfc6724][RFC6724]] 的要求将 getaddrinfo() 返回结果中， ULA 的优先级调低于 IPv4
+地址。
+
+实际使用中这似乎会导致客户端更倾向于使用 IPv4 地址访问外网。
+
+有一个 [[https://www.ietf.org/archive/id/draft-buraglio-6man-rfc6724-update-03.html][Draft RFC]] 提议提高 ULA 的优先级，不过哪怕它得到采用，推广也需要时间。
