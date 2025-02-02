@@ -56,11 +56,20 @@ This function should only modify configuration layer settings."
      markdown
      multiple-cursors
      (org :variables
+          org-id-method 'ts
+          org-id-ts-format "%Y%m%dT%H%M%S"
           org-enable-org-journal-support t
           org-journal-dir (file-truename "~/pylon/journals/")
           org-journal-date-prefix "#+TITLE: "
           org-journal-date-format "%A, %B %d %Y"
           org-enable-roam-support t
+          org-roam-capture-templates
+          '(("d" "default" plain "%?" :target
+             (file+head
+              "%<%Y%m%dT%H%M%S>-${slug}.org"
+              ":PROPERTIES:\n:ID:       %(car (split-string (file-name-nondirectory (org-roam-capture--get :new-file)) \"-\"))\n:END:\n#+title: ${title}\n")
+             :unnarrowed t))
+          org-roam-extract-new-file-path "%<%Y%m%dT%H%M%S>-${slug}.org"
           org-roam-directory (file-truename "~/pylon"))
      (shell :variables
             shell-default-height 30
@@ -613,11 +622,7 @@ Put your configuration code here, except for variables that should be set
 before packages are loaded."
   (with-eval-after-load 'org
     (require 'org-tempo))
-  (org-roam-db-autosync-mode)
-  (with-eval-after-load 'org-roam
-    (setq
-     org-id-method 'ts
-     org-id-ts-format "%Y%m%dT%H%M%S")))
+  (org-roam-db-autosync-mode))
 
 
 ;; Do not write anything past this comment. This is where Emacs will
