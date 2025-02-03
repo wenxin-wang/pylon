@@ -1,0 +1,10 @@
+:PROPERTIES:
+:ID:       20250203T235538
+:END:
+#+title: git
+
+* 删除最开始的 commit
+
+#+begin_src bash
+  git rebase -i --root
+#+end_src
