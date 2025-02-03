@@ -1,0 +1,12 @@
+:PROPERTIES:
+:ID:       20250203T124910
+:END:
+#+title: OpenVPN
+
+* Static key
+
+按 openvpn 2.6 的提示，2.7 版本将停止支持此方案。然而它是 openvpn 唯一一个不使用
+tls 的方案，目前没有特别被针对，而且配置非常简单，所以暂时还是用起来。
+
+此方案只能用 CBC 系列的 cipher，但 openvpn2.6 已经不支持默认的 BF-CBC cipher，
+所以（也应该）选个更好的就行。
