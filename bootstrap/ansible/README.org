@@ -18,7 +18,8 @@ ansible-galaxy collection install community.general
 如果系统为 Archlinux，还需要安装 aur helper。
 
 #+begin_src bash
-ansible-galaxy collection install kewlfft.aur
+  ansible-galaxy collection install kewlfft.aur
+  sudo pacman -S python-keyring
 #+end_src
 
 * Playbooks
@@ -39,3 +40,19 @@ ansible-playbook -i ~/.notches/home-inventory/hosts -c local -l $HOSTNAME -K 01-
 #+begin_src bash
 ansible-playbook -i ~/.notches/home-inventory/hosts -c local -l $HOSTNAME -K 01-derivation.yml
 #+end_src
+
+* Secrets
+
+** 使用 keyring
+
+https://wrossmann.medium.com/using-ansible-keyring-lookups-6379139b2ee8
+
+#+begin_src bash
+  # lookup('keyring', 'foo bar') 对应
+  secret-tool store \
+              --label="Password for 'bar' on 'foo'" \
+              service foo \
+              username bar
+#+end_src
+
+

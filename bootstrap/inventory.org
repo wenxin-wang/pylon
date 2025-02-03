@@ -4,7 +4,7 @@
 
 从 ansible 借鉴的概念，目前仅用于 ansible，但是也可以用于存放一些其它设备专属的文件。
 
-大部分 Inventory 都应该在 [[~/.notches]] 中，例如 [[~/.notches/home-inventory]]。
+本机的 Inventory 路径见 [[~/.ansible.cfg]]
 
 * 内容
 
