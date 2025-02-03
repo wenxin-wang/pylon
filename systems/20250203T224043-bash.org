@@ -1,0 +1,34 @@
+:PROPERTIES:
+:ID:       20250203T224043
+:END:
+#+title: Bash
+
+* 测试框架
+
+bats-core 看上去非常科学且成熟 https://bats-core.readthedocs.io/en/stable/tutorial.html
+
+* Caveats
+
+** SSH eats remains of stdin
+
+while read + loop 内一个会读 stdin 的指令就会触发这个问题。
+
+https://stackoverflow.com/questions/9393038/ssh-breaks-out-of-while-loop-in-bash
+
+* 关联数组
+
+https://www.artificialworlds.net/blog/2012/10/17/bash-associative-array-examples/
+
+* 检查 symlink target 是否存在
+
+#+begin_src bash
+for d in *; do
+    for f in $d/*.el; do
+        if [ ! -e $f ]; then
+            echo $d
+            echo $f
+            break
+        fi
+    done
+done
+#+end_src
