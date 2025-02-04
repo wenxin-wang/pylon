@@ -1,0 +1,8 @@
+:PROPERTIES:
+:ID:       20250204T234647
+:END:
+#+title: Accounting
+
+* Beancount
+
+导入国内常见银行的账单 https://github.com/jiegec/china_bean_importers
