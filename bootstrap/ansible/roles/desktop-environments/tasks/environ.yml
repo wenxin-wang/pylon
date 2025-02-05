@@ -1,4 +1,11 @@
 ---
+- name: Ensure /etc/systemd/user-environment-generators
+  become: true
+  ansible.builtin.file:
+    dest: /etc/systemd/user-environment-generators
+    state: directory
+    mode: 0755
+
 - name: Make systemd user session always use the same environment as our login shell.
   become: true
   ansible.builtin.copy:
@@ -16,6 +23,15 @@
     - bash_profile
     - inputrc
     - profile
+
+- name: Ensure profile directories
+  ansible.builtin.file:
+    dest: "{{ item }}"
+    state: directory
+    mode: 0755
+  loop:
+     - ~/.bashrc.d
+     - ~/.profile.d
 
 - name: basic profiles
   ansible.builtin.file:
