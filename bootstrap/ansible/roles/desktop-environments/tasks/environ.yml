@@ -1,5 +1,6 @@
 ---
 - name: Ensure /etc/systemd/user-environment-generators
+  when: ansible_facts['distribution'] != 'Ubuntu' or ansible_facts['distribution_version'] >= '22.04'
   become: true
   ansible.builtin.file:
     dest: /etc/systemd/user-environment-generators
@@ -7,6 +8,7 @@
     mode: 0755
 
 - name: Make systemd user session always use the same environment as our login shell.
+  when: ansible_facts['distribution'] != 'Ubuntu' or ansible_facts['distribution_version'] >= '22.04'
   become: true
   ansible.builtin.copy:
     src: etc/systemd/user-environment-generators/70-login-shell-profile.sh
