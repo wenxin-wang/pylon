@@ -1,0 +1,14 @@
+:PROPERTIES:
+:ID:       20250212T234905
+:END:
+#+title: society
+
+LWM 关于 "The Selfish Contributor" 的 Review
+https://lwn.net/SubscriberLink/1007426/7f074effcf11f675/ 。
+
+关键词：
+
+"Manipulation by incentive is a quality a leader has"
+
+"leadership is when you care enough to make sure everyone wins something in the
+end (even if others may find the solution unbalanced)."
