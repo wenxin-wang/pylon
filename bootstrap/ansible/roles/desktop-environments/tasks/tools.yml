@@ -6,3 +6,19 @@
       - ranger
       - unzip
     state: present
+
+- name: passwords
+  block:
+    - name: install password store tool
+      become: true
+      when: ansible_facts['distribution'] == 'Archlinux'
+      ansible.builtin.package:
+        name:
+          - pass
+          - firefox-extension-passff
+        state: present
+
+    - name: clone pass store
+      ansible.builtin.git:
+        repo: "{{pass_store_repo}}"
+        dest: ~/.password-store
