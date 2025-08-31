@@ -8,3 +8,7 @@
     - import_role:
         name: desktop-environments
         tasks_from: tools
+
+    - import_role:
+        name: desktop-environments
+        tasks_from: networking

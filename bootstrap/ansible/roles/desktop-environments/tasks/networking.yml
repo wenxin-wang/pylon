@@ -1,0 +1,41 @@
+---
+- name: DNS
+  block:
+    - name: install resolvconf
+      become: true
+      ansible.builtin.package:
+        name:
+          - openresolv
+        state: present
+      register: openresolv_installed
+    - name: uninstall systemd-resolvd
+      become: true
+      ansible.builtin.package:
+        name:
+          - systemd-resolvd
+        state: absent
+      register: systemd_resolved_removed
+    - name: ensure NetworkManager conf.d folder
+      file:
+        path: /etc/NetworkManager/conf.d
+        state: directory
+        mode: 0755
+    - name: network manager use resolvconf
+      become: true
+      ansible.builtin.copy:
+        content: |
+          [main]
+          rc-manager=resolvconf
+        dest: /etc/NetworkManager/conf.d/rc-manager.conf
+      register: nm_config_updated
+    - name: Restart NetworkManager
+      service:
+        name: NetworkManager
+        state: restarted
+      when: nm_config_updated.changed
+    - name: update resolvconf
+      command: resolvconf -u
+      when:
+        - openresolv_installed.changed or
+          systemd_resolved_removed.changed or
+          nm_config_updated.changed
