@@ -23,6 +23,7 @@
   with_items:
     - bashrc
     - bash_profile
+    - gitconfig
     - inputrc
     - profile
 
