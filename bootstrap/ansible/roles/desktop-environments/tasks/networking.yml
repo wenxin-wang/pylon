@@ -1,15 +1,14 @@
 ---
 - name: DNS
+  become: true
   block:
     - name: install resolvconf
-      become: true
       ansible.builtin.package:
         name:
           - openresolv
         state: present
       register: openresolv_installed
     - name: uninstall systemd-resolvd
-      become: true
       ansible.builtin.package:
         name:
           - systemd-resolvd
@@ -21,7 +20,6 @@
         state: directory
         mode: 0755
     - name: network manager use resolvconf
-      become: true
       ansible.builtin.copy:
         content: |
           [main]
