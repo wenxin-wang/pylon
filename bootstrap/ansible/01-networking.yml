@@ -4,3 +4,20 @@
     - import_role:
         name: networking
         tasks_from: debugging
+      tags:
+        - debugging
+    - import_role:
+        name: networking
+        tasks_from: openvpn_static_p2p
+      tags:
+        - openvpn_static_p2p
+    - import_role:
+        name: networking
+        tasks_from: routing
+      tags:
+        - routing
+    - import_role:
+        name: networking
+        tasks_from: firewall
+      tags:
+        - firewall

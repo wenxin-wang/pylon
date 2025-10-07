@@ -1,0 +1,18 @@
+---
+- name: allow forwarding ipv4
+  become: true
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    sysctl_file: /etc/sysctl.d/100-ipv4-all-forward.conf
+  when: (allow_forwarding | default(false))
+
+- name: allow forwarding ipv6
+  become: true
+  sysctl:
+    name: net.ipv6.conf.all.forwarding
+    value: '1'
+    sysctl_file: /etc/sysctl.d/100-ipv6-all-forward.conf
+    reload: no
+    sysctl_set: yes
+  when: (allow_forwarding | default(false))
