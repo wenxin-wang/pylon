@@ -1,0 +1,114 @@
+---
+- set_fact:
+    openvpn_user: openvpn
+    openvpn_group: network
+  when: ansible_facts['distribution'] == 'Archlinux'
+
+- set_fact:
+    openvpn_user: root
+    openvpn_group: root
+  when: ansible_facts['distribution'] != 'Archlinux'
+
+- name: Openvpn static p2p connections
+  when: openvpn_static_p2p is defined
+  become: true
+  block:
+    - name: Install openvpn
+      ansible.builtin.package:
+        name:
+          - openvpn
+        state: present
+
+    - name: Copy update-resolv-conf
+      ansible.builtin.copy:
+        src: openvpn_static_p2p/update-resolv-conf
+        dest: /etc/openvpn/update-resolv-conf
+        mode: o+x
+        owner: "{{ openvpn_user }}"
+        group: "{{ openvpn_group }}"
+      register: update_resolv_conf
+
+    # Clients
+    - name: Copy general client.conf
+      ansible.builtin.copy:
+        src: "openvpn_static_p2p/client/common.conf"
+        dest: "/etc/openvpn/client/common.conf"
+        owner: "{{ openvpn_user }}"
+        group: "{{ openvpn_group }}"
+      register: client_common
+    - name: Copy client config
+      ansible.builtin.copy:
+        src: "{{ specific_inventory }}/openvpn_static_p2p/{{ item.name }}/client.conf"
+        dest: "/etc/openvpn/client/{{ item.name }}.conf"
+        owner: "{{ openvpn_user }}"
+        group: "{{ openvpn_group }}"
+      loop: "{{ openvpn_static_p2p.get('client', []) }}"
+      register: client_configs
+    - name: Copy client artifacts
+      ansible.builtin.copy:
+        src: "{{ specific_inventory }}/openvpn_static_p2p/{{ item.name }}/static.key"
+        dest: "/etc/openvpn/client/{{ item.name }}.key"
+        owner: "{{ openvpn_user }}"
+        group: "{{ openvpn_group }}"
+      register: client_keys
+      loop: "{{ openvpn_static_p2p.get('client', []) }}"
+    - name: Restart client service
+      when: >
+        (item.enabled | default(True)) and
+        (client_common.changed or
+         update_resolv_conf.changed or
+         client_configs.results[idx].changed or
+         client_keys.results[idx].changed)
+      ansible.builtin.service:
+        name: "openvpn-client@{{ item.name }}"
+        state: restarted
+      loop: "{{ openvpn_static_p2p.get('client', []) }}"
+      loop_control:
+        index_var: idx
+    - name: Enable client service
+      ansible.builtin.service:
+        name: "openvpn-client@{{ item.name }}"
+        enabled: "{{ item.enabled | default(True) }}"
+      loop: "{{ openvpn_static_p2p.get('client', []) }}"
+
+    # Servers
+    - name: Copy general server.conf
+      ansible.builtin.copy:
+        src: "openvpn_static_p2p/server/common.conf"
+        dest: "/etc/openvpn/server/common.conf"
+        owner: "{{ openvpn_user }}"
+        group: "{{ openvpn_group }}"
+      register: server_common
+    - name: Copy server config
+      ansible.builtin.copy:
+        src: "{{ specific_inventory }}/openvpn_static_p2p/{{ item.name }}/server.conf"
+        dest: "/etc/openvpn/server/{{ item.name }}.conf"
+        owner: "{{ openvpn_user }}"
+        group: "{{ openvpn_group }}"
+      register: server_configs
+      loop: "{{ openvpn_static_p2p.get('server', []) }}"
+    - name: Copy server artifacts
+      ansible.builtin.copy:
+        src: "{{ specific_inventory }}/openvpn_static_p2p/{{ item.name }}/static.key"
+        dest: "/etc/openvpn/server/{{ item.name }}.key"
+        owner: "{{ openvpn_user }}"
+        group: "{{ openvpn_group }}"
+      register: server_keys
+      loop: "{{ openvpn_static_p2p.get('server', []) }}"
+    - name: Restart server service
+      when: >
+        (item.enabled | default(True)) and
+        (server_common.changed or
+         server_configs.results[idx].changed or
+         server_keys.results[idx].changed)
+      ansible.builtin.service:
+        name: "openvpn-server@{{ item.name }}"
+        state: restarted
+      loop: "{{ openvpn_static_p2p.get('server', []) }}"
+      loop_control:
+        index_var: idx
+    - name: Enable server service
+      ansible.builtin.service:
+        name: "openvpn-server@{{ item.name }}"
+        enabled: "{{ item.enabled | default(True) }}"
+      loop: "{{ openvpn_static_p2p.get('server', []) }}"

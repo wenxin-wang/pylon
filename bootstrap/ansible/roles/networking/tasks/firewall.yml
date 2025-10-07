@@ -1,0 +1,43 @@
+---
+- name: install nftables
+  become: true
+  ansible.builtin.package:
+    name:
+      - nftables
+    state: present
+
+- name: copy general files
+  become: true
+  ansible.builtin.copy:
+    src: firewall/nftables/
+    dest: /etc/nftables
+  register: general_files
+
+- name: copy entry config
+  become: true
+  ansible.builtin.copy:
+    src: firewall/nftables.conf
+    dest: /etc/nftables.conf
+  register: entry_config
+
+- name: check if specific files exists
+  stat:
+    path: "{{ specific_host_dir }}/nftables"
+  delegate_to: localhost
+  run_once: true
+  register: specific_dir_check
+
+- name: copy specific files
+  ansible.builtin.copy:
+    src: "{{ specific_host_dir }}/nftables/"
+    dest: /etc/nftables
+  when: specific_dir_check.stat.exists
+  register: specific_files
+
+- name: enable nftables service
+  become: true
+  ansible.builtin.service:
+    name: nftables
+    enabled: true
+    state: restarted
+  when: general_files.changed or entry_config.changed or specific_files.changed

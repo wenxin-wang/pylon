@@ -1,8 +1,23 @@
 ---
-- name: install debug tools
+- name: install debug tools for Archlinux
   become: true
   when: ansible_facts['distribution'] == 'Archlinux'
   ansible.builtin.package:
     name:
       - bind
+    state: present
+
+- name: install debug tools for non-Archlinux
+  become: true
+  when: ansible_facts['distribution'] != 'Archlinux'
+  ansible.builtin.package:
+    name:
+      - bind9-utils
+    state: present
+
+- name: install debug tools
+  become: true
+  ansible.builtin.package:
+    name:
+      - tcpdump
     state: present
