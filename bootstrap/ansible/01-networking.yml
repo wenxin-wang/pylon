@@ -26,3 +26,8 @@
         tasks_from: firewall
       tags:
         - firewall
+    - import_role:
+        name: networking
+        tasks_from: dnsmasq
+      tags:
+        - dnsmasq
