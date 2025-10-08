@@ -1,0 +1,77 @@
+---
+- name: General dnsmasq configs
+  when: dnsmasq|default(False) or clean_internet|default(False)
+  become: true
+  block:
+    - name: Install dnsmasq
+      ansible.builtin.package:
+        name:
+          - dnsmasq
+        state: present
+
+    - name: Copy general files
+      ansible.builtin.copy:
+        src: dnsmasq/dnsmasq.d/
+        dest: /etc/dnsmasq.d
+      register: general_files
+
+    - name: Copy entry config
+      ansible.builtin.copy:
+        src: dnsmasq/dnsmasq.conf
+        dest: /etc/dnsmasq.conf
+      register: entry_config
+
+    - name: Check if specific files exists
+      become: false
+      stat:
+        path: "{{ specific_host_dir }}/dnsmasq"
+      delegate_to: localhost
+      run_once: true
+      register: specific_dir_check
+
+    - name: Copy specific files
+      ansible.builtin.copy:
+        src: "{{ specific_host_dir }}/dnsmasq/"
+        dest: /etc/dnsmasq.d
+      when: specific_dir_check.stat.exists
+      register: specific_files
+
+    - name: Enable dnsmasq service
+      ansible.builtin.service:
+        name: dnsmasq
+        enabled: true
+        state: restarted
+      when: general_files.changed or entry_config.changed or specific_files.changed
+
+- name: Dnsmasq clean configs
+  when: clean_internet|default(False)
+  become: true
+  block:
+    - name: Copy dnsmasq configs
+      ansible.builtin.copy:
+        src: dnsmasq_clean/dnsmasq.d/
+        dest: /etc/dnsmasq.d
+      register: dnsmasq_files
+
+    - name: Copy resolvconf configs
+      ansible.builtin.copy:
+        src: dnsmasq_clean/resolvconf.d/
+        dest: /etc/resolvconf.d
+      register: resolvconf_files
+
+    - name: Update resolvconf
+      command: resolvconf -u
+      when:
+        - resolvconf_files.changed
+
+    - name: Copy china-dns-update.sh
+      ansible.builtin.copy:
+        src: dnsmasq_clean/china-dns-update.sh
+        dest: /etc/cron.daily/china-dns-update.sh
+        mode: 0755
+      register: china_dns_update
+
+    - name: Update China DNS
+      command: /etc/cron.daily/china-dns-update.sh
+      when:
+        - china_dns_update.changed

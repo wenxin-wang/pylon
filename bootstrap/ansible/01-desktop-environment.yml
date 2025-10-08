@@ -4,11 +4,14 @@
     - import_role:
         name: desktop-environments
         tasks_from: environ
+      tags: environ
 
     - import_role:
         name: desktop-environments
         tasks_from: tools
+      tags: tools
 
     - import_role:
         name: desktop-environments
         tasks_from: networking
+      tags: networking
