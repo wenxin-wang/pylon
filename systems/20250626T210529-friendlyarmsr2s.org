@@ -1,0 +1,132 @@
+:PROPERTIES:
+:ID:       20250626T210529
+:END:
+#+title: FriendlyArmsR2S
+
+我真不应该买这种 Arm 小板子的，便宜不到哪去，配置起来还麻烦，远不如 x64 小盒子方便。然而我买了两个：P，只能折腾了。
+
+* OpenWrt
+
+官方级别支持：https://openwrt.org/toh/friendlyarm/nanopi_r2s
+
+开箱就用。但是我很不习惯 Openwrt，调通了一次 IPv6，重装一次然后再也通不了了，其它配置也不太会。
+
+* Armbian
+
+社区级别支持：https://www.armbian.com/nanopi-r2s/
+
+有点担心 `armbian-config` 会不会让这个系统的管理和原生 debian 不太一样。我猜不会，但是我有不好的预感，所以先跳过。
+
+* Archlinux Arm
+
+DIY 级别的支持，但是有 [[https://gist.github.com/larsch/a8f13faa2163984bb945d02efb897e6d][前人经验]] 和 [[https://zhuanlan.zhihu.com/p/392619184][前人二级经验]]。
+
+** 其它参考
+
+按前人经验，这个板子可以复用 https://archlinuxarm.org/platforms/armv8/rockchip/rock64 的 dtb，但是不能复用它的 uboot。
+
+** 清理 SD 卡分区
+
+#+begin_src bash
+DEV=/dev/sdX
+MOUNTPOINT=mountpoint
+HOST=
+#+end_src
+
+#+begin_src bash
+sudo dd if=/dev/zero of=$DEV bs=1M count=32
+sudo parted -s $DEV 'mklabel msdos'
+sudo parted -s $DEV 'mkpart primary ext4 32768s 100%'
+sudo mkfs.ext4 ${DEV}1
+#+end_src
+
+** 解压 Armbian 并安装其 uboot 到 SD 卡
+
+#+begin_src bash
+xz -dk ~/Downloads/Armbian_community_25.11.0-trunk.302_Nanopi-r2s_trixie_current_6.12.51_minimal.img.xz
+sudo dd if=~/Downloads/Armbian_community_25.11.0-trunk.302_Nanopi-r2s_trixie_current_6.12.51_minimal.img of=$DEV skip=31 seek=31 bs=512 count=32736
+#+end_src
+
+** 解压 Archlinux Arm 镜像到 SD 卡
+
+#+begin_src bash
+sudo bsdtar -xpf ~/Downloads/ArchLinuxARM-aarch64-latest.tar.gz -C $MOUNTPOINT
+#+end_src
+
+** 安装内核
+
+*** Armbian 内核
+
+#+begin_src bash
+sudo mount -o offset=$((32768*512)) ~/Downloads/Armbian_community_25.11.0-trunk.302_Nanopi-r2s_trixie_current_6.12.51_minimal.img /mnt
+sudo mv $MOUNTPOINT/boot{,.orig}
+sudo cp -r /mnt/boot $MOUNTPOINT/
+# 备份一个省得后面改坏
+sudo cp -r $MOUNTPOINT/boot{,.armbian}
+sudo umount /mnt
+#+end_src
+
+*** 切换到 ArchlinuxArm 内核
+
+等配置完 pacman 后再操作
+
+#+begin_src bash
+sudo rm -rf $MOUNTPOINT/boot/{config*,dtb*,initrd*,System.map*,uInitrd*}
+#+end_src
+
+** Bootloader/fstab 配置
+
+#+begin_src bash
+eval $(sudo blkid -o export ${DEV}1)
+sudo sed -i 's@^\(rootdev=UUID=\).*$@\1'$UUID@ $MOUNTPOINT/boot/armbianEnv.txt
+cat <<EOF | sudo tee $MOUNTPOINT/etc/fstab
+UUID=$UUID       /            ext4    defaults,relatime   0 1
+tmpfs            /tmp         tmpfs   nodev,nosuid        0  0
+EOF
+#+end_src
+
+** 第一次启动
+
+#+begin_src bash
+# ~/pylon/bootstrap/desktop-environments/local/bin/prepare_chroot.sh
+prepare_chroot.sh $MOUNTPOINT
+# Would be fixed after bootup anyway.
+sudo rm $MOUNTPOINT/etc/resolv.conf
+sudo cp /etc/resolv.conf $MOUNTPOINT/etc/resolv.conf
+cat <<'EOF' | sudo tee $MOUNTPOINT/etc/pacman.d/mirrorlist
+Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxarm/$arch/$repo
+Server = https://mirrors.ustc.edu.cn/archlinuxarm/$arch/$repo
+Server = https://mirrors.bfsu.edu.cn/archlinuxarm/$arch/$repo
+EOF
+sudo chroot $MOUNTPOINT pacman-key --init
+sudo chroot $MOUNTPOINT pacman-key --populate archlinuxarm
+sudo chroot $MOUNTPOINT pacman -Syu
+
+ansible-playbook -l $HOST -c chroot -e ansible_chroot_remote_addr=$MOUNTPOINT ~/pylon/bootstrap/ansible/01-networking.yml
+
+sudo chroot $MOUNTPOINT pacman -S dhcpcd netctl openresolv ppp python sudo vim
+sudo chroot $MOUNTPOINT systemctl disable systemd-networkd
+sudo chroot $MOUNTPOINT systemctl disable systemd-networkd.socket
+sudo chroot $MOUNTPOINT systemctl disable systemd-resolved
+sudo chroot $MOUNTPOINT visudo
+sudo chroot $MOUNTPOINT passwd -l root
+#+end_src
+
+#+begin_example
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: end0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 9e:b7:68:53:44:a5 brd ff:ff:ff:ff:ff:ff
+    altname enx9eb7685344a5
+    inet 192.168.1.168/24 metric 1024 brd 192.168.1.255 scope global dynamic end0
+       valid_lft 43178sec preferred_lft 43178sec
+    inet6 fe80::9cb7:68ff:fe53:44a5/64 scope link 
+       valid_lft forever preferred_lft forever
+3: enx9eb7685344c5: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc pfifo_fast state DOWN group default qlen 1000
+    link/ether 9e:b7:68:53:44:c5 brd ff:ff:ff:ff:ff:ff
+    altname enu1
+#+end_example
