@@ -13,6 +13,7 @@
       - git-lfs
       - ranger
       - unzip
+      - wget
     state: present
 
 - name: passwords

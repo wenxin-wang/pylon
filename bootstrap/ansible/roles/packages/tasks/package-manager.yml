@@ -45,6 +45,7 @@
       name:
         - git
         - base-devel
+        - fakeroot
         - go
       state: present
 
