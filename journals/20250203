@@ -1,0 +1,65 @@
+#+TITLE: Monday, February 03 2025
+** 11:45 尝试 openvpn static
+
+Server
+
+#+begin_src bash
+  sudo pacman -S openvpn
+  sudo openvpn --genkey secret /etc/openvpn/client/sea1-vtr-static.key
+  cat <<EOF | sudo tee /etc/openvpn/server/sea1-vtr.conf
+  dev tun
+  port 32496
+  proto udp6
+  ifconfig 172.31.1.3 172.31.1.2
+  ifconfig-ipv6 fdff:0:1::ffff:2/112 fdff:0:1::ffff:1
+  secret sea1-vtr-static.key
+  # static key 只能用 CBC，但默认的 BF-CBC 新版本 openvpn 已经不支持
+  cipher AES-256-CBC
+
+  keepalive 10 60
+  ping-timer-rem
+  persist-tun
+  persist-key
+  EOF
+  sudo chown -R openvpn:network /etc/openvpn/server/
+#+end_src
+
+Client
+
+#+begin_src bash
+  sudo pacman -S openvpn
+  cat <<EOF | sudo tee /etc/openvpn/client/sea1-vtr.conf
+  remote sea1-vtr 32496
+  proto udp6
+  dev tun
+  ifconfig 172.31.1.2 172.31.1.3
+  ifconfig-ipv6 fdff:0:1::ffff:1/112 fdff:0:1::ffff:2
+  redirect-gateway def1 ipv6
+  secret sea1-vtr-static.key
+  # static key 只能用 CBC，但默认的 BF-CBC 新版本 openvpn 已经不支持
+  cipher AES-256-CBC
+
+  keepalive 10 60
+  ping-timer-rem
+  persist-tun
+  persist-key
+  EOF
+  sudo chown -R openvpn:network /etc/openvpn/client/
+#+end_src
+
+测试 远端
+
+#+begin_src bash
+  sudo mv /etc/resolv.conf{,.bak}
+  echo "nameserver 108.61.10.10" | sudo tee /etc/resolv.conf
+  sudo ip -6 r add 2001:19f0:8001:10cd:5400:5ff:fe45:c8ec via fdff:ffff:ffff:fff0::1
+  # sudo ip -6 r add 2001:19f0:8001:10cd:5400:5ff:fe45:c8ec via fe80::3c0f:d5ff:fec7:c324 dev wlp58s0 
+  sudo ip -6 r add default via fdff:0:1::ffff:2
+  sudo ip r add default via 172.31.1.3
+
+
+  sudo ip r add 144.202.94.195 via 192.168.1.1
+  # sudo ip -6 r add 2001:19f0:8001:10cd:5400:5ff:fe45:c8ec via fe80::3c0f:d5ff:fec7:c324 dev wlp58s0 
+  sudo ip -6 r add default via fdff:0:1::ffff:2
+  sudo ip r add default via 172.31.1.3
+#+end_src
