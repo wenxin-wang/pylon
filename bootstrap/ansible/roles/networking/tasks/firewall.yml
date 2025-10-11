@@ -1,43 +1,66 @@
 ---
-- name: install nftables
+- name: Install nftables
   become: true
   ansible.builtin.package:
     name:
       - nftables
     state: present
 
-- name: copy general files
+- name: Ensure general files directory
+  become: true
+  ansible.builtin.file:
+    name: "{{ ('/etc/nftables/', item) | path_join | dirname }}"
+    state: directory
+  loop: "{{ nftables_configs|default(['00-basic.conf']) }}"
+
+- name: Copy general files
   become: true
   ansible.builtin.copy:
-    src: firewall/nftables/
-    dest: /etc/nftables
+    src: "firewall/nftables/{{ item }}"
+    dest: "/etc/nftables/{{ item }}"
+  loop: "{{ nftables_configs|default(['00-basic.conf']) }}"
   register: general_files
 
-- name: copy entry config
+- name: Copy entry config
   become: true
   ansible.builtin.copy:
     src: firewall/nftables.conf
     dest: /etc/nftables.conf
   register: entry_config
 
-- name: check if specific files exists
+- name: Check if specific files exists
   stat:
     path: "{{ specific_host_dir }}/nftables"
   delegate_to: localhost
   run_once: true
   register: specific_dir_check
 
-- name: copy specific files
+- name: Copy specific files
+  when: specific_dir_check.stat.exists
+  become: true
   ansible.builtin.copy:
     src: "{{ specific_host_dir }}/nftables/"
     dest: /etc/nftables
-  when: specific_dir_check.stat.exists
   register: specific_files
 
-- name: enable nftables service
+- name: Copy apnic-routes-update.sh
+  when: clean_internet|default(False)
+  become: true
+  ansible.builtin.copy:
+    src: firewall/apnic-routes-update.sh
+    dest: /etc/cron.daily/apnic-routes-update.sh
+    mode: 0755
+  register: apnic_routes_update_script
+
+- name: Update China DNS
+  become: true
+  when: clean_internet|default(False) and apnic_routes_update_script.changed
+  command: /etc/cron.daily/apnic-routes-update.sh
+
+- name: Enable nftables service
   become: true
   ansible.builtin.service:
     name: nftables
     enabled: true
     state: restarted
-  when: general_files.changed or entry_config.changed or specific_files.changed
+  when: general_files.results|map(attribute='changed') is any or entry_config.changed or specific_files.changed
