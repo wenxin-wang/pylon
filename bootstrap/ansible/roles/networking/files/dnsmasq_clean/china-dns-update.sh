@@ -25,7 +25,7 @@ unzip dnsmasq-china-list.zip
 cd dnsmasq-china-list-master
 
 for _conf in accelerated-domains.china google.china apple.china; do
-    awk -F '/' '{ printf("server=/%s/#\n", $2) }' "$_conf.conf" >"/etc/dnsmasq.d/10-forward.$_conf.conf"
+    awk -F '/' 'NF > 0 && !/^#/ { printf("server=/%s/#\nnftset=/%s/4#inet#basic#dns-cn4,6#inet#basic#dns-cn6\n", $2, $2) }' "$_conf.conf" >"/etc/dnsmasq.d/10-forward.$_conf.conf"
 done
 cp bogus-nxdomain.china.conf /etc/dnsmasq.d/10-bogus-nxdomain.china.conf
 
