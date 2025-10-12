@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -e
+
+rule_priority=$1
+dscp=$2
+table=$3
+
+shift 3
+/etc/openvpn/update-resolv-conf $@
+
+ip rule del priority $rule_priority || :
+# fwmark 0x0/0x1: only route for outbound traffic.
+ip rule add priority $rule_priority dscp $dscp fwmark 0x0/0x1 table $table
+ip r add default via $ifconfig_remote dev $dev table $table
+
+ip -6 rule del priority $rule_priority || :
+# fwmark 0x0/0x1: only route for outbound traffic.
+ip -6 rule add priority $rule_priority dscp $dscp fwmark 0x0/0x1 table $table
+ip -6 r add default via $ifconfig_ipv6_remote dev $dev table $table
