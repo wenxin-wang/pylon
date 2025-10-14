@@ -25,6 +25,7 @@
     - bash_profile
     - gitconfig
     - inputrc
+    - local/bin
     - profile
 
 - name: Ensure profile directories
