@@ -4,3 +4,8 @@
     - import_role:
         name: coding
         tasks_from: emacs
+      tags: emacs
+    - import_role:
+        name: coding
+        tasks_from: embedded
+      tags: embedded
