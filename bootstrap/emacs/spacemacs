@@ -60,6 +60,7 @@ This function should only modify configuration layer settings."
           org-id-method 'ts
           org-id-ts-format "%Y%m%dT%H%M%S"
           org-download-screenshot-method "flameshot gui --raw > %s"
+          org-src-preserve-indentation t
           org-enable-org-journal-support t
           org-journal-dir (file-truename "~/pylon/journals/")
           org-journal-date-prefix "#+TITLE: "
