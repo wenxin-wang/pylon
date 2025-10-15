@@ -30,7 +30,6 @@ DIY 级别的支持，但是有 [[https://gist.github.com/larsch/a8f13faa2163984
 #+begin_src bash
 DEV=/dev/sdX
 MOUNTPOINT=mountpoint
-HOST=
 #+end_src
 
 #+begin_src bash
@@ -68,10 +67,19 @@ sudo umount /mnt
 
 *** 切换到 ArchlinuxArm 内核
 
-等配置完 pacman 后再操作
+等配置完 pacman 后再操作。其实 pacman 更新系统的时候已经替换掉了 Armbian 的内核。
+
+估计是 dtb 哪里有问题，或者内核哪里配置不对，lan 口的网卡灯一直不亮。
 
 #+begin_src bash
-sudo rm -rf $MOUNTPOINT/boot/{config*,dtb*,initrd*,System.map*,uInitrd*}
+sudo chroot $MOUNTPOINT rm -rf /boot/{config*,dtb,dtb-*,initrd*,System.map*,uInitrd*,vmlinuz*}
+# 这步 sudo pacman -Syu 里面包含了。
+# sudo chroot $MOUNTPOINT pacman -S linux-aarch64
+sudo chroot $MOUNTPOINT ln -sf /boot/dtbs /boot/dtb
+sudo chroot $MOUNTPOINT sed -i 's@^\(fdtfile=\).*$@\1rockchip/rk3328-rock64.dtb@' /boot/armbianEnv.txt
+sudo chroot $MOUNTPOINT pacman -S uboot-tools
+sudo chroot $MOUNTPOINT mkimage -A arm64 -T ramdisk -n uInitrd -d /boot/initramfs-linux.img /boot/uInitrd-initramfs-linux.img
+sudo chroot $MOUNTPOINT ln -sf /boot/uInitrd-initramfs-linux.img /boot/uInitrd
 #+end_src
 
 ** Bootloader/fstab 配置
@@ -102,31 +110,11 @@ sudo chroot $MOUNTPOINT pacman-key --init
 sudo chroot $MOUNTPOINT pacman-key --populate archlinuxarm
 sudo chroot $MOUNTPOINT pacman -Syu
 
-ansible-playbook -l $HOST -c chroot -e ansible_chroot_remote_addr=$MOUNTPOINT ~/pylon/bootstrap/ansible/01-networking.yml
-
 sudo chroot $MOUNTPOINT pacman -S dhcpcd netctl openresolv ppp python sudo vim
 sudo chroot $MOUNTPOINT systemctl disable systemd-networkd
 sudo chroot $MOUNTPOINT systemctl disable systemd-networkd.socket
 sudo chroot $MOUNTPOINT systemctl disable systemd-resolved
 sudo chroot $MOUNTPOINT visudo
 sudo chroot $MOUNTPOINT passwd -l root
+# Copy network configs
 #+end_src
-
-#+begin_example
-1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
-    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-    inet 127.0.0.1/8 scope host lo
-       valid_lft forever preferred_lft forever
-    inet6 ::1/128 scope host 
-       valid_lft forever preferred_lft forever
-2: end0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
-    link/ether 9e:b7:68:53:44:a5 brd ff:ff:ff:ff:ff:ff
-    altname enx9eb7685344a5
-    inet 192.168.1.168/24 metric 1024 brd 192.168.1.255 scope global dynamic end0
-       valid_lft 43178sec preferred_lft 43178sec
-    inet6 fe80::9cb7:68ff:fe53:44a5/64 scope link 
-       valid_lft forever preferred_lft forever
-3: enx9eb7685344c5: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc pfifo_fast state DOWN group default qlen 1000
-    link/ether 9e:b7:68:53:44:c5 brd ff:ff:ff:ff:ff:ff
-    altname enu1
-#+end_example
