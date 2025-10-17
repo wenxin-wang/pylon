@@ -31,3 +31,8 @@
         tasks_from: dnsmasq
       tags:
         - dnsmasq
+    - import_role:
+        name: networking
+        tasks_from: ddns
+      tags:
+        - ddns
