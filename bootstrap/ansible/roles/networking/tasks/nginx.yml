@@ -1,0 +1,44 @@
+---
+- name: Check if nginx configs exists
+  become: false
+  stat:
+    path: "{{ specific_host_dir }}/nginx"
+  delegate_to: localhost
+  run_once: true
+  register: nginx_conf_stat
+
+- name: Setup nginx
+  become: true
+  when: nginx_conf_stat.stat.exists
+  block:
+    - name: Install nginx
+      ansible.builtin.package:
+        name:
+          - nginx
+        state: present
+
+    - name: Copy main config files
+      ansible.builtin.copy:
+        src: nginx/
+        dest: /etc/nginx
+        mode: go-w
+      register: main_conf
+
+    - name: Copy specific config files
+      ansible.builtin.copy:
+        src: "{{ specific_host_dir }}/nginx/"
+        dest: /etc/nginx
+        local_follow: false
+        mode: go-w
+      register: specific_conf
+
+    - name: Trigger restart
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
+      when: main_conf.changed or specific_conf.changed
+
+    - name: Enable nginx service
+      ansible.builtin.service:
+        name: nginx
+        enabled: true
