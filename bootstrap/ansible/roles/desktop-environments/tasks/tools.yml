@@ -1,19 +1,10 @@
 ---
-- name: Add git PPA for Ubuntu
-  become: true
-  ansible.builtin.apt_repository:
-    repo: ppa:git-core/ppa
-  when: ansible_facts['distribution'] == 'Ubuntu'
-
 - name: install common utilities
   become: true
   ansible.builtin.package:
     name:
-      - git
+      - git-annex
       - git-lfs
-      - ranger
-      - unzip
-      - wget
     state: present
 
 - name: passwords
@@ -32,19 +23,3 @@
         repo: "{{pass_store_repo}}"
         dest: ~/.password-store
   when: pass_store_repo is defined
-
-- name: Setup cron for Archlinux
-  when: ansible_facts['distribution'] == 'Archlinux'
-  become: true
-  block:
-    - name: Install cronie
-      ansible.builtin.package:
-        name:
-          - cronie
-        state: present
-
-    - name: Enable cronie
-      ansible.builtin.service:
-        name: cronie
-        state: started
-        enabled: true
