@@ -1,0 +1,31 @@
+---
+- name: Check if ddclient.conf exists
+  become: false
+  stat:
+    path: "{{ specific_host_dir }}/ddclient/ddclient.conf"
+  delegate_to: localhost
+  run_once: true
+  register: ddclient_conf_stat
+
+- name: Setup ddclient
+  become: true
+  when: ddclient_conf_stat.stat.exists
+  block:
+    - name: Install ddns
+      ansible.builtin.package:
+        name:
+          - ddclient
+        state: present
+
+    - name: Copy config file
+      ansible.builtin.copy:
+        src: "{{ specific_host_dir }}/ddclient/ddclient.conf"
+        dest: /etc/ddclient/ddclient.conf
+      register: ddclient_conf
+
+    - name: Restart ddclient service
+      ansible.builtin.service:
+        name: ddclient
+        enabled: true
+        state: restarted
+      when: ddclient_conf.changed
