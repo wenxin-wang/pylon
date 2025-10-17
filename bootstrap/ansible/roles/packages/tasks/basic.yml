@@ -1,12 +1,35 @@
 ---
+- name: Add git PPA for Ubuntu
+  become: true
+  ansible.builtin.apt_repository:
+    repo: ppa:git-core/ppa
+  when: ansible_facts['distribution'] == 'Ubuntu'
+
 - name: install basic packages
   become: true
   ansible.builtin.package:
     name:
-      # Basic utilities that most system needs.
+      - bash-completion
       - less
-      - vim
-      # For pylon itself.
       - git
-      - git-annex
+      - ranger
+      - unzip
+      - vim
+      - wget
     state: present
+
+- name: Setup cron for Archlinux
+  when: ansible_facts['distribution'] == 'Archlinux'
+  become: true
+  block:
+    - name: Install cronie
+      ansible.builtin.package:
+        name:
+          - cronie
+        state: present
+
+    - name: Enable cronie
+      ansible.builtin.service:
+        name: cronie
+        state: started
+        enabled: true

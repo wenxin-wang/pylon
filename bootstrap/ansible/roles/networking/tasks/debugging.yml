@@ -19,5 +19,6 @@
   become: true
   ansible.builtin.package:
     name:
+      - mtr
       - tcpdump
     state: present
