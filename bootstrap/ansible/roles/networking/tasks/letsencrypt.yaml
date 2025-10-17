@@ -1,0 +1,50 @@
+---
+- name: Check if letsencrypt configs exists
+  become: false
+  stat:
+    path: "{{ specific_host_dir }}/letsencrypt"
+  delegate_to: localhost
+  run_once: true
+  register: letsencrypt_conf_stat
+
+- name: Setup letsencrypt
+  become: true
+  when: letsencrypt_conf_stat.stat.exists
+  block:
+    - name: Install certbot
+      ansible.builtin.package:
+        name:
+          - certbot
+          - certbot-dns-cloudflare
+        state: present
+
+    - name: Copy config file
+      ansible.builtin.copy:
+        src: "{{ specific_host_dir }}/letsencrypt/"
+        dest: /etc/letsencrypt
+        directory_mode: go-rwx
+        mode: go-rwx
+        local_follow: false
+      register: letsencrypt_conf
+
+    - name: Find all hooks
+      ansible.builtin.find:
+        paths: /etc/letsencrypt/renewal-hooks
+        file_type: file
+        recurse: true
+      register: hook_files
+
+    - name: Set executable permissions for each hook file
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        mode: "+x"
+      loop: "{{ hook_files.files }}"
+
+    - name: Trigger renew
+      command: certbot renew
+      when: letsencrypt_conf.changed
+
+    - name: Enable certbot renew service
+      ansible.builtin.service:
+        name: certbot-renew.service
+        enabled: true
