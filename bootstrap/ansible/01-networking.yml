@@ -36,3 +36,8 @@
         tasks_from: ddns
       tags:
         - ddns
+    - import_role:
+        name: networking
+        tasks_from: letsencrypt
+      tags:
+        - letsencrypt
