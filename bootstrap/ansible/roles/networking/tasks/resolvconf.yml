@@ -1,0 +1,17 @@
+---
+- name: Install resolvconf
+  ansible.builtin.package:
+    name:
+      - openresolv
+    state: present
+  register: openresolv_installed
+
+- name: Copy resolvconf config
+  ansible.builtin.copy:
+    src: resolvconf/resolvconf.conf
+    dest: /etc/resolvconf.conf
+  register: resolvconf_config
+
+- name: Update resolvconf
+  command: resolvconf -u
+  when: openresolv_installed.changed or resolvconf_config.changed
