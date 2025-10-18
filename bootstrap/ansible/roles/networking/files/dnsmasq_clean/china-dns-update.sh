@@ -29,5 +29,8 @@ for _conf in accelerated-domains.china google.china apple.china; do
 done
 cp bogus-nxdomain.china.conf /etc/dnsmasq.d/10-bogus-nxdomain.china.conf
 
+echo "Downloading dnsmasq adblock lists..."
+wget -O /etc/dnsmasq.d/15-hagezi-dns-blocklists.conf https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/dnsmasq/pro.txt
+
 echo "Restarting dnsmasq..."
 systemctl restart dnsmasq
