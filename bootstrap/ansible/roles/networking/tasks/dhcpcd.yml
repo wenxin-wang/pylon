@@ -1,0 +1,46 @@
+---
+- name: Check if dhcpcd configs exists
+  become: false
+  stat:
+    path: "{{ specific_host_dir }}/dhcpcd/dhcpcd.conf"
+  delegate_to: localhost
+  run_once: true
+  register: dhcpcd_conf_stat
+
+- name: Setup dhcpcd
+  become: true
+  when: dhcpcd_conf_stat.stat.exists
+  block:
+    - name: Install dhcpcd
+      ansible.builtin.package:
+        name:
+          - dhcpcd
+        state: present
+
+    - name: Copy hook files
+      ansible.builtin.copy:
+        src: "dhcpcd/{{ item }}"
+        dest: "/etc/{{ item }}"
+        mode: 0644
+      loop:
+        - dhcpcd.enter-hook
+        - dhcpcd.exit-hook
+      register: dhcpcd_hooks
+
+    - name: Copy config file
+      ansible.builtin.copy:
+        src: "{{ specific_host_dir }}/dhcpcd/"
+        dest: /etc
+        mode: 0644
+      register: dhcpcd_conf
+
+    - name: Trigger restart
+      ansible.builtin.service:
+        name: dhcpcd
+        state: restarted
+      when: dhcpcd_hooks.results|map(attribute='changed') is any or dhcpcd_conf.changed
+
+    - name: Enable dhcpcd service
+      ansible.builtin.service:
+        name: dhcpcd
+        enabled: true

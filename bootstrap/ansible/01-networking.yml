@@ -56,3 +56,8 @@
         tasks_from: strongswan
       tags:
         - strongswan
+    - import_role:
+        name: networking
+        tasks_from: dhcpcd
+      tags:
+        - dhcpcd

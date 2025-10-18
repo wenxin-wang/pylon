@@ -1,0 +1,7 @@
+shopt -s nullglob
+
+if [ -d /etc/dhcpcd.exit-hooks ]; then
+  for x in /etc/dhcpcd.exit-hooks/*.sh; do
+    . $x
+  done
+fi
