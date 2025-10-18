@@ -46,3 +46,8 @@
         tasks_from: nginx
       tags:
         - nginx
+    - import_role:
+        name: networking
+        tasks_from: strongswan
+      tags:
+        - strongswan

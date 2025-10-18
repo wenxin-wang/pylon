@@ -1,0 +1,46 @@
+---
+- name: Check if strongswan configs exists
+  become: false
+  stat:
+    path: "{{ specific_host_dir }}/strongswan"
+  delegate_to: localhost
+  run_once: true
+  register: strongswan_conf_stat
+
+- name: Setup strongswan
+  become: true
+  when: strongswan_conf_stat.stat.exists
+  block:
+    - name: Install strongswan for Archlinux
+      when: ansible_facts['distribution'] == 'Archlinux'
+      ansible.builtin.package:
+        name:
+          - strongswan
+        state: present
+
+    - name: Install strongswan for Debian family
+      when: ansible_os_family == "Debian"
+      ansible.builtin.package:
+        name:
+          - charon-systemd
+        state: present
+
+    - name: Copy config file
+      ansible.builtin.copy:
+        src: "{{ specific_host_dir }}/strongswan/"
+        dest: /etc/
+        directory_mode: go-rwx
+        mode: go-rwx
+        local_follow: false
+      register: strongswan_conf
+
+    - name: Trigger restart
+      ansible.builtin.service:
+        name: strongswan
+        state: restarted
+      when: strongswan_conf.changed
+
+    - name: Enable strongswan service
+      ansible.builtin.service:
+        name: strongswan
+        enabled: true
