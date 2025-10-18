@@ -2,12 +2,6 @@
 - name: DNS
   become: true
   block:
-    - name: Install resolvconf
-      ansible.builtin.package:
-        name:
-          - openresolv
-        state: present
-      register: openresolv_installed
     - name: Uninstall systemd-resolvd
       ansible.builtin.package:
         name:
@@ -34,6 +28,5 @@
     - name: Update resolvconf
       command: resolvconf -u
       when:
-        - openresolv_installed.changed or
-          systemd_resolved_removed.changed or
+        - systemd_resolved_removed.changed or
           nm_config_updated.changed
