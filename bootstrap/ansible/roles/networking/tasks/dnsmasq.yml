@@ -75,3 +75,9 @@
       command: /etc/cron.daily/china-dns-update.sh
       when:
         - china_dns_update.changed
+
+    - name: Reload dnsmasq service
+      ansible.builtin.service:
+        name: dnsmasq
+        state: reloaded
+      when: dnsmasq_files.changed
