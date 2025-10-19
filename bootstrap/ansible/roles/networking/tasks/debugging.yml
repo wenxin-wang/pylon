@@ -12,7 +12,7 @@
   when: ansible_facts['distribution'] != 'Archlinux'
   ansible.builtin.package:
     name:
-      - bind9-utils
+      - dnsutils
     state: present
 
 - name: install debug tools
