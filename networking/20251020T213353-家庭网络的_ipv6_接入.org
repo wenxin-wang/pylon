@@ -1,0 +1,73 @@
+:PROPERTIES:
+:ID:       20251020T213353
+:END:
+#+title: 家庭网络的 IPv6 接入
+
+* 上行接入
+
+上行采用 PPPoE 协议。使用 Archlinux 默认的 netctl profile，能自动拿到一个 IPv6 地址，但是拿不到 PD。
+参考万能的 [[https://wiki.archlinux.org/title/IPv6#Prefix_delegation_(DHCPv6-PD)][Arch Wiki]]，感觉 dhcpcd 会比较好用，自己就支持 PD，还能加 hook。参考配置如下：
+
+#+begin_src conf
+# /etc/dhcpcd.conf
+denyinterfaces end0 enu1 tun*
+duid
+noipv6rs
+ipv6only
+
+# The following applies to the interface WAN.
+interface ppp0
+    ipv6rs
+    # Assign WAN the iaid 1.
+    iaid 1
+    # Assign a Normal Address to the interface with iaid 1 (i.e. WAN).
+    ia_na 1
+    # Delegate a prefix with wan interface iaid 1 (i.e. WAN) and lan interface LAN.
+    ia_pd 1/::/64 enu1/0/112
+#+end_src
+
+#+begin_src bash
+# /etc/dhcpcd.exit-hooks/00-ip6-netmaps.sh
+if [ $interface == enu1 ]; then
+    if [ $reason == DELEGATED6 ]; then
+        prefix=$(awk -F '::' '{ print $1 }' <<<$new_delegated_dhcp6_prefix)
+        snat_prefix=$prefix::/96
+        # 这里也能处理 IPv6 SNAT 的操作。
+        # 直接在线生成下游 DHCPv6 的配置。
+        cat <<EOF | tee /etc/dnsmasq.d/01-dhcpv6-server.conf
+enable-ra
+dhcp-range=$prefix::100,$prefix::200,112,24h
+EOF
+        systemctl restart dnsmasq
+    elif [ $reason == PREINIT ] || [ $reason == EXPIRE6 ] || [ $reason == STOPPED ]; then
+        rm -f /etc/dnsmasq.d/01-dhcpv6-server.conf
+        systemctl restart dnsmasq
+    fi
+fi
+#+end_src
+
+有意思的是：
+
+- 哪怕在 dhcpcd.conf 里不写 ia_na，仍然会获取到一个和 PPPoE 自己拿到的 IPv6 地址相同的 DHCPv6 Normal Address。
+  不知道是家宽的 DHCPv6 Server 比较死板，还是我的 dhcpcd 配置不对；
+- 哪怕指定了要 /96 的前缀，上游还是会给一个 /60。我猜 PD 对前缀长度有最长限制，但是我懒得去试能否只拿到
+  /61 ~ /64 的前缀了。能拿到短前缀，当然很开心；
+- 因为太懒，所以 hook 写得很粗暴，动辄重启 dnsmasq，时机即不充分也不必要。
+
+* 下行接入
+
+选择用 DHCPv6 作为下游网络的接入。好处：
+
+- 不是每个出口都有短于 /64 的前缀可以让我折腾，更长的前缀可以让我在每个出口用 NETMAP 对地址做一一映射的同时，留一些地址做其它用途。
+
+坏处：
+
+- 安卓设备都没法接入 IPv6 了，因为它们只支持 SLAAC。说实话我觉得甚至不一定是坏事，考虑到 IPv6 的安全问题可能比 IPv4 藏得更深。
+
+参考了 [[https://hveem.no/using-dnsmasq-for-dhcpv6][前人经验]]，本来想用里面提到的 [[https://man.archlinux.org/man/dnsmasq.8#F,~2][constructor:$iface]] 的语法，这样上面的 dhcpcd hook 可以简单点。
+但是死活弄不出来能用的 Router Advertisement，读了源码发现两个问题：
+
+- （我可能看错 [[https://github.com/imp/dnsmasq/blob/770bce967cfc9967273d0acfb3ea018fb7b17522/src/option.c#L3472][代码 ]]）想要弄出来 Stateful DHCPv6 的 RA，--dhcp-range 的第二个参数要么是地址区间结尾，要么是 constructor:$iface；
+- constructor 语法定死了必须要 [[https://github.com/imp/dnsmasq/blob/770bce967cfc9967273d0acfb3ea018fb7b17522/src/option.c#L3500][/64]] 的前缀。
+
+因此最后还是自己用脚本生成 DHCPv6 的配置了，见上面的 hook。
