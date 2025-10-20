@@ -7,8 +7,12 @@ A real beast.
 
 * Good reads
 
+（我都没有看过）
+
 "It's just an astonishingly-complex suite of protocols." -- [[http://www.unixwiz.net/techtips/iguide-ipsec.html][An Illustrated Guide
 to IPsec]]
+
+Nftables 指南：[[https://thermalcircle.de/doku.php?id=blog:linux:nftables_ipsec_packet_flow][packet flow]] [[https://thermalcircle.de/doku.php?id=blog:linux:nftables_demystifying_ipsec_expressions][ipsec expressions]]
 
 * Caveats
 
@@ -26,3 +30,114 @@ iOS 的原生 IKEv2 Client 要求：
   - 但根据 https://github.com/strongswan/strongswan/discussions/1881 和
     https://apple.stackexchange.com/questions/412089/ios-native-ikev2-client-and-ecdsa-server-certificates
     看，iOS 可能根本不支持用 ecdsa 认证服务器
+
+* 安装和配置
+
+可以参考 [[../bootstrap/ansible/roles/networking/tasks/strongswan.yml]]。Archlinux 安装 ~strongswan~ ，Debian 安装 ~charon-systemd~ 。
+
+Strongswan 有旧的 ipsec.conf 的配置形式和新的 charon 配置形式，我只会新的。
+
+参考的 Server 配置：
+
+#+begin_src conf
+# /etc/swanctl/conf.d/example.conf
+pools {
+   v4pool {
+      addrs = 172.31.2.0/24
+   }
+   v6pool {
+      addrs = fdff:ffff:ffff:fff0::1:2:0/112
+   }
+}
+connections {
+  # '-eap' 的后缀是有含义的！换成别的不行，我不知道为什么，或许是和下面 secrets 里的 'eap-' 对应，
+  # 也或许是必须就要这么写。
+  # 下面的 local 是本机侧， remote 是远端侧。
+  rw-eap {
+    local_addrs = example.com
+    pools = v4pool, v6pool
+
+    local {
+      auth = pubkey
+      certs = example.com.pem
+      id = example.com
+    }
+    remote {
+      # 用户名+密码的登录方式
+      auth = eap-mschapv2
+      eap_id = %any
+    }
+    children {
+      net {
+         local_ts  = 0.0.0.0/0, ::/0
+      }
+    }
+    version = 2
+    send_cert = always
+    send_certreq = no
+  }
+
+  # https://docs.strongswan.org/docs/latest/config/IPv6Ndp.html
+  ndp {
+    children {
+      ns {
+        local_ts = ::/0[ipv6-icmp/135]
+        remote_ts = ::/0[ipv6-icmp/135]
+        mode = pass
+        start_action = trap
+      }
+      na {
+        local_ts = ::/0[ipv6-icmp/136]
+        remote_ts = ::/0[ipv6-icmp/136]
+        mode = pass
+        start_action = trap
+      }
+    }
+  }
+}
+secrets {
+   eap-yourname {
+      id = yourname
+      secret = yourpassword
+   }
+}
+
+#+end_src
+
+指定 DNS 服务器
+
+#+begin_src conf
+# /etc/strongswan.d/charon/attr.conf
+# Section to specify arbitrary attributes that are assigned to a peer via
+# configuration payload (CP).
+attr {
+
+    # <attr> is an attribute name or an integer, values can be an IP address,
+    # subnet or arbitrary value.
+    # <attr> =
+    dns = 8.8.8.8
+
+    # Whether to load the plugin. Can also be an integer to increase the
+    # priority of this plugin.
+    load = yes
+
+}
+#+end_src
+
+证书文件：
+
+#+begin_example
+# 私钥
+/etc/swanctl/private:
+example.com.pem
+
+# 公钥，我选的是 letsecrypt 的 fullchain 证书
+/etc/swanctl/x509:
+exmpale.comf.pem
+
+# CA 证书。不知道为什么加了 fullchain 还是不够，我从 client 认证失败的例子看说缺这些 CA 就加上了。
+# openssl x509 -in x.pem -text -noout 也能用来看最上层的 CA 是谁。
+# 从 https://letsencrypt.org/certificates/ 能下载 pem 格式的证书文件。
+/etc/swanctl/x509ca:
+le-R11.pem  le-R12.pem
+#+end_example
