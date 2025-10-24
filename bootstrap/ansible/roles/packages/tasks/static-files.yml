@@ -1,0 +1,21 @@
+---
+- name: Check if specific files exists
+  stat:
+    path: "{{ specific_host_dir }}/static-{{ item }}"
+  delegate_to: localhost
+  run_once: true
+  register: specific_dir_checks
+  loop:
+    - root
+
+- name: Copy specific files
+  become: true
+  ansible.builtin.copy:
+    src: "{{ specific_host_dir }}/static-{{ item.item }}/"
+    dest: /
+    owner: "{{ item.item }}"
+    group: "{{ item.item }}"
+    directory_mode: 0755
+    mode: 0644
+  when: item.stat.exists
+  loop: "{{ specific_dir_checks.results }}"
