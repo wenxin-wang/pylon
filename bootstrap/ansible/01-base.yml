@@ -4,7 +4,17 @@
     - import_role:
         name: packages
         tasks_from: package-manager
+      tags:
+        - packages
 
     - import_role:
         name: packages
         tasks_from: basic
+      tags:
+        - packages
+
+    - import_role:
+        name: packages
+        tasks_from: static-files
+      tags:
+        - static-files
