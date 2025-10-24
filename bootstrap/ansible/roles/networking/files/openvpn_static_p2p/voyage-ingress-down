@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -ex
+
+/etc/openvpn/update-resolv-conf $@
+
+ip rule del priority $rule_priority || :
+ip r flush table $table || :
+
+ip -6 rule del priority $rule_priority || :
+ip -6 r flush table $table || :
+
+if [ -n "$tproxy_rule_table" ]; then
+    ip rule del priority $tproxy_rule_priority || :
+    ip r flush table $tproxy_rule_table || :
+    ip -6 rule del priority $tproxy_rule_priority || :
+    ip -6 r flush table $tproxy_rule_table || :
+fi

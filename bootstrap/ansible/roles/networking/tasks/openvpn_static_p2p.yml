@@ -31,6 +31,7 @@
       loop:
         - update-resolv-conf
         - voyage-ingress
+        - voyage-ingress-down
       register: client_scripts
     - name: Copy general client.conf
       when: openvpn_static_p2p.get('client', []) | length > 0
