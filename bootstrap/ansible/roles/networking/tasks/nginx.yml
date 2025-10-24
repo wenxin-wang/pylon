@@ -17,6 +17,20 @@
           - nginx
         state: present
 
+    - name: Install nginx stream module for Archlinux
+      when: ansible_facts['distribution'] == 'Archlinux'
+      ansible.builtin.package:
+        name:
+          - nginx-mod-stream
+        state: present
+
+    - name: Install nginx stream module for Debian family
+      when: ansible_os_family == "Debian"
+      ansible.builtin.package:
+        name:
+          - libnginx-mod-stream
+        state: present
+
     - name: Copy main config files
       ansible.builtin.copy:
         src: nginx/
@@ -35,7 +49,7 @@
     - name: Trigger restart
       ansible.builtin.service:
         name: nginx
-        state: restarted
+        state: reloaded
       when: main_conf.changed or specific_conf.changed
 
     - name: Enable nginx service
