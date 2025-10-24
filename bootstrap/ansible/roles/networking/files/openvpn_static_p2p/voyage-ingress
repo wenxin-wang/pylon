@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -ex
 
 rule_priority=$1
 dscp=$2
@@ -12,9 +12,22 @@ shift 3
 ip rule del priority $rule_priority || :
 # fwmark 0x0/0x1: only route for outbound traffic.
 ip rule add priority $rule_priority dscp $dscp fwmark 0x0/0x1 table $table
+ip r flush table $table || :
 ip r add default via $ifconfig_remote dev $dev table $table
 
 ip -6 rule del priority $rule_priority || :
 # fwmark 0x0/0x1: only route for outbound traffic.
 ip -6 rule add priority $rule_priority dscp $dscp fwmark 0x0/0x1 table $table
+ip -6 r flush table $table || :
 ip -6 r add default via $ifconfig_ipv6_remote dev $dev table $table
+
+if [ -n "$tproxy_rule_table" ]; then
+    ip rule del priority $tproxy_rule_priority || :
+    ip rule add priority $tproxy_rule_priority dscp $dscp fwmark 0x4/0x4 table $tproxy_rule_table
+    ip r flush table $tproxy_rule_table || :
+    ip r add local default dev lo table $tproxy_rule_table
+    ip -6 rule del priority $tproxy_rule_priority || :
+    ip -6 rule add priority $tproxy_rule_priority dscp $dscp fwmark 0x4/0x4 table $tproxy_rule_table
+    ip -6 r flush table $tproxy_rule_table || :
+    ip -6 r add local default dev lo table $tproxy_rule_table
+fi
