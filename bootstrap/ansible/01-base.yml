@@ -2,19 +2,20 @@
 - hosts: all
   tasks:
     - import_role:
-        name: packages
+        name: base
         tasks_from: package-manager
       tags:
         - packages
 
     - import_role:
-        name: packages
+        name: base
         tasks_from: basic
       tags:
         - packages
+        - basic
 
     - import_role:
-        name: packages
+        name: base
         tasks_from: static-files
       tags:
         - static-files
