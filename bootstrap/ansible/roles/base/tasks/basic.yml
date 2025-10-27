@@ -13,6 +13,7 @@
       - less
       - git
       - ranger
+      - tmux
       - unzip
       - vim
       - wget
@@ -33,3 +34,9 @@
         name: cronie
         state: started
         enabled: true
+
+- name: Setup timezone
+  when: timezone is defined
+  become: true
+  community.general.timezone:
+    name: "{{ timezone }}"
