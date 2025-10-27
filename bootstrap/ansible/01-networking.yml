@@ -18,11 +18,6 @@
         - openvpn_static_p2p
     - import_role:
         name: networking
-        tasks_from: envoy_tproxy
-      tags:
-        - envoy_tproxy
-    - import_role:
-        name: networking
         tasks_from: routing
       tags:
         - routing
