@@ -111,15 +111,11 @@ secrets {
 # Section to specify arbitrary attributes that are assigned to a peer via
 # configuration payload (CP).
 attr {
-
+    load = yes
     # <attr> is an attribute name or an integer, values can be an IP address,
     # subnet or arbitrary value.
     # <attr> =
     dns = 8.8.8.8
-
-    # Whether to load the plugin. Can also be an integer to increase the
-    # priority of this plugin.
-    load = yes
 
 }
 #+end_src
@@ -141,3 +137,50 @@ exmpale.comf.pem
 /etc/swanctl/x509ca:
 le-R11.pem  le-R12.pem
 #+end_example
+
+* 使用本地 DHCP 为 roadwarrier 提供 LAN 地址
+
+dhcp + farp plugin 能让远端设备获得如同在本地 LAN 一样的二层接入，仅限 IPv4。这样的好处是能用本地
+DHCP 服务为远端设备提供固定地址。
+
+连接配置：v4 地址池改为特殊的 "dhcp" 地址池
+
+#+begin_src conf
+connections {
+  rw-eap {
+    local_addrs = example.com
+    pools = dhcp, v6pool
+  }
+}
+#+end_src
+
+dhcp 插件配置：dnsmasq 不会响应本地回环设备来的请求，必须要发往它 LAN 网段的广播地址
+
+#+begin_src conf
+# /etc/strongswan.d/charon/dhcp.conf
+dhcp {
+    load = yes
+    # 强行让 strongswan 到广播地址去发请求
+    force_server_address = yes
+    # DHCP server unicast or broadcast IP address.
+    server = 172.31.0.255
+
+    # 虽然可能没有必要，但是让 MAC 地址稳定或许更像一个标准的二层设备
+    # Derive user-defined MAC address from hash of IKE identity and send client
+    # identity DHCP option.
+    identity_lease = yes
+}
+#+end_src
+
+farp 插件配置：加载就好，我不确定它是否起到关键作用
+
+bypass-lan 插件：先关闭，否则它默认在 route table 220 里增加对每个 netif 的网段的 throw 路由。
+这是为了让 roadwarrier 能访问自己本地同网段的设备。我其实不太理解为什么在 router 上加 throw 路由
+能影响 roadwarrier 的路由选择。
+
+#+begin_src conf
+# /etc/strongswan.d/charon/bypass-lan.conf
+bypass-lan {
+    load = no
+}
+#+end_src
