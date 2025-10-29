@@ -1,5 +1,6 @@
 ---
 - name: Install resolvconf
+  become: true
   ansible.builtin.package:
     name:
       - openresolv
@@ -7,11 +8,28 @@
   register: openresolv_installed
 
 - name: Copy resolvconf config
+  become: true
   ansible.builtin.copy:
     src: resolvconf/resolvconf.conf
     dest: /etc/resolvconf.conf
   register: resolvconf_config
 
+- name: Check if specific files exists
+  stat:
+    path: "{{ specific_host_dir }}/resolvconf"
+  delegate_to: localhost
+  run_once: true
+  register: specific_dir_check
+
+- name: Copy specific files
+  become: true
+  ansible.builtin.copy:
+    src: "{{ specific_host_dir }}/resolvconf/"
+    dest: /etc/resolvconf.d
+  when: specific_dir_check.stat.exists
+  register: specific_files
+
 - name: Update resolvconf
+  become: true
   command: resolvconf -u
-  when: openresolv_installed.changed or resolvconf_config.changed
+  when: openresolv_installed.changed or resolvconf_config.changed or specific_files.changed

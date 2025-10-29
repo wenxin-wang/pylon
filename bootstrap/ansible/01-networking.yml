@@ -8,11 +8,6 @@
         - debugging
     - import_role:
         name: networking
-        tasks_from: resolvconf
-      tags:
-        - resolvconf
-    - import_role:
-        name: networking
         tasks_from: openvpn_static_p2p
       tags:
         - openvpn_static_p2p
@@ -31,6 +26,11 @@
         tasks_from: dnsmasq
       tags:
         - dnsmasq
+    - import_role:
+        name: networking
+        tasks_from: resolvconf
+      tags:
+        - resolvconf
     - import_role:
         name: networking
         tasks_from: ddns
