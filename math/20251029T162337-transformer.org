@@ -1,0 +1,22 @@
+:PROPERTIES:
+:ID:       20251029T162337
+:END:
+#+title: Transformer
+
+* Architecture
+
+Annotated Transformer, in PyTorch http://nlp.seas.harvard.edu/annotated-transformer/
+
+Illustrated GPT-2 https://jalammar.github.io/illustrated-gpt2/
+
+* Scaling
+
+GPU Book https://huggingface.co/spaces/nanotron/ultrascale-playbook
+
+TPU Book https://jax-ml.github.io/scaling-book
+
+** Measuring computation cost
+
+Inference https://kipp.ly/transformer-inference-arithmetic/
+
+Training https://blog.eleuther.ai/transformer-math/
