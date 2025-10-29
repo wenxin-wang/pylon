@@ -1,0 +1,42 @@
+---
+- name: Update pacman cache
+  become: true
+  community.general.pacman:
+    update_cache: true
+
+- name: >-
+    Add user `aur_builder` for auto installation of AUR packages
+    as non-root user
+  user:
+    name: aur_builder
+    system: true
+    create_home: true
+    shell: /usr/bin/nologin
+  become: true
+
+- name: Ensure that `aur_builder` can call pacman without password
+  become: true
+  lineinfile:
+    path: /etc/sudoers.d/aur_builder-allow-to-sudo-pacman
+    state: present
+    line: "aur_builder ALL=(ALL) NOPASSWD: /usr/bin/pacman"
+    validate: /usr/sbin/visudo -cf %s
+    create: true
+
+- name: install devel packages for aur manager
+  become: true
+  ansible.builtin.package:
+    name:
+      - git
+      - base-devel
+      - fakeroot
+      - go
+    state: present
+
+- name: Install yay for AUR
+  become: true
+  become_user: aur_builder
+  kewlfft.aur.aur:
+    name: yay
+    use: makepkg
+    state: present
