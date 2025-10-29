@@ -5,14 +5,44 @@
     repo: ppa:git-core/ppa
   when: ansible_facts['distribution'] == 'Ubuntu'
 
+- name: Add eza repo for Ubuntu
+  become: true
+  block:
+    - name: Ensure gpt repo key folder
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        mode: '0755'
+        state: directory
+    - name: Install eza repo key
+      ansible.builtin.shell:
+        cmd: >-
+          wget -qO-
+          https://raw.githubusercontent.com/eza-community/eza/main/deb.asc |
+          sudo gpg --dearmor -o /etc/apt/keyrings/gierens.gpg
+        creates: /etc/apt/keyrings/gierens.gpg
+    - name: Ensure eza repo key mode
+      ansible.builtin.file:
+        path: /etc/apt/keyrings/gierens.gpg
+        mode: '0644'
+        state: file
+    - name: Add eza repo source list
+      ansible.builtin.apt_repository:
+        repo: >-
+          deb [signed-by=/etc/apt/keyrings/gierens.gpg]
+          http://deb.gierens.de stable main
+        filename: gierens
+  when: ansible_facts['distribution'] == 'Ubuntu'
+
 - name: install basic packages
   become: true
   ansible.builtin.package:
     name:
       - bash-completion
+      - eza
       - less
       - git
       - ranger
+      - ripgrep
       - tmux
       - unzip
       - vim
