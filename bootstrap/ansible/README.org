@@ -48,6 +48,7 @@ ansible-playbook -i ~/.notches/home-inventory/hosts -c local -l $HOSTNAME -K 01-
 https://wrossmann.medium.com/using-ansible-keyring-lookups-6379139b2ee8
 
 #+begin_src bash
+  sudo apt install libsecret-tools
   # lookup('keyring', 'foo bar') 对应
   secret-tool store \
               --label="Password for 'bar' on 'foo'" \
