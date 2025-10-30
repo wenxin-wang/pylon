@@ -21,14 +21,16 @@ chain postrouting-mangle {
 }
 
 chain voyage_add_connmark {
-  ip dscp cs1 ct mark set ct mark | 0x00000002 return
-  ip6 dscp cs1 ct mark set ct mark | 0x00000002 return
+  ip dscp { cs1, cs2 } ct mark set ip dscp return
+  ip6 dscp { cs1, cs2 } ct mark set ip6 dscp return
 }
 
 chain voyage_restore_mark_reply {
-  ct mark & 0x00000002 == 0x00000002 ip dscp set cs1
-  ct mark & 0x00000002 == 0x00000002 ip6 dscp set cs1
-  meta mark set meta mark | 0x00000001
+  meta mark set meta mark | 0x00000040
+  (ct mark & 0x0000003f) == 0x8 ip dscp set cs1 return
+  (ct mark & 0x0000003f) == 0x8 ip6 dscp set cs1 return
+  (ct mark & 0x0000003f) == 0x10 ip dscp set cs2 return
+  (ct mark & 0x0000003f) == 0x10 ip6 dscp set cs2 return
 }
 
 chain voyage_clear_mark {
