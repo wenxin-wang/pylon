@@ -6,20 +6,33 @@
       - nftables
     state: present
 
+- set_fact:
+    nftable_default_configs:
+      - 00-basic.conf
+      - 99-persisted.conf
+
 - name: Ensure general files directory
   become: true
   ansible.builtin.file:
     name: "{{ ('/etc/nftables/', item) | path_join | dirname }}"
     state: directory
-  loop: "{{ nftables_configs|default(['00-basic.conf']) }}"
+  loop: "{{ nftables_configs|default(nftable_default_configs) }}"
 
 - name: Copy general files
   become: true
   ansible.builtin.copy:
     src: "firewall/nftables/{{ item }}"
     dest: "/etc/nftables/{{ item }}"
-  loop: "{{ nftables_configs|default(['00-basic.conf']) }}"
+  loop: "{{ nftables_configs|default(nftable_default_configs) }}"
   register: general_files
+
+- name: Render templates
+  become: true
+  ansible.builtin.template:
+    src: "firewall/nftables/{{ item }}.j2"
+    dest: "/etc/nftables/{{ item }}"
+  loop: "{{ nftables_templated_configs|default([]) }}"
+  register: templates
 
 - name: Copy entry config
   become: true
@@ -57,10 +70,32 @@
   when: clean_internet|default(False) and apnic_routes_update_script.changed
   command: /etc/cron.daily/apnic-routes-update.sh
 
+- name: Add nftable service overrides
+  become: true
+  block:
+    - name: Ensure override directory
+      ansible.builtin.copy:
+        src: firewall/nftables.service.d/
+        dest: /etc/systemd/system/nftables.service.d
+      register: nftables_service_override
+    - name: Systemd daemon-reload
+      when: nftables_service_override.changed
+      command: systemctl daemon-reload
+    - name: Copy persisted-sets.sh
+      become: true
+      ansible.builtin.copy:
+        src: firewall/nftables/persisted-sets.sh
+        dest: /etc/nftables/persisted-sets.sh
+        mode: 0755
+
 - name: Enable nftables service
   become: true
   ansible.builtin.service:
     name: nftables
     enabled: true
     state: restarted
-  when: general_files.results|map(attribute='changed') is any or entry_config.changed or specific_files.changed
+  when: >-
+    general_files.results|map(attribute='changed') is any or
+    templates.results|map(attribute='changed') is any or
+    entry_config.changed or
+    specific_files.changed

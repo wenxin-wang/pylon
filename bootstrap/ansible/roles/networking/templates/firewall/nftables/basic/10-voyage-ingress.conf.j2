@@ -12,13 +12,6 @@ set dns-cn6 {
   timeout 12h
 }
 
-set apnic-cn6 {
-  type ipv6_addr
-  flags interval
-  auto-merge
-  include "/etc/nftables/sets/anpic-cn6.conf"
-}
-
 set apnic-cn4 {
   type ipv4_addr
   flags interval
@@ -89,14 +82,14 @@ chain voyage_add_connmark {
 chain voyage_restore_mark_original {
   ip dscp set 0
   ip6 dscp set 0
-  ct mark & 0x00000002 == 0x00000002 ip dscp set cs1
-  ct mark & 0x00000002 == 0x00000002 ip6 dscp set cs1
+  ct mark & 0x00000002 == 0x00000002 ip dscp set {{ voyage_dscp }}
+  ct mark & 0x00000002 == 0x00000002 ip6 dscp set {{ voyage_dscp }}
 }
 
 chain voyage_restore_mark_reply {
   ip dscp set 0
   ip6 dscp set 0
-  ct mark & 0x00000002 == 0x00000002 ip dscp set cs1
-  ct mark & 0x00000002 == 0x00000002 ip6 dscp set cs1
+  ct mark & 0x00000002 == 0x00000002 ip dscp set {{ voyage_dscp }}
+  ct mark & 0x00000002 == 0x00000002 ip6 dscp set {{ voyage_dscp }}
   meta mark set meta mark | 0x00000001
 }
