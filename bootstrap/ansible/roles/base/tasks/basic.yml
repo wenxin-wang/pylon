@@ -33,7 +33,7 @@
         filename: gierens
   when: ansible_facts['distribution'] == 'Ubuntu'
 
-- name: install basic packages
+- name: Install basic packages
   become: true
   ansible.builtin.package:
     name:

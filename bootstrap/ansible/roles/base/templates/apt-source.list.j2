@@ -1,0 +1,9 @@
+deb {{ debian_mirror }} {{debian_release}} main non-free contrib
+# deb-src {{ debian_mirror }} {{debian_release}} main non-free contrib
+
+deb {{ debian_mirror }}-security {{debian_release}}-security/updates main contrib non-free
+# deb-src {{ debian_mirror }}-security {{debian_release}}-security/updates main contrib non-free
+
+# {{debian_release}}-updates, previously known as 'volatile'
+deb {{ debian_mirror }} {{debian_release}}-updates main contrib non-free
+# deb-src {{ debian_mirror }} {{debian_release}}-updates main contrib non-free

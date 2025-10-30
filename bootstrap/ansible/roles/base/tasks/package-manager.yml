@@ -1,6 +1,6 @@
 ---
 - include_tasks: apt.yml
-  when: ansible_facts['distribution'] in ['Debian', 'Ubuntu']
+  when: ansible_os_family == "Debian"
 
 - include_tasks: pacman.yml
   when: ansible_facts['distribution'] == 'Archlinux'
