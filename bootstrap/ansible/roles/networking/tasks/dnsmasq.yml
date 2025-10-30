@@ -59,10 +59,16 @@
         dest: /etc/resolvconf.d
       register: resolvconf_files
 
+    - name: Disable default resolv file config from Debian
+      when: ansible_os_family == "Debian"
+      ansible.builtin.lineinfile:
+        path: /etc/default/dnsmasq
+        line: IGNORE_RESOLVCONF=yes
+        regexp: '^#IGNORE_RESOLVCONF=yes'
+
     - name: Update resolvconf
       command: resolvconf -u
-      when:
-        - resolvconf_files.changed
+      when: resolvconf_files.changed
 
     - name: Copy china-dns-update.sh
       ansible.builtin.copy:
