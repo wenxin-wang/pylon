@@ -1,0 +1,38 @@
+---
+- name: Check if ocserv configs exists
+  become: false
+  stat:
+    path: "{{ specific_host_dir }}/ocserv"
+  delegate_to: localhost
+  run_once: true
+  register: ocserv_conf_stat
+
+- name: Setup ocserv
+  become: true
+  when: ocserv_conf_stat.stat.exists
+  block:
+    - name: Install ocserv
+      ansible.builtin.package:
+        name:
+          - ocserv
+        state: present
+
+    - name: Copy config file
+      ansible.builtin.copy:
+        src: "{{ specific_host_dir }}/ocserv"
+        dest: /etc/
+        directory_mode: go-rwx
+        mode: 0600
+        local_follow: false
+      register: ocserv_conf
+
+    - name: Trigger restart
+      ansible.builtin.service:
+        name: ocserv
+        state: restarted
+      when: ocserv_conf.changed
+
+    - name: Enable ocserv service
+      ansible.builtin.service:
+        name: ocserv
+        enabled: true
