@@ -1,0 +1,10 @@
+:PROPERTIES:
+:ID:       20251102T001423
+:END:
+#+title: Blogging
+
+* 例子
+
+** org-roam
+
+https://gitlab.com/fstamour/public-notes

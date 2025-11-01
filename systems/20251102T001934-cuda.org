@@ -1,0 +1,8 @@
+:PROPERTIES:
+:ID:       20251102T001934
+:END:
+#+title: CUDA
+
+* 参考
+
+https://modal.com/gpu-glossary/device-hardware

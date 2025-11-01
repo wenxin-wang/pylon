@@ -1,0 +1,14 @@
+:PROPERTIES:
+:ID:       20251102T001022
+:END:
+#+title: 文档整理
+
+* 集成方案
+
+https://docs.paperless-ngx.com
+
+我记得有个 AI 找照片的 NAS 工具，什么时候找一下
+
+* 检索工具
+
+https://xapian.org/

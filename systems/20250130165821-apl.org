@@ -3,3 +3,6 @@
 :END:
 #+title: APL
 
+* 参考
+
+https://mastering.dyalog.com/Introduction.html

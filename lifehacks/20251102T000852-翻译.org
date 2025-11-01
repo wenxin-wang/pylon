@@ -1,0 +1,10 @@
+:PROPERTIES:
+:ID:       20251102T000852
+:END:
+#+title: 翻译
+
+* AI
+
+https://belindoc.com/zh
+
+https://www.deepl.com/translator
