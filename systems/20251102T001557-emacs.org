@@ -1,0 +1,13 @@
+:PROPERTIES:
+:ID:       20251102T001557
+:END:
+#+title: Emacs
+
+
+* 进阶
+
+https://emacs-china.org/
+
+https://github.com/emacs-tw/awesome-emacs
+
+https://karthinks.com/software/fifteen-ways-to-use-embark/

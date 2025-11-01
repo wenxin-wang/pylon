@@ -9,14 +9,28 @@ Annotated Transformer, in PyTorch http://nlp.seas.harvard.edu/annotated-transfor
 
 Illustrated GPT-2 https://jalammar.github.io/illustrated-gpt2/
 
+[[https://fleetwood.dev/posts/domain-specific-architectures#google-tpu][Domain specific architectures for AI inference]]
+
 * Scaling
 
 GPU Book https://huggingface.co/spaces/nanotron/ultrascale-playbook
 
 TPU Book https://jax-ml.github.io/scaling-book
 
+[[https://juejin.cn/post/7195845066887053368][大模型分布式训练并行技术（一）-概述]]
+
+[[https://zhuanlan.zhihu.com/p/657921100][大模型分布式训练并行技术（四）-张量并行]]
+
 ** Measuring computation cost
 
 Inference https://kipp.ly/transformer-inference-arithmetic/
 
 Training https://blog.eleuther.ai/transformer-math/
+
+* Networking
+
+https://www.chipstrat.com/p/gpu-networking-basics-part-1
+
+* Fine-tune
+
+https://unsloth.ai/

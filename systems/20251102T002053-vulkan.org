@@ -1,0 +1,8 @@
+:PROPERTIES:
+:ID:       20251102T002053
+:END:
+#+title: Vulkan
+
+* 参考
+
+https://vulkan-tutorial.com/Compute_Shader

@@ -1,0 +1,9 @@
+:PROPERTIES:
+:ID:       20251102T001648
+:END:
+#+title: 趣味算法
+
+
+* Permutation
+
+https://sandbox.bio/concepts/bwt

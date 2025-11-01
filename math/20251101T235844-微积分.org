@@ -1,0 +1,8 @@
+:PROPERTIES:
+:ID:       20251101T235844
+:END:
+#+title: 微积分
+
+* 参考
+
+https://calculusmadeeasy.org/

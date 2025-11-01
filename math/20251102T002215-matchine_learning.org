@@ -1,0 +1,12 @@
+:PROPERTIES:
+:ID:       20251102T002215
+:END:
+#+title: Matchine Learning
+
+* 参考
+
+http://neuralnetworksanddeeplearning.com
+
+https://mml-book.github.io/
+
+https://www.deeplearningbook.org/
