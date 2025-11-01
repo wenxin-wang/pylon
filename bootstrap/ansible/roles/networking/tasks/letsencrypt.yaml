@@ -17,11 +17,20 @@
           - certbot
         state: present
 
-    - name: Install certbot plugins
-      when: letsencrypt_dns_01|default(false)
+    - name: Install certbot dns plugin
+      # Archlinux-only.
+      when: letsencrypt|default('') == 'dns_01'
       ansible.builtin.package:
         name:
           - certbot-dns-cloudflare
+        state: present
+
+    - name: Install certbot webroot plugin
+      # Debian-only.
+      when: letsencrypt|default('') == 'nginx'
+      ansible.builtin.package:
+        name:
+          - python3-certbot-nginx
         state: present
 
     - name: Copy config file
