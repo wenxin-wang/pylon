@@ -1,0 +1,7 @@
+span#hi {
+    color: blue;
+}
+
+div#tags > a.selected {
+    color: red;
+}
