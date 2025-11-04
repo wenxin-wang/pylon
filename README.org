@@ -9,6 +9,23 @@ Working states consist of knowledge, goal and current direction. Therefore this
 repository not only consists of "How"s (code), but also "Why"s (notes,
 handbooks) and references (reading materials).
 
+* Waypoints
+
+[[https://github.com/wenxin-wang][My Github profile]]
+
+[[./bootstrap]] contains code and instructions on how to reproduce the working environment.
+
+[[./museum]] contains things that belongs to the past.
+
+[[./journals]] is where I record thought process of "working" itself.
+
+Highlights of newly acquired knowledges are kept in [[./today-i-learnt]]. They should
+be further sorted into topics that I am interested in, and then filed into
+[[./today-i-learnt/{year}]] for archiving purpose. They do not go into [[./museum]] because I
+think they should be fun to reread.
+
+[[./library]] is where I record references.
+
 * Bootstrap
 
 #+begin_src bash
@@ -17,21 +34,6 @@ handbooks) and references (reading materials).
   git annex init
   git config annex.largefiles "(include=*.pdf or include=*.doc or include=*.docx or include=*.xls or include=*.xlsx)"
 #+end_src
-
-* Waypoints
-
-[[./bootstrap]] contains code and instructions on how to reproduce the working environment.
-
-[[./museum]] contains things that belongs to the past.
-
-[[./journals]] is where I record thought process of "working" itself.
-
-Highlights of newly acquired knowledges are kept in [[today-i-learnt]]. They should
-be further sorted into topics that I am interested in, and then filed into
-[[today-i-learnt/{year}]] for archiving purpose. They do not go into [[museum]] because I
-think they should be fun to reread.
-
-[[./library]] is where I record references.
 
 * Why?
 
@@ -64,3 +66,16 @@ achieve sense of ease by doing things at ease.
 The key is "explanation": why things work this way, why do I have this goal, and
 how did I reach here. A good explanation would make another person resonnate
 with me after logical thinking, if we agree on the preconditions.
+
+* License
+
+除非额外声明，本站内所有内容使用 Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International 授权，
+详情见 https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en。
+
+Unless explicitly declared, all content on this site are licensed under
+a Creative Commons Attribution-NonCommercial-ShareAlike License (International/4.0),
+see https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en for details.
+
+* Sitemap
+
+#+INCLUDE: sitemap.org :lines "3-"

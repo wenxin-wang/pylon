@@ -7,7 +7,7 @@ See [[../ansible/roles/desktop-environments/tasks/environ.yml]].
 See [[/usr/share/sddm/scripts/wayland-session]] & [[/usr/share/sddm/scripts/Xsession]], it uses a login shell
 for the session.
 
-See https://wiki.archlinux.org/title/Environment_variables#Per_Wayland_session for wayland, it sources [[.config/environment.d]].
+See https://wiki.archlinux.org/title/Environment_variables#Per_Wayland_session for wayland, it sources [[~/.config/environment.d]].
 
 * Bash login shell
 
