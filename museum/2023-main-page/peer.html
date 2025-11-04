@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+	<script src="peerjs.min.js"></script>
+	<title>P2P Test with Peer.js</title>
+    </head>
+    <body>
+      <h1>P2P Test with Peer.js</h1>
+      <input id="peerIdInput" type="text">
+      <button id="connectBtn" type="submit">Connect</button>
+    </body>
+    <script src="console-log-div.js"></script>
+    <script>
+      window.addEventListener("DOMContentLoaded", function() {
+	  var connectBtn = document.getElementById("connectBtn");
+	  connectBtn.disabled = true;
+	  var peer = new Peer({'debug': 3, 'config': { 'iceServers': [{ 'url': 'stun:154.8.238.46:41114' }] }});
+	  peer.on('open', function(id) {
+	      console.log('Callee: Tell your friend, that your peer ID is: ' + id + ', and just wait');
+	      console.log('Caller: Paste your friend\'s Id above and press connect');
+	      peer.on('connection', function(conn) {
+		  conn.on('data', function(data) {
+		      console.log('Received', data);
+		      conn.send('Hello!');
+		  });
+
+	      })
+	      connectBtn.addEventListener(
+		  'click',function () {
+		      var peerIdInput = document.getElementById("peerIdInput");
+		      var peerId = peerIdInput.value;
+		      if (!peerId) {
+			  console.log("Peer Id empty!");
+			  return;
+		      }
+		      var conn = peer.connect(peerId);
+		      conn.on('open', function() {
+			  conn.on('data', function(data) {
+			      console.log('Received', data);
+			  });
+
+			  conn.send('Hello!');
+		      });
+		      connectBtn.disabled = true;
+		  });
+	      connectBtn.disabled = false;
+	  });
+      }, false);
+    </script>
+</html>

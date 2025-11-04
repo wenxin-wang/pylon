@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+        <title>Web Speech Counter</title>
+
+        <style>
+            *, *:before, *:after {
+                -moz-box-sizing: border-box;
+                -webkit-box-sizing: border-box;
+                box-sizing: border-box;
+            }
+
+            html {
+                font-family: Helvetica, Arial, sans-serif;
+                font-size: 100%;
+                background: #333;
+            }
+
+            #page-wrapper {
+                width: 640px;
+                background: #FFFFFF;
+                padding: 1em;
+                margin: 1em auto;
+                border-top: 5px solid #69c773;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.8);
+            }
+
+            h1 {
+                margin-top: 0;
+            }
+
+            #msg {
+                font-size: 0.9em;
+                line-height: 1.4em;
+            }
+
+            #msg.not-supported strong {
+                color: #CC0000;
+            }
+
+            input[type="text"] {
+                width: 100%;
+                padding: 0.5em;
+                font-size: 1.2em;
+                border-radius: 3px;
+                border: 1px solid #D9D9D9;
+                box-shadow: 0 2px 3px rgba(0,0,0,0.1) inset;
+            }
+
+            input[type="range"] {
+                width: 300px;
+            }
+
+            label {
+                display: inline-block;
+                float: left;
+                width: 150px;
+            }
+
+            .option {
+                margin: 1em 0;
+            }
+
+            button {
+                display: inline-block;
+                border-radius: 3px;
+                border: none;
+                font-size: 0.9rem;
+                padding: 0.5rem 0.8em;
+                background: #69c773;
+                border-bottom: 1px solid #498b50;
+                color: white;
+                -webkit-font-smoothing: antialiased;
+                font-weight: bold;
+                margin: 0;
+                width: 100%;
+                text-align: center;
+            }
+
+            button:hover, button:focus {
+                opacity: 0.75;
+                cursor: pointer;
+            }
+
+            button:active {
+                opacity: 1;
+                box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.1) inset;
+            }
+
+        </style>
+
+    </head>
+    <body>
+
+        <div id="page-wrapper">
+            <h1>Web Speech Counter</h1>
+            <p>Thank you, <a href=https://codepen.io/matt-west/pen/wGzuJ>matt-west</a></p>
+            <p id="msg"></p>
+
+            <input type="text" name="num-group" id="num-group">
+            <input type="text" name="num-act" id="num-act">
+            <input type="text" name="group-rest" id="group-rest">
+            <input type="text" name="act-interval" id="act-interval">
+            <input type="text" name="act-rest" id="act-rest">
+
+            <!--
+                <div class="option">
+                    <label for="voice">Voice</label>
+                    <select name="voice" id="voice"></select>
+                </div>
+                -->
+                <div class="option">
+                    <label for="volume">Volume</label>
+                    <input type="range" min="0" max="1" step="0.1" name="volume" id="volume" value="1">
+                </div>
+                <div class="option">
+                    <label for="rate">Rate</label>
+                    <input type="range" min="0.1" max="10" step="0.1" name="rate" id="rate" value="1">
+                </div>
+                <div class="option">
+                    <label for="pitch">Pitch</label>
+                    <input type="range" min="0" max="2" step="0.1" name="pitch" id="pitch" value="1">
+                </div>
+
+                <button id="speak">Speak</button>
+        </div>
+
+
+        <script>
+
+            var requestWakeLock = null;
+            if ('WakeLock' in window && 'request' in window.WakeLock) {
+                requestWakeLock = function() {
+                    const controller = new AbortController();
+                    const signal = controller.signal;
+                    window.WakeLock.request('screen', {signal})
+                        .catch((e) => {
+                            if (e.name === 'AbortError') {
+                                console.log('Wake Lock was aborted');
+                            } else {
+                                console.error(`${e.name}, ${e.message}`);
+                            }
+                        });
+                    console.log('Wake Lock is active');
+                    return controller;
+                };
+            } else if ('wakeLock' in navigator && 'request' in navigator.wakeLock) {
+                let wakeLock = null;
+                requestWakeLock = async () => {
+                    try {
+                        wakeLock = await navigator.wakeLock.request('screen');
+                        wakeLock.addEventListener('release', () => {
+                            console.log('Wake Lock was released');
+                        });
+                        console.log('Wake Lock is active');
+                    } catch (e) {
+                        console.error(`${e.name}, ${e.message}`);
+                    }
+                };
+            } else {
+                console.error('Wake Lock API not supported.');
+            }
+
+            /*
+             * Check for browser support
+             */
+            var supportMsg = document.getElementById('msg');
+
+            if ('speechSynthesis' in window) {
+                supportMsg.innerHTML = 'Your browser <strong>supports</strong> speech synthesis. Wake lock ' +
+                    (requestWakeLock === null ? "unsupported" : "supportted");
+            } else {
+                supportMsg.innerHTML = 'Sorry your browser <strong>does not support</strong> speech synthesis.<br>Try this in <a href="https://www.google.co.uk/intl/en/chrome/browser/canary.html">Chrome Canary</a>.';
+                supportMsg.classList.add('not-supported');
+            }
+
+            // Get the 'speak' button
+            var button = document.getElementById('speak');
+
+            function getInputWithDefault(name, defaultValue) {
+                var elm = document.getElementById(name);
+                if (elm == null) {
+                    return elm;
+                }
+                var val = localStorage.getItem(name) || defaultValue;
+                elm.value = val;
+                // console.log("GT", val);
+                return elm;
+            }
+
+            function getIntValueAndStore(elm, name, defaultValue) {
+                var val = elm.value || defaultValue;
+                localStorage.setItem(name, val);
+                // console.log("ST", val);
+                return val * 1;
+            }
+
+            // Get the text input element.
+            var numGroupInput = getInputWithDefault('num-group', 10);
+            var numActInput = getInputWithDefault('num-act', 10);
+            var groupRestInput = getInputWithDefault('group-rest', 10);
+            var actIntervalInput = getInputWithDefault('act-interval', 10);
+            var actRestInput = getInputWithDefault('act-rest', 3);
+
+            // Get the voice select element.
+            // var voiceSelect = document.getElementById('voice');
+
+            // Get the attribute controls.
+            var volumeInput = document.getElementById('volume');
+            var rateInput = document.getElementById('rate');
+            var pitchInput = document.getElementById('pitch');
+
+            // Fetch the list of voices and populate the voice options.
+            function loadVoices() {
+                window.cnvoice = speechSynthesis.getVoices().filter(function(voice) { return voice.lang === "zh-CN"; })[0];
+                /*
+                 // Fetch the available voices.
+                 var voices = speechSynthesis.getVoices();
+
+                 // Loop through each of the voices.
+                 voices.forEach(function(voice, i) {
+                 // Create a new option element.
+                 var option = document.createElement('option');
+
+                 // Set the options value and text.
+                 option.value = voice.name;
+                 option.innerHTML = voice.name;
+
+                 // Add the option to the voice selector.
+                 voiceSelect.appendChild(option);
+                 });
+                */
+            }
+
+            // Execute loadVoices.
+            loadVoices();
+
+            // Chrome loads voices asynchronously.
+            window.speechSynthesis.onvoiceschanged = function(e) {
+                loadVoices();
+            };
+
+
+            // Create a new utterance for the specified text and add it to
+            // the queue.
+            function speak(text) {
+                // Create a new instance of SpeechSynthesisUtterance.
+                var msg = new SpeechSynthesisUtterance();
+
+                // Set the text.
+                msg.text = text;
+
+                // Set the attributes.
+                msg.volume = parseFloat(volumeInput.value);
+                msg.rate = parseFloat(rateInput.value);
+                msg.pitch = parseFloat(pitchInput.value);
+                if (window.cnvoice !== null) {
+                    msg.voice = window.cnvoice;
+                }
+                console.log(msg.voice, msg.text);
+
+                // Queue this utterance.
+                window.speechSynthesis.speak(msg);
+            }
+
+            function excercise(curGroup, curAct,
+                               numGroup, numAct,
+                               groupRest, actInterval, actRest) {
+                if (curAct >= numAct) {
+                    speak("组" + curGroup + "结束");
+                    if (curGroup +1 >= numGroup) {
+                        speak("全部结束");
+                        return;
+                    }
+                    setTimeout(function(){
+                        excercise(curGroup + 1, 0,
+                                  numGroup, numAct,
+                                  groupRest, actInterval, actRest);
+                    }, groupRest * 1000);
+                    return;
+                }
+                if (curAct === 0) {
+                    speak("组" + curGroup + "开始");
+                }
+                speak("第" + curAct + "个");
+                setTimeout(function(){
+                    speak(curAct + "结束");
+                    setTimeout(function(){
+                        excercise(curGroup, curAct + 1,
+                                  numGroup, numAct,
+                                  groupRest, actInterval, actRest);
+                    }, actRest * 1000);
+                }, actInterval * 1000);
+            }
+
+            // Set up an event listener for when the 'speak' button is clicked.
+            button.addEventListener('click', function(e) {
+                var numGroup = getIntValueAndStore(numGroupInput, 'num-group', 10);
+                var numAct = getIntValueAndStore(numActInput, 'num-act', 10);
+                var groupRest = getIntValueAndStore(groupRestInput, 'group-rest', 10);
+                var actInterval = getIntValueAndStore(actIntervalInput, 'act-interval', 10);
+                var actRest = getIntValueAndStore(actRestInput, 'act-rest', 3);
+
+                if (requestWakeLock !== null) {
+                    requestWakeLock();
+                }
+                excercise(0, 0, numGroup, numAct, groupRest, actInterval, actRest);
+            });
+
+            </script>
+    </body>
+</html>
