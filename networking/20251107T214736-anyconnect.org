@@ -1,0 +1,79 @@
+:PROPERTIES:
+:ID:       20251107T214736
+:END:
+#+title: AnyConnect
+
+AnyConnect 是为数不多的国区 Apple Store 上能下载到的正经 VPN 软件。虽然我更倾向于用 IPSec，但是
+好像 IPSec 在 IVI 下 MTU 不太正常（存疑）， 且 Windows 上比较好部署，所以还是有价值维护的。
+
+* Server: OpenConnect
+
+[[https://ocserv.openconnect-vpn.net][ocserv]] 是一款开源的、支持 Cisco AnyConnect 和 Juniper Pulse Connect 的服务器。
+我觉得能兼容这些奇怪私有协议非常难，还是很厉害的。
+
+目前用的配置：
+
+#+begin_src conf
+auth = "plain[passwd=/etc/ocserv/ocpasswd]"
+tcp-port = 8080
+udp-port = 8080
+# Lets encrypt 申请
+server-cert = /etc/ocserv/example.com.pem
+server-key = /etc/ocserv/example.com.key
+isolate-workers = false
+# 同名账户允许三地登录
+max-same-clients = 3
+try-mtu-discovery = true
+default-domain = example.com
+ipv4-network = 172.31.4.0
+ipv4-netmask = 255.255.255.0
+ipv6-network = fdff:ffff:ffff:fff0:0:2:1::/112
+ipv6-subnet-prefix = 128
+dns = 172.31.4.1
+# 我觉得 1500 应该也没问题，但是小心点好
+mtu = 1400
+route = default
+
+# 下面是默认配置里的默认值
+run-as-user = nobody
+run-as-group = daemon
+socket-file = /run/ocserv.socket
+max-clients = 128
+server-stats-reset-time = 604800
+keepalive = 300
+dpd = 60
+mobile-dpd = 300
+switch-to-tcp-timeout = 25
+# 证书认证的话这个有用
+cert-user-oid = 0.9.2342.19200300.100.1.1
+compression = true
+no-compress-limit = 256
+tls-priorities = "NORMAL:%SERVER_PRECEDENCE:%COMPAT:-RSA:-VERS-SSL3.0:-ARCFOUR-128"
+auth-timeout = 240
+idle-timeout = 1200
+mobile-idle-timeout = 1800
+min-reauth-time = 300
+max-ban-score = 80
+ban-reset-time = 300
+cookie-timeout = 300
+deny-roaming = false
+rekey-time = 172800
+rekey-method = ssl
+use-occtl = true
+pid-file = /run/ocserv.pid
+device = vpns
+predictable-ips = true
+ping-leases = false
+cisco-client-compat = true
+dtls-legacy = true
+#+end_src
+
+一些注意事项：
+
+- DNS Server IP 不要和 VPN Server IP 相同，Android 的 AnyConnect 没问题，但是 iOS 上的 AnyConnect
+  会完全不把 DNS 请求发到 VPN Server 上，导致几乎没有流量过来，我猜是因为它会额外加一条路由强制让 VPN Server 的 IP 不经过 tunnel，
+  毕竟我看到还有其他类似的 [[https://gitlab.com/openconnect/ocserv/-/blob/78c65b5adff19bba2ff02aea266583d024ea7e71/src/worker-vpn.c#L2300][Apple 路由 hack]]。
+  最初排查的时候还以为是 MTU 问题。实际上应该早点想到 DNS 有可能是原因的。一个简单的 trick 是把 DNS 指向 IP Pool 的第一个地址，
+  ocserv 会用这个地址 作为本地每个 tunnel netif（"vps*"）的本地地址，很神奇。
+
+
