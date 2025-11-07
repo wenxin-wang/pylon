@@ -74,6 +74,8 @@
          :with-toc nil
          :with-author nil
          :with-date nil
+         :html-preamble "<nav><a href=\"/\">&lt; Home</a></nav>"
+         :html-postamble "<hr/><div id=\"updated\">Updated: %C</div>"
          :html-validation-link nil)
         ("other"
          :base-directory "./"
