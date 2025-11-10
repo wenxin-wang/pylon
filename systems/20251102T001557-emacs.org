@@ -11,3 +11,21 @@ https://emacs-china.org/
 https://github.com/emacs-tw/awesome-emacs
 
 https://karthinks.com/software/fifteen-ways-to-use-embark/
+
+
+* 初始化文件
+
+我的困扰：希望尽可能快的启动速度，能使用 byte-compiled init 文件（不必要的执念）。之前的[[https://github.com/wenxin-wang/.emacs.d][配置]]中，无法编译
+init 文件是我放弃使用 emacs 的最后一根稻草。总结下当时的教训：我把 init 文件拆散了，但是没有理解如何管理
+编译时依赖，很多文件在编译时都要从其它文件加载定义，最后导致我觉得文件拆分变得麻烦而没有意义。另外，我也没有
+找到好的工作流来自动编译 init 文件。
+
+这次我的计划是，不再拆分 init 文件，并且试图用现成的方案去管理自动编译。下面是我找到的几个备选方案：
+
+- [[https://github.com/radian-software/radian][Radian]]: [[https://github.com/radian-software/straight.el][straight.el]] 作者的作品。他把所有的加载都放到 early-init.el 去做，并且把所有的 init
+  文件在编译时都打包到一个 .elc 里。我觉得这个方案很诱人，但是我的知识可能不够处理因为过于偏离官方推荐做法
+  引入的问题。另外，他的方案里有大量对于他使用的软件包的配置，我担心会和我的软件包组合冲突。
+- [[https://github.com/jamescherti/minimal-emacs.d][Minimal emacs]]: [[https://github.com/jamescherti/compile-angel.el][compile-angel.el]] 作者的作品。只包含了非常基础的加速启动的配置，提供了贴心的文档指导如何
+  使用更多的软件包解决常见问题。
+
+目前我想尝试 Minimal emacs + compile-angel 的组合。Raidian 里面应该会有很多优化可以学习。

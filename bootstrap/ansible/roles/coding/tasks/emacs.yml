@@ -1,5 +1,5 @@
 ---
-- name: install emacs for archlinux
+- name: Install emacs for archlinux
   become: true
   when: ansible_facts['distribution'] == 'Archlinux'
   ansible.builtin.package:
@@ -7,7 +7,7 @@
       - emacs
     state: present
 
-- name: spacemacs
+- name: Spacemacs
   block:
     - name: clone spacemacs
       ansible.builtin.git:
@@ -31,3 +31,55 @@
       ansible.builtin.copy:
         src: ~/src/coding/spacemacs/core/banners/img/spacemacs.png
         dest: ~/.local/share/icons/spacemacs.png
+
+- name: Dot-emacs with minimal-emacs.d
+  block:
+    - name: clone minimal-emacs.d
+      ansible.builtin.git:
+        repo: 'https://github.com/jamescherti/minimal-emacs.d'
+        dest: ~/src/coding/minimal-emacs
+        version: main
+        update: true
+
+    - name: ensure .config/emacs
+      ansible.builtin.file:
+        dest: ~/.config/emacs
+        state: directory
+
+    - name: link to minimal-emacs.d
+      ansible.builtin.file:
+        src: "~/src/coding/minimal-emacs/{{ item }}"
+        dest: "~/.config/emacs/{{ item }}"
+        state: link
+      loop:
+        - init.el
+        - early-init.el
+
+    - name: Find local dot-emacs files
+      ansible.builtin.find:
+        paths: "~/pylon/bootstrap/emacs/dot-emacs"
+        file_type: file
+      register: dot_emacs_files
+
+    - name: Check if dst files exist
+      ansible.builtin.stat:
+        path: "~/.config/emacs/{{ item.path | basename }}"
+      loop: "{{ dot_emacs_files.files }}"
+      register: dot_emacs_files_stat
+
+    - name: Link if dst files not exist
+      when: not dot_emacs_files_stat.results[idx].stat.exists
+      ansible.builtin.file:
+        src: "{{ item.path }}"
+        dest: "~/.config/emacs/{{ item.path | basename }}"
+        state: link
+      loop: "{{ dot_emacs_files.files }}"
+      loop_control:
+        index_var: idx
+
+    - name: Enable emacs systemd user service
+      ansible.builtin.systemd:
+        name: emacs.service
+        scope: user
+        enabled: yes
+        state: started
