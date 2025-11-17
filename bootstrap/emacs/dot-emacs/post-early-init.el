@@ -23,11 +23,11 @@
   (load bootstrap-file nil 'nomessage))
 
 ;; Byte-compilation requirements.
+;; I don't care about this even when debugging, and it messes up with byte-compilation, so turn it off.
+(setq use-package-compute-statistics nil)
 (eval-when-compile
   (setq
    use-package-always-defer t)
-  (require 'use-package))
-(when (bound-and-true-p use-package-compute-statistics)
   (require 'use-package))
 
 ;; Setup no-littering as early as possible.
