@@ -5,8 +5,6 @@
   (setq
    use-package-always-defer t)
   (require 'use-package))
-(when (bound-and-true-p use-package-compute-statistics)
-  (require 'use-package))
 
 ;; Basic UI.
 
@@ -15,8 +13,10 @@
   :demand t)
 
 ;; Better help.
+(when (version< emacs-version "30.0") (straight-use-package 'which-key))
 (use-package which-key
-  :straight nil  ; built-in
+  :straight nil ; Built-in after emacs 30.
+  :ensure nil ; Built-in after emacs 30.
   :blackout t
   :hook ((emacs-startup . which-key-mode))
 
@@ -88,9 +88,7 @@
 
 ;; Theme.
 (load-theme 'modus-operandi t)
-(setq modus-themes-to-toggle '(modus-operandi modus-vivendi)
-      modus-themes-to-rotate modus-themes-items
-      modus-themes-mixed-fonts t
+(setq modus-themes-mixed-fonts t
       modus-themes-variable-pitch-ui t
       modus-themes-italic-constructs t
       modus-themes-bold-constructs t
