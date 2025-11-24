@@ -1,10 +1,44 @@
 ;;; -*- lexical-binding: t; -*-
 
+;; Straight package pananger.
+;; Also load during byte-compilation, else the following
+;; `use-package` macros would expand without calls to `straight-use-package`.
+(eval-and-compile
+  (setq
+   straight-vc-git-default-clone-depth 1
+   straight-repository-branch "develop"
+   straight-check-for-modifications nil
+   straight-use-package-by-default t)
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+         (expand-file-name
+          "straight/repos/straight.el/bootstrap.el"
+          (or (bound-and-true-p straight-base-dir)
+              user-emacs-directory)))
+        (bootstrap-version 7))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+          (url-retrieve-synchronously
+           "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+           'silent 'inhibit-cookies)
+        (goto-char (point-max))
+        (eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage)))
+
 ;; Byte-compilation requirements.
 (eval-when-compile
-  (setq
-   use-package-always-defer t)
+  (setq use-package-always-defer t)
   (require 'use-package))
+
+;; I don't care about this even when debugging, and it messes up with byte-compilation, so turn it off.
+(setq use-package-compute-statistics nil)
+
+;; Setup no-littering as early as possible.
+;; https://github.com/emacscollective/no-littering
+(use-package no-littering
+  :demand t
+  :config
+  (setq custom-file (expand-file-name "custom.el" no-littering-etc-directory)))
 
 ;; Basic UI.
 
