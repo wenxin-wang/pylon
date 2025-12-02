@@ -616,8 +616,12 @@
   (ibuffer-default-sorting-mode 'filename/process))
 
 ;; Visual cues.
-(setq show-trailing-whitespace t)
-(add-hook 'prog-mode 'display-line-numbers-mode)
+(add-hook
+ 'prog-mode-hook
+ (lambda ()
+   (display-line-numbers-mode)
+   (setq show-trailing-whitespace t)))
+
 ;; (use-package whitespace
 ;;   :straight (:type built-in)
 ;;   :hook (prog-mode . whitespace-mode)
