@@ -42,6 +42,16 @@
 
 ;; Basic UI.
 
+(when (display-graphic-p)
+  ;; https://emacs.stackexchange.com/questions/20240/how-to-distinguish-c-m-from-return
+  ;; to define C-m key
+  (define-key input-decode-map [?\C-m] [C-m])
+  ;; remove some keybindings that can be accidentally triggered..
+  ;; suspend-frame
+  (define-key global-map (kbd "C-x C-z") nil)
+  ;; save-buffers-kill-terminal
+  (define-key global-map (kbd "C-x C-c") nil))
+
 ;; Blackout: hide minor modes from modeline
 (use-package blackout
   :demand t)
@@ -204,13 +214,11 @@
     '("A" . meow-mark-symbol)
     '("w" . meow-line)
     '("W" . meow-block)
-    '("gl" . meow-goto-line)
-    '("gs" . magit)
     '("q" . meow-join)
-    '("t" . meow-grab)
-    '("Tp" . meow-pop-grab)
-    '("Tw" . meow-swap-grab)
-    '("Ts" . meow-sync-grab)
+    '("y" . meow-grab)
+    '("Y" . meow-pop-grab)
+    '("tw" . meow-swap-grab)
+    '("ts" . meow-sync-grab)
     '("p" . meow-cancel-selection)
     '("P" . meow-pop-selection)
     '("." . repeat-fu-execute)
@@ -247,21 +255,20 @@
     '("[" . indent-rigidly-left-to-tab-stop)
     '("]" . indent-rigidly-right-to-tab-stop)
 
-    ;; prefix y
-    '("yf" . meow-comment)
-    '("yt" . meow-start-kmacro-or-insert-counter)
-    '("yr" . meow-start-kmacro)
-    '("ye" . meow-end-or-call-kmacro)
-    ;; ...etc
-
     ;; prefix ;
     '(";f" . save-buffer)
     '(";F" . save-some-buffers)
     '(";d" . meow-query-replace-regexp)
-    ;; ... etc
-    ;; prefix z
-    '("zs" . save-buffer)
-    '("zS" . save-some-buffers)
+    '(";c" . meow-comment)
+    '(";t" . meow-start-kmacro-or-insert-counter)
+    '(";r" . meow-start-kmacro)
+    '(";e" . meow-end-or-call-kmacro)
+    '(";g" . magit)
+    '(";q" . meow-quit)
+    '(";Q" . kill-emacs)
+
+    ;; prefix g
+    '("gl" . meow-goto-line)
 
     ;; ignore escape
     '("<escape>" . meow-cancel-selection))
