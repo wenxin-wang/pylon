@@ -52,15 +52,15 @@
   :straight nil ; Built-in after emacs 30.
   :ensure nil ; Built-in after emacs 30.
   :blackout t
-  :hook ((emacs-startup . which-key-mode))
+  :hook (emacs-startup . which-key-mode)
 
-  :config
+  :custom
   ;; We configure it so that `which-key' is triggered by typing C-h
   ;; during a key sequence (the usual way to show bindings). See
   ;; <https://github.com/justbur/emacs-which-key#manual-activation>.
-  (setq which-key-show-early-on-C-h t)
-  (setq which-key-idle-delay most-positive-fixnum)
-  (setq which-key-idle-secondary-delay 0.05))
+  (which-key-show-early-on-C-h t)
+  (which-key-idle-delay most-positive-fixnum)
+  (which-key-idle-secondary-delay 0.05))
 
 ;; Better repeat.
 (use-package repeat-fu
@@ -267,6 +267,9 @@
 ;; Clipboard.
 (setq save-interprogram-paste-before-kill t)
 
+;; Mouse.
+(setq mouse-drag-and-drop-region-cross-program t)
+
 ;; Scrolling.
 (unless (and (eq window-system 'mac)
              (bound-and-true-p mac-carbon-version-string))
@@ -278,6 +281,37 @@
   ;; https://bitbucket.org/mituharu/emacs-mac/commits/65c6c96f27afa446df6f9d8eff63f9cc012cc738
   (setq pixel-scroll-precision-use-momentum nil) ; Precise/smoother scrolling
   (pixel-scroll-precision-mode 1))
+
+;; Visual cues.
+(setq show-trailing-whitespace t)
+(add-hook 'prog-mode 'display-line-numbers-mode)
+;; (use-package whitespace
+;;   :straight (:type built-in)
+;;   :hook (prog-mode . whitespace-mode)
+;;   :blackout whitespace-mode)
+
+(use-package hl-line
+  :straight (:type built-in)
+  :blackout hi-line-mode
+  :hook
+  (prog-mode . hl-line-mode)
+  (tabulated-list-mode . hl-line-mode))
+
+;; Version control.
+(use-package magit
+  :bind
+  (:map magit-status-mode-map
+        ("p" . magit-push)
+        ("n" . magit-status-jump)
+        ("x" . magit-discard))
+  :commands (magit))
+
+(use-package diff-hl
+  :hook
+  (after-init . global-diff-hl-mode)
+  (magit-post-refresh-hook . diff-hl-magit-post-refresh)
+  :config
+  (diff-hl-flydiff-mode))
 
 ;; More speed optimizations.
 
