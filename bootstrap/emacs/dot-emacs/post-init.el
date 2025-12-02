@@ -512,6 +512,59 @@
 (setq auto-save-interval 300)
 (setq auto-save-timeout 30)
 
+;; Dired.
+(use-package dired
+  :straight (:type built-in)
+  :custom
+  (dired-mouse-drag-files t)
+  (dired-free-space nil)
+  (dired-kill-when-opening-new-dired-buffer t)
+  (dired-listing-switches "-l --almost-all --human-readable --group-directories-first --no-group"))
+
+(use-package image-dired
+  :straight (:type built-in)
+  :custom (image-dired-thumbnail-storage 'standard))
+
+(use-package dirvish
+  :commands (dirvish dirvish-dwim dirvish-dispatch dirvish-override-dired-mode)
+  :bind
+  (("C-c f" . dirvish-dwim)
+   :map dirvish-mode-map               ; Dirvish inherits `dired-mode-map'
+   (";"   . dired-up-directory)        ; So you can adjust `dired' bindings here
+   ("?"   . dirvish-dispatch)          ; [?] a helpful cheatsheet
+   ("a"   . dirvish-setup-menu)        ; [a]ttributes settings:`t' toggles mtime, `f' toggles fullframe, etc.
+   ("f"   . dirvish-file-info-menu)    ; [f]ile info
+   ("o"   . dirvish-quick-access)      ; [o]pen `dirvish-quick-access-entries'
+   ("s"   . dirvish-quicksort)         ; [s]ort flie list
+   ("r"   . dirvish-history-jump)      ; [r]ecent visited
+   ("l"   . dirvish-ls-switches-menu)  ; [l]s command flags
+   ("v"   . dirvish-vc-menu)           ; [v]ersion control commands
+   ("*"   . dirvish-mark-menu)
+   ("y"   . dirvish-yank-menu)
+   ("N"   . dirvish-narrow)
+   ("^"   . dirvish-history-last)
+   ("TAB" . dirvish-subtree-toggle)
+   ("M-f" . dirvish-history-go-forward)
+   ("M-b" . dirvish-history-go-backward)
+   ("M-e" . dirvish-emerge-menu))
+  :custom
+  (dirvish-quick-access-entries ; It's a custom option, `setq' won't work
+   '(("h" "~/"                          "Home")
+     ("d" "~/Downloads/"                "Downloads")
+     ("a" "~/work/ponyai/.sub-repos"    "ponyai")
+     ("b" "~/work/ponyai1/.sub-repos"   "ponyai1")
+     ("c" "~/work/ponyai2/.sub-repos"   "ponyai2")))
+  :init
+  (with-eval-after-load 'dired
+    (dirvish-override-dired-mode)))
+
+(use-package ibuffer  ;; builtin
+  :straight (:type built-in)
+  :bind
+  (("C-x C-b" . ibuffer))
+  :custom
+  (ibuffer-default-sorting-mode 'filename/process))
+
 ;; Visual cues.
 (setq show-trailing-whitespace t)
 (add-hook 'prog-mode 'display-line-numbers-mode)
