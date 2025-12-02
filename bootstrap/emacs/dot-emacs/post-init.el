@@ -327,7 +327,7 @@
 ;; by providing additional backends through completion-at-point-functions.
 (use-package cape
   :commands (cape-dabbrev cape-file cape-elisp-block)
-  :bind ("C-c p" . cape-prefix-map)
+  :bind ("C-c c" . cape-prefix-map)
   :init
   ;; Add to the global default value of `completion-at-point-functions' which is
   ;; used by `completion-at-point'.
@@ -608,13 +608,6 @@
   (with-eval-after-load 'dired
     (dirvish-override-dired-mode)))
 
-(use-package ibuffer  ;; builtin
-  :straight (:type built-in)
-  :bind
-  (("C-x C-b" . ibuffer))
-  :custom
-  (ibuffer-default-sorting-mode 'filename/process))
-
 ;; Visual cues.
 (add-hook
  'prog-mode-hook
@@ -649,6 +642,50 @@
   (magit-post-refresh-hook . diff-hl-magit-post-refresh)
   :config
   (diff-hl-flydiff-mode))
+
+;; Project management.
+
+(use-package find-file
+  :straight (:type built-in)
+  :custom
+  ;; (ff-ignore-include t)
+  (cc-other-file-alist
+   ;; modified so that .h is the first item, which will be created when not found
+   `((,(rx "." (or "c" "cc" "c++" "cpp" "cxx" "CC" "C" "C++" "CPP" "CXX") eos)
+      (".h" ".hh" ".hpp" ".hxx" ".H" ".HPP" ".HH"))
+     (,(rx "." (or "h" "hh" "hpp" "hxx" "H" "HPP" "HH") eos)
+      (".cc" ".c" ".cxx" ".cpp" ".c++" ".CC" ".C" ".CXX" ".CPP" ".C++")))))
+
+(use-package project
+  :straight (:type built-in)
+  :demand t
+  :bind
+  ;; I don't use this for ~mark-page~ and this "conflicts" with ~C-x p~ in ~meow-mode~, so unbind it.
+  (("C-x C-p" . nil)
+   :map project-prefix-map
+   ("f" . consult-fd)
+   ("h" . ff-find-other-file)
+   ("/" . consult-ripgrep))
+  :custom
+  (project-mode-line t))
+
+(use-package ibuffer  ;; builtin
+  :straight (:type built-in)
+  :bind
+  (("C-x C-b" . ibuffer))
+  :custom
+  (ibuffer-default-sorting-mode 'filename/process))
+
+;; (use-package bufler
+;;   :bind
+;;   (("C-x C-b" . bufler-switch-buffer))
+;;   :commands (bufler)
+;;   :hook
+;;   (after-init . bufler-mode)
+;;   (after-init . bufler-workspace-workspaces-as-tabs-mode)
+;;   :config
+;;   ;; Somehow the autoload for bufler-workspace-workspaces-as-tabs-mode is incorrect.
+;;   (require 'bufler-workspace-tabs))
 
 ;; More speed optimizations.
 
