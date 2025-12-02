@@ -259,6 +259,9 @@
     '(";F" . save-some-buffers)
     '(";d" . meow-query-replace-regexp)
     ;; ... etc
+    ;; prefix z
+    '("zs" . save-buffer)
+    '("zS" . save-some-buffers)
 
     ;; ignore escape
     '("<escape>" . meow-cancel-selection))
