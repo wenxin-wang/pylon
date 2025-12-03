@@ -777,6 +777,21 @@
   (org-roam-extract-new-file-path "%<%Y%m%dT%H%M%S>-${slug}.org")
   (org-roam-directory (file-truename "~/pylon")))
 
+;; Programming.
+
+;; Tree-sitter in Emacs is an incremental parsing system introduced in Emacs 29
+;; that provides precise, high-performance syntax highlighting. It supports a
+;; broad set of programming languages, including Bash, C, C++, C#, CMake, CSS,
+;; Dockerfile, Go, Java, JavaScript, JSON, Python, Rust, TOML, TypeScript, YAML,
+;; Elisp, Lua, Markdown, and many others.
+(use-package treesit-auto
+  :hook
+  (emacs-startup . global-treesit-auto-mode)
+  :custom
+  (treesit-auto-install 'prompt)
+  :config
+  (treesit-auto-add-to-auto-mode-alist 'all))
+
 ;; More speed optimizations.
 
 ;; Copied from
