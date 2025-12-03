@@ -585,7 +585,7 @@
 (use-package dirvish
   :commands (dirvish dirvish-dwim dirvish-dispatch dirvish-override-dired-mode)
   :bind
-  (("C-c f" . dirvish-dwim)
+  (("C-c D" . dirvish-dwim)
    :map dirvish-mode-map               ; Dirvish inherits `dired-mode-map'
    (";"   . dired-up-directory)        ; So you can adjust `dired' bindings here
    ("?"   . dirvish-dispatch)          ; [?] a helpful cheatsheet
@@ -724,6 +724,58 @@
   ;; `file-name-handler-alist` at depth 101 during `emacs-startup-hook`.)
   (add-hook 'emacs-startup-hook #'easysession-load-including-geometry 102)
   (add-hook 'emacs-startup-hook #'easysession-save-mode 103))
+
+;; Org.
+
+;; Org mode is a major mode designed for organizing notes, planning, task
+;; management, and authoring documents using plain text with a simple and
+;; expressive markup syntax. It supports hierarchical outlines, TODO lists,
+;; scheduling, deadlines, time tracking, and exporting to multiple formats
+;; including HTML, LaTeX, PDF, and Markdown.
+(use-package org
+  :straight (:type built-in)
+  :commands (org-mode org-version)
+  :mode
+  ("\\.org\\'" . org-mode)
+  :custom
+  (org-adapt-indentation nil)
+  (org-edit-src-content-indentation 0)
+  (org-id-method 'ts)
+  (org-id-ts-format "%Y%m%dT%H%M%S")
+  (org-download-screenshot-method "flameshot gui --raw > %s")
+  (org-src-preserve-indentation t)
+  (org-fontify-done-headline t)
+  (org-fontify-todo-headline t)
+  (org-fontify-whole-heading-line t)
+  (org-fontify-quote-and-verse-blocks t))
+
+(use-package org-journal
+  :bind ("C-c n j" . org-journal-new-entry)
+  :custom
+  (org-journal-dir (file-truename "~/pylon/journals/"))
+  (org-journal-date-prefix "#+TITLE: ")
+  (org-journal-date-format "%A, %B %d %Y"))
+
+(use-package org-roam
+  :init
+  (with-eval-after-load
+      'org
+    (org-roam-db-autosync-mode))
+  :bind
+  ("C-c n c" . org-roam-capture)
+  ("C-c n d" . org-roam-dailies-goto-today)
+  ("C-c n g" . org-roam-graph)
+  ("C-c n f" . org-roam-node-find)
+  ("C-c n i" . org-roam-node-insert)
+  :custom
+  (org-roam-capture-templates
+   '(("d" "default" plain "%?" :target
+      (file+head
+       "%<%Y%m%dT%H%M%S>-${slug}.org"
+       ":PROPERTIES:\n:ID:       %(car (split-string (file-name-nondirectory (org-roam-capture--get :new-file)) \"-\"))\n:END:\n#+title: ${title}\n")
+      :unnarrowed t)))
+  (org-roam-extract-new-file-path "%<%Y%m%dT%H%M%S>-${slug}.org")
+  (org-roam-directory (file-truename "~/pylon")))
 
 ;; More speed optimizations.
 
