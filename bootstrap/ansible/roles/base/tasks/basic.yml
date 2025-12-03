@@ -49,6 +49,23 @@
       - wget
     state: present
 
+- name: Install basic packages for Archlinux
+  when: ansible_facts['distribution'] == 'Archlinux'
+  become: true
+  ansible.builtin.package:
+    name:
+      - fd
+    state: present
+
+# Ubuntu's fd-find is too old for ~consult-fd~, use nix instead.
+# - name: Install basic packages for Debian
+#   when: ansible_os_family == "Debian"
+#   become: true
+#   ansible.builtin.package:
+#     name:
+#       - fd-find
+#     state: present
+
 - name: Setup cron for Archlinux
   when: ansible_facts['distribution'] == 'Archlinux'
   become: true
