@@ -55,15 +55,25 @@
         - init.el
         - early-init.el
 
+    - set_fact:
+        dot_emacs_dir: "{{ (lookup('env', 'HOME'), 'pylon/bootstrap/emacs/dot-emacs') | path_join }}"
+
     - name: Find local dot-emacs files
       ansible.builtin.find:
-        paths: "~/pylon/bootstrap/emacs/dot-emacs"
+        paths: "{{ dot_emacs_dir }}"
         file_type: file
+        recurse: true
       register: dot_emacs_files
+
+    - name: Ensure parent directory exists
+      ansible.builtin.file:
+        path: "~/.config/emacs/{{ item.path | relpath(dot_emacs_dir) | dirname }}"
+        state: directory
+      loop: "{{ dot_emacs_files.files }}"
 
     - name: Check if dst files exist
       ansible.builtin.stat:
-        path: "~/.config/emacs/{{ item.path | basename }}"
+        path: "~/.config/emacs/{{ item.path | relpath(dot_emacs_dir) }}"
       loop: "{{ dot_emacs_files.files }}"
       register: dot_emacs_files_stat
 
@@ -71,7 +81,7 @@
       when: not dot_emacs_files_stat.results[idx].stat.exists
       ansible.builtin.file:
         src: "{{ item.path }}"
-        dest: "~/.config/emacs/{{ item.path | basename }}"
+        dest: "~/.config/emacs/{{ item.path | relpath(dot_emacs_dir) }}"
         state: link
       loop: "{{ dot_emacs_files.files }}"
       loop_control:
