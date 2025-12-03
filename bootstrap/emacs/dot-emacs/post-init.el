@@ -682,6 +682,7 @@
    ("h" . ff-find-other-file)
    ("/" . consult-ripgrep))
   :custom
+  (project-vc-extra-root-markers '(".projectile" ".project"))
   (project-mode-line t))
 
 (use-package ibuffer  ;; builtin
@@ -804,7 +805,19 @@
 (use-package lsp-mode
   :init
   (setq lsp-keymap-prefix "C-c l")
-  :commands (lsp lsp-defer))
+  :commands (lsp lsp-deferred))
+
+(use-package lsp-pyright
+  :custom
+  (lsp-pyright-multi-root nil)
+  (lsp-pyright-langserver-command "pyright")
+  :hook
+  (python-base-mode
+   .
+   (lambda ()
+     (require 'lsp-pyright)
+     (setq lsp-enable-file-watchers nil)
+     (lsp-deferred))))
 
 (use-package jsonnet-mode)
 
