@@ -615,12 +615,20 @@
   (with-eval-after-load 'dired
     (dirvish-override-dired-mode)))
 
-;; Visual cues.
+;; Visual cues & general editor config.
 (add-hook
  'prog-mode-hook
  (lambda ()
    (display-line-numbers-mode)
    (setq show-trailing-whitespace t)))
+
+(blackout 'display-line-numbers-mode)
+(blackout 'visual-line-mode)
+
+(custom-set-variables
+ ;; editing
+ '(truncate-lines t)
+ '(tab-width 4))
 
 ;; (use-package whitespace
 ;;   :straight (:type built-in)
@@ -701,6 +709,7 @@
 ;; manage Emacs editing sessions and utilizes built-in Emacs functions to
 ;; persist and restore frames.
 (use-package easysession
+  :blackout easysession-save-mode
   :commands (easysession-switch-to
              easysession-save-as
              easysession-save-mode
@@ -714,8 +723,8 @@
   ;; Key mappings:
   ;; C-c l for switching sessions
   ;; and C-c s for saving the current session
-  ("C-c l" . 'easysession-switch-to)
-  ("C-c s" . 'easysession-save-as)
+  ("C-c s l" . 'easysession-switch-to)
+  ("C-c s s" . 'easysession-save-as)
 
   :init
   ;; The depth 102 and 103 have been added to to `add-hook' to ensure that the
@@ -792,6 +801,34 @@
   :config
   (treesit-auto-add-to-auto-mode-alist 'all))
 
+(use-package lsp-mode
+  :init
+  (setq lsp-keymap-prefix "C-c l")
+  :commands (lsp lsp-defer))
+
+(use-package jsonnet-mode)
+
+(use-package google-c-style
+  :demand t
+  :config (c-add-style "Google" google-c-style))
+
+(use-package eldoc
+  :blackout t
+  :straight (:type built-in))
+
+(use-package dtrt-indent
+  :blackout t
+  :hook (prog-mode . dtrt-indent-mode)
+  :config
+  (add-to-list 'dtrt-indent-hook-mapping-list
+               '(cmake-mode default cmake-tab-width)))
+
+(use-package aggressive-indent
+  :blackout t
+  :commands aggressive-indent-mode
+  :hook
+  (emacs-lisp-mode . aggressive-indent-mode))
+
 ;; More speed optimizations.
 
 ;; Copied from
@@ -803,7 +840,7 @@
 ;; Ensure adding the following compile-angel code at the very beginning
 ;; of your `~/.emacs.d/post-init.el` file, before all other packages.
 (use-package compile-angel
-  :blackout t
+  :blackout compile-angel-on-load-mode
   :demand t
   :custom
   ;; Set `compile-angel-verbose` to nil to suppress output from compile-angel.
