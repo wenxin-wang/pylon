@@ -38,7 +38,8 @@
 (use-package no-littering
   :demand t
   :config
-  (setq custom-file (expand-file-name "custom.el" no-littering-etc-directory)))
+  (setq custom-file (expand-file-name "custom.el" no-littering-etc-directory))
+  (no-littering-theme-backups))
 
 ;; Basic UI.
 
@@ -97,6 +98,12 @@
   (meow-mode . (lambda ()
                  (when (and (not (minibufferp)) (not (derived-mode-p 'special-mode)))
                    (repeat-fu-mode)))))
+
+;; Better undo.
+(use-package undo-tree
+  :blackout t
+  :hook
+  (after-init . global-undo-tree-mode))
 
 ;; Modal editing.
 (use-package meow
@@ -246,8 +253,8 @@
     '("r" . meow-append)
     '("R" . meow-open-below)
 
-    '("u" . undo-only)
-    '("U" . undo-redo)
+    '("u" . undo-tree-undo)
+    '("U" . undo-tree-redo)
 
     '("b" . open-line)
     '("B" . split-line)
