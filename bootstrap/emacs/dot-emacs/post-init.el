@@ -41,6 +41,10 @@
   (setq custom-file (expand-file-name "custom.el" no-littering-etc-directory))
   (no-littering-theme-backups))
 
+;; Patches
+(use-package el-patch
+  :demand t)
+
 ;; Basic UI.
 
 (when (display-graphic-p)
@@ -104,6 +108,48 @@
   :blackout t
   :hook
   (after-init . global-undo-tree-mode))
+
+;; Redefine pop-global-mark so that we can rotate in another
+;; direction.
+(use-package simple
+  :straight (:type built-in)
+  :config/el-patch
+  (defun pop-global-mark ((el-patch-add N))
+    "Pop off global mark ring and jump to the top location."
+    (interactive (el-patch-add "P"))
+    ;; Pop entries that refer to non-existent buffers.
+    (while (and global-mark-ring (not (marker-buffer (car global-mark-ring))))
+      (setq global-mark-ring (cdr global-mark-ring)))
+    (or global-mark-ring
+        (error "No global mark set"))
+    ;; (message "pop-global-mark %s %s" N global-mark-ring)
+    (let* ((el-patch-add
+             (head (if (not N)
+                       (list (car global-mark-ring))
+                     (last global-mark-ring)))
+             (remaining (if (not N)
+                            (cdr global-mark-ring)
+                          (butlast global-mark-ring))))
+           (marker
+            (car (el-patch-swap global-mark-ring head)))
+           (buffer (marker-buffer marker))
+           (position (marker-position marker)))
+      (setq global-mark-ring
+            (el-patch-swap
+              (nconc (cdr global-mark-ring)
+    			     (list (car global-mark-ring)))
+              (if (not N)
+                  (nconc remaining head)
+                (nconc head remaining))))
+      (set-buffer buffer)
+      (or (and (>= position (point-min))
+               (<= position (point-max)))
+          (if widen-automatically
+              (widen)
+            (error "Global mark position is outside accessible part of buffer %s"
+                   (buffer-name buffer))))
+      (goto-char position)
+      (switch-to-buffer buffer))))
 
 ;; Modal editing.
 (use-package meow
@@ -277,12 +323,17 @@
 
     ;; prefix g
     '("gl" . meow-goto-line)
-    '("gi" . pop-global-mark)
+    '("gi" .
+      (lambda () (interactive)
+        (setq current-prefix-arg '(4)) ; C-u
+        (call-interactively 'pop-global-mark)))
+    '("go" . pop-global-mark)
+    '("gO" . meow-pop-to-global-mark)
 
     ;; ignore escape
     '("<escape>" . meow-cancel-selection))
   (meow-global-mode))
-
+(message "%s" global-mark-ring)
 (use-package avy
   :commands (avy-goto-char-timer)
   :custom
@@ -627,7 +678,8 @@
 (add-hook
  'prog-mode-hook
  (lambda ()
-   (display-line-numbers-mode)
+   ;; (display-line-numbers-mode)
+   (toggle-truncate-lines 0)
    (setq show-trailing-whitespace t)))
 
 (blackout 'display-line-numbers-mode)
