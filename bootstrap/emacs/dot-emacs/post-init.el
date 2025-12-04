@@ -902,6 +902,14 @@
   :hook
   (emacs-lisp-mode . aggressive-indent-mode))
 
+(use-package apheleia
+  :hook (emacs-startup . apheleia-global-mode)
+  :config
+  (setf (alist-get 'python-mode apheleia-mode-alist)
+        '(ruff-isort ruff))
+  (setf (alist-get 'python-ts-mode apheleia-mode-alist)
+        '(ruff-isort ruff)))
+
 ;; More speed optimizations.
 
 ;; Copied from
