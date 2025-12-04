@@ -232,6 +232,7 @@
 
     '("f" . meow-till)
     '("F" . meow-find)
+    '("z" . avy-goto-char-timer)
 
     '("m" . meow-beginning-of-thing)
     '("," . meow-end-of-thing)
@@ -276,10 +277,17 @@
 
     ;; prefix g
     '("gl" . meow-goto-line)
+    '("gi" . pop-global-mark)
 
     ;; ignore escape
     '("<escape>" . meow-cancel-selection))
   (meow-global-mode))
+
+(use-package avy
+  :commands (avy-goto-char-timer)
+  :custom
+  (avy-style 'pre)
+  (avy-timeout-seconds 0.8))
 
 ;; Clipboard.
 (setq save-interprogram-paste-before-kill t)
