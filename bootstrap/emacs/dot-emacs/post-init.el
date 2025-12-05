@@ -736,6 +736,20 @@
   :config
   (diff-hl-flydiff-mode))
 
+;; Terminal emulator.
+
+(use-package eat
+  :straight (eat :type git :host codeberg :repo "akib/emacs-eat"
+                 :fork (:host github :repo "blahgeek/emacs-eat" :branch "dev"))
+  :custom
+  (eat-kill-buffer-on-exit t)
+  ;; disable the default process-kill-buffer-query-function
+  ;; see above my/term-process-kill-buffer-query-function
+  (eat-query-before-killing-running-terminal nil)
+  (eat-term-scrollback-size (* 64 10000))  ;; chars. ~10k lines?
+  (eat-term-name "xterm-256color")
+  :commands (eat eat-mode eat-exec))
+
 ;; Project management.
 
 (use-package find-file
