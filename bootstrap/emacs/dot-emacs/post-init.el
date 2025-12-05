@@ -113,6 +113,9 @@
 ;; direction.
 (use-package simple
   :straight (:type built-in)
+  :blackout column-number-mode
+  :hook
+  (emacs-startup . column-number-mode)
   :config/el-patch
   (defun pop-global-mark ((el-patch-add N))
     "Pop off global mark ring and jump to the top location."
