@@ -917,6 +917,9 @@
   (setf (alist-get 'python-ts-mode apheleia-mode-alist)
         '(ruff-isort ruff)))
 
+(use-package nix-mode
+  :mode "\\.nix\\'")
+
 ;; More speed optimizations.
 
 ;; Copied from
