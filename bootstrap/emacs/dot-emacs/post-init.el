@@ -167,6 +167,9 @@
   (add-to-list
    'meow-char-thing-table
    '(?\{ . curly))
+  (add-to-list
+   'meow-char-thing-table
+   '(?\' . string))
 
   ;; Fix digit-arguments.
   (eval-when-compile
