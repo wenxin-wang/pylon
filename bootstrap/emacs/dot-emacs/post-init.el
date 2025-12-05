@@ -962,7 +962,6 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
    .
    (lambda ()
      (require 'lsp-pyright)
-     (setq lsp-enable-file-watchers nil)
      (lsp-deferred))))
 
 (use-package jsonnet-mode)
