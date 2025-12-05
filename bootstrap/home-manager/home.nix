@@ -7,12 +7,13 @@ let
     config.allowUnfree = true;
     overlays = [];
   };
+  isOldUbuntu = builtins.getEnv "DESKTOP_SESSION" == "ubuntu";
 in
 {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
-  home.username = "wenxin";
-  home.homeDirectory = "/home/wenxin";
+  home.username = builtins.getEnv "USER";
+  home.homeDirectory = builtins.getEnv "HOME";
 
   # This value determines the Home Manager release that your configuration is
   # compatible with. This helps avoid breakage when a new Home Manager release
@@ -25,29 +26,25 @@ in
 
   # The home.packages option allows you to install Nix packages into your
   # environment.
-  home.packages = [
-    # # Adds the 'hello' command to your environment. It prints a friendly
-    # # "Hello, world!" when run.
-    # pkgs.hello
-
-    pkgs.emacs
-    pkgs.fd
-    pkgs.jsonnet-language-server
-    pkgs.pyright
-    pkgs.ruff
-    # # It is sometimes useful to fine-tune packages, for example, by applying
-    # # overrides. You can do that directly here, just don't forget the
-    # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
-    # # fonts?
-    # (pkgs.nerdfonts.override { fonts = [ "FantasqueSansMono" ]; })
-
+  home.packages = with pkgs; [
+  # https://wiki.nixos.org/wiki/Fonts#Patching_nerdfonts_into_fonts
+    (sarasa-gothic.overrideAttrs (o: {
+      nativeBuildInputs = [ pkgs.unzip pkgs.nerd-font-patcher ];
+      postInstall = ''
+    mkdir -p $out/share/fonts/truetype/{sarasa-gothic,sarasa-gothic-nerd}
+    mv $out/share/fonts/truetype/*.ttc $out/share/fonts/truetype/sarasa-gothic/
+    for f in $out/share/fonts/truetype/sarasa-gothic/*.ttc; do
+      nerd-font-patcher --complete --outputdir $out/share/fonts/truetype/sarasa-gothic-nerd/ $f
+    done
+  '';
+    }))
     # # You can also create simple shell scripts directly inside your
     # # configuration. For example, this adds a command 'my-hello' to your
     # # environment:
     # (pkgs.writeShellScriptBin "my-hello" ''
     #   echo "Hello, ${config.home.username}!"
     # '')
-    (pkgs.rustPlatform.buildRustPackage rec {
+    (rustPlatform.buildRustPackage rec {
       pname = "emacs-lsp-booster";
       version = "5f702a26";
       src = pkgs.fetchFromGitHub {
@@ -59,7 +56,15 @@ in
       cargoHash = "sha256-qchwxW3KITQcv6EFzR2BSISWB2aTW9EdCN/bx5m0l48=";
       doCheck = false;
     })
-  ];
+  ]
+  ++
+  (if isOldUbuntu then with pkgs; [
+    emacs
+    fd
+    jsonnet-language-server
+    pyright
+    ruff
+  ] else []);
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
@@ -95,6 +100,10 @@ in
   home.sessionVariables = {
     # EDITOR = "emacs";
   };
+
+  services.emacs.enable = isOldUbuntu;
+
+  fonts.fontconfig.enable = true;
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;

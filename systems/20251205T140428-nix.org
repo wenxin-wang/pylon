@@ -1,0 +1,41 @@
+:PROPERTIES:
+:ID:       20251205T140428
+:END:
+#+title: Nix
+
+Nix has much more packages than Guix. I plan to use it as a version control manager
+for Common Lisp, and other languages that lack proper version locking, as well as trying
+new languages & staff, so it's important that I can install new packages with ease.
+
+* Installation
+
+#+begin_src bash
+# Do not use TUNA, they have huge bandwidth pressure.
+sh <(curl -L https://mirrors.bfsu.edu.cn/nix/latest/install) --daemon
+cat <<EOF | sudo tee /etc/nix/nix.conf
+build-users-group = nixbld
+
+# Use mirror from SJTU & USTC.
+substituters = https://mirror.sjtu.edu.cn/nix-channels/store https://mirrors.ustc.edu.cn/nix-channels/store https://cache.nixos.org/
+
+# Flakes are everywhere, sooner or later we will need to enable it.
+experimental-features = nix-command flakes
+EOF
+sudo systemctl restart nix-daemon.service
+#+end_src
+
+
+* Home manager
+
+#+begin_src bash
+nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
+nix-channel --update
+nix-shell '<home-manager>' -A install
+ln -sf ~/pylon/bootstrap/home-manager ~/.config/home-manager
+#+end_src
+
+Need to add ~source $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh~ to ~.profile~.
+
+#+begin_src bash
+home-manager switch
+#+end_src
