@@ -87,14 +87,8 @@
       loop_control:
         index_var: idx
 
-    - name: Ensure emacs systemd user service existence for Debian family
-      when: ansible_os_family == "Debian"
-      become: true
-      ansible.builtin.copy:
-        src: emacs.service
-        dest: /etc/systemd/user/emacs.service
-
     - name: Enable emacs systemd user service
+      when: ansible_os_family != "Debian"
       ansible.builtin.systemd:
         name: emacs.service
         scope: user
