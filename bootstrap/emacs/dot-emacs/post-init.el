@@ -28,7 +28,8 @@
 ;; Byte-compilation requirements.
 (eval-when-compile
   (setq use-package-always-defer t)
-  (require 'use-package))
+  (require 'use-package)
+  (require 'cl-lib))
 
 ;; I don't care about this even when debugging, and it messes up with byte-compilation, so turn it off.
 (setq use-package-compute-statistics nil)
@@ -773,6 +774,57 @@
    ("f" . consult-fd)
    ("h" . ff-find-other-file)
    ("/" . consult-ripgrep))
+  :config
+  ;; I owe you so much, sire.
+  ;; https://github.com/blahgeek/emacs.d/blob/master/init.el#L1929C5-L1948C1
+  (add-to-list 'project-kill-buffer-conditions '(major-mode . eat-mode) 'append)
+
+  (defvar-local my/project-cache nil
+    "Cached result of `my/project-try'.
+nil means not cached;
+otherwise it should be '(dir . value). (value may be nil).
+dir is the directory of the buffer (param of my/project-try), when it's changed, the cache is invalidated")
+
+  (defun my/project-try (dir)
+    (cond
+     ((equal (car my/project-cache) dir)
+      (cdr my/project-cache))
+     ((file-remote-p dir)
+      nil)
+     (t
+      (let* ((try-markers '((".dir-locals.el" ".projectile" ".project" "WORKSPACE")
+                            (".git" ".svn")))
+             (res (cl-loop for markers in try-markers
+                           for root = (locate-dominating-file
+                                       dir
+                                       (lambda (x)
+                                         (seq-some
+                                          (lambda (marker) (file-exists-p (expand-file-name marker x)))
+                                          markers)))
+                           when root return (cons 'my/proj root))))
+        (setq-local my/project-cache (cons dir res))  ;; res may be nil, but also cache
+        res))))
+
+  ;; NOTE: Remove the default #'project-try-vc! Only keep blahgeek's version. The default implementation is slow.
+  ;; bug#78545
+  (setq project-find-functions (list #'my/project-try))
+
+  (cl-defmethod project-root ((project (head my/proj)))
+    (cdr project))
+
+  (cl-defmethod project-name ((project (head my/proj)))
+    ;; support for pony style project name (.sub-repos)
+    (or (let* ((dir (project-root project))
+               (parts (nreverse (string-split dir "/" t))))
+          (when (and (length> parts 1)
+                     (string-prefix-p "." (car parts)))
+            (format "%s/%s" (cadr parts) (car parts))))
+        (cl-call-next-method)))
+
+  (defun my/current-project-root ()
+    (when-let* ((p (project-current)))
+      (project-root p)))
+
   :custom
   (project-vc-extra-root-markers '(".projectile" ".project"))
   (project-mode-line t))
