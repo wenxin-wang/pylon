@@ -156,6 +156,8 @@
   ;; Somehow ~meow-global-mode~ does not trigger evaluation
   ;; of :config block.
   :demand t
+  :custom
+  (meow-expand-exclude-mode-list '())
   :config
   (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
   (add-to-list
@@ -336,7 +338,7 @@
     ;; ignore escape
     '("<escape>" . meow-cancel-selection))
   (meow-global-mode))
-(message "%s" global-mark-ring)
+
 (use-package avy
   :commands (avy-goto-char-timer)
   :custom
@@ -820,7 +822,9 @@
   (org-fontify-done-headline t)
   (org-fontify-todo-headline t)
   (org-fontify-whole-heading-line t)
-  (org-fontify-quote-and-verse-blocks t))
+  (org-fontify-quote-and-verse-blocks t)
+  :config
+  (require 'org-tempo))
 
 (use-package org-journal
   :bind ("C-c n j" . org-journal-new-entry)
