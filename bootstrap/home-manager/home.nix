@@ -27,17 +27,18 @@ in
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = with pkgs; [
-  # https://wiki.nixos.org/wiki/Fonts#Patching_nerdfonts_into_fonts
-    (sarasa-gothic.overrideAttrs (o: {
-      nativeBuildInputs = [ pkgs.unzip pkgs.nerd-font-patcher ];
-      postInstall = ''
-    mkdir -p $out/share/fonts/truetype/{sarasa-gothic,sarasa-gothic-nerd}
-    mv $out/share/fonts/truetype/*.ttc $out/share/fonts/truetype/sarasa-gothic/
-    for f in $out/share/fonts/truetype/sarasa-gothic/*.ttc; do
-      nerd-font-patcher --complete --outputdir $out/share/fonts/truetype/sarasa-gothic-nerd/ $f
-    done
-  '';
-    }))
+    # https://wiki.nixos.org/wiki/Fonts#Patching_nerdfonts_into_fonts
+    #   (sarasa-gothic.overrideAttrs (o: {
+    #     nativeBuildInputs = [ pkgs.unzip pkgs.nerd-font-patcher ];
+    #     postInstall = ''
+    #   mkdir -p $out/share/fonts/truetype/{sarasa-gothic,sarasa-gothic-nerd}
+    #   mv $out/share/fonts/truetype/*.ttc $out/share/fonts/truetype/sarasa-gothic/
+    #   for f in $out/share/fonts/truetype/sarasa-gothic/*.ttc; do
+    #     nerd-font-patcher --complete --outputdir $out/share/fonts/truetype/sarasa-gothic-nerd/ $f
+    #   done
+    # '';
+    #   }))
+    nerd-fonts.ubuntu-mono
     # # You can also create simple shell scripts directly inside your
     # # configuration. For example, this adds a command 'my-hello' to your
     # # environment:

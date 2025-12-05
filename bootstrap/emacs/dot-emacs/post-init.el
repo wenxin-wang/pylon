@@ -678,6 +678,16 @@
      ("a" "~/work/ponyai/.sub-repos"    "ponyai")
      ("b" "~/work/ponyai1/.sub-repos"   "ponyai1")
      ("c" "~/work/ponyai2/.sub-repos"   "ponyai2")))
+  (dirvish-mode-line-format
+   '(:left (sort symlink) :right (omit yank index)))
+  (dirvish-mode-line-height 10)
+  (dirvish-attributes
+   '(nerd-icons file-time file-size collapse subtree-state vc-state git-msg))
+  (dirvish-subtree-state-style 'nerd)
+  (dirvish-path-separators (list
+                            (format "  %s " (nerd-icons-codicon "nf-cod-home"))
+                            (format "  %s " (nerd-icons-codicon "nf-cod-root_folder"))
+                            (format " %s " (nerd-icons-faicon "nf-fa-angle_right"))))
   :init
   (with-eval-after-load 'dired
     (dirvish-override-dired-mode)))
@@ -982,5 +992,48 @@
         (agenda-date . (variable-pitch regular 1.3))
         (t . (regular 1.15))))
 (setq modus-themes-common-palette-overrides nil)
+
+(use-package persist-text-scale
+  :commands (persist-text-scale-mode
+             persist-text-scale-restore)
+  :hook (after-init . persist-text-scale-mode)
+  :custom
+  (text-scale-mode-step 1.07)
+  :config
+  ;; I'm so used to it, it surprised me...
+  ;; (set-frame-font "Sarasa Mono SC 12" nil t)
+  ;; It seems that if I set-frame-font here, then the
+  ;; daemon would give very small font size for emacsclient.
+  ;; (set-frame-font "UbuntuMono Nerd Font Mono 12" nil t)
+  (add-to-list 'default-frame-alist '(font . "UbuntuMono Nerd Font Mono 12")))
+
+(use-package nerd-icons
+  :demand t
+  :custom
+  ;; The Nerd Font you want to use in GUI
+  ;; "Symbols Nerd Font Mono" is the default and is recommended
+  ;; but you can use any other Nerd Font if you want
+  (nerd-icons-font-family "UbuntuMono Nerd Font Mono"))
+
+(use-package nerd-icons-completion
+  :hook
+  (emacs-startup . nerd-icons-completion-mode)
+  (marginalia-mode-hook . nerd-icons-completion-marginalia-setup))
+
+(use-package nerd-icons-corfu
+  :init
+  (with-eval-after-load 'corfu
+    (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter)))
+
+(use-package nerd-icons-mode-line
+  :straight (nerd-icons-mode-line
+             :type git
+             :host github
+             :repo "grolongo/nerd-icons-mode-line")
+  :custom
+  (nerd-icons-mode-line-v-adjust 0.1) ; default value
+  (nerd-icons-mode-line-size 1.0) ; default value
+  :hook
+  (emacs-startup . nerd-icons-mode-line-global-mode))
 
 (load custom-file 'noerror 'no-message)
