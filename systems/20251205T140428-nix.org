@@ -12,6 +12,8 @@ new languages & staff, so it's important that I can install new packages with ea
 #+begin_src bash
 # Do not use TUNA, they have huge bandwidth pressure.
 sh <(curl -L https://mirrors.bfsu.edu.cn/nix/latest/install) --daemon
+# Archlinux has nix package.
+sudo pacman -S nix
 cat <<EOF | sudo tee /etc/nix/nix.conf
 build-users-group = nixbld
 
@@ -22,6 +24,8 @@ substituters = https://mirror.sjtu.edu.cn/nix-channels/store https://mirrors.ust
 experimental-features = nix-command flakes
 EOF
 sudo systemctl restart nix-daemon.service
+nix-channel --add https://mirrors.ustc.edu.cn/nix-channels/nixpkgs-unstable nixpkgs
+nix-channel --update
 #+end_src
 
 
