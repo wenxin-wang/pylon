@@ -41,6 +41,7 @@ in
     nerd-fonts.ubuntu-mono
     protobuf
     mypy-protobuf
+    jsonnet-language-server
     # # You can also create simple shell scripts directly inside your
     # # configuration. For example, this adds a command 'my-hello' to your
     # # environment:
@@ -64,7 +65,7 @@ in
   (if isOldUbuntu then with pkgs; [
     emacs
     fd
-    jsonnet-language-server
+    prettier
     pyright
     ruff
   ] else []);
