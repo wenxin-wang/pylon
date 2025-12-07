@@ -29,7 +29,9 @@
 (eval-when-compile
   (setq use-package-always-defer t)
   (require 'use-package)
-  (require 'cl-lib))
+  (require 'cl-lib)
+  ;; For LSP
+  (setenv "LSP_USE_PLISTS" "true"))
 
 ;; I don't care about this even when debugging, and it messes up with byte-compilation, so turn it off.
 (setq use-package-compute-statistics nil)
@@ -949,9 +951,56 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
   (treesit-auto-add-to-auto-mode-alist 'all))
 
 (use-package lsp-mode
+  :blackout lsp-mode
   :init
+  (setenv "LSP_USE_PLISTS" "true")
   (setq lsp-keymap-prefix "C-c l")
-  :commands (lsp lsp-deferred))
+  :commands (lsp lsp-deferred)
+  :config
+  (unless lsp-use-plists
+    (error "`lsp-use-plists' is not set!"))
+  ;; I owe you so much, sire.
+  ;; https://github.com/blahgeek/emacs.d/blob/master/init.el#L3032C44-L3034C104
+  ;; https://emacs-lsp.github.io/lsp-mode/page/faq/
+  ;; forget the workspace folders for multi root servers so the workspace folders are added on demand
+  (define-advice lsp (:before (&rest _) ignore-multi-root)
+    "Ignore multi-root while starting lsp."
+    (eval '(setf (lsp-session-server-id->folders (lsp-session)) (ht))))
+
+  (defun lsp-booster--advice-json-parse (old-fn &rest args)
+    "Try to parse bytecode instead of json."
+    (or
+     (when (equal (following-char) ?#)
+       (let ((bytecode (read (current-buffer))))
+         (when (byte-code-function-p bytecode)
+           (funcall bytecode))))
+     (apply old-fn args)))
+  (advice-add (if (progn (require 'json)
+                         (fboundp 'json-parse-buffer))
+                  'json-parse-buffer
+                'json-read)
+              :around
+              #'lsp-booster--advice-json-parse)
+
+  (defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
+    "Prepend emacs-lsp-booster command to lsp CMD."
+    (let ((orig-result (funcall old-fn cmd test?)))
+      (if (and (not test?)                             ;; for check lsp-server-present?
+               (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
+               lsp-use-plists
+               (not (functionp 'json-rpc-connection))  ;; native json-rpc
+               (executable-find "emacs-lsp-booster"))
+          (progn
+            (when-let ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
+              (setcar orig-result command-from-exec-path))
+            (message "Using emacs-lsp-booster for %s!" orig-result)
+            (cons "emacs-lsp-booster" orig-result))
+        orig-result)))
+  (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
+
+  ;; this is mostly for bazel. to avoid jumping to bazel execroot
+  (define-advice lsp--uri-to-path (:filter-return (path) follow-symlink)
+    (file-truename path)))
 
 (use-package lsp-pyright
   :custom

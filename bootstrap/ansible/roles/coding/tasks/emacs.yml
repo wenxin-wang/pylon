@@ -94,3 +94,14 @@
         scope: user
         enabled: yes
         state: started
+
+- name: Linters & lsp
+  become: true
+  when: ansible_os_family != "Debian"
+  ansible.builtin.package:
+    name:
+      - prettier
+      - pyright
+      - ruff
+    state: present
+  
