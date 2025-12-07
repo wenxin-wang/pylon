@@ -42,6 +42,9 @@ in
     protobuf
     mypy-protobuf
     jsonnet-language-server
+
+    (dyalog.override { acceptLicense = true; })
+    ride
     # # You can also create simple shell scripts directly inside your
     # # configuration. For example, this adds a command 'my-hello' to your
     # # environment:
@@ -108,6 +111,8 @@ in
   services.emacs.enable = isOldUbuntu;
 
   fonts.fontconfig.enable = true;
+
+  targets.genericLinux.enable = pkgs.stdenv.isLinux;
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
