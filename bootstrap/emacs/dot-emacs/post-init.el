@@ -178,6 +178,9 @@
   (add-to-list
    'meow-char-thing-table
    '(?\' . string))
+  (add-to-list
+   'meow-char-thing-table
+   '(?m . buffer))
 
   ;; Fix digit-arguments.
   (eval-when-compile
