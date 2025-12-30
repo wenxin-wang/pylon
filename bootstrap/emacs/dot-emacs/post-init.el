@@ -1050,6 +1050,11 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
 (use-package nix-mode
   :mode "\\.nix\\'")
 
+;; AIs.
+
+(use-package agent-shell
+  :commands agent-shell)
+
 ;; More speed optimizations.
 
 ;; Copied from

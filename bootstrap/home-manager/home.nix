@@ -27,6 +27,12 @@ in
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = with pkgs; [
+    # AI.
+    aider-chat-full
+    claude-code
+    claude-code-acp
+    code-cursor
+
     # https://wiki.nixos.org/wiki/Fonts#Patching_nerdfonts_into_fonts
     #   (sarasa-gothic.overrideAttrs (o: {
     #     nativeBuildInputs = [ pkgs.unzip pkgs.nerd-font-patcher ];
