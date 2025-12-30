@@ -47,6 +47,8 @@ in
     nerd-fonts.ubuntu-mono
     protobuf
     mypy-protobuf
+
+    clang-tools
     jsonnet-language-server
 
     (dyalog.override { acceptLicense = true; })
