@@ -114,7 +114,13 @@ in
   #
   home.sessionVariables = {
     # EDITOR = "emacs";
-  };
+  }
+  //
+  (if isOldUbuntu then {
+    GTK_IM_MODULE = "ibus";
+    QT_IM_MODULE = "ibus";
+    XMODIFIERS = "@im=ibus";
+  } else {});
 
   services.emacs.enable = isOldUbuntu;
 
