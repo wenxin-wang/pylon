@@ -1,0 +1,32 @@
+:PROPERTIES:
+:ID:       20260102T213007
+:END:
+#+title: GPG
+
+概念很多，经常搞不明白
+
+[[https://rgoulter.com/blog/posts/programming/2022-06-10-a-visual-explanation-of-gpg-subkeys.html][可视化讲解 sub key 是什么]]。因为解密和签名是相同的操作，所以要限定 key 的功能以防止被诱骗解密。
+
+
+* Yubikey & Canokey
+
+直接用 yubikey 的配置教程来配置 Canokey。
+
+https://docs.canokeys.org/userguide/openpgp/
+
+https://github.com/drduh/YubiKey-Guide/tree/1ad37577db92726eadde4dc302a6f982ba7e82dc
+
+
+* Password store
+
+** 添加新 key
+
+https://github.com/getsops/sops/issues/1365
+
+直接重新 init，指定 old & key key，但是每个 key 结尾要带上叹号~!~。
+注意，GPG 默认的行为（用主 key 下最新的 sub key）是推荐的安全措施，所以如果要强行指定，
+需要三思。
+
+#+begin_src bash
+pass init $old_key1! $old_key2! $new_key!
+#+end_src
