@@ -53,7 +53,6 @@ in
 
     git-remote-gcrypt
 
-    clang-tools
     jsonnet-language-server
     # # You can also create simple shell scripts directly inside your
     # # configuration. For example, this adds a command 'my-hello' to your
@@ -81,6 +80,7 @@ in
     prettier
     pyright
     ruff
+    clang-tools
   ] else []);
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
