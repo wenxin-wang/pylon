@@ -11,8 +11,6 @@ handbooks) and references (reading materials).
 
 * Waypoints
 
-[[https://github.com/wenxin-wang][My Github profile]]
-
 [[./bootstrap]] contains code and instructions on how to reproduce the working environment.
 
 [[./museum]] contains things that belongs to the past.
@@ -25,6 +23,11 @@ be further sorted into topics that I am interested in, and then filed into
 think they should be fun to reread.
 
 [[./library]] is where I record references.
+
+** Projects
+
+- [[https://github.com/wenxin-wang][My Github profile]]
+- [[https://random-cs-hans.github.io/][计算机史料随译]]
 
 * Bootstrap
 
