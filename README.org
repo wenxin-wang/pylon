@@ -11,6 +11,8 @@ handbooks) and references (reading materials).
 
 * Waypoints
 
+Bookmarks: [[id:20250130T175049][Recent readings]].
+
 [[./bootstrap]] contains code and instructions on how to reproduce the working environment.
 
 [[./museum]] contains things that belongs to the past.

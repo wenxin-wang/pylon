@@ -3,6 +3,20 @@
 :END:
 #+title: readings
 
+* Recent
+
+** CS
+
+https://cpu.land/becoming-an-elf-lord
+
+** Math
+
+https://calculusmadeeasy.org/6.html
+
+** Languages
+
+https://mlochbaum.github.io/BQN/doc/syntax.html
+
 * Someday
 
 ** Emacs
@@ -20,8 +34,6 @@ https://letoverlambda.com/index.cl/guest/chap1.html
 ** Language design
 
 https://prescheme.org/references.html
-
-https://blog.stenmans.org/theBeamBook/#_how_to_read_this_book
 
 ** Compilers
 

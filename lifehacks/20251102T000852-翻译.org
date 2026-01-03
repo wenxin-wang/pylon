@@ -8,3 +8,11 @@
 https://belindoc.com/zh
 
 https://www.deepl.com/translator
+
+
+* 集成环境
+
+- https://github.com/Elilif/emacs-immersive-translate
+  - 受启发于现在已经闭源的 https://app.immersivetranslate.com/
+- [[https://github.com/sachac/subed][Emacs subed]]
+  - https://sachachua.com/blog/2025/01/improving-subed-vtt-parsing-using-dedicated-windows-in-emacs-training-my-intuition/

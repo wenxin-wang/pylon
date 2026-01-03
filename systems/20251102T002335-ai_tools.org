@@ -1,0 +1,14 @@
+:PROPERTIES:
+:ID:       20251102T002335
+:END:
+#+title: AI Tools
+
+* 集成平台
+
+https://dify.ai/
+
+* Emacs
+
+- https://github.com/milanglacier/minuet-ai.el 单纯的代码补全
+- https://github.com/xenodium/chatgpt-shell AI 集成交互环境
+- https://github.com/tninja/aider.el 目前同事推荐的集成交互环境，支持代码分析、生成和 Agent 交互（？）

@@ -964,6 +964,8 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
   (setenv "LSP_USE_PLISTS" "true")
   (setq lsp-keymap-prefix "C-c l")
   :commands (lsp lsp-deferred)
+  :hook
+  (c-ts-base-mode . lsp-deferred)
   :config
   (unless lsp-use-plists
     (error "`lsp-use-plists' is not set!"))

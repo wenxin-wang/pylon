@@ -1,0 +1,14 @@
+:PROPERTIES:
+:ID:       20260103T174509
+:END:
+#+title: Erlang
+
+* Beam VM
+
+[[https://github.com/erlang/otp][源码]]
+
+参考文献和一些对文献的注解 https://github.com/AlexanderKaraberov/Erlang-BEAM-Links ，有最权威的 [[https://blog.stenmans.org/theBeamBook/#_how_to_read_this_book][the BEAM book]]。
+                                                                                                               
+
+                                                                                                               
+                                                                                                               

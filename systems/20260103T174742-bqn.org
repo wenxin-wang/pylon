@@ -1,0 +1,8 @@
+:PROPERTIES:
+:ID:       20260103T174742
+:END:
+#+title: BQN
+
+[[https://mlochbaum.github.io/BQN/][BQN]] 是一门非常简洁的数组语言。我想学习它的语言设计和[[https://github.com/dzaima/CBQN][虚拟机实现]]。
+
+

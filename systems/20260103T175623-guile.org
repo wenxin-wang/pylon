@@ -1,0 +1,10 @@
+:PROPERTIES:
+:ID:       20260103T175623
+:END:
+#+title: Guile
+
+The Gnu Scheme.
+
+* VM
+
+https://dthompson.us/posts/optimizing-guile-scheme.html

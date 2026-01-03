@@ -1,0 +1,20 @@
+:PROPERTIES:
+:ID:       20260103T224056
+:END:
+#+title: 人机交互
+
+* 交互界面设计
+
+- https://worrydream.com/MediaForThinkingTheUnthinkable/
+
+* Moldable Development
+
+- [[https://book.gtoolkit.com/][Glamorous Toolkit]]
+- [[https://codeberg.org/mmontone/mold-desktop][Mold Desktop]]
+
+* 结构化文本编辑
+
+https://github.com/neomacs-project/neomacs
+
+https://github.com/phronmophobic/easel/ 意图集成数据展示等功能，我理解他也希望能用不同方式
+呈现相同的数据以给人启发，降低 GUI 的设计开发门槛。

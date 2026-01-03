@@ -1,0 +1,10 @@
+:PROPERTIES:
+:ID:       20260103T223144
+:END:
+#+title: Lisp
+
+我知道把 Scheme 和 CommonLisp 放到 Lisp 这一页是有争议的，但谁让这是一个个人 wiki 呢。
+
+* CommonLisp
+
+https://github.com/jscl-project/jscl

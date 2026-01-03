@@ -1,0 +1,30 @@
+:PROPERTIES:
+:ID:       20260103T222522
+:END:
+#+title: 计算机体系结构
+
+* 入门
+
+[[https://cpu.land/][Putting the “You” in CPU]]
+
+* Bootstrapping
+
+https://github.com/oriansj/stage0
+
+* 编译原理和框架
+
+** Non-JIT
+
+- [[https://ecs.openbrace.org/manual/manualse4.html#x9-80002.1][ECS]]
+- [[https://news.ycombinator.com/item?id=40346320][QBE]]
+  - [[https://news.ycombinator.com/item?id=25273907][QBE vs LLVM]]
+
+** JIT
+
+- [[https://github.com/vnmakarov/mir][MIR]]
+  - https://developers.redhat.com/blog/2020/01/20/mir-a-lightweight-jit-compiler-project
+- [[https://github.com/bytecodealliance/wasmtime/tree/main/cranelift][Cranelift]]
+
+* OS
+
+Lisps! https://gitlab.com/weinholt/loko https://github.com/froggey/Mezzano

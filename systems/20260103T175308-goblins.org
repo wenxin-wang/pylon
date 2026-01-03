@@ -1,0 +1,7 @@
+:PROPERTIES:
+:ID:       20260103T175308
+:END:
+#+title: Goblins
+
+[[https://spritely.institute/goblins/][A distributed object programming environment]]. It uses [[https://ocapn.org/][OCapN protocol]]. I think it should help create "structures" for
+communication, and it seems useful for "inter-process communication" across machines.
