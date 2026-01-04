@@ -7,8 +7,20 @@
 
 https://dify.ai/
 
+* Aider
+
+** Github Copilot 支持
+
+同事们说用 copilot.el 登录下就能获得 token，然后按 [[https://aider.chat/docs/llms/github.html#where-do-i-get-the-token][官方文档]] 用 OpenAI API 的方式去访问。实际这样用的话会遇到
+API 请求被拒绝的情况。
+
+实际 aider 用的 litellm 是支持 copilot 的，用 [[https://www.reddit.com/r/ChatGPTCoding/comments/1lk2mvv/aider_anyone_have_success_with_gh_copilot_oauth/][这里]] 和 [[https://github.com/Aider-AI/aider/issues/2227#issuecomment-3141551921][这里]] 推荐的配置直接就能用了，它自己会去发起申请 token
+的流程。
+
 * Emacs
 
+- https://github.com/tninja/aider.el 目前同事推荐的集成交互环境，支持代码分析、生成和 Agent 交互（？）
+
+** 其它
 - https://github.com/milanglacier/minuet-ai.el 单纯的代码补全
 - https://github.com/xenodium/chatgpt-shell AI 集成交互环境
-- https://github.com/tninja/aider.el 目前同事推荐的集成交互环境，支持代码分析、生成和 Agent 交互（？）

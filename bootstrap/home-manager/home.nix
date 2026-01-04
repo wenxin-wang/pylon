@@ -32,6 +32,9 @@ in
     claude-code
     claude-code-acp
     code-cursor
+    # TODO(wenxin): Maybe consider https://github.com/ericc-ch/copilot-api, it may
+    # expose more models as it mimics the behavior of the copilot VS Code plugin.
+    copilot-language-server
 
     # https://wiki.nixos.org/wiki/Fonts#Patching_nerdfonts_into_fonts
     #   (sarasa-gothic.overrideAttrs (o: {

@@ -1066,6 +1066,34 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
 
 ;; AIs.
 
+;; Github Copilot integration that uses copliot-language-server
+(use-package copilot
+  :straight (:host github :repo "copilot-emacs/copilot.el")
+  :commands copilot-mode copilot-completion)
+
+(use-package copilot-chat
+  :straight (:host github :repo "chep/copilot-chat.el" :files ("*.el"))
+  :after (request org markdown-mode)
+  :commands copilot-chat copilot-chat-display)
+
+(use-package gptel
+  :commands gptel gptel-send gptel-rewrite gptel-add gptel-add-file gptel-org-set-topic
+  :config
+  (if (file-exists-p "~/.config/github-copilot/apps.json")
+      (with-temp-buffer
+        (insert-file-contents "~/.config/github-copilot/apps.json")
+        (when (string-match-p "ponyai" (buffer-string))
+          (setq gptel-model 'claude-haiku-4.5
+                gptel-backend (gptel-make-gh-copilot "Copilot-Ponyai"))))))
+
+(use-package aider
+  :bind ("C-c a" . aider-transient-menu)
+  :config
+  (setq aider-args `("--config" ,(expand-file-name "~/.aider.conf.yml")))
+  ;; or use aider-transient-menu-2cols / aider-transient-menu-1col, for narrow screen
+  ;; add aider magit function to magit menu
+  (aider-magit-setup-transients))
+
 (use-package agent-shell
   :commands agent-shell)
 
