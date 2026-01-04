@@ -958,6 +958,11 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
   (add-to-list 'major-mode-remap-alist
                '(c-or-c++-mode . c-or-c++-ts-mode)))
 
+(use-package flycheck
+  :blackout global-flycheck-mode
+  :hook
+  (emacs-startup . global-flycheck-mode))
+
 (use-package lsp-mode
   :blackout lsp-mode
   :init
@@ -1011,6 +1016,8 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
   ;; this is mostly for bazel. to avoid jumping to bazel execroot
   (define-advice lsp--uri-to-path (:filter-return (path) follow-symlink)
     (file-truename path)))
+
+(use-package lsp-ui)
 
 (use-package lsp-pyright
   :custom
