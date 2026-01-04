@@ -47,7 +47,8 @@ in
     #   done
     # '';
     #   }))
-    nerd-fonts.ubuntu-mono
+    # nerd-fonts.ubuntu-mono
+    nerd-fonts.symbols-only
     protobuf
     mypy-protobuf
 

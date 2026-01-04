@@ -1159,27 +1159,29 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
         (t . (regular 1.15))))
 (setq modus-themes-common-palette-overrides nil)
 
-(use-package persist-text-scale
-  :commands (persist-text-scale-mode
-             persist-text-scale-restore)
-  :hook (after-init . persist-text-scale-mode)
-  :custom
-  (text-scale-mode-step 1.07)
-  :config
-  ;; I'm so used to it, it surprised me...
-  ;; (set-frame-font "Sarasa Mono SC 12" nil t)
-  ;; It seems that if I set-frame-font here, then the
-  ;; daemon would give very small font size for emacsclient.
-  ;; (set-frame-font "UbuntuMono Nerd Font Mono 12" nil t)
-  (add-to-list 'default-frame-alist '(font . "UbuntuMono Nerd Font Mono 12")))
+;; Use system font setup instead.
+;; I'm so used to it, it surprised me...
+;; (set-frame-font "Sarasa Mono SC 12" nil t)
+;; It seems that if I set-frame-font here, then the
+;; daemon would give very small font size for emacsclient.
+;; (set-frame-font "UbuntuMono Nerd Font Mono 12" nil t)
+;; (add-to-list 'default-frame-alist '(font . "UbuntuMono Nerd Font Mono 12"))
+;; (set-face-attribute 'default nil :font "UbuntuMono Nerd Font Mono")
+;; (set-face-font 'default "fontset-default")
+;; (set-face-font 'fixed-pitch "fontset-default")
+;; (set-fontset-font "fontset-default" nil "Ubuntu Mono")
+;; (set-fontset-font "fontset-default" 'unicode "Ubuntu Mono")
+;; (set-fontset-font "fontset-default" 'han "Ubuntu Mono")
+(custom-set-variables
+ '(text-scale-mode-step 1.02))
 
-(use-package nerd-icons
-  :demand t
-  :custom
-  ;; The Nerd Font you want to use in GUI
-  ;; "Symbols Nerd Font Mono" is the default and is recommended
-  ;; but you can use any other Nerd Font if you want
-  (nerd-icons-font-family "UbuntuMono Nerd Font Mono"))
+;; (use-package nerd-icons
+;;   :demand t
+;;   :custom
+;;   ;; The Nerd Font you want to use in GUI
+;;   ;; "Symbols Nerd Font Mono" is the default and is recommended
+;;   ;; but you can use any other Nerd Font if you want
+;;   (nerd-icons-font-family "UbuntuMono Nerd Font Mono"))
 
 (use-package nerd-icons-completion
   :hook
