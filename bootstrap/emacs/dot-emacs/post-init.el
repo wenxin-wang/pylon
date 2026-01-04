@@ -1193,15 +1193,7 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
   (with-eval-after-load 'corfu
     (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter)))
 
-(use-package nerd-icons-mode-line
-  :straight (nerd-icons-mode-line
-             :type git
-             :host github
-             :repo "grolongo/nerd-icons-mode-line")
-  :custom
-  (nerd-icons-mode-line-v-adjust 0.1) ; default value
-  (nerd-icons-mode-line-size 1.0) ; default value
-  :hook
-  (emacs-startup . nerd-icons-mode-line-global-mode))
+(use-package doom-modeline
+  :hook (emacs-startup . doom-modeline-mode))
 
 (load custom-file 'noerror 'no-message)
