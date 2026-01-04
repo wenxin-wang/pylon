@@ -877,6 +877,8 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
   ("C-c s s" . 'easysession-save-as)
 
   :init
+  (add-hook 'easysession-before-load-hook #'easysession-reset)
+  (add-hook 'easysession-new-session-hook #'easysession-reset)
   ;; The depth 102 and 103 have been added to to `add-hook' to ensure that the
   ;; session is loaded after all other packages. (Using 103/102 is particularly
   ;; useful for those using minimal-emacs.d, where some optimizations restore
