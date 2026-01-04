@@ -1147,17 +1147,17 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
 
 ;; Theme.
 (load-theme 'modus-operandi t)
-(setq modus-themes-mixed-fonts t
-      modus-themes-variable-pitch-ui t
-      modus-themes-italic-constructs t
-      modus-themes-bold-constructs t
-      modus-themes-completions '((t . (bold)))
-      modus-themes-prompts '(bold)
-      modus-themes-headings
-      '((agenda-structure . (variable-pitch light 2.2))
-        (agenda-date . (variable-pitch regular 1.3))
-        (t . (regular 1.15))))
-(setq modus-themes-common-palette-overrides nil)
+;; (setq modus-themes-mixed-fonts t
+;;       modus-themes-variable-pitch-ui t
+;;       modus-themes-italic-constructs t
+;;       modus-themes-bold-constructs t
+;;       modus-themes-completions '((t . (bold)))
+;;       modus-themes-prompts '(bold)
+;;       modus-themes-headings
+;;       '((agenda-structure . (variable-pitch light 2.2))
+;;         (agenda-date . (variable-pitch regular 1.3))
+;;         (t . (regular 1.15))))
+;; (setq modus-themes-common-palette-overrides nil)
 
 ;; Use system font setup instead.
 ;; I'm so used to it, it surprised me...
