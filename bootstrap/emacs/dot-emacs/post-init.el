@@ -1085,9 +1085,11 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
   (if (file-exists-p "~/.config/github-copilot/apps.json")
       (with-temp-buffer
         (insert-file-contents "~/.config/github-copilot/apps.json")
-        (when (string-match-p "ponyai" (buffer-string))
+        (if (string-match-p "ponyai" (buffer-string))
+            (setq gptel-model 'claude-haiku-4.5
+                  gptel-backend (gptel-make-gh-copilot "Copilot-Ponyai"))
           (setq gptel-model 'claude-haiku-4.5
-                gptel-backend (gptel-make-gh-copilot "Copilot-Ponyai"))))))
+                gptel-backend (gptel-make-gh-copilot "Copilot"))))))
 
 (use-package aider
   :bind ("C-c a" . aider-transient-menu)
