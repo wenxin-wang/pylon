@@ -36,6 +36,9 @@ in
     # expose more models as it mimics the behavior of the copilot VS Code plugin.
     copilot-language-server
 
+    jigmo
+    hanazono
+    sarasa-gothic
     # https://wiki.nixos.org/wiki/Fonts#Patching_nerdfonts_into_fonts
     #   (sarasa-gothic.overrideAttrs (o: {
     #     nativeBuildInputs = [ pkgs.unzip pkgs.nerd-font-patcher ];
@@ -49,6 +52,7 @@ in
     #   }))
     # nerd-fonts.ubuntu-mono
     nerd-fonts.symbols-only
+
     protobuf
     mypy-protobuf
 

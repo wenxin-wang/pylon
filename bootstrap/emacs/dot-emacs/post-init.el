@@ -1174,13 +1174,23 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
 ;; (set-frame-font "UbuntuMono Nerd Font Mono 12" nil t)
 ;; (add-to-list 'default-frame-alist '(font . "UbuntuMono Nerd Font Mono 12"))
 ;; (set-face-attribute 'default nil :font "UbuntuMono Nerd Font Mono")
-;; (set-face-font 'default "fontset-default")
+;; (set-face-font 'default "Noto Sans CJK SC")
 ;; (set-face-font 'fixed-pitch "fontset-default")
-;; (set-fontset-font "fontset-default" nil "Ubuntu Mono")
-;; (set-fontset-font "fontset-default" 'unicode "Ubuntu Mono")
-;; (set-fontset-font "fontset-default" 'han "Ubuntu Mono")
+;; (set-face-font 'default "Noto Mono")
 (custom-set-variables
  '(text-scale-mode-step 1.02))
+(setq
+ list-faces-sample-text
+ "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 天地玄黄，宇宙洪荒。 てんちげんこう、うちゅうこうこう。"
+ use-default-font-for-symbols nil)
+(cl-dolist (fontname '("Sarasa Mono SC" "Source Han Sans CN" "Noto Sans Mono CJK SC"))
+  (when (find-font (font-spec :name fontname))
+    (dolist (scriptname '(han kana))
+      (set-fontset-font (frame-parameter nil 'font) scriptname (font-spec :name fontname)))
+    (cl-return fontname)))
+;; See https://baohaojun.github.io/perfect-emacs-chinese-font.html.
+(cond ((string= (font-get (face-attribute 'default :font) :family) "Hack")
+       (setq face-font-rescale-alist '(("Sarasa Mono SC" . 1.2)))))
 
 ;; (use-package nerd-icons
 ;;   :demand t
