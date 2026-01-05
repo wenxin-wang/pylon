@@ -868,6 +868,7 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
   :custom
   (easysession-mode-line-misc-info t)  ; Display the session in the modeline
   (easysession-save-interval (* 10 60))  ; Save every 10 minutes
+  (easysession-directory (expand-file-name "easysession" no-littering-var-directory))
 
   :bind
   ;; Key mappings:
