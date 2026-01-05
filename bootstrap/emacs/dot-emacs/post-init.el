@@ -1146,7 +1146,13 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
     (compile-angel-on-load-mode 1)))
 
 ;; Theme.
-(load-theme 'modus-operandi t)
+(use-package modus-themes
+  :demand t
+  :config
+  ;; Load the specific theme
+  (load-theme 'modus-operandi t))
+;; Do not use the theme bundled with emacs as it somehow causes slow start.
+;; (load-theme 'modus-operandi t)
 ;; (setq modus-themes-mixed-fonts t
 ;;       modus-themes-variable-pitch-ui t
 ;;       modus-themes-italic-constructs t
