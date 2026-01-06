@@ -1207,4 +1207,17 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
 (use-package doom-modeline
   :hook (emacs-startup . doom-modeline-mode))
 
+(use-package popper
+  :hook
+  (emacs-startup . popper-mode)
+  (emacs-startup . popper-echo-mode)
+  :custom
+  (popper-reference-buffers
+   '("\\*Messages\\*"
+     "Output\\*$"
+     "\\*Async Shell Command\\*"
+     help-mode
+     compilation-mode))
+  (popper-group-function #'popper-group-by-project))
+
 (load custom-file 'noerror 'no-message)
