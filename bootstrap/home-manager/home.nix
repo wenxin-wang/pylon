@@ -38,6 +38,7 @@ in
 
     jigmo
     hanazono
+    jetbrains-mono
     sarasa-gothic
     # https://wiki.nixos.org/wiki/Fonts#Patching_nerdfonts_into_fonts
     #   (sarasa-gothic.overrideAttrs (o: {
@@ -84,8 +85,10 @@ in
   ++
   (if isOldUbuntu then with pkgs; [
     emacs
+
     fd
     prettier
+
     pyright
     ruff
     clang-tools
