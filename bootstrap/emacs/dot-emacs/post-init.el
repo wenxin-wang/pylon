@@ -911,6 +911,10 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
        (add-hook 'easysession-new-session-hook #'easysession-reset))
    103))
 
+(use-package buffer-terminator
+  :hook
+  (emacs-startup . buffer-terminator-mode))
+
 ;; Org.
 
 ;; Org mode is a major mode designed for organizing notes, planning, task
