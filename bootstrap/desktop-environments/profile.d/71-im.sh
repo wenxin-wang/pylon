@@ -1,4 +1,6 @@
-export XMODIFIERS='@im=fcitx'
+if [[ "$XDG_CURRENT_DESKTOP" =~ .*KDE ]]; then
+    export XMODIFIERS='@im=fcitx'
+fi
 # It seems that modern GTK & QT does not need these.
 # GTK_IM_MODULE=fcitx
 # QT_IM_MODULE=fcitx

@@ -34,8 +34,8 @@
     state: directory
     mode: 0755
   loop:
-     - ~/.bashrc.d
-     - ~/.profile.d
+    - ~/.bashrc.d
+    - ~/.profile.d
 
 - name: basic profiles
   ansible.builtin.file:
@@ -70,3 +70,35 @@
   with_items:
     - applications
     - icons
+
+- set_fact:
+    dotfiles_dir: "{{ specific_host_dir }}/dotfiles"
+
+- name: Find local dot files
+  ansible.builtin.find:
+    path: "{{ dotfiles_dir }}"
+    file_type: file
+    recurse: true
+  register: dotfiles
+
+- name: Ensure parent directory exists
+  ansible.builtin.file:
+    path: "~/{{ item.path | relpath(dotfiles_dir) | dirname }}"
+    state: directory
+  loop: "{{ dotfiles.files }}"
+
+- name: Check if dst files exist
+  ansible.builtin.stat:
+    path: "~/{{ item.path | relpath(dotfiles_dir) }}"
+  loop: "{{ dotfiles.files }}"
+  register: dotfiles_stat
+
+- name: Link if dst files not exist
+  when: not dotfiles_stat.results[idx].stat.exists
+  ansible.builtin.file:
+    src: "{{ item.path }}"
+    dest: "~/{{ item.path | relpath(dotfiles_dir) }}"
+    state: link
+  loop: "{{ dotfiles.files }}"
+  loop_control:
+    index_var: idx

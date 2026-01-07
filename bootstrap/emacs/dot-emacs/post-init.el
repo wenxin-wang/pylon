@@ -193,7 +193,10 @@
    '(?\' . string))
   (add-to-list
    'meow-char-thing-table
-   '(?m . buffer))
+   '(?t . buffer))
+  (add-to-list
+   'meow-char-thing-table
+   '(?y . buffer))
 
   ;; Fix digit-arguments.
   (eval-when-compile
@@ -295,10 +298,10 @@
     '("w" . meow-line)
     '("W" . meow-block)
     '("q" . meow-join)
-    '("y" . meow-grab)
-    '("Y" . meow-pop-grab)
-    '("tw" . meow-swap-grab)
-    '("ts" . meow-sync-grab)
+    '("m" . meow-grab)
+    '("M" . meow-pop-grab)
+    '(",w" . meow-swap-grab)
+    '(",s" . meow-sync-grab)
     '("p" . meow-cancel-selection)
     '("P" . meow-pop-selection)
     '("." . repeat-fu-execute)
@@ -307,10 +310,10 @@
     '("F" . meow-find)
     '("z" . avy-goto-char-timer)
 
-    `("m" . ,(scroll-on-jump-interactive #'meow-beginning-of-thing))
-    `("," . ,(scroll-on-jump-interactive #'meow-end-of-thing))
-    `("M" . ,(scroll-on-jump-interactive #'meow-inner-of-thing))
-    `("<" . ,(scroll-on-jump-interactive #'meow-bounds-of-thing))
+    `("t" . ,(scroll-on-jump-interactive #'meow-beginning-of-thing))
+    `("y" . ,(scroll-on-jump-interactive #'meow-end-of-thing))
+    `("T" . ,(scroll-on-jump-interactive #'meow-inner-of-thing))
+    `("Y" . ,(scroll-on-jump-interactive #'meow-bounds-of-thing))
 
     ;; editing
     '("d" . meow-kill)
