@@ -1070,12 +1070,6 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
   (add-to-list 'dtrt-indent-hook-mapping-list
                '(cmake-mode default cmake-tab-width)))
 
-(use-package aggressive-indent
-  :blackout t
-  :commands aggressive-indent-mode
-  :hook
-  (emacs-lisp-mode . aggressive-indent-mode))
-
 (use-package apheleia
   :hook (emacs-startup . apheleia-global-mode)
   :config
