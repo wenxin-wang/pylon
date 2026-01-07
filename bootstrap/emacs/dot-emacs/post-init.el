@@ -157,6 +157,19 @@
       (goto-char position)
       (switch-to-buffer buffer))))
 
+(use-package scroll-on-jump
+  :demand t
+  :custom
+  (isearch-allow-motion t)
+  (isearch-allow-scroll t)
+  :config
+  (scroll-on-jump-advice-add isearch-forward)
+  (scroll-on-jump-advice-add isearch-backward)
+
+  (scroll-on-jump-with-scroll-advice-add recenter-top-bottom)
+  (scroll-on-jump-with-scroll-advice-add scroll-up-command)
+  (scroll-on-jump-with-scroll-advice-add scroll-down-command))
+
 ;; Modal editing.
 (use-package meow
   ;; Somehow ~meow-global-mode~ does not trigger evaluation
@@ -260,8 +273,8 @@
     '("h" . meow-left)
     '("l" . meow-right)
 
-    '("n" . meow-search)
-    '("/" . meow-visit)
+    `("n" . ,(scroll-on-jump-interactive #'meow-search))
+    `("/" . ,(scroll-on-jump-interactive #'meow-visit))
 
     '("<backspace>" . meow-page-up)
     '("RET" . meow-page-down)
@@ -294,10 +307,10 @@
     '("F" . meow-find)
     '("z" . avy-goto-char-timer)
 
-    '("m" . meow-beginning-of-thing)
-    '("," . meow-end-of-thing)
-    '("M" . meow-inner-of-thing)
-    '("<" . meow-bounds-of-thing)
+    `("m" . ,(scroll-on-jump-interactive #'meow-beginning-of-thing))
+    `("," . ,(scroll-on-jump-interactive #'meow-end-of-thing))
+    `("M" . ,(scroll-on-jump-interactive #'meow-inner-of-thing))
+    `("<" . ,(scroll-on-jump-interactive #'meow-bounds-of-thing))
 
     ;; editing
     '("d" . meow-kill)
@@ -314,8 +327,8 @@
     '("r" . meow-append)
     '("R" . meow-open-below)
 
-    '("u" . undo-tree-undo)
-    '("U" . undo-tree-redo)
+    `("u" . ,(scroll-on-jump-interactive #'undo-tree-undo))
+    `("U" . ,(scroll-on-jump-interactive #'undo-tree-redo))
 
     '("b" . open-line)
     '("B" . split-line)
@@ -336,13 +349,14 @@
     '(";Q" . kill-emacs)
 
     ;; prefix g
-    '("gl" . meow-goto-line)
-    '("gi" .
-      (lambda () (interactive)
-        (setq current-prefix-arg '(4)) ; C-u
-        (call-interactively 'pop-global-mark)))
-    '("go" . pop-global-mark)
-    '("gO" . meow-pop-to-global-mark)
+    `("gl" . ,(scroll-on-jump-interactive #'meow-goto-line))
+    `("gi" .
+      ,(scroll-on-jump-interactive
+        (lambda () (interactive)
+          (setq current-prefix-arg '(4)) ; C-u
+          (call-interactively 'pop-global-mark))))
+    `("go" . ,(scroll-on-jump-interactive #'pop-global-mark))
+    `("gO" . ,(scroll-on-jump-interactive #'meow-pop-to-global-mark))
 
     ;; ignore escape
     '("<escape>" . meow-cancel-selection))
