@@ -892,14 +892,20 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
   ("C-c s s" . 'easysession-save-as)
 
   :init
-  (add-hook 'easysession-before-load-hook #'easysession-reset)
-  (add-hook 'easysession-new-session-hook #'easysession-reset)
   ;; The depth 102 and 103 have been added to to `add-hook' to ensure that the
   ;; session is loaded after all other packages. (Using 103/102 is particularly
   ;; useful for those using minimal-emacs.d, where some optimizations restore
   ;; `file-name-handler-alist` at depth 101 during `emacs-startup-hook`.)
   (add-hook 'emacs-startup-hook #'easysession-load-including-geometry 102)
-  (add-hook 'emacs-startup-hook #'easysession-save-mode 103))
+  (add-hook
+   'emacs-startup-hook
+   #'(lambda ()
+       (easysession-save-mode)
+       ;; Add these hooks later so that we do not reset when first entering save mode,
+       ;; to avoid killing async compilation buffers from compile-angel.
+       (add-hook 'easysession-before-load-hook #'easysession-reset)
+       (add-hook 'easysession-new-session-hook #'easysession-reset))
+   103))
 
 ;; Org.
 
