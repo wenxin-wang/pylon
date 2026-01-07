@@ -21,6 +21,19 @@ API 请求被拒绝的情况。
 
 - https://github.com/tninja/aider.el 目前同事推荐的集成交互环境，支持代码分析、生成和 Agent 交互（？）
 
+** gpt.el
+
+gpt.el 的 chat buffer 本身是 markdown/org-mode 格式的。https://github.com/jwiegley/ob-gptel 给 org-mode 增加了
+src block 的支持。感觉都很有用。
+
+#+begin_src gptel
+What is the capital of France?
+#+end_src
+
+#+RESULTS:
+: The capital of France is Paris.
+
+
 ** 其它
 - https://github.com/milanglacier/minuet-ai.el 单纯的代码补全
 - https://github.com/xenodium/chatgpt-shell AI 集成交互环境

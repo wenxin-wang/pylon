@@ -1095,6 +1095,10 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
 
 (use-package gptel
   :commands gptel gptel-send gptel-rewrite gptel-add gptel-add-file gptel-org-set-topic
+  :hook
+  (gptel-mode . (lambda () (toggle-truncate-lines 1)))
+  :custom
+  (gptel-default-mode 'org-mode)
   :config
   (if (file-exists-p "~/.config/github-copilot/apps.json")
       (with-temp-buffer
@@ -1104,6 +1108,17 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
                   gptel-backend (gptel-make-gh-copilot "Copilot-Ponyai"))
           (setq gptel-model 'claude-haiku-4.5
                 gptel-backend (gptel-make-gh-copilot "Copilot"))))))
+
+(use-package ob-gptel
+  :straight (:type git :host github :repo "jwiegley/ob-gptel")
+  :hook ((org-mode . ob-gptel-install-completions))
+  :defines ob-gptel-install-completions
+  :config
+  (add-to-list 'org-babel-load-languages '(gptel . t))
+  ;; Optional, for better completion-at-point
+  (defun ob-gptel-install-completions ()
+    (add-hook 'completion-at-point-functions
+              'ob-gptel-capf nil t)))
 
 (use-package aider
   :bind ("C-c a" . aider-transient-menu)
