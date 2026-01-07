@@ -89,6 +89,7 @@ in
     fd
     prettier
 
+    python312
     pyright
     ruff
     clang-tools
