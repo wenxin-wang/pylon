@@ -1159,12 +1159,12 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
   ;; the `use-package' macro, you'll need to explicitly add:
   ;; (eval-when-compile (require 'use-package))
   ;; at the top of your init file.
-  ;; (push "/init.el" compile-angel-excluded-files)
-  ;; (push "/early-init.el" compile-angel-excluded-files)
-  ;; (push "/pre-init.el" compile-angel-excluded-files)
-  ;; (push "/post-init.el" compile-angel-excluded-files)
-  ;; (push "/pre-early-init.el" compile-angel-excluded-files)
-  ;; (push "/post-early-init.el" compile-angel-excluded-files)
+  (push "/init.el" compile-angel-excluded-files)
+  (push "/early-init.el" compile-angel-excluded-files)
+  (push "/pre-init.el" compile-angel-excluded-files)
+  (push "/post-init.el" compile-angel-excluded-files)
+  (push "/pre-early-init.el" compile-angel-excluded-files)
+  (push "/post-early-init.el" compile-angel-excluded-files)
 
   ;; A local mode that compiles .el files whenever the user saves them.
   ;; (add-hook 'emacs-lisp-mode-hook #'compile-angel-on-save-local-mode)
