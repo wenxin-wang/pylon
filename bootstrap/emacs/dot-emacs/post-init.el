@@ -659,11 +659,16 @@
 ;; Dired.
 (use-package dired
   :straight (:type built-in)
+  :hook
+  (dired-mode . dired-omit-mode)
   :custom
   (dired-mouse-drag-files t)
   (dired-free-space nil)
   (dired-kill-when-opening-new-dired-buffer t)
-  (dired-listing-switches "-l --almost-all --human-readable --group-directories-first --no-group"))
+  (dired-listing-switches "-l --almost-all --human-readable --group-directories-first --no-group")
+  (dired-omit-files (concat "\\`[.]?#\\|\\`[.][.]?\\'" "\\|^\\..*$"))
+  :config
+  (require 'dired-x))
 
 (use-package image-dired
   :straight (:type built-in)
@@ -674,7 +679,6 @@
   :bind
   (("C-c D" . dirvish-dwim)
    :map dirvish-mode-map               ; Dirvish inherits `dired-mode-map'
-   (";"   . dired-up-directory)        ; So you can adjust `dired' bindings here
    ("?"   . dirvish-dispatch)          ; [?] a helpful cheatsheet
    ("a"   . dirvish-setup-menu)        ; [a]ttributes settings:`t' toggles mtime, `f' toggles fullframe, etc.
    ("f"   . dirvish-file-info-menu)    ; [f]ile info
@@ -686,7 +690,7 @@
    ("*"   . dirvish-mark-menu)
    ("y"   . dirvish-yank-menu)
    ("N"   . dirvish-narrow)
-   ("^"   . dirvish-history-last)
+   (";"   . dirvish-history-last)
    ("TAB" . dirvish-subtree-toggle)
    ("M-f" . dirvish-history-go-forward)
    ("M-b" . dirvish-history-go-backward)
