@@ -1112,13 +1112,13 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
   (gptel-default-mode 'org-mode)
   :config
   (if (file-exists-p "~/.config/github-copilot/apps.json")
+      (setq gptel-backend (gptel-make-gh-copilot "Copilot")))
+  (if (file-exists-p "~/.config/openweb-ui-token.json")
       (with-temp-buffer
-        (insert-file-contents "~/.config/github-copilot/apps.json")
-        (if (string-match-p "ponyai" (buffer-string))
-            (setq gptel-model 'claude-haiku-4.5
-                  gptel-backend (gptel-make-gh-copilot "Copilot-Ponyai"))
-          (setq gptel-model 'claude-haiku-4.5
-                gptel-backend (gptel-make-gh-copilot "Copilot"))))))
+        (insert-file-contents "~/.config/openweb-ui-token.json")
+        (let* ((parsed-json (json-parse-buffer :object-type 'alist :array-type 'list))
+               (kwargs (mapcar (lambda (item) `(,(intern (concat ":" (symbol-name (car item)))) ,(cdr item))) parsed-json)))
+          (setq gptel-backend (apply #'gptel-make-openai "OpenWebUI" (apply #'append kwargs)))))))
 
 (use-package ob-gptel
   :straight (:type git :host github :repo "jwiegley/ob-gptel")
