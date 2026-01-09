@@ -93,6 +93,8 @@ in
     pyright
     ruff
     clang-tools
+
+    zotero
   ] else []);
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
