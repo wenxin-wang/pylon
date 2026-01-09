@@ -1,0 +1,43 @@
+:PROPERTIES:
+:GPTEL_MODEL: gpt-5
+:GPTEL_BACKEND: OpenWebUI
+:GPTEL_SYSTEM: You are a large language model living in Emacs and a helpful assistant. Respond concisely.
+:GPTEL_BOUNDS: ((response (274 2867)))
+:END:
+
+*** I want to know more about uxn, the small virtual machine
+
+Uxn is a tiny, portable 8‑bit virtual machine designed by Hundred Rabbits (Devine Lu Linvega & Rekka) for “human‑scale” computing: small programs, minimal dependencies, and long‑term maintainability.
+
+Key ideas:
+- Architecture: 64 KB address space; two 256‑byte stacks (working and return); byte‑oriented instructions with composable mode bits (short/word, keep, return) to alter operand size, stack selection, and whether to preserve the top of stack.
+- Instruction set: compact stack machine ops (stack shuffling, arithmetic, logic, comparison), memory access, literals, and flow control (jumps/subroutines). Devices are accessed via DEI/DEO (device in/out) rather than syscalls.
+- Devices (Varvara spec): memory‑mapped I/O blocks implemented by the host (emulator/port). Common ones include System, Console (text I/O), Screen/Sprite (graphics), Mouse/Controller (input), Time, File, and Audio.
+- Tooling:
+  - uxnasm: macro assembler producing .rom files from Uxntal (.tal) source.
+  - uxnemu: SDL-based emulator implementing Varvara (graphics/audio/input).
+  - uxncli: headless VM (useful for console apps and scripts).
+  - Ports exist for many platforms; codebase is small and easy to embed.
+- Language: Uxntal is a minimalist, postfix stack assembly with labels, macros, and a simple include system. Programs interact with devices by writing to their ports.
+- Strengths: tiny codebase, deterministic behavior, easy to port, no external dependencies, great for small tools, demos, and creative coding.
+- Limitations: 64 KB memory, minimal runtime (no GC/threads), limited standard library—most facilities are “by device.”
+
+Typical uses:
+- Little GUIs and editors, pixel/sprite games, trackers, toys, and generative art.
+- Educational projects to learn stack machines and low‑level design.
+- Long‑lived, archivable software with simple build/run story.
+
+Getting started:
+- Clone and build: github.com/hundredrabbits/uxn
+- Read the Varvara device spec and Uxntal docs on the Hundred Rabbits wiki (xxiivv).
+- Assemble and run: uxnasm program.tal program.rom; uxnemu program.rom (or uxncli for headless).
+- Explore the example ROMs and source in the repo to see device usage patterns.
+
+Good references:
+- Uxn overview and Varvara device spec on the Hundred Rabbits wiki (xxiivv).
+- The uxn GitHub repository’s README and examples.
+- Community tutorials and small projects demonstrating Uxntal patterns.
+
+If you tell me your target platform and what you’d like to build (CLI tool, tiny game, visual demo), I can outline the device ports you’ll need and a minimal Uxntal structure to start from.
+
+*** 
