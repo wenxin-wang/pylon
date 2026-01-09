@@ -15,6 +15,22 @@
     dest: /etc/systemd/user-environment-generators/70-login-shell-profile.sh
     mode: 0755
 
+# See https://web.archive.org/web/20250804235955/https://yulistic.gitlab.io/2017/12/linux-keymapping-with-udev-hwdb/
+- name: copy keyboard config
+  become: true
+  ansible.builtin.copy:
+    src: etc/udev/hwdb.d/61-keyboard-local.hwdb
+    dest: /etc/udev/hwdb.d/61-keyboard-local.hwdb
+    mode: 0644
+  register: keyboard_config
+
+- name: update keyboard config
+  when: keyboard_config.changed
+  become: true
+  ansible.builtin.shell:
+    cmd: >-
+      sudo systemd-hwdb update && sudo udevadm trigger
+
 - name: basic shell profiles
   ansible.builtin.file:
     src: "~/pylon/bootstrap/desktop-environments/{{ item }}"
@@ -25,7 +41,7 @@
     - bash_profile
     - gitconfig
     - inputrc
-    - local/bin
+    - local/bin/prepare_chroot.sh
     - profile
 
 - name: Ensure profile directories

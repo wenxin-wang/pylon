@@ -8,3 +8,9 @@
 #+begin_src bash
   git rebase -i --root
 #+end_src
+
+* 整个 repo 加密
+
+本质是对远端进行加密传输和存储
+
+用 git-remote-grypt，参考 [[https://git-annex.branchable.com/tips/fully_encrypted_git_repositories_with_gcrypt/][git annex 的教程]]
