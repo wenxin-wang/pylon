@@ -28,6 +28,10 @@ EOF
 sudo systemctl restart nix-daemon.service
 nix-channel --add https://mirrors.ustc.edu.cn/nix-channels/nixpkgs-unstable nixpkgs
 nix-channel --update
+
+cat <<EOF >~/.profile.d/99-nix-home-manager.sh
+source $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh
+EOF
 #+end_src
 
 
