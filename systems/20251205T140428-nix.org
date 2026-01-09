@@ -14,8 +14,9 @@ new languages & staff, so it's important that I can install new packages with ea
 sh <(curl -L https://mirrors.bfsu.edu.cn/nix/latest/install) --daemon
 # Archlinux has nix package.
 sudo pacman -S nix
-cat <<EOF | sudo tee /etc/nix/nix.conf
+
 sudo systemctl enable nix-daemon.socket
+cat <<EOF | sudo tee /etc/nix/nix.conf
 build-users-group = nixbld
 
 # Use mirror from SJTU & USTC.
