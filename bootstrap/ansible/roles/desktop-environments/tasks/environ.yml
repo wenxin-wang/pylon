@@ -31,62 +31,6 @@
     cmd: >-
       sudo systemd-hwdb update && sudo udevadm trigger
 
-- name: basic shell profiles
-  ansible.builtin.file:
-    src: "~/pylon/bootstrap/desktop-environments/{{ item }}"
-    dest: "~/.{{ item }}"
-    state: link
-  with_items:
-    - bashrc
-    - bash_profile
-    - gitconfig
-    - inputrc
-    - local/bin/prepare_chroot.sh
-    - profile
-
-- name: Ensure profile directories
-  ansible.builtin.file:
-    dest: "{{ item }}"
-    state: directory
-    mode: 0755
-  loop:
-    - ~/.bashrc.d
-    - ~/.profile.d
-
-- name: basic profiles
-  ansible.builtin.file:
-    src: "~/pylon/bootstrap/desktop-environments/profile.d/{{ item }}"
-    dest: "~/.profile.d/{{ item }}"
-    state: link
-  with_items:
-    - 61-paths.sh
-    - 70-dev.sh
-    - 71-git_askpass.sh
-    - 71-im.sh
-    - 71-pagers.sh
-    - 71-ssh_askpass.sh
-
-- name: basic bashrc
-  ansible.builtin.file:
-    src: "~/pylon/bootstrap/desktop-environments/bashrc.d/{{ item }}"
-    dest: "~/.bashrc.d/{{ item }}"
-    state: link
-  with_items:
-    - 61-misc.sh
-    - 62-sys.sh
-    - 70-dev.sh
-    - 90-docs.sh
-    - 99-cli.sh
-    - 99-deprecated.sh
-
-- name: .local folders
-  ansible.builtin.file:
-    path: "~/.local/share/{{ item }}"
-    state: directory
-  with_items:
-    - applications
-    - icons
-
 - set_fact:
     dotfiles_dir: "{{ specific_host_dir }}/dotfiles"
 
@@ -99,13 +43,13 @@
 
 - name: Ensure parent directory exists
   ansible.builtin.file:
-    path: "~/{{ item.path | relpath(dotfiles_dir) | dirname }}"
+    path: "~/.{{ item.path | relpath(dotfiles_dir) | dirname }}"
     state: directory
   loop: "{{ dotfiles.files }}"
 
 - name: Check if dst files exist
   ansible.builtin.stat:
-    path: "~/{{ item.path | relpath(dotfiles_dir) }}"
+    path: "~/.{{ item.path | relpath(dotfiles_dir) }}"
   loop: "{{ dotfiles.files }}"
   register: dotfiles_stat
 
@@ -113,8 +57,40 @@
   when: not dotfiles_stat.results[idx].stat.exists
   ansible.builtin.file:
     src: "{{ item.path }}"
-    dest: "~/{{ item.path | relpath(dotfiles_dir) }}"
+    dest: "~/.{{ item.path | relpath(dotfiles_dir) }}"
     state: link
   loop: "{{ dotfiles.files }}"
+  loop_control:
+    index_var: idx
+
+- set_fact:
+    public_dotfiles_dir: "{{ (lookup('env', 'HOME'), 'pylon/bootstrap/desktop-environments/dotfiles') | path_join }}"
+
+- name: Find public dot files
+  ansible.builtin.find:
+    path: "{{ public_dotfiles_dir }}"
+    file_type: file
+    recurse: true
+  register: public_dotfiles
+
+- name: Ensure parent directory exists
+  ansible.builtin.file:
+    path: "~/.{{ item.path | relpath(public_dotfiles_dir) | dirname }}"
+    state: directory
+  loop: "{{ public_dotfiles.files }}"
+
+- name: Check if dst files exist
+  ansible.builtin.stat:
+    path: "~/.{{ item.path | relpath(public_dotfiles_dir) }}"
+  loop: "{{ public_dotfiles.files }}"
+  register: public_dotfiles_stat
+
+- name: Link if dst files not exist
+  when: not public_dotfiles_stat.results[idx].stat.exists
+  ansible.builtin.file:
+    src: "{{ item.path }}"
+    dest: "~/.{{ item.path | relpath(public_dotfiles_dir) }}"
+    state: link
+  loop: "{{ public_dotfiles.files }}"
   loop_control:
     index_var: idx
