@@ -3,6 +3,11 @@ evdev:atkbd:dmi:bvnLENOVO:bvrN2XET33W*
   KEYBOARD_KEY_2a=leftctrl
   KEYBOARD_KEY_1d=capslock
 
+evdev:input:b0011v0001p0001*
+  KEYBOARD_KEY_3a=leftshift
+  KEYBOARD_KEY_2a=leftctrl
+  KEYBOARD_KEY_1d=capslock
+
 evdev:input:b0003v413Cp2113*
   KEYBOARD_KEY_70039=leftshift
   KEYBOARD_KEY_700e1=leftctrl
