@@ -1111,14 +1111,25 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
   :custom
   (gptel-default-mode 'org-mode)
   :config
+  (defun read-gtpel-backend-config (path)
+    (with-temp-buffer
+      (insert-file-contents path)
+      (let* ((parsed-json (json-parse-buffer :object-type 'alist :array-type 'list))
+             (kwargs (mapcar (lambda (item) `(,(intern (concat ":" (symbol-name (car item)))) ,(cdr item))) parsed-json)))
+        (apply #'append kwargs))))
+
   (if (file-exists-p "~/.config/github-copilot/apps.json")
       (setq gptel-backend (gptel-make-gh-copilot "Copilot")))
+  (if (file-exists-p "~/.config/minimaxi-chat-token.json")
+      (setq gptel-backend
+            (apply #'gptel-make-anthropic "Minimaxi"
+                   (read-gtpel-backend-config "~/.config/minimaxi-chat-token.json"))))
+  (if (file-exists-p "~/.config/deepseek-token.json")
+      (setq gptel-backend
+            (apply #'gptel-make-deepseek "DeepSeek"
+                   (read-gtpel-backend-config "~/.config/deepseek-token.json"))))
   (if (file-exists-p "~/.config/openweb-ui-token.json")
-      (with-temp-buffer
-        (insert-file-contents "~/.config/openweb-ui-token.json")
-        (let* ((parsed-json (json-parse-buffer :object-type 'alist :array-type 'list))
-               (kwargs (mapcar (lambda (item) `(,(intern (concat ":" (symbol-name (car item)))) ,(cdr item))) parsed-json)))
-          (setq gptel-backend (apply #'gptel-make-openai "OpenWebUI" (apply #'append kwargs)))))))
+      (setq gptel-backend (apply #'gptel-make-openai "OpenWebUI" (apply #'append kwargs)))))
 
 (use-package ob-gptel
   :straight (:type git :host github :repo "jwiegley/ob-gptel")
