@@ -33,6 +33,24 @@ What is the capital of France?
 #+RESULTS:
 : The capital of France is Paris.
 
+* Claude Code
+
+** Copilot models
+
+Can use copilot models with litellm. Somehow models from Open WebUI is not usable, because when switching models
+claude specified max_token to be 1 and these models does not know how to responde (I think it's a litellm issue,
+the models are not to blame).
+
+https://blog.f12.no/wp/2025/09/22/using-claude-code-with-github-copilot-a-guide/
+
+This comes with it's own quirks, like
+
+#+begin_example
+litellm.exceptions.UnsupportedParamsError: litellm.UnsupportedParamsError: github_copilot does not support parameters: [‘thinking’], for model=claude-sonnet-4.5. To drop these, set `litellm.drop_params=True` or for proxy:
+
+`litellm_settings:
+drop_params: true`
+#+end_example
 
 ** 其它
 - https://github.com/milanglacier/minuet-ai.el 单纯的代码补全

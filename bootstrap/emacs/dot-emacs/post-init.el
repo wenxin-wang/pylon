@@ -680,7 +680,7 @@
 (use-package dirvish
   :commands (dirvish dirvish-dwim dirvish-dispatch dirvish-override-dired-mode)
   :bind
-  (("C-c D" . dirvish-dwim)
+  (("C-c F" . dirvish-dwim)
    :map dirvish-mode-map               ; Dirvish inherits `dired-mode-map'
    ("?"   . dirvish-dispatch)          ; [?] a helpful cheatsheet
    ("a"   . dirvish-setup-menu)        ; [a]ttributes settings:`t' toggles mtime, `f' toggles fullframe, etc.
@@ -1175,6 +1175,15 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
 
 (use-package agent-shell
   :commands agent-shell)
+
+
+(use-package claude-code-ide
+  :straight (:type git :host github :repo "manzaltu/claude-code-ide.el")
+  :bind ("C-c D" . claude-code-ide-menu) ; Set your favorite keybinding
+  :custom
+  (claude-code-ide-terminal-backend 'eat)
+  :config
+  (claude-code-ide-emacs-tools-setup))
 
 ;; More speed optimizations.
 
