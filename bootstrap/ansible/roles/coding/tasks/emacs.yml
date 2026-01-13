@@ -11,7 +11,7 @@
   block:
     - name: clone spacemacs
       ansible.builtin.git:
-        repo: 'https://github.com/syl20bnr/spacemacs'
+        repo: "https://github.com/syl20bnr/spacemacs"
         dest: ~/src/coding/spacemacs
         version: develop
         update: false
@@ -36,7 +36,7 @@
   block:
     - name: clone minimal-emacs.d
       ansible.builtin.git:
-        repo: 'https://github.com/jamescherti/minimal-emacs.d'
+        repo: "https://github.com/jamescherti/minimal-emacs.d"
         dest: ~/src/coding/minimal-emacs
         version: main
         update: true
@@ -87,14 +87,6 @@
       loop_control:
         index_var: idx
 
-    - name: Enable emacs systemd user service
-      when: ansible_os_family != "Debian"
-      ansible.builtin.systemd:
-        name: emacs.service
-        scope: user
-        enabled: yes
-        state: started
-
 - name: Linters & lsp
   become: true
   when: ansible_os_family != "Debian"
@@ -104,4 +96,3 @@
       - pyright
       - ruff
     state: present
-  

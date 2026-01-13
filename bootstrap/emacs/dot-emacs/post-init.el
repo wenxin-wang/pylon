@@ -765,6 +765,27 @@
 
 ;; Terminal emulator.
 
+(use-package with-editor
+  :commands with-editor)
+
+;; Thank you, sire!
+;; https://github.com/blahgeek/emacs.d/blob/master/init.el#L3558
+(use-package server
+  :straight (:type built-in)
+  :demand t
+  :config
+  ;; Make sure the server is running.
+  ;; (copied from with-editor)
+  ;; we don't want to use with-editor because it would add process filter
+  ;; (for its fallback sleeping editor) which is slow
+  (unless (process-live-p server-process)
+    (when (server-running-p server-name)
+      (setq server-name (format "server%s" (emacs-pid)))
+      (when (server-running-p server-name)
+        (server-force-delete server-name)))
+    (server-start))
+  (setenv "EMACS_SERVER_SOCKET" (expand-file-name server-name server-socket-dir)))
+
 (use-package eat
   :straight (eat :type git :host codeberg :repo "akib/emacs-eat"
                  :fork (:host github :repo "blahgeek/emacs-eat" :branch "dev"))
@@ -1106,12 +1127,13 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
 
 (use-package gptel
   :commands gptel gptel-send gptel-rewrite gptel-add gptel-add-file gptel-org-set-topic
+  :bind ("C-c g" . gptel-menu)
   :hook
   (gptel-mode . (lambda () (toggle-truncate-lines 1)))
   :custom
   (gptel-default-mode 'org-mode)
   :config
-  (defun read-gtpel-backend-config (path)
+  (defun read-gptel-backend-config (path)
     (with-temp-buffer
       (insert-file-contents path)
       (let* ((parsed-json (json-parse-buffer :object-type 'alist :array-type 'list))
@@ -1123,13 +1145,15 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
   (if (file-exists-p "~/.config/minimaxi-chat-token.json")
       (setq gptel-backend
             (apply #'gptel-make-anthropic "Minimaxi"
-                   (read-gtpel-backend-config "~/.config/minimaxi-chat-token.json"))))
+                   (read-gptel-backend-config "~/.config/minimaxi-chat-token.json"))))
   (if (file-exists-p "~/.config/deepseek-token.json")
       (setq gptel-backend
             (apply #'gptel-make-deepseek "DeepSeek"
-                   (read-gtpel-backend-config "~/.config/deepseek-token.json"))))
+                   (read-gptel-backend-config "~/.config/deepseek-token.json"))))
   (if (file-exists-p "~/.config/openweb-ui-token.json")
-      (setq gptel-backend (apply #'gptel-make-openai "OpenWebUI" (apply #'append kwargs)))))
+      (setq gptel-backend
+            (apply #'gptel-make-openai "OpenWebUI"
+                   (read-gptel-backend-config "~/.config/openweb-ui-token.json")))))
 
 (use-package ob-gptel
   :straight (:type git :host github :repo "jwiegley/ob-gptel")
@@ -1145,7 +1169,6 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
 (use-package aider
   :bind ("C-c a" . aider-transient-menu)
   :config
-  (setq aider-args `("--config" ,(expand-file-name "~/.aider.conf.yml")))
   ;; or use aider-transient-menu-2cols / aider-transient-menu-1col, for narrow screen
   ;; add aider magit function to magit menu
   (aider-magit-setup-transients))
