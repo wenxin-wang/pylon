@@ -35,6 +35,7 @@ in
     # TODO(wenxin): Maybe consider https://github.com/ericc-ch/copilot-api, it may
     # expose more models as it mimics the behavior of the copilot VS Code plugin.
     copilot-language-server
+    litellm
 
     jigmo
     hanazono
@@ -94,6 +95,8 @@ in
     ruff
     clang-tools
 
+    mitmproxy
+
     zotero
   ] else []);
 
@@ -138,7 +141,18 @@ in
     XMODIFIERS = "@im=ibus";
   } else {});
 
-  services.emacs.enable = isOldUbuntu;
+  systemd.user.services.litellm = {
+    Unit = {
+      Description = "LiteLLM proxy";
+      ConditionPathExists = "%h/.config/litellm/config.yml";
+    };
+    Install = {
+      WantedBy = [ "default.target" ];
+    };
+    Service = {
+      ExecStart = "${pkgs.litellm}/bin/litellm -c %h/.config/litellm/config.yml";
+    };
+  };
 
   fonts.fontconfig.enable = true;
 
