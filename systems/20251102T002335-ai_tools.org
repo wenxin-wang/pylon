@@ -52,6 +52,12 @@ litellm.exceptions.UnsupportedParamsError: litellm.UnsupportedParamsError: githu
 drop_params: true`
 #+end_example
 
+* OpenCode
+
+Some claims that it uses less tokens than Claude Code (I guess most agents use less tokens than that). It supports Copilot out of
+the box. However it seems that it would report errors during normal usage, and when I switch to use `claude-sonnet-4.5` it cannot
+show the responses (until I reopen the TUI program and resume the last session).
+
 ** 其它
 - https://github.com/milanglacier/minuet-ai.el 单纯的代码补全
 - https://github.com/xenodium/chatgpt-shell AI 集成交互环境
