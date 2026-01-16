@@ -360,6 +360,7 @@
           (call-interactively 'pop-global-mark))))
     `("go" . ,(scroll-on-jump-interactive #'pop-global-mark))
     `("gO" . ,(scroll-on-jump-interactive #'meow-pop-to-global-mark))
+    `("gd" . ,(scroll-on-jump-interactive #'meow-find-ref))
 
     ;; ignore escape
     '("<escape>" . meow-cancel-selection))
@@ -424,7 +425,7 @@
 ;; by providing additional backends through completion-at-point-functions.
 (use-package cape
   :commands (cape-dabbrev cape-file cape-elisp-block)
-  :bind ("C-c c" . cape-prefix-map)
+  :bind ("C-c p" . cape-prefix-map)
   :init
   ;; Add to the global default value of `completion-at-point-functions' which is
   ;; used by `completion-at-point'.
@@ -994,6 +995,12 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
   (org-roam-directory (file-truename "~/pylon")))
 
 ;; Programming.
+
+(use-package dumb-jump
+  :commands
+  dumb-jump-xref-activate
+  :init
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
 
 ;; Tree-sitter in Emacs is an incremental parsing system introduced in Emacs 29
 ;; that provides precise, high-performance syntax highlighting. It supports a
