@@ -110,7 +110,7 @@
 (use-package undo-tree
   :blackout t
   :hook
-  (after-init . global-undo-tree-mode))
+  (emacs-startup . global-undo-tree-mode))
 
 ;; Redefine pop-global-mark so that we can rotate in another
 ;; direction.
@@ -398,7 +398,7 @@
 (use-package corfu
   :commands (corfu-mode global-corfu-mode)
 
-  :hook (after-init . global-corfu-mode)
+  :hook (emacs-startup . global-corfu-mode)
 
   :custom
   (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
@@ -439,7 +439,7 @@
 ;; navigate and select from completion candidates (e.g., when `M-x` is pressed).
 (use-package vertico
   ;; (Note: It is recommended to also enable the savehist package.)
-  :hook (after-init . vertico-mode))
+  :hook (emacs-startup . vertico-mode))
 
 ;; Vertico leverages Orderless' flexible matching capabilities, allowing users
 ;; to input multiple patterns separated by spaces, which Orderless then
@@ -456,7 +456,7 @@
 ;; annotations to the completion candidates displayed in Vertico's interface.
 (use-package marginalia
   :commands (marginalia-mode marginalia-cycle)
-  :hook (after-init . marginalia-mode))
+  :hook (emacs-startup . marginalia-mode))
 
 ;; Embark integrates with Consult and Vertico to provide context-sensitive
 ;; actions and quick access to commands based on the current selection, further
@@ -593,7 +593,7 @@
   :straight (:type built-in)
   :commands (auto-revert-mode global-auto-revert-mode)
   :hook
-  (after-init . global-auto-revert-mode)
+  (emacs-startup . global-auto-revert-mode)
   :custom
   (auto-revert-interval 3)
   (auto-revert-remote-files nil)
@@ -608,7 +608,7 @@
   :straight (:type built-in)
   :commands (recentf-mode recentf-cleanup)
   :hook
-  (after-init . recentf-mode)
+  (emacs-startup . recentf-mode)
 
   :custom
   (recentf-auto-cleanup (if (daemonp) 300 'never))
@@ -635,7 +635,7 @@
   :straight (:type built-in)
   :commands (savehist-mode savehist-save)
   :hook
-  (after-init . savehist-mode)
+  (emacs-startup . savehist-mode)
   :custom
   (savehist-autosave-interval 600)
   (savehist-additional-variables
@@ -651,7 +651,7 @@
   :straight (:type built-in)
   :commands (save-place-mode save-place-local-mode)
   :hook
-  (after-init . save-place-mode)
+  (emacs-startup . save-place-mode)
   :custom  (save-place-limit 400))
 
 ;; Enable `auto-save-mode' to prevent data loss. Use `recover-file' or
@@ -759,7 +759,7 @@
 
 (use-package diff-hl
   :hook
-  (after-init . global-diff-hl-mode)
+  (emacs-startup . global-diff-hl-mode)
   (magit-post-refresh-hook . diff-hl-magit-post-refresh)
   :config
   (diff-hl-flydiff-mode))
@@ -889,8 +889,8 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
 ;;   (("C-x C-b" . bufler-switch-buffer))
 ;;   :commands (bufler)
 ;;   :hook
-;;   (after-init . bufler-mode)
-;;   (after-init . bufler-workspace-workspaces-as-tabs-mode)
+;;   (emacs-startup . bufler-mode)
+;;   (emacs-startup . bufler-workspace-workspaces-as-tabs-mode)
 ;;   :config
 ;;   ;; Somehow the autoload for bufler-workspace-workspaces-as-tabs-mode is incorrect.
 ;;   (require 'bufler-workspace-tabs))
