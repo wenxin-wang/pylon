@@ -7,15 +7,16 @@
       - git-lfs
     state: present
 
+- name: install scdaemon on Debian/Ubuntu
+  become: true
+  when: ansible_os_family == "Debian"
+  ansible.builtin.package:
+    name:
+      - scdaemon
+    state: present
+
 - name: passwords
   block:
-    - name: install scdaemon on Debian/Ubuntu
-      become: true
-      when: ansible_os_family == "Debian"
-      ansible.builtin.package:
-        name:
-          - scdaemon
-        state: present
 
     - name: install password store tool
       become: true
