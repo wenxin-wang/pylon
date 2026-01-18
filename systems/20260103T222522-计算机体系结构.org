@@ -25,6 +25,14 @@ https://github.com/oriansj/stage0
   - https://developers.redhat.com/blog/2020/01/20/mir-a-lightweight-jit-compiler-project
 - [[https://github.com/bytecodealliance/wasmtime/tree/main/cranelift][Cranelift]]
 
+** Virtual Machines
+
+*** Pointer tagging
+
+https://coredumped.dev/2024/09/09/what-is-the-best-pointer-tagging-method/
+
+结论：这些方案的性能没有太本质的差异，相比较下 cache 命中率要重要得多。文章最后提到还有很多 tagging 的方案和用法，并给了参考文献。
+
 * OS
 
 Lisps! https://gitlab.com/weinholt/loko https://github.com/froggey/Mezzano
