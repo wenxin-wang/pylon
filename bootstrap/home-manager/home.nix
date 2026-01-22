@@ -7,7 +7,11 @@ let
     config.allowUnfree = true;
     overlays = [];
   };
-  unstable = import <nixpkgs-unstable> {};
+  unstable = import (builtins.fetchTarball "https://channels.nixos.org/nixpkgs-unstable/nixexprs.tar.xz") {
+    config.doCheckByDefault = false;
+    config.allowUnfree = true;
+    overlays = [];
+  };
   isOldUbuntu = builtins.getEnv "DESKTOP_SESSION" == "ubuntu";
 in
 {
