@@ -39,6 +39,8 @@ EOF
 
 #+begin_src bash
 nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
+# https://nix-community.github.io/home-manager/index.xhtml#_how_do_i_install_packages_from_nixpkgs_unstable
+nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs-unstable
 nix-channel --update
 nix-shell '<home-manager>' -A install
 ln -sf ~/pylon/bootstrap/home-manager ~/.config/home-manager

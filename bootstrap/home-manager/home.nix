@@ -7,6 +7,7 @@ let
     config.allowUnfree = true;
     overlays = [];
   };
+  unstable = import <nixpkgs-unstable> {};
   isOldUbuntu = builtins.getEnv "DESKTOP_SESSION" == "ubuntu";
 in
 {
@@ -35,7 +36,7 @@ in
     # TODO(wenxin): Maybe consider https://github.com/ericc-ch/copilot-api, it may
     # expose more models as it mimics the behavior of the copilot VS Code plugin.
     copilot-language-server
-    opencode
+    unstable.opencode
     litellm
 
     jigmo
