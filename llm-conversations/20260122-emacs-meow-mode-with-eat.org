@@ -1,0 +1,87 @@
+#+TITLE: 排查为什么在 eat-mode 的 semi-char-mode 下，按 j 会触发 meow-next，但是结果会让 j 打印到屏幕上
+
+让 opencode 用 claude-sonnet-4.5 读了好一会代码，它发现这是因为 meow-next 在调用 ~C-n~ 绑定的函数时，
+没有去修改 ~last-command-event~（因此它还是对应 ~j~ ），而 eat-mode 下 ~C-n~ 绑定了 ~eat-self-insert~
+正好去读了 ~last-command-event~ ，因此它发现要 ~self-insert~ ~j~。
+
+#+begin_example
+  **EUREKA!** I found it! Here's what's happening:
+
+  1. You press `j`
+  2. Meow's keymap has higher precedence, so `meow-next` runs (which is why `this-command` is `meow-next`)
+  3. `meow-next` then calls `meow--execute-kbd-macro` with `meow--kbd-forward-line` which is the string `"C-n"`
+  4. `meow--execute-kbd-macro` calls `key-binding` to look up what `C-n` is bound to in the **current context**
+  5. In eat mode, `C-n` is bound to `eat-self-input` (because it's in the `:ascii` category, which includes all control characters)
+  6. So `meow--execute-kbd-macro` **changes** `this-command` to `eat-self-input` (line 62 of meow-util.el) and calls it
+  7. `eat-self-input` sends `C-n` to the terminal
+  8. But wait - the original key was `j`, not `C-n`!
+
+  Let me verify this theory by checking what happens with `eat-self-input`:
+
+▶  completed   other  external_directory
+
+  <file>
+  05571|   "Send E as input N times.
+  05572| 
+  05573| N defaults to 1 and E defaults to `last-command-event' and should be a
+  05574| event."
+  05575|   (interactive
+  05576|    (list (prefix-numeric-value current-prefix-arg)
+  05577|          (if (and (> (length (this-command-keys)) 1)
+  05578|                   (eq (aref (this-command-keys)
+  05579|                             (- (length (this-command-keys)) 2))
+  05580|                       meta-prefix-char))
+  05581|              ;; HACK: Capture meta modifier (ESC prefix) in terminal.
+  05582|              (cond
+  05583|               ((eq last-command-event meta-prefix-char)
+  05584|                last-command-event)
+  05585|               ((characterp last-command-event)
+  05586|                (aref
+  05587|                 (kbd (format "M-%c" last-command-event))
+  05588|                 0))
+  05589|               ((symbolp last-command-event)
+  05590|                (aref
+  05591|                 (kbd (format "M-<%S>" last-command-event))
+  05592|                 0))
+  05593|               (t
+  05594|                last-command-event))
+  05595|            last-command-event)))
+  05596|   (when (memq (event-basic-type e)
+  05597|               '( mouse-1 mouse-2 mouse-3 mouse-4 mouse-5 mouse-6
+  05598|                  mouse-7 mouse-8 mouse-9 mouse-10 mouse-11))
+  05599|     (select-window (posn-window (event-start e))))
+  05600|   (when eat-terminal
+
+  (File has more lines. Use 'offset' parameter to read beyond line 5600)
+  </file>
+
+  Look at line 5595: `last-command-event`. When `eat-self-input` is called interactively, it uses `last-command-event` to determine what to send.
+
+  So here's the full chain:
+  1. Press `j` → `last-command-event` = `?j`
+  2. `meow-next` runs
+  3. `meow-next` looks up what `C-n` should do → finds `eat-self-input`
+  4. `meow-next` calls `eat-self-input` **non-interactively** via `call-interactively`
+
+  Wait, let me re-read line 63 more carefully - it says `(call-interactively ret)`. So it IS calling it interactively. In that case, `last-command-event` should still be `?j` (the original key press), not `?\C-n`.
+
+  So the actual sequence is:
+  1. Press `j` (so `last-command-event` = `?j`)
+  2. `meow-next` runs (because meow has higher precedence)
+  3. `meow-next` executes `meow--execute-kbd-macro` with `"C-n"`
+  4. `meow--execute-kbd-macro` looks up `key-binding` for `C-n` → finds `eat-self-input`
+  5. `meow--execute-kbd-macro` does `(call-interactively eat-self-input)`
+  6. `eat-self-input` reads `last-command-event` which is still `?j`
+  7. `eat-self-input` sends `j` to the terminal!
+
+  **This is brilliant design by meow!** It allows mode-specific bindings to take effect while still getting the original keypress.
+
+  So the answer to your question "how does eat implement key passthrough in char mode?" combined with "why does meow-next run but j gets inserted?" is:
+
+  1. **Eat doesn't really passthrough** - it binds every key to `eat-self-input`
+  2. **Meow's keymap has higher precedence**, so `meow-next` runs instead
+  3. **But `meow-next` is smart** - it looks up what the underlying keymap would do with an equivalent motion key (`C-n`), finds `eat-self-input`, and calls it
+  4. **`eat-self-input` uses `last-command-event`** which is still the original `j`, so `j` gets inserted
+
+  This is why it works without any configuration! Meow is designed to be compatible with terminal modes by re-dispatching through the underlying keymaps while preserving the original key event.
+#+end_example

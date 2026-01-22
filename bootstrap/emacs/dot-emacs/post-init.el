@@ -179,6 +179,29 @@
   (meow-expand-exclude-mode-list '())
   :config
   (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
+
+  ;; Advice to set last-command-event when meow dispatches kbd macros,
+  ;; so that when under ~eat-semi-char-mode~, ~eat-self-input~ actually
+  ;; inserts ~C-n~ instead of ~j~ when pressing ~j~ under ~meow-normal-mode~.
+  (defun my/meow-set-last-command-event (orig-fun kbd-macro-or-defun)
+    "Advice around `meow--execute-kbd-macro' to set `last-command-event'.
+When KBD-MACRO-OR-DEFUN is a string (kbd macro), set `last-command-event'
+to the event that the macro represents, so the dispatched command sees
+the macro key instead of the original key."
+    (if (stringp kbd-macro-or-defun)
+        (let* ((keys (read-kbd-macro kbd-macro-or-defun))
+               ;; Get the first (and typically only) key from the macro
+               (event (if (and (vectorp keys) (> (length keys) 0))
+                          (aref keys 0)
+                        last-command-event)))
+          ;; Bind last-command-event to the macro's key event
+          (let ((last-command-event event))
+            (funcall orig-fun kbd-macro-or-defun)))
+      ;; If it's not a string, just call the original function
+      (funcall orig-fun kbd-macro-or-defun)))
+
+  (advice-add 'meow--execute-kbd-macro :around #'my/meow-set-last-command-event)
+
   (add-to-list
    'meow-char-thing-table
    '(?\( . round))
