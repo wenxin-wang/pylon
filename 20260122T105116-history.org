@@ -1,0 +1,11 @@
+:PROPERTIES:
+:ID:       20260122T105116
+:END:
+#+title: history
+
+* Visualization
+
+如果能用时间轴的方式对比同一时代不同地区/事件的发展，或者不同时代的相似的事物的
+发展，应该能更直观地帮我记住和理解历史事件。
+
+[[https://cbdb-qvis.pkudh.org/home.html][中国历代人物历史可视化平台]]

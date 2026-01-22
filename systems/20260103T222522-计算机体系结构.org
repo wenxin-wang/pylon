@@ -36,3 +36,12 @@ https://coredumped.dev/2024/09/09/what-is-the-best-pointer-tagging-method/
 * OS
 
 Lisps! https://gitlab.com/weinholt/loko https://github.com/froggey/Mezzano
+
+* Coroutines
+
+用 Duff's Device + static variable 实现 [[https://www.chiark.greenend.org.uk/~sgtatham/coroutines.html][Coroutine]]，用一个隐藏的状态量做 switch，
+用行号作为 case 行对应的状态值，每次重入时跳转到上次执行后面的一个 case。需要手动把重入时需要
+恢复的变量标记为 static。由此看出 Duff's Device 是把 switch case 当成动态的 goto 使用。
+
+相关： [[https://eli.thegreenplace.net/2012/07/12/computed-goto-for-efficient-dispatch-tables][computed goto]] 可以提升这里的性能：增加 branch prediction point，绕开
+switch case 的 boundary检查。
