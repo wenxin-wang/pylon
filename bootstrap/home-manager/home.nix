@@ -63,6 +63,8 @@ in
     (dyalog.override { acceptLicense = true; })
     ride
 
+    marimo
+
     git-remote-gcrypt
 
     jsonnet-language-server
