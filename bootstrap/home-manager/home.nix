@@ -95,6 +95,7 @@ in
   (if isOldUbuntu then with pkgs; [
     emacs
 
+    curl
     fd
     prettier
 

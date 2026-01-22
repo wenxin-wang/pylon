@@ -1181,7 +1181,8 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
   (aider-magit-setup-transients))
 
 (use-package agent-shell
-  :commands agent-shell)
+  :commands agent-shell
+  :bind ("C-c d" . agent-shell-help-menu))
 
 
 (use-package claude-code-ide
