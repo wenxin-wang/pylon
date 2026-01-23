@@ -29,9 +29,9 @@ trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDS
 experimental-features = nix-command flakes
 EOF
 sudo systemctl restart nix-daemon.service
-# https://nix-community.github.io/home-manager/index.xhtml#_how_do_i_install_packages_from_nixpkgs_unstable
-nix-channel --add https://mirrors.ustc.edu.cn/nix-channels/nixpkgs-unstable nixpkgs
-nix-channel --update
+# # https://nix-community.github.io/home-manager/index.xhtml#_how_do_i_install_packages_from_nixpkgs_unstable
+# nix-channel --add https://mirrors.ustc.edu.cn/nix-channels/nixpkgs-unstable nixpkgs-unstable
+# nix-channel --update
 
 cat <<EOF >~/.profile.d/99-nix-home-manager.sh
 source $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh
