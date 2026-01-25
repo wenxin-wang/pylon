@@ -31,6 +31,56 @@ iOS 的原生 IKEv2 Client 要求：
     https://apple.stackexchange.com/questions/412089/ios-native-ikev2-client-and-ecdsa-server-certificates
     看，iOS 可能根本不支持用 ecdsa 认证服务器
 
+** Proposals
+
+strongswan 默认的配置会让它和 iOS 设备之间协商出来错误的 DH pubkey 长度（猜测是
+两侧认为的长度不一致，对应下面的 "modp*"）。加上（推测） iOS 遇到这种情况有半分
+钟的重试间隔，导致会花很久时间才能等它换一个 proposal 重新来。
+
+#+begin_example
+Jan 25 18:32:49 alarm charon-systemd[139173]: selected proposal: IKE:3DES_CBC/HMAC_SHA1_96/PRF_HMAC_SHA1/MODP_3072
+Jan 25 18:32:49 alarm charon-systemd[139173]: DH public value is malformed
+Jan 25 18:32:49 alarm charon-systemd[139173]: applying KE public value failed
+#+end_example
+
+在 [[https://docs.strongswan.org/docs/latest/config/proposals.html][官方文档]] 没有找到合适的推荐，问了 DeepSeek，加上看了下自己之前的记录，我试了下
+
+#+begin_example
+connections {
+  rw-eap {
+    children {
+      net {
+         esp_proposals = aes256gcm16-ecp384,aes256gcm16,aes256-sha256
+      }
+    }
+    proposals = aes256gcm16-sha384-prfsha384-ecp384,aes256-sha256-ecp256,aes256-sha256-prfsha256-ecp256
+  }
+}
+#+end_example
+
+天知道我选对了没有，至少现在没有那个半分钟的等待了。
+
+在改动之前，iOS 和 Android 最终都会选择
+IKE:AES_CBC_256/HMAC_SHA2_256_128/PRF_HMAC_SHA2_256/ECP_256 的 proposal，但是改
+了之后， Android 会变成 IKE:AES_GCM_16_256/PRF_HMAC_SHA2_384/ECP_384。问了下
+DeepSeek，说前者更快，后者更安全。
+
+想了下感觉好像兼容性更重要，万一加了这个 GCM 以后又出现奇妙问题，所以最终把它去了。
+
+#+begin_example
+connections {
+  rw-eap {
+    children {
+      net {
+         esp_proposals = aes256gcm16,aes256-sha256
+      }
+    }
+    proposals = aes256-sha256-ecp256,aes256-sha256-prfsha256-ecp256
+  }
+}
+#+end_example
+
+
 * 安装和配置
 
 可以参考 [[../bootstrap/ansible/roles/networking/tasks/strongswan.yml]]。Archlinux 安装 ~strongswan~ ，Debian 安装 ~charon-systemd~ 。
