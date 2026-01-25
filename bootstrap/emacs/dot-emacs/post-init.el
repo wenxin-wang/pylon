@@ -808,11 +808,14 @@ the macro key instead of the original key."
       (when (server-running-p server-name)
         (server-force-delete server-name)))
     (server-start))
-  (setenv "EMACS_SERVER_SOCKET" (expand-file-name server-name server-socket-dir)))
+  (setenv "EMACS_SERVER_SOCKET" (expand-file-name server-name server-socket-dir))
+  (setenv "EDITOR" "emacsclient -s $EMACS_SERVER_SOCKET"))
 
 (use-package eat
   :straight (eat :type git :host codeberg :repo "akib/emacs-eat"
                  :fork (:host github :repo "blahgeek/emacs-eat" :branch "dev"))
+  :bind
+  (("C-c E" . eat-other-window))
   :custom
   (eat-kill-buffer-on-exit t)
   ;; disable the default process-kill-buffer-query-function
@@ -820,7 +823,13 @@ the macro key instead of the original key."
   (eat-query-before-killing-running-terminal nil)
   (eat-term-scrollback-size (* 64 10000))  ;; chars. ~10k lines?
   (eat-term-name "xterm-256color")
-  :commands (eat eat-mode eat-exec))
+  :commands (eat eat-mode eat-exec)
+  :config
+  (add-hook
+   'eat-mode-hook
+   #'(lambda ()
+       (add-hook 'meow-insert-enter-hook #'eat-char-mode 0 t)
+       (add-hook 'meow-insert-exit-hook #'eat-line-mode 0 t))))
 
 ;; Project management.
 
