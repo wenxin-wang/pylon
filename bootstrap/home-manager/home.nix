@@ -67,6 +67,8 @@ in
     (dyalog.override { acceptLicense = true; })
     ride
 
+    glamoroustoolkit
+
     marimo
     uv
 
