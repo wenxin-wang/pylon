@@ -68,6 +68,7 @@ in
     ride
 
     marimo
+    uv
 
     git-remote-gcrypt
 
