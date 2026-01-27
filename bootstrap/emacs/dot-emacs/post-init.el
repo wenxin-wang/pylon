@@ -58,7 +58,11 @@
   ;; suspend-frame
   (define-key global-map (kbd "C-x C-z") nil)
   ;; save-buffers-kill-terminal
-  (define-key global-map (kbd "C-x C-c") nil))
+  (define-key global-map (kbd "C-x C-c") nil)
+  ;; Sane common mouse actions, see
+  ;; https://christiantietze.de/posts/2022/07/shift-click-in-emacs-to-select/
+  (global-set-key (kbd "S-<down-mouse-1>") #'mouse-set-mark)
+  (global-set-key (kbd "C-S-<down-mouse-1>") #'mouse-drag-region-rectangle))
 
 ;; Blackout: hide minor modes from modeline
 (use-package blackout
