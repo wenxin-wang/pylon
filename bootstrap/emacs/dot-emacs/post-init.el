@@ -174,6 +174,12 @@
   (scroll-on-jump-with-scroll-advice-add scroll-up-command)
   (scroll-on-jump-with-scroll-advice-add scroll-down-command))
 
+(use-package ace-window
+  :bind
+  ("M-o" . ace-window)
+  :custom
+  (aw-minibuffer-flag t))
+
 ;; Modal editing.
 (use-package meow
   ;; Somehow ~meow-global-mode~ does not trigger evaluation
