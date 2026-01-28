@@ -825,7 +825,7 @@ the macro key instead of the original key."
   :straight (eat :type git :host codeberg :repo "akib/emacs-eat"
                  :fork (:host github :repo "blahgeek/emacs-eat" :branch "dev"))
   :bind
-  (("C-c E" . eat-other-window))
+  (("C-c E" . eat-project-other-window))
   :custom
   (eat-kill-buffer-on-exit t)
   ;; disable the default process-kill-buffer-query-function
