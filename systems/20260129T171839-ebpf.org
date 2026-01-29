@@ -1,0 +1,11 @@
+:PROPERTIES:
+:ID:       20260129T171839
+:END:
+#+title: eBPF
+
+* References
+
+** Overviews
+
+https://dkorunic.net/pdf/Korunic_eBPF.pdf: 提到了 TC 是在 IP 协议层下面的，能看
+到完整以太网包信息；对比了 XDP 和 DPDK；最后讲了一些安全相关的事情。

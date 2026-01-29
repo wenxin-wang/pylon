@@ -45,3 +45,27 @@ Lisps! https://gitlab.com/weinholt/loko https://github.com/froggey/Mezzano
 
 相关： [[https://eli.thegreenplace.net/2012/07/12/computed-goto-for-efficient-dispatch-tables][computed goto]] 可以提升这里的性能：增加 branch prediction point，绕开
 switch case 的 boundary检查。
+
+* Tail Call Optimization
+
+我一直粗浅地理解为，调用函数在发现自己最后一条指令是 return + funcall 的情况下，
+需要在调用其它函数前，清理掉自己的调用栈（frame？），再执行 funcall 就行。SICP
+的视频里 Abelson 教授似乎说这件事情比很多人想的简单，但是我忘记到底有多简单了。
+看下面的讨论，实际的情况不一定有那么简单。
+
+https://ekaitz.elenq.tech/call-me-maybe.html 有很清楚简单的介绍，让我学习到 TCO
+原来会导致丢失 stack trace，以及 lua 文档里提到因为 tail call 与 goto 等价，所以
+很适合用来实现状态机（上面提到的 computed goto 也是相关的）。他引用了 [[https://www.lua.org/pil/6.3.html][lua]]、scala、
+clojure 和 [[https://chrismgray.github.io/posts/emacs-tco/][emacs lisp]] 对 TCO 的处理方式，也引用了 python [[https://web.archive.org/web/20260115114612/https://neopythonic.blogspot.com/2009/04/tail-recursion-elimination.html][不做 TCO]] 的原因（我理解
+最主要是不想丢失 stack trace，以及 Guido 不喜欢纯粹的 functional style）。
+
+有各种方法可以缓解丢 stack trace 的问题，比如 MIT Scheme 就是 [[https://funcall.blogspot.com/2009/05/you-knew-id-say-something-part-iv.html][额外]] 用个大小可调的
+ring buffer 来存。还有 [[https://gbracha.blogspot.com/2009/12/chased-by-ones-own-tail.html][这里]] 提到可以每个调用都生成 stack trace然后让 gc 去回收不用的
+stack trace（我没理解如何组织 stack trace 让它能被找到的同时还能被 gc）。
+
+https://eklitzke.org/how-tail-call-optimization-works 展示了关闭/开启 TCO 后的
+tail call/tail recursion 的 x64 反汇编。
+
+Guy Steele Lee [[https://web.archive.org/web/20110716163344/https://projectfortress.sun.com/Projects/Community/blog/ObjectOrientedTailRecursion][提到]] Object-oriented 语言为了完美的封装，必须要支持 TCO。他举的例
+子我没有太看懂，好像是为了遍历一个无限集合，必须由 set 们逐个调用下一个 set 的遍
+历函数，假如这个遍历函数实现在 set 外面，会泄漏封装。
