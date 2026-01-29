@@ -72,6 +72,8 @@ in
     marimo
     uv
 
+    inotify-tools
+    age
     git-remote-gcrypt
 
     jsonnet-language-server
