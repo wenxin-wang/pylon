@@ -19,6 +19,16 @@
           - openvpn
         state: present
 
+    - name: Ensure openvpn directories
+      ansible.builtin.file:
+        path: "/etc/openvpn/{{ item }}"
+        owner: "{{ openvpn_user }}"
+        group: "{{ openvpn_group }}"
+        state: directory
+      loop:
+        - client
+        - server
+
     # Clients
     - name: Copy client scripts
       when: openvpn_static_p2p.get('client', []) | length > 0

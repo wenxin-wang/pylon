@@ -26,6 +26,14 @@
   loop: "{{ nftables_configs|default(nftable_default_configs) }}"
   register: general_files
 
+- name: Ensure nftables directories
+  become: true
+  ansible.builtin.file:
+    path: "/etc/nftables/{{ item }}"
+    state: directory
+  loop:
+    - basic
+
 - name: Render templates
   become: true
   ansible.builtin.template:
