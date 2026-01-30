@@ -1,0 +1,45 @@
+:PROPERTIES:
+:ID:       20260103T222704
+:END:
+#+title: Life Long Learning
+
+* 语言学习
+
+https://github.com/chenyanming/paw
+
+** 日语
+
+*** 语法
+
+https://guidetojapanese.org/learn/grammar/numbers
+
+* 体验和创作
+
+我一直想尝试用程序生成图画和音乐，或者借由程序去体验，然后学着去做类似的事情。不
+然只会一直是个无聊的人。
+
+** Creative Programming
+
+- https://processing.org/
+- https://github.com/vydd/sketch in lisp!
+
+** Generative art
+
+- https://github.com/LingDong-/shan-shui-inf 山水画
+  - 对这份实现的 [[https://zverok.space/blog/2021-12-28-grok-shan-shui.html][讲解]]
+- [[https://thecreativeindependent.com/people/multi-disciplinary-artist-jack-rusher-on-the-need-to-sustain-your-creative-drive-in-the-face-of-technological-change/][访谈]] 的结尾提到了很多艺术家
+
+** Live Coding
+
+- https://wiki.xxiivv.com/site/orca.html 我一直不知道这个是做什么的，但是它的设计好好看
+- https://overtone.github.io/ in clojure!
+- https://openmusic-project.github.io/openmusic/ in lisp!
+- https://puredata.info/
+
+** 桌游
+
+我觉得桌游非常符合我心目中 Saymer Papert 的“小世界”的想法：用少量的规则配合简单
+的道具，激发人的想象来解决问题，甚至体验一个新的世界。很适合寓教于乐，让人学习有
+用的想法。
+
+https://blog.fogus.me/games/18XX/intro.html

@@ -1,0 +1,30 @@
+:PROPERTIES:
+:ID:       20260126T140805
+:END:
+#+title:Human Computer Interaction (HCI)
+
+记录下各种“表达”系统的方法。
+
+* 历史
+
+https://jackrusher.com/classic-ux/ 收藏很多重要的产品和想法的 demo 视频，可以按年份过滤。
+
+* 关于“代码”
+
+有很多不同的观点，我列出听上去很有道理的。
+
+"The program is a database, not a listing. – an old Xerox Parc slogan" https://blog.fogus.me/2022/11/10/the-one-about-lisp-interactivity.html
+
+
+* Propagators
+
+Gerald J Sussman 屡次提到的程序结构。见 [[https://dspace.mit.edu/handle/1721.1/54635][Propagation networks : a flexible and
+expressive substrate for computation]] 以及 [[https://dspace.mit.edu/bitstream/handle/1721.1/49525/MIT-CSAIL-TR-2009-053.pdf][Propagation Networks: A Flexible and
+Expressive Substrate for Computation]]
+
+* Mellable Systems
+
+如何让一个系统自我描述，且易于发现和理解？Alan Kay，Bret Victor……他们的想法真的很美妙
+
+- https://malleable.systems/ 无数美好的想法
+- https://worrydream.com/ Bret Victor

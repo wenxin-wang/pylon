@@ -1,0 +1,35 @@
+:PROPERTIES:
+:ID:       20260130T222529
+:END:
+#+title: Graphics Design
+
+我很希望自己能做出有冲击力又富有含义的图形设计来传达想法。怎么学呢？至少我想欣赏更多的作品。
+
+* 作品收藏
+
+** Logo
+
+https://www.clipsrules.net/ Clips, "A Tool for Building Expert Systems" 它的域名
+和首页的图标很夸张，但是很生动地表达了希望能借由这个系统提升人本身的想法。
+
+** 颜色和小图标
+
+[[https://thecreativeindependent.com/people/multi-disciplinary-artist-jack-rusher-on-the-need-to-sustain-your-creative-drive-in-the-face-of-technological-change/][这篇博客]] 虽然默认的字体太小了，但是它的颜色和开头的导航栏非常相配，一下子抓住注意力。
+
+https://100r.co/site/orca.html https://100r.co/site/orca.html uxn 社区经常能搞出
+来特别可爱的、数字感的图标和配色设计。
+
+** 线条
+
+[[https://thecreativeindependent.com/people/multi-disciplinary-artist-jack-rusher-on-the-need-to-sustain-your-creative-drive-in-the-face-of-technological-change/][这篇访谈]] 里展示的个人作品有很多计算机生成的线条画，好奇是怎么画出来的。
+
+** 动画
+
+https://2019.makemepulse.com/ 非常精妙的交互式动画，虽然交互很少，但是美术风格非
+常温馨、精美。
+
+** 布局
+
+https://thecreativeindependent.com/welcome/ 错落有致第展示章节和摘要。也照顾了手
+机用户，在手机上线性排版。
+

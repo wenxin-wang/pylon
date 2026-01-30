@@ -11,6 +11,16 @@
 
 https://github.com/oriansj/stage0
 
+* 编程语言设计
+
+https://blog.fogus.me/2023/06/02/languages-zoo.html 这个人尝试实现了各种各样特性的语言，也给了相当充实的引用。
+
+** 自举
+
+以前我觉得自举很重要，因为它看上去很完美。但自举显著增加了初始化过程的复杂性。所以如何才算值得呢？
+
+- Zig 的 [[https://ziglang.org/news/goodbye-cpp/][自举设计]]，用一个特化的 wasm 解释器 + zig 编译器自举到 wasm 架构实现
+
 * 编译原理和框架
 
 ** Non-JIT
@@ -26,6 +36,18 @@ https://github.com/oriansj/stage0
 - [[https://github.com/bytecodealliance/wasmtime/tree/main/cranelift][Cranelift]]
 
 ** Virtual Machines
+
+*** 教程
+
+[[https://stups.hhu-hosting.de/downloads/pdf/BoRi07_223.pdf][How to not write Virtual Machines for Dynamic Language]]
+
+*** 小虚拟机
+
+https://100r.co/site/uxn.html Perma-computing 的想法非常有意思
+
+https://forum.malleable.systems/t/small-virtual-machines/148 如果一个虚拟机足够
+小，它是不是更适合用来 bootstrap？[[id:20260126T140805][更容易理解]]？组合简单的规则，最终呈现出复杂的系
+统，给人一种非常精巧的感觉。
 
 *** Pointer tagging
 
@@ -45,6 +67,19 @@ Lisps! https://gitlab.com/weinholt/loko https://github.com/froggey/Mezzano
 
 相关： [[https://eli.thegreenplace.net/2012/07/12/computed-goto-for-efficient-dispatch-tables][computed goto]] 可以提升这里的性能：增加 branch prediction point，绕开
 switch case 的 boundary检查。
+
+阿里巴巴的 [[https://photonlibos.github.io/blog/stackful-coroutine-made-fast][PhotonLibOs]] 对 stackful coroutine 做了听上去非常合理的优化：减少切换
+时要存的寄存器，让编译器在 caller 找出全集，而不是让 callee 真的把所有可能用到的
+寄存器存下来； （没看懂的）随机化了每个 coroutine 的栈内存起始地址，防止
+cacheline false-sharing；在每个 coroutine yield 的时候做 jumping，有点像
+computed goto，使得每个 coroutine 的切换有自己的分支预测点，帮助硬件预测；（没看
+懂的）更优的 generator，好像可以减少返回时的 jump 还是什么；用 madvice 做 memory
+pooling，实现惰性的 coroutine 栈内存分配。
+
+stackful/stackless 并不是唯一的分类标准。比如，[[https://cofault.com/usched.html][usched]] 是在遇到阻塞的情况下，会把
+阻塞协程的栈复制到堆，然后把下一个协程的栈从堆复制到当前的调用栈继续运行。在不经
+常阻塞的情况下，因为上下文切换和函数调用相同，所以代价很小。据作者说，微软的
+Midori 项目也是类似的做法。
 
 * Tail Call Optimization
 

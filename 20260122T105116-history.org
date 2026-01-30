@@ -9,3 +9,5 @@
 发展，应该能更直观地帮我记住和理解历史事件。
 
 [[https://cbdb-qvis.pkudh.org/home.html][中国历代人物历史可视化平台]]
+
+[[https://www.wikidata.org/wiki/Wikidata:Main_Page][WikiData]], database version of Wikipedia

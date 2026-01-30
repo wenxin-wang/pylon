@@ -1,0 +1,38 @@
+:PROPERTIES:
+:ID:       20260131T115149
+:END:
+#+title: 2026-Readings
+
+* [[https://thecreativeindependent.com/people/multi-disciplinary-artist-jack-rusher-on-the-need-to-sustain-your-creative-drive-in-the-face-of-technological-change/][On the need to sustain your creative drive in the face of technological change]]
+
+受访者是 clerk (clojure notebook）的作者。
+
+- 利用现存的艺术作为参考
+  - 看到自然存在的物体，试图把握它的模式，在计算机上复现
+  - 应用、组合不同时期的艺术风格和想法（比如无限复制一个古典风格的东西）
+- 文 vs 理，运动 vs 数学 的严格区分是社会文化的产物。需要花时间尝试不擅长的东西，
+  更全面地体会和发展自己
+- 放弃创造是放弃与生俱来的权利
+- 玩音乐、学习艺术提升了他对世界的感知，比如对节律、光源的感受。如果只用 LLM 去
+  描述和生成，就失去了提升感知的机会
+  - LLM 是非常好用的工具，辅助创作
+- 接受不完美的作品，持续创作，也持续展示（我觉得还是得取舍，或者把私人展示也算上）
+  - “Don’t hold your breath for five or seven years and not release anything,
+    and then you’ve just got clogged up with way too much stuff… You lose
+    contact to the part of you, your subconscious, that’s writing songs all the
+    time, and the part of you that’s showing it to the world… That’s more
+    important, to sustain that flow, than to wait until things are perfect.” --
+    Björk, the musician
+  - Excellence is just a function of habit. -- Aristotle
+- 20 世纪的突破持续影响现在。当时的投资价值更加宽容，也因此更容易产出在长远阶段
+  才能产生影响的技术。比如电容屏发明 25 年后用于 iPhone。前人种树，后人收获。现
+  在收获多，至少明面上种树少
+- 运用多种方式（条理性的推理或者整体的直觉）去理解和处理事物
+
+作者的很多观点和 Saymer Papert 相似，尤其是在人的提升的方法和内容上。
+
+我觉得不是每个人都能像作者那样，无需区分工作和兴趣还能过上不错的生活。但是确实可
+以挤出更多的时间去体验和创作。
+
+也需要留意，最近 5-15 年的好想法有什么？多注意种树的人，日后能用到他们的成果，也
+可以参与其中。

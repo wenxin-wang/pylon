@@ -19,6 +19,19 @@ https://mlochbaum.github.io/BQN/doc/syntax.html
 
 * Someday
 
+** 别人的阅读列表
+
+有的人的阅读量真的惊人，比如 [[https://www.smithsonianmag.com/arts-culture/two-years-cormac-mccarthys-death-rare-access-to-personal-library-reveals-man-behind-myth-180987150/][Cormac McCarthys]]（《老无所依》的作者）去世后人们花
+了很大的力气去整理他读过的书和在书上写的注解，据说后面要开放出来让公众查看他的标
+注（据说有一条是“宇宙是有智能，且这个智能是仁慈的”"There is an intelligence to
+the universe (of which we are fractal) and that intelligence has a character and
+that character is benign. Intends well toward all things. How could it not?"）。
+再比如这里有个人做了 [[https://what-dan-read.com/][网站]] ，用鼠标在上面拖拽翻页可以看到他读过的书的记录，每行是
+一个书名（不过密密麻麻的我也看不进去），他好像还要出一本书来讲自己读过的书。
+
+上面这两个例子是从 [[https://blog.fogus.me/2025/12/23/the-best-things-and-stuff-of-2025.html][一位]] Clojure 开发者的博客上找到的，他也是一位博学的人，做了很
+多 [[id:20260103T222522][编程语言设计]] 的开发尝试，看上去喜欢看恐怖小说。他有一个相当长的 [[https://github.com/fogus/thunks/blob/main/reading/quirkeys.org][书单]] 值得挖掘。
+
 ** Emacs
 
 https://github.com/egh/zotxt-emacs?tab=readme-ov-file
@@ -63,3 +76,16 @@ https://www.janestreet.com/tech-talks/intro-to-incr-dom/
 https://blog.janestreet.com/incrementality-and-the-web/
 
 [[https://www.umut-acar.org/research#h.x3l3dlvx3g5f][Self-adjusting computation]]
+
+
+** Systems Design
+
+[[https://explodingthephone.com/hoppdocs/nodd1956.pdf][NOTES ON DISTANCE DIALING]]
+
+* 趣味杂志
+
+** 计算机技术
+
+https://pocorgtfo.hacke.rs/ 挺难的黑客杂志
+
+
