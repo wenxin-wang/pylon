@@ -12,3 +12,13 @@ https://github.com/chenyanming/paw
 *** 语法
 
 https://guidetojapanese.org/learn/grammar/numbers
+
+* 阅读和体验
+
+有的人的阅读量真的惊人，比如 [[https://www.smithsonianmag.com/arts-culture/two-years-cormac-mccarthys-death-rare-access-to-personal-library-reveals-man-behind-myth-180987150/][Cormac McCarthys]] 去世后人们花了很大的力气去整理他读
+过的书和在书上写的注解。再比如这里有个人做了 [[https://what-dan-read.com/][网站]] ，用鼠标在上面拖拽翻页可以看到
+他读过的书的记录，每行是一个书名（不过密密麻麻的我也看不进去），他好像还要出一本
+书来讲自己读过的书。
+
+上面这两个例子是从 [[https://blog.fogus.me/2025/12/23/the-best-things-and-stuff-of-2025.html][一位]] Clojure 开发者的博客上找到的，他也是一位博学的人，看上去
+喜欢看恐怖小说，
