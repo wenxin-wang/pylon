@@ -28,6 +28,8 @@
 (require 'org-roam)
 (require 'htmlize)
 
+(setq org-html-self-link-headlines t)
+
 (add-hook 'org-export-before-processing-functions
           (lambda (backend)
             (when-let ((note (org-roam-node-at-point))
