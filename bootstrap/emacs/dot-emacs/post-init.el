@@ -1338,7 +1338,17 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
     (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter)))
 
 (use-package doom-modeline
-  :hook (emacs-startup . doom-modeline-mode))
+  :hook (emacs-startup . doom-modeline-mode)
+  :custom
+  (doom-modeline-buffer-encoding nil)
+  ;; Don't abbreviate vc branch name too eagerly.
+  (doom-modeline-vcs-max-length 30)
+  ;; Define custom modeline with vcs before misc-info (easysession).
+  :config
+  (doom-modeline-def-modeline 'main
+    '(eldoc bar window-state workspace-name window-number modals matches follow buffer-info remote-host buffer-position word-count parrot selection-info vcs)
+    '(compilation objed-state misc-info project-name persp-name battery grip irc mu4e gnus github debug repl lsp minor-modes input-method indent-info buffer-encoding major-mode process check time))
+  (doom-modeline-set-modeline 'main 'default))
 
 (use-package popper
   :hook
