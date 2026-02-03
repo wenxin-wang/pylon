@@ -1,0 +1,13 @@
+:PROPERTIES:
+:ID:       20260203T124147
+:END:
+#+title: Remote Access
+
+* 可能的方案
+
+** Wayland
+
+- + Moonlight
+  - https://games-on-whales.github.io/wolf/stable/dev/how-it-works.html 这个方案用
+    一个中心的 Compositor 把 docker 里的程序的输出组装起来，然后通过 Moonlight 传输
+  - https://www.reddit.com/r/linux_gaming/comments/1jxnod4/is_headless_sunshine_gaming_possible/

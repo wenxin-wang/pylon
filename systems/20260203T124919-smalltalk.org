@@ -1,0 +1,17 @@
+:PROPERTIES:
+:ID:       20260203T124919
+:END:
+#+title: SmallTalk
+
+* 实现
+
+Cuis: https://github.com/DrCuis/Tutorials/tree/main/100-Quick-Tour
+
+Pharo：https://pharo.org/
+
+* 集成环境
+
+虽然 SmallTalk 本身是集成环境，但是有面向其它用途的设计思路，比如：
+
+- https://book.gtoolkit.com/ 面向 Inspector，从不同角度查看分析代码或者其它可以
+  分析的东西

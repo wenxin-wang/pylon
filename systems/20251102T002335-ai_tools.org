@@ -5,7 +5,13 @@
 
 * 集成平台
 
+** 流程组装
+
 https://dify.ai/
+
+** 设计
+
+https://www.lovart.ai/ 找机会试试！
 
 * Aider
 
@@ -33,6 +39,10 @@ What is the capital of France?
 #+RESULTS:
 : The capital of France is Paris.
 
+** 其它
+- https://github.com/milanglacier/minuet-ai.el 单纯的代码补全
+- https://github.com/xenodium/chatgpt-shell AI 集成交互环境
+
 * Claude Code
 
 ** Copilot models
@@ -57,7 +67,3 @@ drop_params: true`
 Some claims that it uses less tokens than Claude Code (I guess most agents use less tokens than that). It supports Copilot out of
 the box. However it seems that it would report errors during normal usage, and when I switch to use `claude-sonnet-4.5` it cannot
 show the responses (until I reopen the TUI program and resume the last session).
-
-** 其它
-- https://github.com/milanglacier/minuet-ai.el 单纯的代码补全
-- https://github.com/xenodium/chatgpt-shell AI 集成交互环境

@@ -9,12 +9,13 @@
 
 https://jackrusher.com/classic-ux/ 收藏很多重要的产品和想法的 demo 视频，可以按年份过滤。
 
+https://instadeq.com/blog/posts/no-code-history-sketchpad-a-man-machine-graphical-communication-system-1963/ 绕不开的 SketchPad，一切的起源
+
 * 关于“代码”
 
 有很多不同的观点，我列出听上去很有道理的。
 
 "The program is a database, not a listing. – an old Xerox Parc slogan" https://blog.fogus.me/2022/11/10/the-one-about-lisp-interactivity.html
-
 
 * Propagators
 
@@ -28,3 +29,25 @@ Expressive Substrate for Computation]]
 
 - https://malleable.systems/ 无数美好的想法
 - https://worrydream.com/ Bret Victor
+
+** Discussions
+
+https://forum.malleable.systems/t/a-symbol-oriented-gui/126/11 提到了 [[id:20260203T124919][Glomorous Toolkit]] ，Coda，Boxer，还有不少论文
+
+** SmallTalk
+
+有各种 [[id:20260203T124919][实现]] 。
+
+** Boxer
+
+https://boxer-project.github.io/ 来自 Andrea diSessa （[[id:20260131T230525][MindStorms]] 里提到的做了很
+多儿童工作的人）。用 [[id:20260103T223144][Common Lisp]] 写的，我觉得界面还算好看。
+
+* Situated Software
+
+为一个小社区（当然包括自己）设计的：小、不可扩、对个人/社区特性和规则有隐藏依赖的软件。
+
+https://gwern.net/doc/technology/2004-03-30-shirky-situatedsoftware.html
+
+https://akkartik.name/freewheeling/ 美好的想法，精彩的演进，简洁的实现，让我想跟着学
+Lua 和 Love2d。

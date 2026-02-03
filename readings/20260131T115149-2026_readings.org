@@ -4,6 +4,9 @@
 #+title: 2026-Readings
 
 * [[https://thecreativeindependent.com/people/multi-disciplinary-artist-jack-rusher-on-the-need-to-sustain-your-creative-drive-in-the-face-of-technological-change/][On the need to sustain your creative drive in the face of technological change]]
+:LOGBOOK:
+CLOCK: [2026-02-01 日 20:31]--[2026-02-01 日 20:31] =>  0:00
+:END:
 
 受访者是 clerk (clojure notebook）的作者。
 
@@ -36,3 +39,25 @@
 
 也需要留意，最近 5-15 年的好想法有什么？多注意种树的人，日后能用到他们的成果，也
 可以参与其中。
+
+* https://way-cooler.org/blog/2020/01/09/way-cooler-post-mortem.html
+:LOGBOOK:
+CLOCK: [2026-02-03 二 12:27]--[2026-02-03 二 12:40] =>  0:13
+:END:
+
+详细而真诚地讲了作者在 Wayland 尚不成熟的时候，做当时很受欢迎的 Rust+Lua 的
+Compositor 四年的心路历程，从入门到退出。
+
+技术上：前期踩了很多底层库的坑，一方面觉得自己没有调研清楚，另一方面能看出来当时
+人们对 Rust 不够熟悉，Rust 可能也没有现在好用（？我还没用过）。比如作者就不知道
+什么时候用/不用 unsafe Rust：看起来他后面选择了尽量用 safe Rust，但是决定推动用
+C 写 wlroots，至今也不后悔；然后花了很多时间给 wlroots 写 Rust 接口，也放弃了，
+因为太难保证一定 safe 了，导致他压力很大。他在工作中用 Rust，所以也不是反对 Rust，
+我相信他和 Rust 在这个过程中都成熟了很多。 *合适的工具很重要* ，但是看上去 *减少
+需求似乎更重要* 。
+
+心态上： *太想获得认可* ，会让他做出日后后悔的技术选择。比如一开始选择 Rust 是因
+为它火；后面为了迎合大众需求，想把 Awesome 移植到 Wayland，结果架构上完全没法平
+移，而且他本人不喜欢 Awesome， *不给自己用的东西是没有爱能坚持下去的* ，最终果然
+也放弃了。他觉得不应该把开源项目当产品做，而是为自己做。否则自己很累，还把朋友推
+走了。
