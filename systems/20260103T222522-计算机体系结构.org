@@ -51,6 +51,11 @@ https://blog.fogus.me/2023/06/02/languages-zoo.html 这个人尝试实现了各�
 
 ** Virtual Machines
 
+案例
+
+- GNU Mes (Scheme) 的优化，让它性能和 Chibi Scheme 接近
+  https://ekaitz.elenq.tech/fasterMes0.html
+
 *** 教程
 
 [[https://stups.hhu-hosting.de/downloads/pdf/BoRi07_223.pdf][How to not write Virtual Machines for Dynamic Language]]
