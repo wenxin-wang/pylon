@@ -7,6 +7,20 @@
 
 [[https://cpu.land/][Putting the “You” in CPU]]
 
+* 多内核
+
+在一个 SMP 系统上跑多个内核。时不常会有人想做这件事情，我猜最后大家觉得虚拟化足够了就不想折腾了。
+
+- https://lwn.net/Articles/1038847 KEXEC_MULTIKERNEL
+ - 下面有人畅想利用它能做的事情：混合 RT 内核、跑 Windows 系统、新旧内核共存
+- https://lwn.net/Articles/4536/ SMP Cluster，里面有段和 IBM 的 Q&A 的记录
+- https://v4.xenomai.org/overview/index.html 活跃的项目，现成的混合 RT 内核的方案，需要用户
+  态程序自己做改造（非常合理，本来内核/libc 的 API 就不好保证实时性）
+- http://www.colinux.org/ 在 Windows 机器上跑 Linux 作为副内核，最后一次更新是 2014 年
+- https://barrelfish.org/ 研究性质的 OS，同样的目的，最后一次更新是 2020 年
+- https://popcornlinux.org/ 在异构 CPU 之间跑同样的内核（好像也可以不一样）。内
+  核和编译器都是 2022 年最后一次更新，但是 2025 年还中了论文（不知道 ASPLOS 是什么水平的会）
+
 * Bootstrapping
 
 https://github.com/oriansj/stage0
