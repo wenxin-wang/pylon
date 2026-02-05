@@ -3,6 +3,14 @@
 :END:
 #+title: Life Long Learning
 
+* 学习环境设计
+
+- [[https://f.hubspotusercontent30.net/hubfs/6474038/IDEO_DTEdu_Chinese_v2-1_toolkit.pdf][设计思维——面向教育者的工具箱]]
+  - 研究性学习（Investigative Learning）”的方法，这种方法不是把学生当作信息的接
+    受者，而是当作知识的塑造者。就是想满足学生的 *实际需求*
+  - 以上面这个项目为例展示如何用设计思维改善学习环境
+  - 这个 PDF 的颜色和图标挺抓眼的
+
 * 语言学习
 
 https://github.com/chenyanming/paw
