@@ -5,6 +5,11 @@
 
 * 可能的方案
 
+** VNC
+
+- https://github.com/AlynxZhou/reframe 里面提到了 EDID Headless Hack
+
+
 ** Wayland
 
 - + Moonlight
