@@ -406,12 +406,13 @@ the macro key instead of the original key."
   (avy-timeout-seconds 0.8))
 
 ;; This is very rigid, and I haven't think of how to integrate with my keys.
+;; 'strict mode' keeps shooting me in the foot, so disable it for now.
 (use-package smartparens
   :hook
   (emacs-startup . show-smartparens-global-mode)
-  (prog-mode . turn-on-smartparens-strict-mode)
-  (markdown-mode . turn-on-smartparens-strict-mode)
-  (org-mode . turn-on-smartparens-strict-mode)
+  (prog-mode . turn-on-smartparens-mode)
+  (markdown-mode . turn-on-smartparens-mode)
+  (org-mode . turn-on-smartparens-mode)
   :config
   ;; load default config
   (require 'smartparens-config))
