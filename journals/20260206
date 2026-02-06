@@ -1,0 +1,72 @@
+#+TITLE: 星期五, 二月 06 2026
+
+* 记录一次桌面环境的 debug
+
+有很长一段时间在 Ubuntu20.04 的机器上，打开 nautilus 就崩溃，syslog 里提示
+
+#+begin_example
+[  551.857857] pool-xdg-deskto[9252]: segfault at 7f3f26ffeff8 ip 00007f3f2ee42d39 sp 00007f3f26fff000 error 6 in libgio-2.0.so.0.6400.6[7f3f2ed35000+114000]
+[  551.857863] Code: c4 18 44 89 e0 5b 5d 41 5c 41 5d 41 5e 41 5f c3 45 31 e4 eb e9 66 66 2e 0f 1f 84 00 00 00 00 00 90 41 57 41 56 41 55 41 54 55 <53> 48 83 ec 18 48 8d 05 fb b4 09 00 4c 8b 20 49 8b 04 24 48 85 c0
+#+end_example
+
+终于忍不住问 LLM 结果感觉没什么信息，然后上网搜到了 [[https://discourse.gnome.org/t/segfault-on-ubuntu-22-04/23401][类似的报错]] ，受它的启发安装
+了 [[id:20251029T221826][Debug Symbol]] ，发现堆栈和这个人也类似
+
+#+begin_example
+Thread 7 "pool-org.gnome." received signal SIGSEGV, Segmentation fault.
+[Switching to Thread 0x7fffdbfff700 (LWP 16308)]
+__gio_xdg_cache_mime_type_subclass (mime=mime@entry=0x7fffda4bc188 "application/ecmascript", base=base@entry=0x7ffff736cbb0 <_gio_xdg_type_textplain> "text/plain")
+    at ../../../gio/xdgmime/xdgmimecache.c:910
+910	../../../gio/xdgmime/xdgmimecache.c: No such file or directory.
+(gdb) bt
+#0  __gio_xdg_cache_mime_type_subclass (mime=mime@entry=0x7fffda4bc188 "application/ecmascript", base=base@entry=0x7ffff736cbb0 <_gio_xdg_type_textplain> "text/plain")
+    at ../../../gio/xdgmime/xdgmimecache.c:910
+#1  0x00007ffff7331ba4 in __gio_xdg_cache_mime_type_subclass (mime=mime@entry=0x7fffda4defbc "text/javascript", base=<optimized out>, 
+    base@entry=0x7ffff736cbb0 <_gio_xdg_type_textplain> "text/plain") at ../../../gio/xdgmime/xdgmimecache.c:968
+#2  0x00007ffff7331ba4 in __gio_xdg_cache_mime_type_subclass (mime=mime@entry=0x7fffda4bc188 "application/ecmascript", base=<optimized out>, 
+    base@entry=0x7ffff736cbb0 <_gio_xdg_type_textplain> "text/plain") at ../../../gio/xdgmime/xdgmimecache.c:968
+#3  0x00007ffff7331ba4 in __gio_xdg_cache_mime_type_subclass (mime=mime@entry=0x7fffda4defbc "text/javascript", base=<optimized out>, 
+    base@entry=0x7ffff736cbb0 <_gio_xdg_type_textplain> "text/plain") at ../../../gio/xdgmime/xdgmimecache.c:968
+#4  0x00007ffff7331ba4 in __gio_xdg_cache_mime_type_subclass (mime=mime@entry=0x7fffda4bc188 "application/ecmascript", base=<optimized out>, 
+    base@entry=0x7ffff736cbb0 <_gio_xdg_type_textplain> "text/plain") at ../../../gio/xdgmime/xdgmimecache.c:968
+#5  0x00007ffff7331ba4 in __gio_xdg_cache_mime_type_subclass (mime=mime@entry=0x7fffda4defbc "text/javascript", base=<optimized out>, 
+    base@entry=0x7ffff736cbb0 <_gio_xdg_type_textplain> "text/plain") at ../../../gio/xdgmime/xdgmimecache.c:968
+#6  0x00007ffff7331ba4 in __gio_xdg_cache_mime_type_subclass (mime=mime@entry=0x7fffda4bc188 "application/ecmascript", base=<optimized out>, 
+    base@entry=0x7ffff736cbb0 <_gio_xdg_type_textplain> "text/plain") at ../../../gio/xdgmime/xdgmimecache.c:968
+#7  0x00007ffff7331ba4 in __gio_xdg_cache_mime_type_subclass (mime=mime@entry=0x7fffda4defbc "text/javascript", base=<optimized out>, 
+    base@entry=0x7ffff736cbb0 <_gio_xdg_type_textplain> "text/plain") at ../../../gio/xdgmime/xdgmimecache.c:968
+#8  0x00007ffff7331ba4 in __gio_xdg_cache_mime_type_subclass (mime=mime@entry=0x7fffda4bc188 "application/ecmascript", base=<optimized out>, 
+    base@entry=0x7ffff736cbb0 <_gio_xdg_type_textplain> "text/plain") at ../../../gio/xdgmime/xdgmimecache.c:968
+#9  0x00007ffff7331ba4 in __gio_xdg_cache_mime_type_subclass (mime=mime@entry=0x7fffda4defbc "text/javascript", base=<optimized out>, 
+    base@entry=0x7ffff736cbb0 <_gio_xdg_type_textplain> "text/plain") at ../../../gio/xdgmime/xdgmimecache.c:968
+#10 0x00007ffff7331ba4 in __gio_xdg_cache_mime_type_subclass (mime=mime@entry=0x7fffda4bc188 "application/ecmascript", base=<optimized out>, 
+    base@entry=0x7ffff736cbb0 <_gio_xdg_type_textplain> "text/plain") at ../../../gio/xdgmime/xdgmimecache.c:968
+#11 0x00007ffff7331ba4 in __gio_xdg_cache_mime_type_subclass (mime=mime@entry=0x7fffda4defbc "text/javascript", base=<optimized out>, 
+    base@entry=0x7ffff736cbb0 <_gio_xdg_type_textplain> "text/plain") at ../../../gio/xdgmime/xdgmimecache.c:968
+#12 0x00007ffff7331ba4 in __gio_xdg_cache_mime_type_subclass (mime=mime@entry=0x7fffda4bc188 "application/ecmascript", base=<optimized out>, 
+    base@entry=0x7ffff736cbb0 <_gio_xdg_type_textplain> "text/plain") at ../../../gio/xdgmime/xdgmimecache.c:968
+#13 0x00007ffff7331ba4 in __gio_xdg_cache_mime_type_subclass (mime=mime@entry=0x7fffda4defbc "text/javascript", base=<optimized out>, 
+    base@entry=0x7ffff736cbb0 <_gio_xdg_type_textplain> "text/plain") at ../../../gio/xdgmime/xdgmimecache.c:968
+#14 0x00007ffff7331ba4 in __gio_xdg_cache_mime_type_subclass (mime=mime@entry=0x7fffda4bc188 "application/ecmascript", base=<optimized out>, 
+    base@entry=0x7ffff736cbb0 <_gio_xdg_type_textplain> "text/plain") at ../../../gio/xdgmime/xdgmimecache.c:968
+#15 0x00007ffff7331ba4 in __gio_xdg_cache_mime_type_subclass (mime=mime@entry=0x7fffda4defbc "text/javascript", base=<optimized out>, 
+    base@entry=0x7ffff736cbb0 <_gio_xdg_type_textplain> "text/plain") at ../../../gio/xdgmime/xdgmimecache.c:968
+#16 0x00007ffff7331ba4 in __gio_xdg_cache_mime_type_subclass (mime=mime@entry=0x7fffda4bc188 "application/ecmascript", base=<optimized out>, 
+    base@entry=0x7ffff736cbb0 <_gio_xdg_type_textplain> "text/plain") at ../../../gio/xdgmime/xdgmimecache.c:968
+#17 0x00007ffff7331ba4 in __gio_xdg_cache_mime_type_subclass (mime=mime@entry=0x7fffda4defbc "text/javascript", base=<optimized out>, 
+    base@entry=0x7ffff736cbb0 <_gio_xdg_type_textplain> "text/plain") at ../../../gio/xdgmime/xdgmimecache.c:968
+#18 0x00007ffff7331ba4 in __gio_xdg_cache_mime_type_subclass (mime=mime@entry=0x7fffda4bc188 "application/ecmascript", base=<optimized out>, 
+    base@entry=0x7ffff736cbb0 <_gio_xdg_type_textplain> "text/plain") at ../../../gio/xdgmime/xdgmimecache.c:968
+#19 0x00007ffff7331ba4 in __gio_xdg_cache_mime_type_subclass (mime=mime@entry=0x7fffda4defbc "text/javascript", base=<optimized out>, 
+    base@entry=0x7ffff736cbb0 <_gio_xdg_type_textplain> "text/plain") at ../../../gio/xdgmime/xdgmimecache.c:968
+#20 0x00007ffff7331ba4 in __gio_xdg_cache_mime_type_subclass (mime=mime@entry=0x7fffda4bc188 "application/ecmascript", base=<optimized out>, 
+#+end_example
+
+感觉像某个地方死循环了还是啥的，mime 的地址反复交替。顺着这里提到的 [[https://bugs.archlinux.org/task/80279][Archlinux
+bug report]] ，感觉和 nix 的 shared-mime-info 有关系（虽然我已经是帖子里号称好了的
+2.4）。
+
+最后找到 [[https://code.qt.io/cgit/qt/qtbase.git/commit/?id=54656da9ace06caf4a0eeb1832989c0ab211a4a0][上游的解释]] ，是因为系统里有两个版本的 shared-mime-info，里面的
+text/javascript 和 application/ecmascript 各自在一个版本里指定为对方
+sub-class-of，出现循环依赖。由于 nix 里的不好改，我就把系统里这两个注释掉了。至
+少 nautilus 能打开了。
