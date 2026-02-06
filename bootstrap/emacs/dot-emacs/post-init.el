@@ -830,8 +830,9 @@ the macro key instead of the original key."
       (when (server-running-p server-name)
         (server-force-delete server-name)))
     (server-start))
-  (setenv "EMACS_SERVER_SOCKET" (expand-file-name server-name server-socket-dir))
-  (setenv "EDITOR" "emacsclient -s $EMACS_SERVER_SOCKET"))
+  (let ((server_socket (expand-file-name server-name server-socket-dir)))
+    (setenv "EMACS_SERVER_SOCKET" server_socket)
+    (setenv "EDITOR" (concat "emacsclient -s " server_socket))))
 
 (use-package eat
   :straight (eat :type git :host codeberg :repo "akib/emacs-eat"
@@ -979,7 +980,7 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
   ;; session is loaded after all other packages. (Using 103/102 is particularly
   ;; useful for those using minimal-emacs.d, where some optimizations restore
   ;; `file-name-handler-alist` at depth 101 during `emacs-startup-hook`.)
-  (add-hook 'emacs-startup-hook #'easysession-load-including-geometry 102)
+  ;; (add-hook 'emacs-startup-hook #'easysession-load-including-geometry 102)
   (add-hook
    'emacs-startup-hook
    #'(lambda ()
@@ -1173,6 +1174,8 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
 
 (use-package nix-mode
   :mode "\\.nix\\'")
+
+(use-package bazel)
 
 ;; AIs.
 
