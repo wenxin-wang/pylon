@@ -123,3 +123,7 @@ tail call/tail recursion 的 x64 反汇编。
 Guy Steele Lee [[https://web.archive.org/web/20110716163344/https://projectfortress.sun.com/Projects/Community/blog/ObjectOrientedTailRecursion][提到]] Object-oriented 语言为了完美的封装，必须要支持 TCO。他举的例
 子我没有太看懂，好像是为了遍历一个无限集合，必须由 set 们逐个调用下一个 set 的遍
 历函数，假如这个遍历函数实现在 set 外面，会泄漏封装。
+
+* Continuations
+
+https://okmij.org/ftp/continuations/index.html
