@@ -1,6 +1,7 @@
 *.o
 /daily
 /hearth
+/labyrinth
 /office
 .aider*
 /.agent-shell/
