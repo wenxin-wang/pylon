@@ -1,0 +1,8 @@
+:PROPERTIES:
+:ID:       20260215T202845
+:END:
+#+title: ComputerGraphics
+
+* Examples
+
+https://codebycruz.com/posts/arisu/ MsPaint in Lua, OpenGL, with simple text rendering & UI library.

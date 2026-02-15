@@ -1,0 +1,18 @@
+:PROPERTIES:
+:ID:       20260215T202522
+:END:
+#+title: UI
+
+* Text-based
+
+** NuShell
+
+https://www.nushell.sh/book/nu_fundamentals.html
+
+* Graphics
+
+** Godot
+
+https://forum.godotengine.org/t/using-godot-for-gui-app-development/51918
+
+https://popcar.bearblog.dev/how-to-minify-godots-build-size/

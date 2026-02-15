@@ -1,0 +1,9 @@
+:PROPERTIES:
+:ID:       20260215T230105
+:END:
+#+title: GameDesign
+
+* Frameworks
+
+- [[id:20260103T223144][CommonLisp]]
+  - https://nraw.githubusercontent.com/Shinmera/talks/master/els2023-kandria/paper.pdf

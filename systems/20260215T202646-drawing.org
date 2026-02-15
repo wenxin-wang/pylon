@@ -1,0 +1,8 @@
+:PROPERTIES:
+:ID:       20260215T202646
+:END:
+#+title: Drawing
+
+* Collaboration
+
+https://excalidraw.com/
