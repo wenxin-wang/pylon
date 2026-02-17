@@ -1,0 +1,9 @@
+:PROPERTIES:
+:ID:       20260217T154834
+:END:
+#+title: Database
+
+* Postgres
+
+- Postgres 有很多插件可以完成特化数据库的功能，比如时序数据库、全文文档搜索
+  - timescaledb 的软广 https://www.tigerdata.com/blog/its-2026-just-use-postgres

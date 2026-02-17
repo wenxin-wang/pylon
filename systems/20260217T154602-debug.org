@@ -1,0 +1,10 @@
+:PROPERTIES:
+:ID:       20260217T154602
+:END:
+#+title: Debug
+
+* JavaScript
+
+- https://heikkila.dev/blog/find-where-a-specific-object-was-allocated-in-javascript/
+  - 拿到 debugger 的引用，放到另一个全局对象里，然后在 Allocations on timeline
+    里就能继续追踪它，以及看到最初分配的地方

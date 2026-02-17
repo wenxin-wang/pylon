@@ -5,9 +5,16 @@
 
 * 集成平台
 
+** Agents
+
+https://openclaw.ai/
+
 ** 流程组装
 
-https://dify.ai/
+- https://dify.ai/
+- https://n8n.io/
+  - Free for self-hosted
+  - Example: https://www.xda-developers.com/built-expense-tracker-using-n8n/
 
 ** 设计
 
