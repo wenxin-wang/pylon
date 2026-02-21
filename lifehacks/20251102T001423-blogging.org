@@ -8,3 +8,13 @@
 ** org-roam
 
 https://gitlab.com/fstamour/public-notes
+
+* Github Pages
+
+** 如何从一个 src repo 触发另一个 pages repo 的 rebuild？
+
+- 在 src repo 创建一个到 pages repo 的 trigger publish hook
+- 在 src repo 增加一个 action environment，里面配置 GH_TOKEN 为一个有 content rw
+  权限的 fine-grained token
+- pages repo 指定用 github actions 生成页面
+  - 非常神奇，这个 action 不需要 token 即可拉取本组织内的 repo 内容
