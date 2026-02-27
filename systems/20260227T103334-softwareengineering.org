@@ -1,0 +1,14 @@
+:PROPERTIES:
+:ID:       20260227T103334
+:END:
+#+title: SoftwareEngineering
+
+* Case studies
+
+** Games & Graphics
+
+- Kandria 用 Common Lisp 实现，他们有一系列的 [[https://raw.githubusercontent.com/Shinmera/talks/master/els2023-kandria/paper.pdf][技术总结]] 讲开发体验。
+  - Lisp 的动态特性提示了长运行周期的程序的开发体验，但是也给性能优化带来一些可
+    以解决的麻烦
+  - SBCL 的 profile 工具相对成熟，整体项目也很活跃
+  - 报告里有引用其它项目的开发体验总结

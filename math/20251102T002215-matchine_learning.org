@@ -10,3 +10,5 @@ http://neuralnetworksanddeeplearning.com
 https://mml-book.github.io/
 
 https://www.deeplearningbook.org/
+
+https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/copy.html

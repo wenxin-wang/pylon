@@ -65,3 +65,8 @@ a a_?b_p b p
 - 可以构成 Quine 的环。其思路是，让 ~?~ 不动点包含环上每个节点的程序内容（也就是
   说 N 个节点对应的格式字符串有 N 个 ~?~ ），然后每个节点只扩展下一个节点对应的
   那一段格式字符串。Quine 的一个 [[https://github.com/mame/quine-relay][集大成者]]，搞了 128 个语言的环。
+
+* Stable Index Vector
+
+https://github.com/johnBuffer/StableIndexVector 用三个数组实现 O(1) 的增删改查，
+数据结构很好理解。

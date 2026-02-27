@@ -1,0 +1,8 @@
+:PROPERTIES:
+:ID:       20260227T104014
+:END:
+#+title: 概率论
+
+* 泊松分布
+
+从二项分布引出的公式 [[https://antaripasaha.notion.site/Derivation-and-Intuition-behind-Poisson-distribution-1255314a56398062bf9dd9049fb1c396][推导]]
