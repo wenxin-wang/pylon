@@ -106,10 +106,13 @@ in
     fd
     prettier
 
-    python312
+    (python312.withPackages (ps: with ps; [
+      requests
+    ]))
     pyright
     ruff
     clang-tools
+    nodejs
 
     mitmproxy
 
