@@ -33,6 +33,8 @@ API 请求被拒绝的情况。
 * Emacs
 
 - https://github.com/tninja/aider.el 目前同事推荐的集成交互环境，支持代码分析、生成和 Agent 交互（？）
+- https://www.vandee.art/blog/2026-01-23-my-agent-practice-with-opencode-in-emacs.html 不仅仅是讲如何在 emacs 里
+  用 opencode，还有他如何管理层级的 skill
 
 ** gpt.el
 
