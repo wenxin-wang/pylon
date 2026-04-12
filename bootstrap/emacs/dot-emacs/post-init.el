@@ -1250,6 +1250,10 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
   :config
   (claude-code-ide-emacs-tools-setup))
 
+(use-package opencode
+  :straight (opencode :type git :host codeberg :repo "sczi/opencode.el")
+  :bind ("C-c o" . opencode))
+
 ;; More speed optimizations.
 
 ;; Copied from
