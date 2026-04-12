@@ -1,0 +1,20 @@
+:PROPERTIES:
+:ID:       20260409T221546
+:END:
+#+title: Backups
+
+对比了下功能似乎更全面的 restic，最后还是选择了继续用 BorgBackup，因为它号称去重比较好，内存用得少。
+
+* 简单使用
+
+参考 https://borgbackup.readthedocs.io/en/stable/quickstart.html
+
+用不加密的模式，但是不要关掉认证
+
+#+begin_src bash
+borg init -e authenticated /mnt/borgbackup
+borg create /mnt/borgbackup::FullHome20260409 ~
+borg list /mnt/borgbackup::FullHome20260409 
+#+end_src
+
+
