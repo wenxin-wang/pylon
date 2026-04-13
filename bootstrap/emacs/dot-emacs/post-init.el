@@ -1300,6 +1300,11 @@ dir is the directory of the buffer (param of my/project-try), when it's changed,
   (when (not minimal-emacs-debug)
     (compile-angel-on-load-mode 1)))
 
+;; See https://emacsredux.com/blog/2026/04/07/stealing-from-the-best-emacs-configs/
+(setq-default bidi-display-reordering 'left-to-right
+              bidi-paragraph-direction 'left-to-right)
+(setq bidi-inhibit-bpa t)
+
 ;; Theme.
 (use-package modus-themes
   :demand t
