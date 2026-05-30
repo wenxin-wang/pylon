@@ -97,18 +97,7 @@ in
     # (pkgs.writeShellScriptBin "my-hello" ''
     #   echo "Hello, ${config.home.username}!"
     # '')
-    (rustPlatform.buildRustPackage rec {
-      pname = "emacs-lsp-booster";
-      version = "5f702a26";
-      src = pkgs.fetchFromGitHub {
-        owner = "blahgeek";
-        repo = "emacs-lsp-booster";
-        rev = "5f702a2699f306a3958ff1996a2b1a625f0cee0b";
-        hash = "sha256-R9v+hCma/FfYdR+fvZ0vmtVk4dm+bPBacwV1QCc6X+8=";
-      };
-      cargoHash = "sha256-qchwxW3KITQcv6EFzR2BSISWB2aTW9EdCN/bx5m0l48=";
-      doCheck = false;
-    })
+    emacs-lsp-booster
   ]
   ++
   (if isOldUbuntu then with pkgs; [
