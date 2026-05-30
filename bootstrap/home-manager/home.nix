@@ -33,14 +33,25 @@ in
   # environment.
   home.packages = with pkgs; [
     # AI.
-    aider-chat-full
     claude-code
     claude-code-acp
-    code-cursor
+    # code-cursor
     # TODO(wenxin): Maybe consider https://github.com/ericc-ch/copilot-api, it may
     # expose more models as it mimics the behavior of the copilot VS Code plugin.
     copilot-language-server
     unstable.opencode
+    codex
+    # github-copilot-cli
+    # (vscode-with-extensions.override {
+    #   vscodeExtensions = with vscode-extensions; [
+    #     github.copilot
+    #     github.copilot-chat
+    #   ] ++ (with vscode-utils; extensionsFromVscodeMarketplace [
+    #     # Manually pinned versions if nixpkgs is behind
+    #   ]);
+    # })
+    gh
+
     litellm
 
     jigmo
@@ -74,6 +85,7 @@ in
     marimo
     uv
 
+    direnv
     inotify-tools
     age
     git-remote-gcrypt
