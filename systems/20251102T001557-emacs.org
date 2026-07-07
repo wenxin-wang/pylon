@@ -29,3 +29,7 @@ init 文件是我放弃使用 emacs 的最后一根稻草。总结下当时的�
   使用更多的软件包解决常见问题。
 
 目前我想尝试 Minimal emacs + compile-angel 的组合。Raidian 里面应该会有很多优化可以学习。
+
+* 内部实现
+
+[[https://gwern.net/doc/cs/lisp/emacs/2026-karlsson.pdf][The GNU Emacs Architecture: Unlocking the Core]]

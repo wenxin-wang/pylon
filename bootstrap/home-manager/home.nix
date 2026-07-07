@@ -82,6 +82,8 @@ in
 
     glamoroustoolkit
 
+    obsidian
+
     marimo
     uv
 

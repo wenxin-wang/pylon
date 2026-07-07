@@ -1,0 +1,8 @@
+:PROPERTIES:
+:ID:       20260707T120349
+:END:
+#+title: Guix
+
+* Example configs
+
+https://codeberg.org/wonko/lambda-project
