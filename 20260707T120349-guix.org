@@ -6,3 +6,28 @@
 * Example configs
 
 https://codeberg.org/wonko/lambda-project
+
+* Install on foreign distro
+
+#+begin_src bash
+cd /tmp
+wget https://guix.gnu.org/guix-install.sh
+chmod +x guix-install.sh
+sed -i 's@https://ftpmirror.gnu.org/gnu/guix@https://mirror.nju.edu.cn/gnu/guix@g' guix-install.sh
+sudo ./guix-install.sh
+#+end_src
+
+#+begin_src bash
+# Source/substitute mirrors.
+mkdir -p ~/.config/guix
+cat <<EOF >~/.config/guix/channels.scm
+(list (channel
+       (inherit (car %default-channels))
+       (url "https://mirror.nju.edu.cn/git/guix.git/git/guix.git")))
+EOF
+sudo sed -i \
+    "s@--substitute-urls='https://bordeaux.guix.gnu.org https://ci.guix.gnu.org'@--substitute-urls='https://mirror.sjtu.edu.cn/guix-bordeaux https://mirror.sjtu.edu.cn/guix https://bordeaux.guix.gnu.org https://ci.guix.gnu.org'@" \
+    /etc/systemd/system/guix-daemon.service
+sudo systemctl daemon-reload 
+sudo systemctl restart guix-daemon.service 
+#+end_src
