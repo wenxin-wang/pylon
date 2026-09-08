@@ -23,10 +23,21 @@ mkdir -p ~/.config/guix
 cat <<EOF >~/.config/guix/channels.scm
 (list (channel
        (inherit (car %default-channels))
-       (url "https://mirror.nju.edu.cn/git/guix.git/git/guix.git")))
+       (url "https://mirror.nju.edu.cn/git/guix.git"))
+      (channel
+       (name 'nonguix)
+       (url "https://gitlab.com/nonguix/nonguix")
+       ;; Enable signature verification:
+       (introduction
+        (make-channel-introduction
+         "897c1a470da759236cc11798f4e0a5f7d4d59fbc"
+         (openpgp-fingerprint
+          "2A39 3FFF 68F4 EF7A 3D29  12AF 6F51 20A0 22FB B2D5")))))
 EOF
+wget https://substitutes.nonguix.org/signing-key.pub -O /tmp/nonguix.pub
+sudo guix archive --authorize </tmp/nonguix.pub
 sudo sed -i \
-    "s@--substitute-urls='https://bordeaux.guix.gnu.org https://ci.guix.gnu.org'@--substitute-urls='https://mirror.sjtu.edu.cn/guix-bordeaux https://mirror.sjtu.edu.cn/guix https://bordeaux.guix.gnu.org https://ci.guix.gnu.org'@" \
+    "s@--substitute-urls='https://bordeaux.guix.gnu.org https://ci.guix.gnu.org'@--substitute-urls='https://mirror.sjtu.edu.cn/guix-bordeaux https://mirror.sjtu.edu.cn/guix https://bordeaux.guix.gnu.org https://ci.guix.gnu.org https://substitutes.nonguix.org'@" \
     /etc/systemd/system/guix-daemon.service
 sudo systemctl daemon-reload 
 sudo systemctl restart guix-daemon.service 
