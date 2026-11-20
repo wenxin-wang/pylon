@@ -83,5 +83,50 @@ class SkillsTest(unittest.TestCase):
         self.assertEqual([p.name for p in self.tool_dirs[0].iterdir()], ["mine"])
 
 
+class PreferencesTest(unittest.TestCase):
+    def setUp(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        self.tmp = Path(tmp.name)
+        self.checkout = self.tmp / "agent-policy"
+        self.checkout.mkdir()
+        self.files = [self.tmp / "claude/CLAUDE.md", self.tmp / "codex/AGENTS.md"]
+
+    def write_preferences(self):
+        (self.checkout / "preferences.md").write_text("Beijing time.\n")
+
+    def test_links_every_global_file(self):
+        self.write_preferences()
+        self.assertEqual(skills.link_preferences(self.checkout, self.files), [])
+        for f in self.files:
+            self.assertEqual(f.read_text(), "Beijing time.\n")
+
+    def test_no_preferences_no_links(self):
+        self.write_preferences()
+        skills.link_preferences(self.checkout, self.files)
+        (self.checkout / "preferences.md").unlink()
+        skills.link_preferences(self.checkout, self.files)
+        for f in self.files:
+            self.assertFalse(f.is_symlink())
+
+    def test_leaves_existing_file_alone(self):
+        self.write_preferences()
+        self.files[0].parent.mkdir()
+        self.files[0].write_text("the human's own\n")
+        problems = skills.link_preferences(self.checkout, self.files)
+        self.assertEqual(len(problems), 1)
+        self.assertEqual(self.files[0].read_text(), "the human's own\n")
+        self.assertTrue(self.files[1].is_symlink())
+
+    def test_remove_keeps_existing_file(self):
+        self.write_preferences()
+        self.files[0].parent.mkdir()
+        self.files[0].write_text("the human's own\n")
+        skills.link_preferences(self.checkout, self.files)
+        skills.remove_preferences(self.checkout, self.files)
+        self.assertTrue(self.files[0].is_file())
+        self.assertFalse(self.files[1].exists())
+
+
 if __name__ == "__main__":
     unittest.main()

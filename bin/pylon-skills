@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Install agent skills from pylon's main. See docs/skills.md."""
+"""Install agent skills and the human's preferences. See docs/skills.md."""
 
 import argparse
 import sys
@@ -15,21 +15,26 @@ def main():
     parser.add_argument("command", choices=["update", "status", "remove"])
     args = parser.parse_args()
     try:
+        problems = []
         if args.command == "update":
             skills.update_checkout(skills.CHECKOUT, skills.REMOTE)
-            problems = skills.link_skills(skills.CHECKOUT, skills.TOOL_DIRS)
-            for problem in problems:
-                print(problem, file=sys.stderr)
-            if problems:
-                return 1
+            problems += skills.link_skills(skills.CHECKOUT, skills.TOOL_DIRS)
+            skills.update_checkout(skills.POLICY_CHECKOUT, skills.POLICY_REMOTE)
+            problems += skills.link_preferences(skills.POLICY_CHECKOUT,
+                                                skills.GLOBAL_FILES)
         elif args.command == "remove":
             skills.remove_links(skills.CHECKOUT, skills.TOOL_DIRS)
-        for line in skills.status(skills.CHECKOUT, skills.TOOL_DIRS):
+            skills.remove_preferences(skills.POLICY_CHECKOUT, skills.GLOBAL_FILES)
+        for line in (skills.status(skills.CHECKOUT, skills.TOOL_DIRS)
+                     + skills.preferences_status(skills.POLICY_CHECKOUT,
+                                                 skills.GLOBAL_FILES)):
             print(line)
     except skills.Error as e:
         print(e, file=sys.stderr)
         return 1
-    return 0
+    for problem in problems:
+        print(problem, file=sys.stderr)
+    return 1 if problems else 0
 
 
 if __name__ == "__main__":

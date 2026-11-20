@@ -1,8 +1,11 @@
-"""Install agent skills from a checkout of pylon that only tracks main.
+"""Install agent skills and the human's preferences for every agent tool.
 
-The checkout lives outside the working repos, so switching branches in
-~/src/pylon never changes what agents read. Each tool's skill directory gets
-one symlink per skill, pointing into the checkout.
+Skills come from a checkout of pylon that only tracks main, outside the
+working repos, so switching branches in ~/src/pylon never changes what agents
+read. Each tool's skill directory gets one symlink per skill.
+
+The preferences come the same way from the private agent-policy repo; each
+tool's global instruction file is a symlink to its preferences.md.
 """
 
 import os
@@ -13,6 +16,11 @@ REMOTE = "https://github.com/wenxin-wang/pylon.git"
 CHECKOUT = Path.home() / ".local/share/pylon/main"
 # Claude Code and Codex read personal skills from these directories.
 TOOL_DIRS = [Path.home() / ".claude/skills", Path.home() / ".agents/skills"]
+
+POLICY_REMOTE = "git@github.com:wenxin-wang/agent-policy.git"
+POLICY_CHECKOUT = Path.home() / ".local/share/pylon/agent-policy"
+# Claude Code and Codex load these files in every session.
+GLOBAL_FILES = [Path.home() / ".claude/CLAUDE.md", Path.home() / ".codex/AGENTS.md"]
 
 
 class Error(Exception):
@@ -85,6 +93,36 @@ def link_skills(checkout, tool_dirs):
     return problems
 
 
+def link_preferences(checkout, files):
+    """Link every global instruction file to the checkout's preferences.md.
+
+    Without preferences.md, our links are removed. Returns the problems found;
+    a file that is not our link is left alone and reported.
+    """
+    problems = []
+    target = checkout / "preferences.md"
+    for link in files:
+        if link.is_symlink() and Path(os.readlink(link)) == target:
+            if not target.is_file():
+                link.unlink()
+            continue
+        if not target.is_file():
+            continue
+        if link.exists() or link.is_symlink():
+            problems.append(f"{link} exists and is not ours; skipped")
+            continue
+        link.parent.mkdir(parents=True, exist_ok=True)
+        link.symlink_to(target)
+    return problems
+
+
+def remove_preferences(checkout, files):
+    target = checkout / "preferences.md"
+    for link in files:
+        if link.is_symlink() and Path(os.readlink(link)) == target:
+            link.unlink()
+
+
 def remove_links(checkout, tool_dirs):
     """Remove every link of ours; the checkout itself is kept."""
     for tool_dir in tool_dirs:
@@ -95,14 +133,30 @@ def remove_links(checkout, tool_dirs):
                 link.unlink()
 
 
-def status(checkout, tool_dirs):
-    lines = []
+def checkout_status(checkout):
     if checkout.exists():
-        lines.append(f"{checkout}: {git(checkout, 'log', '-1', '--oneline')}")
-    else:
-        lines.append(f"{checkout}: missing")
+        return f"{checkout}: {git(checkout, 'log', '-1', '--oneline')}"
+    return f"{checkout}: missing"
+
+
+def status(checkout, tool_dirs):
+    lines = [checkout_status(checkout)]
     for tool_dir in tool_dirs:
         links = [p.name for p in sorted(tool_dir.iterdir())
                  if ours(p, checkout)] if tool_dir.is_dir() else []
         lines.append(f"{tool_dir}: {' '.join(links) or '(none)'}")
+    return lines
+
+
+def preferences_status(checkout, files):
+    lines = [checkout_status(checkout)]
+    target = checkout / "preferences.md"
+    for link in files:
+        if link.is_symlink() and Path(os.readlink(link)) == target:
+            state = "linked"
+        elif link.exists() or link.is_symlink():
+            state = "not ours"
+        else:
+            state = "(none)"
+        lines.append(f"{link}: {state}")
     return lines
