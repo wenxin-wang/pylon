@@ -21,13 +21,15 @@ uraj-migration 先挂起：迁过来的模块要放进这里定下的约定里�
 
 由人来定。agent 列出选项、代价和建议：
 
-- **workshop 能读哪些 space。** 以后很可能由 contained-agent-v2 决定：容器里只挂
-  一个或一组 workshop 及其关联仓库允许访问的目录，规则只是过渡。过渡期的选项：
-  A：不读，需要时由人摘出来交给 session；B：可以读，规则禁止引用；
-  C：默认只读 `AGENTS.md` 列出的，人在某个 session 里明说时可以多读（11/20 就是这样）。
-  建议 C。
-- **agent 的记忆。** 各工具自带的 memory 是私有的，别的 agent 看不到。建议：进度只写
-  `TODO.md`，agent 关心的知识进 `wiki/`，工具自带的 memory 只放人的偏好和工作方式。
+- **人的偏好放在哪。** 各工具自带的 memory 是私有的，换个工具就没了；人的偏好
+  （例如时间一律用北京时间）希望所有工具都知道。选项：
+  A：写进 workshop skill；只在 workshop 里生效，而且 skill 是按需读的。
+  B：一份偏好文件，由 skills 模块链接到各工具的全局说明文件（Claude Code 的
+  `~/.claude/CLAUDE.md`、Codex 的 `~/.codex/AGENTS.md`）。这两个文件每个 session
+  都会加载，不在 workshop 里也生效。代价：skills 模块多管两个文件，影响范围变大；
+  pylon 是公开的，偏好里不能有私人内容。
+  C：每个工具各自记，人重复说。
+  建议 B。
 
 ## 决定
 
@@ -45,6 +47,10 @@ uraj-migration 先挂起：迁过来的模块要放进这里定下的约定里�
   能回退、容器共享 store 时直接可见），容器需要时再看。
 - 11/20：新增两个模块：workshop（workshop 约定这个 skill，能讲）、skills（skill 的
   来源、版本和安装，能管）。
+- 11/20：读 space 暂不另定规则，沿用 `AGENTS.md` 里列出的。现在 space 里内容很少、
+  也不算敏感，以后由 contained-agent-v2 的挂载限制。
+- 11/20：agent 的记忆：进度只写 `TODO.md`，agent 关心的知识进 `wiki/`，
+  工具自带的 memory 不放别的 agent 也需要的东西。
 - 11/20：`wiki/` 进 git。公开 workshop 的 wiki 只放能公开的，私有素材放私有 workshop。
 - 11/20：文档可以引用 wiki，但只能在文档末尾的参考一节里；正文的结论要写在文档本身，
   经 PR 给人看。`src`、`env` 不引用 wiki。

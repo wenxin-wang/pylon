@@ -9,4 +9,4 @@
 2. 拆约定：把 pylon 的 `AGENTS.md` 分成通用部分（进 workshop skill）和 pylon 特有部分。
    进行中：PR #6，等人看拆分对不对。
 3. wiki：把 11/20 的两条决定写进约定。随 #6 一起做了。
-4. 过渡期读 space 的规则、agent 的记忆，写进约定。
+4. 人的偏好放在哪：等人定，见 [README](README.md#待定)。
