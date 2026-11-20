@@ -86,8 +86,8 @@ need reading.
   everything under `docs/` is in Chinese. Code identifiers, commands, and paths stay
   as they are. No READMEs inside code directories.
 - Agents don't write in the human's voice. In docs, the repo owner is "the human"
-  (中文“人”) and the AI is "agent"; neither is "I"/“我”. Only the root `README.md`
-  is in the human's own voice.
+  (中文“人”) and the AI is "agent"; neither is "I"/“我”. Only the first section
+  of the root `README.md` ("from the human") is in the human's own voice.
 - File names are lowercase kebab-case; only `README.md`, `TODO.md`, and `AGENTS.md`
   are uppercase.
 - **Living docs**, undated:
