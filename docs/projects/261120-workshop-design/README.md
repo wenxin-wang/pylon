@@ -21,21 +21,6 @@ uraj-migration 先挂起：迁过来的模块要放进这里定下的约定里�
 
 由人来定。agent 列出选项、代价和建议：
 
-- **skill 怎么装。** 要求：不跟着 `~/src/pylon` 切分支；更新不用 `guix home reconfigure`
-  （太慢）。这会是一个新模块（暂名 skills），管 skill 的来源、版本和安装；
-  workshop 约定是其中第一个 skill。选项：
-  A：单独一份 pylon 的检出，只跟 `main`，例如 `~/.local/share/pylon/main`，
-  用 `git pull --ff-only` 更新；各工具的 skill 目录用符号链接指过去。最快最简单，
-  不经过 store；回退靠 git。容器要另外只读挂载这个目录。
-  B：单独一个 Guix profile，只装 skill 这一个包，例如
-  `guix package -p <profile> -f <skills.scm>`，从 pylon 的某个提交构建。只构建这一个包，
-  比 reconfigure 快得多；有代数，可以 `--roll-back`；内容在 store 里只读，
-  容器共享 store 时直接可见。代价是每次更新都要过一遍 Guix。
-  C：Guix Home 的 activation：activation 脚本只在 reconfigure 时跑，内容放在 store 里
-  就还是要 reconfigure，解决不了慢。它能做的是一次性装好“链接”和更新命令，之后内容
-  按 A 或 B 更新。
-  建议先 A，加一条更新命令；容器需要时再看要不要换 B。符号链接这一次性的设置
-  以后放进 Guix Home（C 的用法）。`reconfigure` 慢本身是另一个问题，迁 guix 模块时再看。
 - **workshop 能读哪些 space。** 以后很可能由 contained-agent-v2 决定：容器里只挂
   一个或一组 workshop 及其关联仓库允许访问的目录，规则只是过渡。过渡期的选项：
   A：不读，需要时由人摘出来交给 session；B：可以读，规则禁止引用；
@@ -54,6 +39,12 @@ uraj-migration 先挂起：迁过来的模块要放进这里定下的约定里�
   不再有独立的 llm-wiki。
 - 11/20：约定做成 skill。每个 workshop 的 `AGENTS.md` 写必须时刻成立的几条、
   这个 workshop 自己的东西，再要求开工前先读这个 skill。skill 不跟着 pylon 切分支。
+- 11/20：skill 的源文件放在 pylon 顶层的 `skills/<name>/`。安装：单独一份只跟 `main`
+  的 pylon 检出，放在 `~/.local/share/pylon/main`，用 `git` 更新，各工具的 skill 目录
+  用符号链接指过去；不经 Guix，不用 reconfigure。备选是单独一个 Guix profile（快、
+  能回退、容器共享 store 时直接可见），容器需要时再看。
+- 11/20：新增两个模块：workshop（workshop 约定这个 skill，能讲）、skills（skill 的
+  来源、版本和安装，能管）。
 - 11/20：`wiki/` 进 git。公开 workshop 的 wiki 只放能公开的，私有素材放私有 workshop。
 - 11/20：文档可以引用 wiki，但只能在文档末尾的参考一节里；正文的结论要写在文档本身，
   经 PR 给人看。`src`、`env` 不引用 wiki。
