@@ -1,0 +1,36 @@
+#!/usr/bin/env python3
+"""Install agent skills from pylon's main. See docs/skills.md."""
+
+import argparse
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src/python"))
+
+from pylon import skills  # noqa: E402
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("command", choices=["update", "status", "remove"])
+    args = parser.parse_args()
+    try:
+        if args.command == "update":
+            skills.update_checkout(skills.CHECKOUT, skills.REMOTE)
+            problems = skills.link_skills(skills.CHECKOUT, skills.TOOL_DIRS)
+            for problem in problems:
+                print(problem, file=sys.stderr)
+            if problems:
+                return 1
+        elif args.command == "remove":
+            skills.remove_links(skills.CHECKOUT, skills.TOOL_DIRS)
+        for line in skills.status(skills.CHECKOUT, skills.TOOL_DIRS):
+            print(line)
+    except skills.Error as e:
+        print(e, file=sys.stderr)
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

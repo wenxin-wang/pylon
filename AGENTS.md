@@ -70,6 +70,7 @@ Directories are created when a module moves in; no empty directories up front.
 |---|---|
 | `src/<lang>/pylon/...` | Code. `<lang>` is `c`, `python`, `guile`, or `guix` |
 | `test/<lang>/pylon/...` | Tests, mirroring the `src` paths |
+| `skills/<name>/` | Agent skills (`SKILL.md` and its files), installed from `main` by the skills module |
 | `bin/` | Thin entry points: parse arguments, call into `src` |
 | `env/` | Deployment configs |
 | `exp/<name>_<yyyymmdd>/` | One-off scripts and experiments; `src` and `env` never reference them |
