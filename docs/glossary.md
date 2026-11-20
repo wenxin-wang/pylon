@@ -18,6 +18,7 @@
 | 能讲（explain） | 懂设计本身和关键决定 |
 | 影响范围（blast radius） | 一个模块碰到的权限、秘密、网络和主机，坏了会怎样，怎么关掉。写在 `docs/<module>.md` |
 | 子项目（project） | `docs/projects/<yymmdd>-<project>/` 下推进的一件事 |
+| 状态（status） | 子项目 `TODO.md` 标题下的第一行，三选一：进行中；等人（要定什么）；挂起（原因） |
 | 步（step） | 子项目 `TODO.md` 里的一条，带编号和语义名 |
 | 交接（handoff） | `step-<n>-handoff.md`，第 n 步交给下一个 session 的文档 |
 | 活文档（living doc） | 描述现状、随时改的文档：术语表、模块入口、guide |

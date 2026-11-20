@@ -16,8 +16,9 @@ efficiency.
   exist, where to start. **Written for the human**, one page at most.
 - [Glossary](docs/glossary.md): one name per concept; register a new term before
   using it.
-- In progress: [uraj-migration](docs/projects/261119-uraj-migration/README.md),
-  moving modules over from uraj.
+- Projects (status in each `TODO.md`):
+  - [uraj-migration](docs/projects/261119-uraj-migration/README.md): moving modules
+    over from uraj.
 
 ## Levels
 
@@ -106,8 +107,11 @@ need reading.
     the conclusion in `TODO.md`.
   - When a project ends: distill conclusions into guides or module entries, move the
     whole directory to `docs/archive/projects/`, and remove it from the entry points.
-- **Only one project moves forward at a time.** Follow-up work on an existing project
-  is a new step in it. Ask the human before starting a second one.
+- **Several projects may run at once; every one shows its status.** The line under
+  the `TODO.md` heading is its status: in progress, waiting on the human (for what),
+  or paused (why). Every project not yet archived is listed under "Entry points".
+  Ask the human before starting a new project; follow-up work on an existing project
+  is a new step in it.
 - Deleting code, deleting docs, and merging duplicate docs are real tasks.
 - Don't link to or mention private material outside the repo: this repo is public.
 
