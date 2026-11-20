@@ -21,32 +21,26 @@ uraj-migration 先挂起：迁过来的模块要放进这里定下的约定里�
 
 由人来定。agent 列出选项、代价和建议：
 
-- **约定能不能浓缩成一个 skill。** skill 是一个带说明的目录（`SKILL.md`），
-  Claude Code 和 Codex 都支持：只有名字和一句描述常驻上下文，相关时才读全文。
-  好处是一份约定所有 workshop 共用，不用每个仓库复制；workshop 不用含有约定本身。
-  代价：
-  - skill 是按需加载的，agent 可能没读就动手。“不提交到 `main`、不提交秘密、
-    不部署”这类必须时刻成立的规则不能只放在 skill 里。
-  - skill 要装到每台机器、每个容器里（以后 contained-agent-v2 的容器也要挂进去），
-    装法本身是一个模块。
-  - 改约定就是改 skill，所有 workshop 同时生效，好坏都是。
+- **约定放在哪、怎么保证 agent 读到。** 目标：改一处，所有 workshop 生效。
+  每个 workshop 的 `AGENTS.md` 只写必须时刻成立的几条、这个 workshop 自己的东西
+  （能读哪些 space，有代码的话还有模块表），再加一句“开工前先读完整约定”。
+  完整约定（文档布局、子项目、PR 写法、wiki）放一处。
+  “一定要读”只是 `AGENTS.md` 里的一条规则，和其他规则一样靠 agent 遵守，
+  不是 skill 的加载机制保证的。
 
-  方案：
-  A：全部写进 skill，每个 workshop 的 `AGENTS.md` 只有一行“先读 workshop skill”；
-  B：skill 放完整约定（文档布局、子项目、PR 写法、wiki），每个 workshop 的
-  `AGENTS.md` 写必须时刻成立的几条、这个 workshop 自己的东西（能读哪些 space、
-  有代码的话模块表和级别），再指向 skill；
-  C：不用 skill，各 workshop 复制 `AGENTS.md`。
-  建议 B。skill 的源文件放在 pylon，这是新目录和新模块（级别“能讲”，它就是规则
-  本身），开工前要人点头。
-- **wiki 的规则。** 每个 workshop 可以有一个 `wiki/`，放 agent 关心、人不关心的
-  知识和素材。要定：
-  - 进不进 git。pylon 是公开的，进 git 就是公开；不进 git 就会丢，也不能跨机器。
-    选项：A：进 git，公开 workshop 的 wiki 只放能公开的；B：`wiki/` 单独一个私有仓库，
-    主仓库忽略它（之前就是这样）。建议 A，简单；私有素材放私有 workshop。
-  - 和“人始终能看懂”怎么相处。人不读 wiki，所以要有一条：`src`、`env` 和活文档
-    不依赖 wiki；wiki 里得出的结论要用到，就写进活文档或设计文档，经 PR 给人看。
-  - 结构先不定，用起来再说（之前想的是素材、页面、索引、日志）。
+  放法：
+  A：做成 skill，源文件在 pylon，链接到各工具的 skill 目录。`AGENTS.md` 写“先读
+  workshop skill 的 `SKILL.md`”。这只是把按需加载变成每次都读，不违背 skill 的用法；
+  另外 agent 不在任何 workshop 里时，也能按描述想起它，人也能用名字点名。
+  代价：多一层安装，Claude Code、Codex 等各有各的目录，以后还要挂进容器。
+  B：普通文档，例如 `~/src/pylon/docs/workshop-guide.md`，`AGENTS.md` 写这个路径。
+  不用安装，但每台机器、每个容器都要有 pylon 的检出，而且路径固定。
+  两种都读的是本地检出：人在 `~/src/pylon` 切到别的分支时，所有 workshop 读到的约定
+  也跟着变。
+
+  建议 A，链接指向 `~/src/pylon` 的 `main` 检出，不经 Guix 安装：合并后 `git pull`
+  就生效，不用 reconfigure。这是新目录和新模块（级别“能讲”，它就是规则本身），
+  开工前要人点头。
 - **workshop 能读哪些 space。** 以后很可能由 contained-agent-v2 决定：容器里只挂
   一个或一组 workshop 及其关联仓库允许访问的目录，规则只是过渡。过渡期的选项：
   A：不读，需要时由人摘出来交给 session；B：可以读，规则禁止引用；
@@ -63,6 +57,9 @@ uraj-migration 先挂起：迁过来的模块要放进这里定下的约定里�
   很快会单独讨论。
 - 11/20：每个 workshop 可以有 `wiki/`，放 agent 关心、人不关心的知识和素材；
   不再有独立的 llm-wiki。
+- 11/20：`wiki/` 进 git。公开 workshop 的 wiki 只放能公开的，私有素材放私有 workshop。
+- 11/20：文档可以引用 wiki，但只能在文档末尾的参考一节里；正文的结论要写在文档本身，
+  经 PR 给人看。`src`、`env` 不引用 wiki。
 
 ## 文档
 
