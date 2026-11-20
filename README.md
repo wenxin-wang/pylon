@@ -1,15 +1,17 @@
-# The starting point
+# The starting point, from the human
 
 This is a workshop for developing system configs and tools, to bootstrap my working/
 entertaining environments. Heavily developed by LLM.
 
-It will gradually replace [uraj](https://github.com/wenxin-wang/uraj). Rules for
-agents are in [AGENTS.md](AGENTS.md); changing the module table below needs my
-approval.
+# The rules, from the agents
+
+pylon will gradually replace [uraj](https://github.com/wenxin-wang/uraj). Rules for
+agents are in [AGENTS.md](AGENTS.md); changing the module table below needs the
+human's approval.
 
 ## Modules
 
-I should be able to explain every row in my own words.
+The human should be able to explain every row in their own words.
 
 No modules yet. They move over from uraj one at a time, see
 [uraj-migration](docs/projects/261119-uraj-migration/README.md).
@@ -17,6 +19,7 @@ No modules yet. They move over from uraj one at a time, see
 | Module | Level | What it does | Depends on | Entry |
 |---|---|---|---|---|
 
-Levels: **use** (I know what it does and how to use it), **operate** (I also know
-what it touches and how to turn it off), **explain** (I understand the design).
+Levels: **use** (the human knows what it does and how to use it), **operate** (the
+human also knows what it touches and how to turn it off), **explain** (the human
+understands the design).
 A module's level is at least that of anything depending on it.
