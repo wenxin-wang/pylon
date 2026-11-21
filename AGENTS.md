@@ -8,7 +8,7 @@ pylon is a workshop. **Before any work, read the workshop skill in full**: the
 conventions shared by all workshops (modules and levels, docs, projects, wiki, PRs,
 voice). It is a global skill, installed as `~/.claude/skills/workshop/` or
 `~/.agents/skills/workshop/`; if neither is there, read
-`~/.local/share/pylon/agent-policy/skills/workshop/SKILL.md`, and if that is missing
+`~/.local/share/agent-policies/agent-policy/skills/workshop/SKILL.md`, and if that is missing
 too, stop and ask the human. This file
 holds the rules that must always hold and what is specific to pylon; where the two
 disagree, this file wins.
