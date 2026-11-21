@@ -16,25 +16,39 @@ class SkillsTest(unittest.TestCase):
         self.addCleanup(tmp.cleanup)
         self.tmp = Path(tmp.name)
         # A local repo stands in for GitHub.
-        self.remote = self.tmp / "remote"
-        self.remote.mkdir()
-        run("git", "init", "-q", "-b", "main", cwd=self.remote)
-        run("git", "config", "user.email", "t@example.com", cwd=self.remote)
-        run("git", "config", "user.name", "t", cwd=self.remote)
+        self.remote = self.make_remote("remote")
         self.add_skill("workshop")
-        self.checkout = self.tmp / "share/pylon/main"
+        self.checkout = self.tmp / "share/pylon/agent-policy"
+        self.checkouts = [self.checkout]
         self.tool_dirs = [self.tmp / "claude/skills", self.tmp / "agents/skills"]
 
-    def add_skill(self, name):
-        skill = self.remote / "skills" / name
+    def make_remote(self, name):
+        remote = self.tmp / name
+        remote.mkdir()
+        run("git", "init", "-q", "-b", "main", cwd=remote)
+        run("git", "config", "user.email", "t@example.com", cwd=remote)
+        run("git", "config", "user.name", "t", cwd=remote)
+        return remote
+
+    def add_skill(self, name, remote=None):
+        remote = remote or self.remote
+        skill = remote / "skills" / name
         skill.mkdir(parents=True)
         (skill / "SKILL.md").write_text(f"# {name}\n")
-        run("git", "add", "-A", cwd=self.remote)
-        run("git", "commit", "-q", "-m", f"add {name}", cwd=self.remote)
+        run("git", "add", "-A", cwd=remote)
+        run("git", "commit", "-q", "-m", f"add {name}", cwd=remote)
 
     def update(self):
         skills.update_checkout(self.checkout, str(self.remote))
-        return skills.link_skills(self.checkout, self.tool_dirs)
+        return skills.link_skills(self.checkouts, self.tool_dirs)
+
+    def add_source(self):
+        remote = self.make_remote("other-remote")
+        self.add_skill("other", remote)
+        checkout = self.tmp / "share/pylon/other"
+        skills.update_checkout(checkout, str(remote))
+        self.checkouts.append(checkout)
+        return remote, checkout
 
     def test_links_every_skill_into_every_tool(self):
         self.assertEqual(self.update(), [])
@@ -75,11 +89,27 @@ class SkillsTest(unittest.TestCase):
         with self.assertRaises(skills.Error):
             skills.update_checkout(self.checkout, str(self.remote))
 
+    def test_links_from_several_sources(self):
+        self.add_source()
+        self.assertEqual(self.update(), [])
+        names = sorted(p.name for p in self.tool_dirs[0].iterdir())
+        self.assertEqual(names, ["other", "workshop"])
+
+    def test_same_name_in_two_sources_is_skipped(self):
+        self.update()
+        remote, checkout = self.add_source()
+        self.add_skill("workshop", remote)
+        skills.update_checkout(checkout, str(remote))
+        problems = self.update()
+        self.assertEqual(len(problems), 1)
+        self.assertFalse((self.tool_dirs[0] / "workshop").exists())
+        self.assertTrue((self.tool_dirs[0] / "other").is_symlink())
+
     def test_remove_keeps_foreign_entries(self):
         self.update()
         foreign = self.tool_dirs[0] / "mine"
         foreign.mkdir()
-        skills.remove_links(self.checkout, self.tool_dirs)
+        skills.remove_links(self.checkouts, self.tool_dirs)
         self.assertEqual([p.name for p in self.tool_dirs[0].iterdir()], ["mine"])
 
 

@@ -1,24 +1,27 @@
-"""Install agent skills and the human's preferences for every agent tool.
+"""Install global agent skills and the human's preferences for every tool.
 
-Skills come from a checkout of pylon that only tracks main, outside the
-working repos, so switching branches in ~/src/pylon never changes what agents
-read. Each tool's skill directory gets one symlink per skill.
+Global skills come from one or more source repos. Each source has a checkout
+that only tracks main, outside the working repos, so switching branches in a
+working copy never changes what agents read. Each tool's skill directory gets
+one symlink per skill, pointing into a checkout's skills/<name>.
 
-The preferences come the same way from the private agent-policy repo; each
-tool's global instruction file is a symlink to its preferences.md.
+The preferences come from the policy repo; each tool's global instruction
+file is a symlink to its preferences.md.
+
+Skills used by one workshop only live in that repo (.claude/skills/,
+.agents/skills/), which the tools read on their own; they are not installed.
 """
 
 import os
 import subprocess
 from pathlib import Path
 
-REMOTE = "https://github.com/wenxin-wang/pylon.git"
-CHECKOUT = Path.home() / ".local/share/pylon/main"
+CHECKOUTS = Path.home() / ".local/share/pylon"
+# Source name -> remote. The checkout is CHECKOUTS / name.
+SOURCES = {"agent-policy": "git@github.com:wenxin-wang/agent-policy.git"}
+POLICY = "agent-policy"
 # Claude Code and Codex read personal skills from these directories.
 TOOL_DIRS = [Path.home() / ".claude/skills", Path.home() / ".agents/skills"]
-
-POLICY_REMOTE = "git@github.com:wenxin-wang/agent-policy.git"
-POLICY_CHECKOUT = Path.home() / ".local/share/pylon/agent-policy"
 # Claude Code and Codex load these files in every session.
 GLOBAL_FILES = [Path.home() / ".claude/CLAUDE.md", Path.home() / ".codex/AGENTS.md"]
 
@@ -60,36 +63,45 @@ def skills_in(checkout):
     return sorted(d.name for d in root.iterdir() if (d / "SKILL.md").is_file())
 
 
-def ours(link, checkout):
-    """Whether link is a symlink into the checkout's skills/."""
+def ours(link, checkouts):
+    """Whether link is a symlink into one of the checkouts' skills/."""
     if not link.is_symlink():
         return False
     target = Path(os.readlink(link))
-    return target.parent == checkout / "skills"
+    return any(target.parent == c / "skills" for c in checkouts)
 
 
-def link_skills(checkout, tool_dirs):
+def link_skills(checkouts, tool_dirs):
     """Link every skill into every tool dir; drop our links to removed skills.
 
-    Returns the problems found; a name already taken by something that is not
-    ours is left alone and reported.
+    Returns the problems found. A name offered by two sources is linked from
+    neither; a name already taken by something that is not ours is left alone.
     """
     problems = []
-    names = skills_in(checkout)
+    sources = {}
+    for checkout in checkouts:
+        for name in skills_in(checkout):
+            sources.setdefault(name, []).append(checkout)
+    wanted = {}
+    for name, found in sorted(sources.items()):
+        if len(found) > 1:
+            places = ", ".join(str(c) for c in found)
+            problems.append(f"skill {name} is in several sources ({places}); skipped")
+        else:
+            wanted[name] = found[0] / "skills" / name
     for tool_dir in tool_dirs:
         tool_dir.mkdir(parents=True, exist_ok=True)
-        for name in names:
+        for link in tool_dir.iterdir():
+            if ours(link, checkouts) and link.name not in wanted:
+                link.unlink()
+        for name, target in wanted.items():
             link = tool_dir / name
-            target = checkout / "skills" / name
-            if ours(link, checkout):
+            if ours(link, checkouts):
                 link.unlink()
             elif link.exists() or link.is_symlink():
                 problems.append(f"{link} exists and is not ours; skipped")
                 continue
             link.symlink_to(target)
-        for link in tool_dir.iterdir():
-            if ours(link, checkout) and link.name not in names:
-                link.unlink()
     return problems
 
 
@@ -123,13 +135,13 @@ def remove_preferences(checkout, files):
             link.unlink()
 
 
-def remove_links(checkout, tool_dirs):
-    """Remove every link of ours; the checkout itself is kept."""
+def remove_links(checkouts, tool_dirs):
+    """Remove every skill link of ours; the checkouts are kept."""
     for tool_dir in tool_dirs:
         if not tool_dir.is_dir():
             continue
         for link in tool_dir.iterdir():
-            if ours(link, checkout):
+            if ours(link, checkouts):
                 link.unlink()
 
 
@@ -139,17 +151,17 @@ def checkout_status(checkout):
     return f"{checkout}: missing"
 
 
-def status(checkout, tool_dirs):
-    lines = [checkout_status(checkout)]
+def status(checkouts, tool_dirs):
+    lines = [checkout_status(c) for c in checkouts]
     for tool_dir in tool_dirs:
         links = [p.name for p in sorted(tool_dir.iterdir())
-                 if ours(p, checkout)] if tool_dir.is_dir() else []
+                 if ours(p, checkouts)] if tool_dir.is_dir() else []
         lines.append(f"{tool_dir}: {' '.join(links) or '(none)'}")
     return lines
 
 
 def preferences_status(checkout, files):
-    lines = [checkout_status(checkout)]
+    lines = []
     target = checkout / "preferences.md"
     for link in files:
         if link.is_symlink() and Path(os.readlink(link)) == target:

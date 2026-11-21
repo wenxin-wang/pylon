@@ -18,7 +18,7 @@ Modules from uraj move over one at a time, see
 
 | Module | Level | What it does | Depends on | Entry |
 |---|---|---|---|---|
-| skills | operate | Installs the agent skills in `skills/` from pylon's `main`, and the human's preferences from the private agent-policy repo, for Claude Code and Codex | | [docs/skills.md](docs/skills.md) |
+| skills | operate | Installs global agent skills and the human's preferences for Claude Code and Codex, from the `main` of each source repo (now the private agent-policy) | | [docs/skills.md](docs/skills.md) |
 
 Levels: **use** (the human knows what it does and how to use it), **operate** (the
 human also knows what it touches and how to turn it off), **explain** (the human

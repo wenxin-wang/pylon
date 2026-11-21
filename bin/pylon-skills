@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Install agent skills and the human's preferences. See docs/skills.md."""
+"""Install global agent skills and the human's preferences. See docs/skills.md."""
 
 import argparse
 import sys
@@ -14,20 +14,20 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("command", choices=["update", "status", "remove"])
     args = parser.parse_args()
+    checkouts = [skills.CHECKOUTS / name for name in skills.SOURCES]
+    policy = skills.CHECKOUTS / skills.POLICY
+    problems = []
     try:
-        problems = []
         if args.command == "update":
-            skills.update_checkout(skills.CHECKOUT, skills.REMOTE)
-            problems += skills.link_skills(skills.CHECKOUT, skills.TOOL_DIRS)
-            skills.update_checkout(skills.POLICY_CHECKOUT, skills.POLICY_REMOTE)
-            problems += skills.link_preferences(skills.POLICY_CHECKOUT,
-                                                skills.GLOBAL_FILES)
+            for name, remote in skills.SOURCES.items():
+                skills.update_checkout(skills.CHECKOUTS / name, remote)
+            problems += skills.link_skills(checkouts, skills.TOOL_DIRS)
+            problems += skills.link_preferences(policy, skills.GLOBAL_FILES)
         elif args.command == "remove":
-            skills.remove_links(skills.CHECKOUT, skills.TOOL_DIRS)
-            skills.remove_preferences(skills.POLICY_CHECKOUT, skills.GLOBAL_FILES)
-        for line in (skills.status(skills.CHECKOUT, skills.TOOL_DIRS)
-                     + skills.preferences_status(skills.POLICY_CHECKOUT,
-                                                 skills.GLOBAL_FILES)):
+            skills.remove_links(checkouts, skills.TOOL_DIRS)
+            skills.remove_preferences(policy, skills.GLOBAL_FILES)
+        for line in (skills.status(checkouts, skills.TOOL_DIRS)
+                     + skills.preferences_status(policy, skills.GLOBAL_FILES)):
             print(line)
     except skills.Error as e:
         print(e, file=sys.stderr)
