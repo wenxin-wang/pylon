@@ -70,7 +70,5 @@ Follows https://trop.in/blog/a-sane-directory-structure-for-software-projects.
 - Never modify `vendor/`.
 - Reread `AGENTS.md` on `origin/main` before committing or opening a PR; old sessions
   may miss new rules.
-- Agents don't write in the human's voice: "the human"/“人” and "agent", never
-  "I"/“我”.
 - Confirm scope before starting; stop and ask where a change would overturn something
   the human has decided.
