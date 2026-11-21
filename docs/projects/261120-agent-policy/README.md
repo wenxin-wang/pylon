@@ -2,8 +2,8 @@
 
 ## 目标
 
-一个私有的策略仓库管所有 agent 的配置：全局的常驻指令（人的偏好），以及每个
-workshop 的策略。明文，agent 能读；
+一个私有的策略仓库管所有 agent 的配置：全局的常驻指令（人的偏好）、全局 skill，
+以及每个 workshop 的策略。明文，agent 能读；
 改动由 agent 提 PR，人批准合并后才生效，不用 reconfigure。合并后，人不用再给每个
 工具、每台机器重复说偏好，agent 也能看到自己有什么权限。
 
@@ -40,6 +40,7 @@ workshop 的策略。明文，agent 能读；
 - 11/20：pylon 的 skills 模块负责同步这个仓库，并把其中的偏好文件链接到
   `~/.claude/CLAUDE.md` 和 `~/.codex/AGENTS.md`。skills 的影响范围因此变大，
   见 [docs/skills.md](../../skills.md)。
+- 11/21：全局 skill 也放这里统一管理，包括 workshop skill，不公开。
 - 11/20：在 pylon 里做；uraj 进入维护状态，不再加新功能。
 
 ## 文档
