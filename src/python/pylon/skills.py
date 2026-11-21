@@ -16,7 +16,7 @@ import os
 import subprocess
 from pathlib import Path
 
-CHECKOUTS = Path.home() / ".local/share/pylon"
+CHECKOUTS = Path.home() / ".local/share/agent-policies"
 # Source name -> remote. The checkout is CHECKOUTS / name.
 SOURCES = {"agent-policy": "git@github.com:wenxin-wang/agent-policy.git"}
 POLICY = "agent-policy"

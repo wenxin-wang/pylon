@@ -18,7 +18,7 @@ class SkillsTest(unittest.TestCase):
         # A local repo stands in for GitHub.
         self.remote = self.make_remote("remote")
         self.add_skill("workshop")
-        self.checkout = self.tmp / "share/pylon/agent-policy"
+        self.checkout = self.tmp / "share/agent-policies/agent-policy"
         self.checkouts = [self.checkout]
         self.tool_dirs = [self.tmp / "claude/skills", self.tmp / "agents/skills"]
 
@@ -45,7 +45,7 @@ class SkillsTest(unittest.TestCase):
     def add_source(self):
         remote = self.make_remote("other-remote")
         self.add_skill("other", remote)
-        checkout = self.tmp / "share/pylon/other"
+        checkout = self.tmp / "share/agent-policies/other"
         skills.update_checkout(checkout, str(remote))
         self.checkouts.append(checkout)
         return remote, checkout
