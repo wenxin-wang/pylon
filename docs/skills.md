@@ -42,8 +42,8 @@ PYTHONPATH=src/python python3 -m unittest discover -s test/python/pylon
     `preferences.md`。已有的文件不覆盖，跳过并报错；`preferences.md` 删掉后链接也删掉。
 - **每个 session 都会读到什么**：全局 skill 的名字和描述，以及偏好全文。所以来源
   仓库的 `main` 上有什么，所有 agent 都会看到、照着做。来源仓库的改动要经人批准合并。
-- **网络**：`update` 用 `git` 访问 `github.com`，只读。agent-policy 是私有的，走 SSH，
-  用人的 SSH 密钥。
+- **网络**：`update` 用 `git` 通过 HTTPS 访问 `github.com`，只读。agent-policy 是私有的，
+  靠 `gh` 配好的 git 凭据（`gh auth setup-git`）。
 - **权限和秘密**：没有。不用 sudo，不读秘密。
 - **坏了会怎样**：所有 agent 新开的 session 同时受影响；已经开着的 session 不受影响。
 - **怎么关掉**：`bin/pylon-skills remove` 删掉所有链接；要回到旧版本，在检出里

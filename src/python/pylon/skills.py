@@ -18,7 +18,7 @@ from pathlib import Path
 
 CHECKOUTS = Path.home() / ".local/share/agent-policies"
 # Source name -> remote. The checkout is CHECKOUTS / name.
-SOURCES = {"agent-policy": "git@github.com:wenxin-wang/agent-policy.git"}
+SOURCES = {"agent-policy": "https://github.com/wenxin-wang/agent-policy.git"}
 POLICY = "agent-policy"
 # Claude Code and Codex read personal skills from these directories.
 TOOL_DIRS = [Path.home() / ".claude/skills", Path.home() / ".agents/skills"]
