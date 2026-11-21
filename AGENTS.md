@@ -112,6 +112,14 @@ need reading.
     the conclusion in `TODO.md`.
   - When a project ends: distill conclusions into guides or module entries, move the
     whole directory to `docs/archive/projects/`, and remove it from the entry points.
+  - Open questions ("待定") list options, costs, and a recommendation; the human
+    decides. "决定" marks what the human decided, so agents know what not to
+    overturn without asking: one line each, a conclusion with its date, only those
+    still in force. An overturned decision is rewritten in place with the new date;
+    git keeps the history, the design doc keeps the why.
+  - Tidy "决定" at the end of every step, before the PR: merge small related lines;
+    once a decision is written into a design doc, living doc, or `AGENTS.md`,
+    replace it with a link there. When the project ends, none is left without a home.
 - **Several projects may run at once; every one shows its status.** The line under
   the `TODO.md` heading is its status: in progress, waiting on the human (for what),
   or paused (why). Every project not yet archived is listed under "Entry points".
@@ -119,6 +127,24 @@ need reading.
   is a new step in it.
 - Deleting code, deleting docs, and merging duplicate docs are real tasks.
 - Don't link to or mention private material outside the repo: this repo is public.
+
+## Wiki and memory
+
+- A workshop may have a `wiki/`: knowledge and material agents care about and the
+  human does not read. It is in git; pylon is public, so private material goes to a
+  private workshop. Docs cite the wiki only in a references section at their end; a
+  conclusion they rely on is written in the doc itself. `src` and `env` never
+  reference the wiki.
+- Progress lives only in the project's `TODO.md`; knowledge goes in `wiki/`. A
+  tool's own memory is private to that tool, so it holds nothing another agent
+  would need.
+
+## Skills
+
+- **Global skills** apply to every session; they live in the policy repo and the
+  skills module installs them ([docs/skills.md](docs/skills.md)).
+- **Project skills** apply to one repo: put them in its `.claude/skills/<name>/`, with
+  `.agents/skills` a symlink to `.claude/skills`. The tools read them on their own.
 
 ## Readable spaces
 

@@ -19,17 +19,7 @@ uraj-migration 先挂起：迁过来的模块要放进这里定下的约定里�
 
 ## 待定
 
-由人来定。agent 列出选项、代价和建议：
-
-- **人的偏好放在哪。** 各工具自带的 memory 是私有的，换个工具就没了；人的偏好
-  （例如时间一律用北京时间）希望所有工具都知道。选项：
-  A：写进 workshop skill；只在 workshop 里生效，而且 skill 是按需读的。
-  B：一份偏好文件，由 skills 模块链接到各工具的全局说明文件（Claude Code 的
-  `~/.claude/CLAUDE.md`、Codex 的 `~/.codex/AGENTS.md`）。这两个文件每个 session
-  都会加载，不在 workshop 里也生效。代价：skills 模块多管两个文件，影响范围变大；
-  pylon 是公开的，偏好里不能有私人内容。
-  C：每个工具各自记，人重复说。
-  建议 B。
+暂无。
 
 ## 决定
 
@@ -37,23 +27,12 @@ uraj-migration 先挂起：迁过来的模块要放进这里定下的约定里�
 - 11/20：不做派活的工具和信箱。agent 以某个 workshop 为默认工作目录，可以改自己的
   workshop、关联的仓库，以及别的 workshop，暂不限制范围。agent 之间怎么合作以后摸索，
   很快会单独讨论。
-- 11/20：每个 workshop 可以有 `wiki/`，放 agent 关心、人不关心的知识和素材；
-  不再有独立的 llm-wiki。
-- 11/20：约定做成 skill。每个 workshop 的 `AGENTS.md` 写必须时刻成立的几条、
-  这个 workshop 自己的东西，再要求开工前先读这个 skill。skill 不跟着 pylon 切分支。
-- 11/20：skill 的源文件放在 pylon 顶层的 `skills/<name>/`。安装：单独一份只跟 `main`
-  的 pylon 检出，放在 `~/.local/share/pylon/main`，用 `git` 更新，各工具的 skill 目录
-  用符号链接指过去；不经 Guix，不用 reconfigure。备选是单独一个 Guix profile（快、
-  能回退、容器共享 store 时直接可见），容器需要时再看。
-- 11/20：新增两个模块：workshop（workshop 约定这个 skill，能讲）、skills（skill 的
-  来源、版本和安装，能管）。
-- 11/20：读 space 暂不另定规则，沿用 `AGENTS.md` 里列出的。现在 space 里内容很少、
-  也不算敏感，以后由 contained-agent-v2 的挂载限制。
-- 11/20：agent 的记忆：进度只写 `TODO.md`，agent 关心的知识进 `wiki/`，
-  工具自带的 memory 不放别的 agent 也需要的东西。
-- 11/20：`wiki/` 进 git。公开 workshop 的 wiki 只放能公开的，私有素材放私有 workshop。
-- 11/20：文档可以引用 wiki，但只能在文档末尾的参考一节里；正文的结论要写在文档本身，
-  经 PR 给人看。`src`、`env` 不引用 wiki。
+- 11/20：通用约定做成 workshop skill，每个 workshop 的 `AGENTS.md` 只写必须时刻成立的
+  规则和自己的内容。11/21：全局 skill 和人的偏好都放在策略仓库，不公开；
+  见 [docs/skills.md](../../skills.md) 和 agent-policy 项目。
+- 11/21：contained-agent v2 上线前不拆：现在的容器读不到全局 skill，约定以 pylon 的
+  `AGENTS.md` 为准，策略仓库里的 workshop skill 是副本。
+- 11/20：wiki、读 space、agent 的记忆、「决定」的写法：已写进 `AGENTS.md`。
 
 ## 文档
 

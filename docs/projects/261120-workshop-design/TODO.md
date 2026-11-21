@@ -1,12 +1,12 @@
 # workshop-design 进度
 
-状态：等人：审 #5（skills）和 #6（拆约定）。
+状态：挂起：第 2 步等 contained-agent v2 上线，现在的容器读不到全局 skill。
 
-当前：第 1 步。
+当前：第 2 步。
 
-1. skill 怎么装：定安装方式，在模块表登记 skills。进行中：skills 模块，PR #5。
-   新目录 `~/.local/share/pylon/main` 现在的 contained-agent 容器里看不到，要人在 uraj 里加只读挂载。
-2. 拆约定：把 pylon 的 `AGENTS.md` 分成通用部分（进 workshop skill）和 pylon 特有部分。
-   进行中：PR #6，等人看拆分对不对。
-3. wiki：把 11/20 的两条决定写进约定。随 #6 一起做了。
-4. 人的偏好放在哪：等人定，见 [README](README.md#待定)。
+1. ~~skill 怎么装~~ 已完成。skills 模块，全局 skill 和偏好来自策略仓库；PR #5。
+2. 拆约定：把 `AGENTS.md` 的通用部分换成“先读 workshop skill”。挂起，等 v2；
+   之前的拆法在 PR #6（已关闭，分支 `workshop/skill` 保留）。
+   在那之前，约定改在 `AGENTS.md`，拆的时候再同步到策略仓库的 workshop skill。
+3. ~~wiki、记忆、「决定」的写法~~ 已写进 `AGENTS.md`。
+4. ~~人的偏好放在哪~~ 已完成：策略仓库的 `preferences.md`。
