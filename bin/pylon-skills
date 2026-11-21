@@ -1,0 +1,41 @@
+#!/usr/bin/env python3
+"""Install global agent skills and the human's preferences. See docs/skills.md."""
+
+import argparse
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src/python"))
+
+from pylon import skills  # noqa: E402
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("command", choices=["update", "status", "remove"])
+    args = parser.parse_args()
+    checkouts = [skills.CHECKOUTS / name for name in skills.SOURCES]
+    policy = skills.CHECKOUTS / skills.POLICY
+    problems = []
+    try:
+        if args.command == "update":
+            for name, remote in skills.SOURCES.items():
+                skills.update_checkout(skills.CHECKOUTS / name, remote)
+            problems += skills.link_skills(checkouts, skills.TOOL_DIRS)
+            problems += skills.link_preferences(policy, skills.GLOBAL_FILES)
+        elif args.command == "remove":
+            skills.remove_links(checkouts, skills.TOOL_DIRS)
+            skills.remove_preferences(policy, skills.GLOBAL_FILES)
+        for line in (skills.status(checkouts, skills.TOOL_DIRS)
+                     + skills.preferences_status(policy, skills.GLOBAL_FILES)):
+            print(line)
+    except skills.Error as e:
+        print(e, file=sys.stderr)
+        return 1
+    for problem in problems:
+        print(problem, file=sys.stderr)
+    return 1 if problems else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

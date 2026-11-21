@@ -13,11 +13,12 @@ human's approval.
 
 The human should be able to explain every row in their own words.
 
-No modules yet. They move over from uraj one at a time, see
+Modules from uraj move over one at a time, see
 [uraj-migration](docs/projects/261119-uraj-migration/README.md).
 
 | Module | Level | What it does | Depends on | Entry |
 |---|---|---|---|---|
+| skills | operate | Installs global agent skills and the human's preferences for Claude Code and Codex, from the `main` of each source repo (now the private agent-policy) | | [docs/skills.md](docs/skills.md) |
 
 Levels: **use** (the human knows what it does and how to use it), **operate** (the
 human also knows what it touches and how to turn it off), **explain** (the human
