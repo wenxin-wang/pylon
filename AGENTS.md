@@ -22,8 +22,6 @@ disagree, this file wins.
 - Projects (status in each `TODO.md`):
   - [agent-policy](docs/projects/261120-agent-policy/README.md): a private repo for
     agents' standing instructions and permissions.
-  - [workshop-design](docs/projects/261120-workshop-design/README.md): the workshop
-    conventions themselves, for workshops other than pylon too.
   - [uraj-migration](docs/projects/261119-uraj-migration/README.md): moving modules
     over from uraj.
 

@@ -50,3 +50,9 @@ PYTHONPATH=src/python python3 -m unittest discover -s test/python/pylon
   `git checkout <提交>`，下次 `update` 会因为不在 `main` 而停下，直到人切回 `main`。
 - **容器**：容器里要只读挂载 `~/.local/share/agent-policies`、`~/.agents`，用 Codex 的话还有
   `~/.codex`，否则链接是断的。
+
+## 为什么不经 Guix
+
+reconfigure 慢，skill 和偏好要合并后马上生效，所以直接用只跟 `main` 的 git 检出。
+备选是单独一个 Guix profile，里面只装 skill：比 reconfigure 快，有代数能回退，
+容器共享 store 时直接可见；代价是每次更新都要过一遍 Guix。容器需要时再看。
