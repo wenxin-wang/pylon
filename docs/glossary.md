@@ -11,7 +11,7 @@
 | 人（the human） | 本仓库的主人，审阅并合并 PR。文档里不用“我”指人，也不用“我”指 agent |
 | agent | 写代码和文档的 AI，不论哪个工具、哪个 session |
 | space | 人自己写的笔记本（org mode）。agent 只读，不写。例：garden、sketchpad |
-| workshop | 由 agent 推进、人审阅的仓库，按本仓库 `AGENTS.md` 这套约定运作。有没有代码都算。pylon 是一个 workshop |
+| workshop | 由 agent 推进、人审阅的仓库，按 workshop skill（一个全局 skill）的约定运作，自己的 `AGENTS.md` 写必须时刻成立的规则。有没有代码都算。pylon 是一个 workshop |
 | skill | 给 agent 的一份说明，一个目录，里面有 `SKILL.md` |
 | 全局 skill（global skill） | 所有 session 都能用的 skill，来自一个或多个策略仓库的 `skills/<name>/`，由 skills 模块装给各工具。现在只有 agent-policy 一个 |
 | 项目 skill（project skill） | 只在某个仓库里用的 skill，放在那个仓库的 `.claude/skills/`、`.agents/skills/`，工具自己会读，不用安装 |
