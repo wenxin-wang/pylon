@@ -15,7 +15,7 @@
 | skill | 给 agent 的一份说明，一个目录，里面有 `SKILL.md` |
 | 全局 skill（global skill） | 所有 session 都能用的 skill，来自一个或多个策略仓库的 `skills/<name>/`，由 skills 模块装给各工具。现在只有 agent-policy 一个 |
 | 项目 skill（project skill） | 只在某个仓库里用的 skill，放在那个仓库的 `.claude/skills/`、`.agents/skills/`，工具自己会读，不用安装 |
-| wiki | workshop 下的 `wiki/`，放 agent 关心、人不关心的知识和素材 |
+| llm-wiki | workshop 下的 `llm-wiki/`，放 agent 关心、人不关心的知识和素材 |
 | 策略仓库（policy repo） | 私有的 `agent-policy` 仓库：全局的常驻指令、全局 skill 和每个 workshop 的策略。只放数据，不是 workshop；格式由 pylon 里读它的代码定义 |
 | 模块表（module table） | `README.md` 里的模块表：有哪些模块、级别、依赖、入口。上限一页。改它要人点头 |
 | 模块（module） | 模块表上登记的一块功能；也是 `docs/<module>.md` 的名字和 PR topic |
