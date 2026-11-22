@@ -1,12 +1,18 @@
 ---
-description: 手机上审批 sudo 和 agent 特权请求：现成方案为什么不够，自建的几个方向和分级
+description: 手机审批 sudo 和 agent 特权请求的早期调研（已过时，见 uraj 的 sudo-tiers）
 category: security
 sources:
   - 2026-11-02 的两次 agent 调研会话（记录已清理，这里是 2026-11-14 的摘录）
+  - https://github.com/wenxin-wang/uraj/tree/main/docs/projects/261116-sudo-tiers
 checked: 2026-11-02
 ---
 
 # 手机审批 sudo / agent 特权请求
+
+**已过时。** 之后的设计在 uraj 的 sudo-tiers 项目
+（https://github.com/wenxin-wang/uraj/tree/main/docs/projects/261116-sudo-tiers）和
+contained-agent-v2 项目（同目录下 `261115-contained-agent-v2`）里，比这里新；两者冲突时
+以那边为准。迁移 contained-agent-v2 到 pylon 时更新这一页。
 
 调研时的建议，不是已采纳的决定。
 
