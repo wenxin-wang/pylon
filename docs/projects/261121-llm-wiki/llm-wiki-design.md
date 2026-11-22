@@ -118,7 +118,10 @@ hook 配在各 workshop 自己的仓库里（Claude Code 的 `.claude/settings.j
   “压缩后”这个来源。压缩会丢掉开工时给的索引，这样补回来。
 - 压缩前（PreCompact）让压缩摘要保留“学到了、还没写进 llm-wiki 的外部知识”。Claude Code
   的 PreCompact 只能影响摘要，不能让 agent 先去写文件；这一条借自 OpenClaw 的 memory
-  flush，效果在第 2 步验证。
+  flush。Codex 的 PreCompact 输出会被忽略，只能控制要不要压缩，所以 Codex 没有这一条。
+- 没装 workshop skill 时（比如某个容器没装 skills 模块），hook 不报错，而是输出一行
+  “找不到索引脚本，去装 workshop skill”，退出码为 0。失败的 hook 只会给人弹错误提示，
+  agent 什么都看不到；输出一行说明，agent 就知道没拿到索引的原因。
 
 ## 参考
 

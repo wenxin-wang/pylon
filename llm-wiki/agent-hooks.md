@@ -5,8 +5,9 @@ sources:
   - https://code.claude.com/docs/en/hooks
   - https://github.com/anthropics/claude-code/issues/16538
   - https://learn.chatgpt.com/docs/config-file/config-reference
+  - https://www.turboai.dev/docs/codex/hooks
   - https://codex.danielvaughan.com/2026/04/15/codex-cli-hooks-complete-guide-events-policy-patterns/
-checked: 2026-11-22
+checked: 2026-11-23
 ---
 
 # Agent hooks
@@ -34,5 +35,9 @@ checked: 2026-11-22
   stdout also works. Its `source` is startup, resume, clear, compact, or fork.
 - `additionalContextLimit` per handler defaults to 2500 tokens: larger context is
   saved to disk and the model sees a preview; `0` passes everything.
+- `PreCompact` can't shape the compaction summary: plain stdout is ignored, JSON can
+  only stop compaction with `continue: false`, and `hookSpecificOutput` is rejected
+  for this event. Claude Code, by contrast, uses PreCompact stdout as instructions
+  for the summary.
 - Project-scoped `.codex/` config, hooks included, loads only for trusted projects.
 - Not supported with cloud orchestration.
