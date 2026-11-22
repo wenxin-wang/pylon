@@ -1,0 +1,24 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/skills/workshop/scripts/llm_wiki_index.py"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'Keep in the summary any external knowledge learned in this session that is not yet in llm-wiki/: what it is and its sources, so it can be written there after compaction.'"
+          }
+        ]
+      }
+    ]
+  }
+}

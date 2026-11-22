@@ -118,7 +118,7 @@ hook 配在各 workshop 自己的仓库里（Claude Code 的 `.claude/settings.j
   “压缩后”这个来源。压缩会丢掉开工时给的索引，这样补回来。
 - 压缩前（PreCompact）让压缩摘要保留“学到了、还没写进 llm-wiki 的外部知识”。Claude Code
   的 PreCompact 只能影响摘要，不能让 agent 先去写文件；这一条借自 OpenClaw 的 memory
-  flush，效果在第 2 步验证。
+  flush。Codex 的 PreCompact 输出会被忽略，只能控制要不要压缩，所以 Codex 没有这一条。
 
 ## 参考
 

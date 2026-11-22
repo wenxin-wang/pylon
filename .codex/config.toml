@@ -1,0 +1,12 @@
+# The llm-wiki index at the start of every session and again after compaction;
+# see the workshop skill's llm-wiki section. Codex loads this only when the
+# project is trusted. Codex's PreCompact output can't reach the summary, so
+# there is no pre-compaction reminder here, unlike .claude/settings.json.
+[features]
+hooks = true
+
+[[hooks.SessionStart]]
+
+[[hooks.SessionStart.hooks]]
+type = "command"
+command = "python3 ~/.agents/skills/workshop/scripts/llm_wiki_index.py"
