@@ -49,6 +49,7 @@ Follows https://trop.in/blog/a-sane-directory-structure-for-software-projects.
 | `exp/<name>_<yyyymmdd>/` | One-off scripts and experiments; `src` and `env` never reference them |
 | `vendor/` | Third-party code and submodules, never modified |
 | `docs/` | Documentation, see the workshop skill |
+| `llm-wiki/` | Knowledge agents keep for themselves, see the workshop skill |
 | `out/`, `tmp/` | Run outputs, not in git |
 
 ## pylon-specific
