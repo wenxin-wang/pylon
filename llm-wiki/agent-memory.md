@@ -1,0 +1,81 @@
+---
+description: How Karpathy's LLM wiki, Letta, Hermes and OpenClaw keep agent memory; practices against staleness
+category: agents
+sources:
+  - https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f
+  - https://www.letta.com/blog/context-repositories/
+  - https://www.letta.com/blog/our-next-phase/
+  - https://github.com/nousresearch/hermes-agent
+  - https://www.glukhov.org/ai-systems/hermes/hermes-agent-memory-system/
+  - https://safeguard.sh/resources/blog/how-hermes-agent-learns-memory-skills-session-search-and-background-review
+  - https://docs.openclaw.ai/concepts/memory-architecture
+  - https://docs.openclaw.ai/concepts/memory
+  - https://dev.to/naman_here/why-coding-agent-memory-files-go-stale-and-what-teams-should-do-instead-1659
+  - https://blog.sigplan.org/2026/04/21/repositories-are-human-agent-knowledge-factories/
+  - https://sidtechno.com/blog/ai-agent-memory-fewer-notes
+checked: 2026-11-22
+---
+
+# Agent memory
+
+No standard exists; most details below come from each project's docs plus blog
+write-ups, which sometimes disagree. Check the project's own docs before relying on a
+number.
+
+## Karpathy's LLM wiki (gist, 2026-04)
+
+- Three layers: raw sources (the LLM reads, never edits), the wiki (markdown pages the
+  LLM owns), and a schema file (`CLAUDE.md`/`AGENTS.md`) with structure and workflows.
+- `index.md`: one line per page with a summary, grouped by category; read first on
+  every query. `log.md`: append-only record of ingests, queries, lint passes.
+- Operations: ingest (one source can touch 10 to 15 pages), query (good answers are
+  filed back as pages), lint (contradictions, stale claims, orphans, missing links).
+- Scale: index-only navigation works to about 100 sources and a few hundred pages;
+  past that, add a search tool.
+- Known weak spots: the index drifts if sources are added without an ingest; many
+  writers conflict because each ingest touches many files.
+
+## Letta (MemGPT team)
+
+- 2026: memory moved from database blocks to git-backed "context repositories"
+  (MemFS); special memory tools are being replaced by plain file operations.
+- Files under `system/` are always fully loaded; the rest is on demand. The whole file
+  tree sits in the system prompt, so names navigate.
+- Each file has frontmatter with a description, modeled on `SKILL.md`.
+- Writing: a background "sleep-time" reflection reviews recent conversation and
+  commits; "defrag" splits large files, merges duplicates, aims at 15 to 25 files.
+- Concurrency: each subagent writes in its own git worktree, merged with plain git.
+
+## Hermes Agent (Nous Research)
+
+- Always-loaded memory is two capped files: `MEMORY.md` (environment, conventions,
+  lessons; about 2,200 chars) and `USER.md` (preferences; about 1,375 chars). A write
+  past the cap fails loudly, forcing the agent to choose.
+- Loaded once at session start as a frozen snapshot; edits show up next session.
+- Past sessions in SQLite with full-text search. Skills are created and patched by
+  the agent after complex tasks; a background review after turns can save memory and
+  skills. Writes can require human approval.
+
+## OpenClaw
+
+- Curated `MEMORY.md` (durable facts, standing decisions; not a log) and daily notes
+  `memory/YYYY-MM-DD.md` (only today and yesterday load automatically).
+- Memory flush: before compaction a silent turn tells the agent to save context into
+  the daily note. A "dreaming" sweep promotes useful items into `MEMORY.md`.
+
+## Common patterns
+
+- Two tiers: a small, curated, always-loaded tier and a larger on-demand tier.
+- Navigation by descriptions (frontmatter, file tree, or index) so the agent knows
+  what exists without opening files; the always-loaded part is what makes the agent
+  remember to look.
+- Something must consolidate regularly (reflection, dreaming, defrag, or hard caps),
+  or memory bloats and goes stale.
+- Git as the store: history, rollback, parallel writers.
+
+## Practices against staleness
+
+- Don't store what can be read from the code or repo.
+- Don't repeat an explanation in two files; link instead.
+- Put a date (and optionally a review-by date) on each note.
+- Prune regularly: a few distilled notes beat hundreds of fragments.

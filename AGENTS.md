@@ -5,7 +5,7 @@ Mostly developed by agents; a human reviews and merges on GitHub. It will gradua
 replace uraj (`wenxin-wang/uraj`).
 
 pylon is a workshop. **Before any work, read the workshop skill in full**: the
-conventions shared by all workshops (modules and levels, docs, projects, wiki, PRs,
+conventions shared by all workshops (modules and levels, docs, projects, llm-wiki, PRs,
 voice). It is a global skill, installed as `~/.claude/skills/workshop/` or
 `~/.agents/skills/workshop/`; if neither is there, read
 `~/.local/share/agent-policies/agent-policy/skills/workshop/SKILL.md`, and if that is missing
@@ -22,6 +22,8 @@ disagree, this file wins.
 - Projects (status in each `TODO.md`):
   - [agent-policy](docs/projects/261120-agent-policy/README.md): a private repo for
     agents' standing instructions and permissions.
+  - [llm-wiki](docs/projects/261121-llm-wiki/README.md): how workshops use
+    `llm-wiki/`, the knowledge agents keep for themselves.
   - [uraj-migration](docs/projects/261119-uraj-migration/README.md): moving modules
     over from uraj.
 
@@ -47,6 +49,7 @@ Follows https://trop.in/blog/a-sane-directory-structure-for-software-projects.
 | `exp/<name>_<yyyymmdd>/` | One-off scripts and experiments; `src` and `env` never reference them |
 | `vendor/` | Third-party code and submodules, never modified |
 | `docs/` | Documentation, see the workshop skill |
+| `llm-wiki/` | Knowledge agents keep for themselves, see the workshop skill |
 | `out/`, `tmp/` | Run outputs, not in git |
 
 ## pylon-specific
