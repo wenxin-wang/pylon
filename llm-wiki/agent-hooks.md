@@ -1,5 +1,5 @@
 ---
-description: Claude Code and Codex lifecycle hooks that can feed context to the agent (SessionStart, PreCompact) and their limits
+description: Claude Code and Codex hooks that feed context to the agent (SessionStart, PreCompact), and limits
 category: agents
 sources:
   - https://code.claude.com/docs/en/hooks

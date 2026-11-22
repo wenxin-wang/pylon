@@ -40,6 +40,6 @@ workshop skill 只定了底线：每个 workshop 可以有 `llm-wiki/`，放 age
 
 ## 参考
 
-- [agent-memory-frameworks](../../../llm-wiki/agent-memory-frameworks.md)：Karpathy、Letta、
+- [agent-memory](../../../llm-wiki/agent-memory.md)：Karpathy、Letta、
   Hermes、OpenClaw 怎么管 agent 的记忆。
 - [agent-hooks](../../../llm-wiki/agent-hooks.md)：Claude Code 和 Codex 的 hook。

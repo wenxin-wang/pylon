@@ -1,5 +1,5 @@
 ---
-description: How Karpathy's LLM wiki, Letta, Hermes Agent and OpenClaw keep agent memory, and the common practices against staleness
+description: How Karpathy's LLM wiki, Letta, Hermes and OpenClaw keep agent memory; practices against staleness
 category: agents
 sources:
   - https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f
@@ -16,7 +16,7 @@ sources:
 checked: 2026-11-22
 ---
 
-# Agent memory frameworks
+# Agent memory
 
 No standard exists; most details below come from each project's docs plus blog
 write-ups, which sometimes disagree. Check the project's own docs before relying on a

@@ -29,8 +29,7 @@ agent 的上下文分两层：
 ```
 llm-wiki/
   raw/                  素材：没有稳定网址的原始材料
-  <主题>.md             页面：一个主题一页，agent 整理的结论
-  <类别>/<主题>.md      页面多了以后按类别分子目录
+  <主题>.md             页面：一个主题一页，agent 整理的结论；永远平铺，不分子目录
 （索引不是文件，由脚本从页面的 frontmatter 生成）
 ```
 
@@ -49,6 +48,9 @@ wiki。我们的会越积越多，还受公开仓库的限制，所以只留找�
 
 ### 页面
 
+永远平铺，不按目录分类。类别很难定，定了以后还会变；按目录分，改类别就要挪文件，
+指向它的链接都会断。分组靠 frontmatter 里的 `category`，只影响索引怎么显示，改一行就行。
+
 ```markdown
 ---
 description: 一句话，说清这页回答什么问题
@@ -56,21 +58,28 @@ category: agents
 sources:
   - https://...
   - raw/20261122-xxx.md
+  - zotero://select/items/ABCD1234 （书名，作者，页码）
 checked: 2026-11-22
 ---
 ```
 
+- `description` 一句话，100 字以内，索引只显示它和文件名。
+- `sources` 接受任何 URI：网址、`raw/` 里的文件、Zotero、本地书籍。本地来源换台机器或在
+  容器里打不开，所以旁边写上人能看懂的出处（书名、作者、页码）；公开 workshop 里不写会
+  暴露隐私的本地路径。本地来源不占仓库空间，能用就不往 `raw/` 里放。
 - 一个主题一页。已有相关页面就更新它，不另开新页；页面之间用链接，不重复写同样的内容。
 - 只写外部知识。本仓库自己的事，要么能从代码读出来，要么该写进 `docs/` 给人看。
 - `checked` 是最后核对来源的日期。
 
 ### 索引
 
-- workshop skill 带一个脚本，读所有页面的 frontmatter，按类别分组输出“链接 + 描述”。
+- workshop skill 带一个脚本，读所有页面的 frontmatter，按类别分组，每页只输出文件名和
+  描述；`sources`、`checked` 不输出，要用时打开页面看。Claude Code 加载 skill、Letta 加载
+  记忆也是这样，只给名字和描述。
 - 不提交 `index.md`：几个 agent 同时加页面时，索引文件是冲突最多的地方；描述只写在
   页面里一份，也不会和索引对不上。
-- 输出太长时只列类别和每类条数，agent 需要时再展开一类。Codex 的 hook 默认只直接注入
-  2500 token，超出的只给预览，所以索引要控制在这个以内。
+- 每页大约 20 到 30 token，100 页就到 2500 到 3000 token。Codex 的 hook 默认只直接注入
+  2500 token，超出的只给预览，所以超过阈值时只列类别和每类条数，agent 需要时再展开一类。
 - 脚本出错要报错，不能静默输出空索引，否则 agent 会以为 llm-wiki 是空的。
 
 ## 什么时候读、写、整理
@@ -80,10 +89,11 @@ checked: 2026-11-22
 | 开工时 | 运行索引脚本。支持 SessionStart hook 的工具（Claude Code、Codex）自动运行；否则靠 skill 里的规则 |
 | 调研前 | 看索引，有相关页面先读；`checked` 太旧就重新核对，更新日期 |
 | 调研后 | 结论写成页面或更新已有页面，和做这件事的 PR 一起提交，PR 描述单列一节，人可以跳过 |
-| 每一步结束 | 回顾这一步学到的外部知识，没写的补上 |
 | 项目结束 | 整理这个项目用过的页面：合并重复、拆开过大、删掉过时；删掉没人引用的 `raw/` |
 
-没有定期的全量检查。定时触发的后台反思放在 reflection 项目里。
+只在调研当时写，不在每一步结束时另外回顾：那样触发条件模糊，和整理决定、更新 TODO
+挤在一起，agent 容易为了满足规则硬凑条目。漏写的交给定时的反思（reflection 项目）去补。
+没有定期的全量检查。
 
 ## 和别处的边界
 
@@ -99,6 +109,6 @@ checked: 2026-11-22
 
 ## 参考
 
-- [agent-memory-frameworks](../../../llm-wiki/agent-memory-frameworks.md)：Karpathy、Letta、
+- [agent-memory](../../../llm-wiki/agent-memory.md)：Karpathy、Letta、
   Hermes、OpenClaw 怎么管 agent 的记忆。
 - [agent-hooks](../../../llm-wiki/agent-hooks.md)：Claude Code 和 Codex 的 hook。
