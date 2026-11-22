@@ -17,20 +17,16 @@ workshop skill 只定了底线：每个 workshop 可以有 `llm-wiki/`，放 age
 
 ## 待定
 
-- **用 hook 借鉴别家的哪些做法。** 调研见文末参考。
-  - 压缩后重新给索引：Claude Code 和 Codex 的 SessionStart 都能匹配“压缩后”这个来源，
-    同一个脚本再跑一次。代价几乎为零。建议做。
-  - 压缩前提醒（借 OpenClaw 的 memory flush）：Claude Code 的 PreCompact 输出只能引导
-    压缩摘要，不能让 agent 先动手写文件；可以让摘要保留“学到了、还没写进 llm-wiki 的
-    外部知识”。代价：一个 hook。建议做，第 2 步验证效果。
-- **三篇素材放进哪个 workshop。** 第 2 步再定：内容能公开的放 pylon，否则等私有的
-  workshop。
+暂无。
 
 ## 决定
 
 - 11/21：开这个项目，项目名叫 llm-wiki；已有的三篇素材等设计定下后作为第一批内容搬进来。
 - 11/22：目录叫 `llm-wiki/`，不加点，agent 搜得到比人搜索时不被干扰更重要（agent-policy #7）。
 - 11/22：分层、读写和整理的时机、边界，见 [llm-wiki-design](llm-wiki-design.md)。
+- 11/22：用 hook 做两件事：压缩后重新给一次索引；压缩前让压缩摘要保留还没写进 llm-wiki
+  的外部知识（第 2 步验证效果）。
+- 11/22：三篇素材放进 pylon 的 `llm-wiki/`。
 - 11/22：后台反思由定时器触发，不绑在 session 上，放到 reflection 项目里做。
 
 ## 文档

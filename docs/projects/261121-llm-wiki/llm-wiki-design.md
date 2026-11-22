@@ -102,10 +102,13 @@ checked: 2026-11-22
 - 各 workshop 各管各的；别的 workshop 的 agent 需要时运行对方的索引脚本。
 - 进 git。公开 workshop 的 llm-wiki 只放能公开的。
 
-## 还没定
+## hook
 
-见 [README](README.md#待定)：hook 用不用来做压缩后重给索引、压缩前提醒；第一批三篇
-素材放进哪个 workshop。
+- 开工时和压缩之后各运行一次索引脚本：Claude Code 和 Codex 的 SessionStart 都能匹配
+  “压缩后”这个来源。压缩会丢掉开工时给的索引，这样补回来。
+- 压缩前（PreCompact）让压缩摘要保留“学到了、还没写进 llm-wiki 的外部知识”。Claude Code
+  的 PreCompact 只能影响摘要，不能让 agent 先去写文件；这一条借自 OpenClaw 的 memory
+  flush，效果在第 2 步验证。
 
 ## 参考
 
