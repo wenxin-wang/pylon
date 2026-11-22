@@ -2,9 +2,10 @@
 
 状态：进行中。
 
-当前：第 1 步。
+当前：第 2 步。
 
-1. 写进 skill：把决定写进 workshop skill 的 llm-wiki 一节，加上生成索引的脚本
-   （策略仓库的 PR）。pylon 的 `llm-wiki/` 已有两页调研，作为脚本的第一批输入。
-2. 接 hook、搬素材：配 Claude Code 和 Codex 的 SessionStart hook，在 contained-agent 里
-   验证；把三篇素材按新结构搬进 pylon 的 `llm-wiki/`，顺带检验设计好不好用。
+1. ~~写进 skill~~ 已完成。workshop skill 的 llm-wiki 一节和索引脚本
+   `skills/workshop/scripts/llm_wiki_index.py`（agent-policy PR #8、#9，三轮审查）。
+2. 搬素材、接 hook：三篇素材按新结构搬进 pylon 的 `llm-wiki/`；SessionStart 和
+   PreCompact hook 配在 pylon 仓库里（Claude Code 的 `.claude/settings.json`、Codex 的
+   `.codex/config.toml`），在 contained-agent 里验证。
