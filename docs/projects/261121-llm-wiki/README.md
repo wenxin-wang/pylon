@@ -17,26 +17,16 @@ workshop skill 只定了底线：每个 workshop 可以有 `llm-wiki/`，放 age
 
 ## 待定
 
-- **内部结构。**
-  A：两层。`raw/` 放原样保存的素材（网页摘录、调研原文），只增不改；上面一层是 agent
-  整理的条目，一个主题一个文件，引用 `raw/` 里的来源；入口是 `index.md`，每个条目一行
-  说明。代价：要维护索引和两层之间的引用。
-  B：只有条目加 `index.md`，素材直接写进条目。简单，但原始出处和 agent 的归纳混在一起，
-  以后难判断哪句是来源说的、哪句是 agent 推的。
-  C：不规定。现在就是这样，内容一多就没人找得到。
-  建议 A：`index.md` 是 agent 查找的唯一入口，`raw/` 让结论可以回溯。
-- **什么时候写、怎么提交。**
-  建议：agent 做完一次值得留下的调研，把结论写成条目（或更新已有条目），在同一个 PR
-  里提交；PR 描述里一句话说明加了什么。只为写 llm-wiki 的改动也走 PR，但人可以不细看。
-  代价：PR 里多出人不关心的文件；可以靠 PR 描述单列一节让人跳过。
-- **怎么防过时。**
-  建议：每个条目开头写来源和最后核对的日期；agent 引用一个条目前，按主题判断是否太旧
-  （比如工具版本、价格类半年就旧），旧了就重新核对并更新日期。不设定期的全量检查。
-  代价：判断“太旧”靠 agent 自觉。
-- **跨 workshop。**
-  A：每个 workshop 各管自己的，别的 workshop 的 agent 需要时直接去读（agent 本来就能访问
-  别的 workshop）。B：单独一个共享的 llm-wiki 仓库。
-  建议 A：先不多一个仓库；如果发现大量条目在 workshop 之间重复，再考虑 B。
+- **用 hook 借鉴别家的哪些做法。** 调研见 [agent-memory-frameworks](../../../llm-wiki/agent-memory-frameworks.md)
+  和 [agent-hooks](../../../llm-wiki/agent-hooks.md)。
+  - 压缩后重新给索引：Claude Code 和 Codex 的 SessionStart 都能匹配“压缩后”这个来源，
+    同一个脚本再跑一次。代价几乎为零。建议做。
+  - 压缩前提醒（借 OpenClaw 的 memory flush）：Claude Code 的 PreCompact 输出只能引导
+    压缩摘要，不能让 agent 先动手写文件；可以让摘要保留“学到了、还没写进 llm-wiki 的
+    外部知识”。代价：一个 hook。建议做，第 2 步验证效果。
+  - 后台反思（借 Letta 的 sleep-time、Hermes 的 background review）：会话结束时另起一个
+    agent 回顾并起草 llm-wiki 改动。代价：多一个 agent 的花费，产物还要走 PR。建议先不做，
+    用“每一步结束时整理”代替，等手动版不够用再说。
 - **三篇素材放进哪个 workshop。** 第 2 步再定：内容能公开的放 pylon，否则等私有的
   workshop。
 
@@ -46,6 +36,16 @@ workshop skill 只定了底线：每个 workshop 可以有 `llm-wiki/`，放 age
 - 11/22：目录叫 `llm-wiki/`，和概念、项目同名。不加点：agent 用搜索工具能直接找到它，
   比人搜索时不被干扰更重要（agent-policy #7）。
 - 11/21：已有的三篇素材等设计定下后，作为第一批内容搬进来。
+- 11/22：结构。`llm-wiki/raw/` 放素材，只增不改（公开 workshop 里只放链接、短摘录和
+  agent 自己写的原文）；主题页一个主题一页，frontmatter 写描述、类别、来源、最后核对日期。
+  不提交 `index.md`、不要 `log.md`：索引由 workshop skill 带的脚本从 frontmatter 现场生成，
+  开工前运行；能用 SessionStart hook 的工具就自动运行。输出过长时只列类别和条数。
+- 11/22：只写外部知识（调研、对比、外部文档要点）；本仓库的事能从代码读出来或该进
+  `docs/`。跟着做这件事的 PR 一起提交，PR 描述单列一节。每一步结束时回顾这一步学到的
+  外部知识。
+- 11/22：防过时。引用前按最后核对日期判断要不要重新核对；项目结束时整理用过的页面：
+  合并重复、拆开过大、删掉过时。
+- 11/22：跨 workshop 各管各的，需要时去读对方的索引。
 
 ## 文档
 
