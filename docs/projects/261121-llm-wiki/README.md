@@ -27,7 +27,7 @@ workshop skill 只定了底线：每个 workshop 可以有 `llm-wiki/`，放 age
 - 11/22：用 hook 做两件事：压缩后重新给一次索引；压缩前让压缩摘要保留还没写进 llm-wiki
   的外部知识（第 2 步验证效果）。
 - 11/22：三篇素材放进 pylon 的 `llm-wiki/`。
-- 11/23：hook 先配在各 workshop 自己的仓库里，现在只有 pylon；第二个 workshop 有了
+- 11/22：hook 先配在各 workshop 自己的仓库里，现在只有 pylon；第二个 workshop 有了
   llm-wiki 再看要不要改成全局配置。
 - 11/22：后台反思由定时器触发，不绑在 session 上，放到 reflection 项目里做。
 
