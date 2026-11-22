@@ -7,7 +7,7 @@ sources:
   - https://learn.chatgpt.com/docs/config-file/config-reference
   - https://www.turboai.dev/docs/codex/hooks
   - https://codex.danielvaughan.com/2026/04/15/codex-cli-hooks-complete-guide-events-policy-patterns/
-checked: 2026-11-22
+checked: 2026-11-23
 ---
 
 # Agent hooks
