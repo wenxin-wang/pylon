@@ -21,7 +21,7 @@ import argparse
 import json
 import re
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 # Frozen before reading the transcripts, so the comparison is fair.
@@ -91,12 +91,16 @@ def agent_text(entry):
     return text_of(content).strip() or None
 
 
+# Times are shown in Beijing time, whatever the host's timezone.
+BEIJING = timezone(timedelta(hours=8))
+
+
 def local_time(stamp):
     try:
         t = datetime.fromisoformat(stamp.replace("Z", "+00:00"))
     except (AttributeError, ValueError):
         return "?"
-    return t.astimezone().strftime("%m-%d %H:%M")
+    return t.astimezone(BEIJING).strftime("%m-%d %H:%M")
 
 
 def entries(path):

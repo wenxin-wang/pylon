@@ -16,6 +16,8 @@
 3. session 笔记，只放待办：策略仓库里的全局 skill `session-notes`（说明和 hook 脚本），
    hook 配置由人贴进 `~/.claude/settings.json`。
 4. 自动化：等 contained-agent-v2；定时器启动容器里的反思，定多久一次，定各 workshop 怎么
-   认领自己的会话，部署由人来做。
+   认领自己的会话，定怎么跳过读过的会话（见[待定](README.md#待定)），部署由人来做。
+   会话记录只留 30 天：v2 在 12/24 前做不完的话，先手动跑第二轮，从第一轮读到的 11/24 00:32
+   （北京时间）读起。
 5. 工作机：单独一个策略仓库（比如 `agent-policy-work`），装在同一个
    `~/.local/share/agent-policies/` 下；工作相关的记忆、skill、反思产出都进那里。
