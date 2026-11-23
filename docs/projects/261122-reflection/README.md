@@ -35,7 +35,7 @@ agent 写进常驻上下文的东西，相当于给以后所有 agent 下指令�
   [agent-policy 的决定](../261120-agent-policy/README.md#决定)）；全局记忆也只能写人怎么
   做事。A：单独一个文件。B：不单设，观察到的东西改写成偏好提 PR。两者都进常驻上下文、都要
   人批准，区别只在写法：A 记观察（“人常在手机上看 PR”），B 写成要求（“PR 描述写短”），
-  agent 照着做就行。建议 B，少一个文件，人也只在一处审；第 3 步看到第一轮的实际产出再定。
+  agent 照着做就行。建议 B，少一个文件，人也只在一处审；第 2 步看到第一轮的实际产出再定。
 
 ## 决定
 
@@ -43,11 +43,12 @@ agent 写进常驻上下文的东西，相当于给以后所有 agent 下指令�
   这个循环，属于人机合作，不是 agent 之间的合作。
 - 11/23：先读线索，再全扫过滤后的会话记录兜底；读记录用便宜的模型（比如 Sonnet）。见
   [设计](reflection-design.md#读什么)。
-- 11/23：线索靠 hook 和 Claude Code 的自动记忆，不靠 agent 自觉记；第 3 步量效果。见
-  [设计](reflection-design.md#线索)。
+- 11/23：线索靠 hook 和 Claude Code 的自动记忆，不靠 agent 自觉记。抓纠正用正则，不用
+  模型；先拿历史记录检验，不值就不做（人怀疑它没用）。见 [设计](reflection-design.md#线索)。
 - 11/23：待办和线索合成每个 session 一份 session 笔记，同一套 hook；放在宿主上、所有
-  workshop 之外，不进 git；30 天没动过的由开工的 hook 删掉，不用人清理。见
-  [设计](reflection-design.md#session-笔记)。
+  workshop 之外，不进 git；30 天没动过的由开工的 hook 删掉，不用人清理。脚本和说明做成
+  策略仓库里的全局 skill，hook 配置先由人手动贴。见 [设计](reflection-design.md#session-笔记)。
+- 11/23：先手动全扫一轮，再做 session 笔记。
 - 11/23：每条提议直接提 PR 到它所属的 workshop 或策略仓库，在那个 PR 里商量。见
   [设计](reflection-design.md#产出)。
 - 11/23：反思在 contained-agent-v2 的容器里由定时器启动，等 v2。见
