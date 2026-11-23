@@ -1,0 +1,63 @@
+# reflection
+
+## 目标
+
+agent 定期回顾一段时间里的工作，把值得留下的东西整理成 PR 交给人审：外部知识进
+llm-wiki，做事方式提到它所属的地方（某个 workshop，或策略仓库里的偏好和全局 skill）。
+做完之后，同样的纠正人不用说第二遍。
+
+## 背景
+
+各家 agent 框架都有一个整理记忆的环节（Letta 的 sleep-time 反思、Hermes 的后台
+回顾、OpenClaw 的 dreaming），不整理，记忆就会膨胀、过时。workshop 现在只有“每一步
+结束时整理”，靠做事的 agent 顺手完成，只看得到自己这一步。
+
+11/22 人和 agent 讨论过一个“全局事务性记忆”：最近关心什么、各处状态、反思结果。
+各处状态写在各 workshop 的 `TODO.md` 里，要看时现场读，不用另存；“最近关心什么”是人的
+想法，由人写；只有反思结果是 agent 写的记忆，放在这个项目里定。
+
+llm-wiki 项目（已结束）和反思有两处关系，见
+[llm-wiki 设计](../../archive/projects/261121-llm-wiki/llm-wiki-design.md)：
+
+- 调研时查到的外部知识，当时就写进 llm-wiki；当时漏写的，llm-wiki 项目定了交给反思去补。
+  所以补 llm-wiki 是反思一定要做的事。
+- llm-wiki 的索引是这样送到 agent 面前的：仓库里配一个 SessionStart hook，开工和压缩后
+  各运行一次脚本，把输出放进 agent 的上下文。session 笔记照这样做。
+
+agent 写进常驻上下文的东西，相当于给以后所有 agent 下指令，所以产出要经人批准；工作相关
+的内容不能进个人的仓库。
+
+## 待定
+
+- **全局记忆。** 原来的设想：agent 观察到的、对人的了解（区别于人提的要求，那是偏好）
+  放一个常驻文件，设硬上限（参考 Hermes，几千字符，写满报错逼着取舍）。它会和偏好一起放在
+  策略仓库。策略仓库全局只有一个，工作机上也装，所以不放任何一方的隐私（见
+  [agent-policy 的决定](../261120-agent-policy/README.md#决定)）；全局记忆也只能写人怎么
+  做事。A：单独一个文件。B：不单设，观察到的东西改写成偏好提 PR。两者都进常驻上下文、都要
+  人批准，区别只在写法：A 记观察（“人常在手机上看 PR”），B 写成要求（“PR 描述写短”），
+  agent 照着做就行。建议 B，少一个文件，人也只在一处审；第 3 步看到第一轮的实际产出再定。
+
+## 决定
+
+- 11/22：开这个项目。反思由定时器触发，不绑在 session 上；范围是“agent 回顾、人审阅”
+  这个循环，属于人机合作，不是 agent 之间的合作。
+- 11/23：先读线索，再全扫过滤后的会话记录兜底；读记录用便宜的模型（比如 Sonnet）。见
+  [设计](reflection-design.md#读什么)。
+- 11/23：线索靠 hook 和 Claude Code 的自动记忆，不靠 agent 自觉记；第 3 步量效果。见
+  [设计](reflection-design.md#线索)。
+- 11/23：待办和线索合成每个 session 一份 session 笔记，同一套 hook；放在宿主上、所有
+  workshop 之外，不进 git；30 天没动过的由开工的 hook 删掉，不用人清理。见
+  [设计](reflection-design.md#session-笔记)。
+- 11/23：每条提议直接提 PR 到它所属的 workshop 或策略仓库，在那个 PR 里商量。见
+  [设计](reflection-design.md#产出)。
+- 11/23：反思在 contained-agent-v2 的容器里由定时器启动，等 v2。见
+  [设计](reflection-design.md#在哪跑)。
+- 11/23：不做汇总各项目状态的脚本，也不默认给每个 session（对目标明确的 session 是干扰）；
+  只在 workshop skill 里提一句：人问下一步做什么时，读各项目 `TODO.md` 的状态行，等人的先说。
+- 11/23：“最近关心什么”不在这个项目里做：人自己记在 spaces 里；agent 要不要读，等 OpenClaw
+  的改进开工时再讨论。
+
+## 文档
+
+- [TODO](TODO.md)：进度。
+- [设计](reflection-design.md)：读什么、线索、session 笔记、产出、在哪跑，以及为什么。
