@@ -103,7 +103,8 @@ number.
   a page size of 20 where the API default was 5). Support counts how often a lesson
   was derived, not whether it is true. The authors would not run an unattended
   memory loop without a correctness or recency signal, and found keeping provenance
-  (source tasks) through every stage important; it was silently dropped twice.
+  (source tasks) through every stage important; their pipeline silently dropped
+  provenance twice.
 - Compressing to a few general rules lost most of the gain; one-off, situational
   lessons carried much of it.
 
