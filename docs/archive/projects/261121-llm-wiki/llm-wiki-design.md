@@ -122,9 +122,12 @@ hook 配在各 workshop 自己的仓库里（Claude Code 的 `.claude/settings.j
 - 没装 workshop skill 时（比如某个容器没装 skills 模块），hook 不报错，而是输出一行
   “找不到索引脚本，去装 workshop skill”，退出码为 0。失败的 hook 只会给人弹错误提示，
   agent 什么都看不到；输出一行说明，agent 就知道没拿到索引的原因。
+- Codex 只在项目被信任时加载 `.codex/`，信任记在人自己的 Codex 配置里，不在仓库里。
+  在 contained-agent 里，对配置的修改退出时就丢了，所以还没在 Codex 上验证过；等
+  contained-agent-v2。
 
 ## 参考
 
-- [agent-memory](../../../llm-wiki/agent-memory.md)：Karpathy、Letta、
+- [agent-memory](../../../../llm-wiki/agent-memory.md)：Karpathy、Letta、
   Hermes、OpenClaw 怎么管 agent 的记忆。
-- [agent-hooks](../../../llm-wiki/agent-hooks.md)：Claude Code 和 Codex 的 hook。
+- [agent-hooks](../../../../llm-wiki/agent-hooks.md)：Claude Code 和 Codex 的 hook。
