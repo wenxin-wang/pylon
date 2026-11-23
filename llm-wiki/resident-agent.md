@@ -34,7 +34,8 @@ session 后继续推进并回报。这一页只有候选和问题，还没有比
 | Grok Bot | 长期任务、协作和工具集成，状态和权限能否符合 workshop 的约束 |
 | 基于现有组件自建 | 自己掌握哪些层，哪些能力直接用现成实现 |
 
-Hermes 和 OpenClaw 的记忆设计见 [agent-memory](agent-memory.md)。
+Hermes 和 OpenClaw 的记忆设计见 [agent-memory](agent-memory.md)；从飞书驱动
+Claude Code/Codex 的几条路径见 [feishu-coding-agent](feishu-coding-agent.md)。
 
 ## 要回答的问题
 
