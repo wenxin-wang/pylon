@@ -14,3 +14,5 @@
 - 迁 contained-agent-v2 时，让 Codex 的项目信任（或整个 `~/.codex`）在容器之间保留下来，
   再新开 Codex session 验证 pylon 的 `.codex/config.toml`：开工和压缩后都拿到 llm-wiki
   索引。现在的 contained-agent 退出时丢掉配置修改，项目没被信任，hook 不加载。
+- 迁 contained-agent-v2 时，要能由定时器启动容器里的 session，跑反思（见
+  [reflection](../261122-reflection/README.md) 第 4 步）。

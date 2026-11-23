@@ -14,6 +14,7 @@ sources:
   - https://blog.sigplan.org/2026/04/21/repositories-are-human-agent-knowledge-factories/
   - https://sidtechno.com/blog/ai-agent-memory-fewer-notes
   - https://code.claude.com/docs/en/memory
+  - https://code.claude.com/docs/en/claude-directory
   - https://developers.openai.com/codex/memories
   - https://github.com/BayramAnnakov/claude-reflect
   - https://arxiv.org/html/2611.26361
@@ -75,6 +76,10 @@ number.
   shared across worktrees of a repo, machine-local.
 - Loaded each session: the first 200 lines or 25KB of `MEMORY.md`. Off with
   `autoMemoryEnabled: false` or `CLAUDE_CODE_DISABLE_AUTO_MEMORY=1`.
+- Transcripts (`projects/<project>/<session>.jsonl`, with subagent transcripts and
+  tool outputs) are deleted once older than `cleanupPeriodDays`, default 30, by a
+  background sweep after a session starts. The memory directory is not swept. On the
+  human's machine the oldest transcript on 2026-11-23 was from 2026-10-24.
 - Community write-ups describe an "auto dream" consolidation and a `/dream` command;
   not found in the official memory page as of 2026-11-23.
 
