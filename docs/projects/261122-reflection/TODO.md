@@ -5,16 +5,17 @@
 当前：第 2 步。
 
 1. ~~定设计~~ 已完成：读什么、线索、session 笔记、产出、在哪跑，见[设计](reflection-design.md)。
-   全局记忆留到第 2 步。不做汇总项目状态的脚本，改在 workshop skill 里加一句
+   不做汇总项目状态的脚本，改在 workshop skill 里加一句
    （agent-policy PR #11）。
 2. 手动全扫一轮：过滤会话记录的脚本（`exp/reflection_20261123/`）；agent 读个人仓库的
    全部记录，提出第一批 PR，看产出值不值；拿全扫找到的纠正检验抓纠正的正则；定全局记忆。
    容器里 Codex 的记录退出后还在，已查清，见[设计](reflection-design.md#读什么)。
    - 11/23 跑完第一轮（[记录](reflection-measure-20261123.md)）：提了策略仓库 #12（偏好）、
-     #13（workshop skill 一句）；正则检验完，召回 13%。
-   - 剩下：外部知识 42 条补进 llm-wiki；人定全局记忆和线索去留（[待定](README.md#待定)）。
-3. session 笔记：策略仓库里的全局 skill `session-notes`（说明和 hook 脚本），hook 配置由人
-   贴进 `~/.claude/settings.json`。待办照做；抓纠正的 hook 看第 2 步的检验结果，不值就不做。
-4. 自动化：等 contained-agent-v2；定时器启动容器里的反思，定多久一次，部署由人来做。
+     #13（workshop skill 一句）。正则召回 13%，不做线索；全局记忆不单设，写成偏好。
+   - 剩下：外部知识 42 条补进 llm-wiki。
+3. session 笔记，只放待办：策略仓库里的全局 skill `session-notes`（说明和 hook 脚本），
+   hook 配置由人贴进 `~/.claude/settings.json`。
+4. 自动化：等 contained-agent-v2；定时器启动容器里的反思，定多久一次，定各 workshop 怎么
+   认领自己的会话，部署由人来做。
 5. 工作机：单独一个策略仓库（比如 `agent-policy-work`），装在同一个
    `~/.local/share/agent-policies/` 下；工作相关的记忆、skill、反思产出都进那里。
