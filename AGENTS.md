@@ -22,8 +22,6 @@ disagree, this file wins.
 - Projects (status in each `TODO.md`):
   - [agent-policy](docs/projects/261120-agent-policy/README.md): a private repo for
     agents' standing instructions and permissions.
-  - [llm-wiki](docs/projects/261121-llm-wiki/README.md): how workshops use
-    `llm-wiki/`, the knowledge agents keep for themselves.
   - [uraj-migration](docs/projects/261119-uraj-migration/README.md): moving modules
     over from uraj.
 

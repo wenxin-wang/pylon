@@ -40,4 +40,8 @@ checked: 2026-11-23
   for this event. Claude Code, by contrast, uses PreCompact stdout as instructions
   for the summary.
 - Project-scoped `.codex/` config, hooks included, loads only for trusted projects.
+  Trust is stored in the user's own config (`[projects."<path>"]` with
+  `trust_level = "trusted"`), not in the repo; when the project is untrusted, the
+  startup log says so and project hooks are disabled. A sandbox that throws away
+  config changes on exit loses the trust too.
 - Not supported with cloud orchestration.

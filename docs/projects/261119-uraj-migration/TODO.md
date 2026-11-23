@@ -11,3 +11,6 @@
 
 - 迁 contained-agent-v2（含 sudo-tiers 的审批通道）时，更新 `llm-wiki/sudo-approval.md`，
   它停在 11/02 的早期调研。
+- 迁 contained-agent-v2 时，让 Codex 的项目信任（或整个 `~/.codex`）在容器之间保留下来，
+  再新开 Codex session 验证 pylon 的 `.codex/config.toml`：开工和压缩后都拿到 llm-wiki
+  索引。现在的 contained-agent 退出时丢掉配置修改，项目没被信任，hook 不加载。
