@@ -10,6 +10,9 @@
 2. 手动全扫一轮：过滤会话记录的脚本（`exp/reflection_20261123/`）；agent 读个人仓库的
    全部记录，提出第一批 PR，看产出值不值；拿全扫找到的纠正检验抓纠正的正则；定全局记忆。
    容器里 Codex 的记录退出后还在，已查清，见[设计](reflection-design.md#读什么)。
+   - 11/23 跑完第一轮（[记录](reflection-measure-20261123.md)）：提了策略仓库 #12（偏好）、
+     #13（workshop skill 一句）；正则检验完，召回 13%。
+   - 剩下：外部知识 42 条补进 llm-wiki；人定全局记忆和线索去留（[待定](README.md#待定)）。
 3. session 笔记：策略仓库里的全局 skill `session-notes`（说明和 hook 脚本），hook 配置由人
    贴进 `~/.claude/settings.json`。待办照做；抓纠正的 hook 看第 2 步的检验结果，不值就不做。
 4. 自动化：等 contained-agent-v2；定时器启动容器里的反思，定多久一次，部署由人来做。
