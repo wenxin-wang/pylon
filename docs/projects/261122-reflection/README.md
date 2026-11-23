@@ -46,7 +46,8 @@ agent 写进常驻上下文的东西，相当于给以后所有 agent 下指令�
 - 11/23：线索靠 hook 和 Claude Code 的自动记忆，不靠 agent 自觉记；第 3 步量效果。见
   [设计](reflection-design.md#线索)。
 - 11/23：待办和线索合成每个 session 一份 session 笔记，同一套 hook；放在宿主上、所有
-  workshop 之外，不进 git。见 [设计](reflection-design.md#session-笔记)。
+  workshop 之外，不进 git；30 天没动过的由开工的 hook 删掉，不用人清理。见
+  [设计](reflection-design.md#session-笔记)。
 - 11/23：每条提议直接提 PR 到它所属的 workshop 或策略仓库，在那个 PR 里商量。见
   [设计](reflection-design.md#产出)。
 - 11/23：反思在 contained-agent-v2 的容器里由定时器启动，等 v2。见
