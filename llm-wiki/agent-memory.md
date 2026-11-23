@@ -1,5 +1,5 @@
 ---
-description: How Karpathy's LLM wiki, Letta, Hermes and OpenClaw keep agent memory; practices against staleness
+description: How Karpathy's wiki, Letta, Hermes, OpenClaw, Claude Code and Codex keep agent memory; staleness
 category: agents
 sources:
   - https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f
@@ -13,7 +13,11 @@ sources:
   - https://dev.to/naman_here/why-coding-agent-memory-files-go-stale-and-what-teams-should-do-instead-1659
   - https://blog.sigplan.org/2026/04/21/repositories-are-human-agent-knowledge-factories/
   - https://sidtechno.com/blog/ai-agent-memory-fewer-notes
-checked: 2026-11-22
+  - https://code.claude.com/docs/en/memory
+  - https://developers.openai.com/codex/memories
+  - https://github.com/BayramAnnakov/claude-reflect
+  - https://arxiv.org/html/2611.26361
+checked: 2026-11-23
 ---
 
 # Agent memory
@@ -62,6 +66,46 @@ number.
   `memory/YYYY-MM-DD.md` (only today and yesterday load automatically).
 - Memory flush: before compaction a silent turn tells the agent to save context into
   the daily note. A "dreaming" sweep promotes useful items into `MEMORY.md`.
+
+## Claude Code auto memory
+
+- On by default in local sessions. The agent itself decides what to save ("doesn't
+  save something every session"): `user`, `feedback`, `project`, `reference` notes,
+  one file each plus a `MEMORY.md` index, in `~/.claude/projects/<repo>/memory/`,
+  shared across worktrees of a repo, machine-local.
+- Loaded each session: the first 200 lines or 25KB of `MEMORY.md`. Off with
+  `autoMemoryEnabled: false` or `CLAUDE_CODE_DISABLE_AUTO_MEMORY=1`.
+- Community write-ups describe an "auto dream" consolidation and a `/dream` command;
+  not found in the official memory page as of 2026-11-23.
+
+## Codex memories
+
+- Off by default (`features.memories`). No in-session notes: after a chat has been
+  idle long enough, a background pipeline reviews it and writes summaries and durable
+  entries under `~/.codex/memories/` (`memories_v2/` in fresh Codex homes since
+  2026-10). `/memories` sets per chat whether it reads or feeds memories; secrets
+  are redacted from generated fields.
+
+## claude-reflect (third-party plugin)
+
+- Capture by hook, not by the agent: a hook on every prompt matches corrections
+  with regex ("no, use X", "actually", "remember:") and queues them; the queue is
+  backed up before compaction.
+- Nothing is written until the human runs `/reflect` and approves each item (with a
+  semantic check and merge against existing CLAUDE.md). `--scan-history` backfills
+  corrections the regex missed from old session files; Claude Code deletes sessions
+  after 30 days by default (`cleanupPeriodDays`).
+
+## When distilled lessons go wrong
+
+- A deployment study of lessons mined from agent trajectories (arXiv 2611.26361):
+  memory helped overall, but a lesson derived many times was still wrong (it assumed
+  a page size of 20 where the API default was 5). Support counts how often a lesson
+  was derived, not whether it is true. The authors would not run an unattended
+  memory loop without a correctness or recency signal, and found keeping provenance
+  (source tasks) through every stage important; it was silently dropped twice.
+- Compressing to a few general rules lost most of the gain; one-off, situational
+  lessons carried much of it.
 
 ## Common patterns
 
