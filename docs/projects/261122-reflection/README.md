@@ -29,27 +29,25 @@ agent 写进常驻上下文的东西，相当于给以后所有 agent 下指令�
 
 ## 待定
 
-- **全局记忆。** 原来的设想：agent 观察到的、对人的了解（区别于人提的要求，那是偏好）
-  放一个常驻文件，设硬上限（参考 Hermes，几千字符，写满报错逼着取舍）。它会和偏好一起放在
-  策略仓库。策略仓库全局只有一个，工作机上也装，所以不放任何一方的隐私（见
-  [agent-policy 的决定](../261120-agent-policy/README.md#决定)）；全局记忆也只能写人怎么
-  做事。A：单独一个文件。B：不单设，观察到的东西改写成偏好提 PR。两者都进常驻上下文、都要
-  人批准，区别只在写法：A 记观察（“人常在手机上看 PR”），B 写成要求（“PR 描述写短”），
-  agent 照着做就行。建议 B，少一个文件，人也只在一处审；第 3 步看到第一轮的实际产出再定。
+暂无。
 
 ## 决定
 
 - 11/22：开这个项目。反思由定时器触发，不绑在 session 上；范围是“agent 回顾、人审阅”
   这个循环，属于人机合作，不是 agent 之间的合作。
-- 11/23：先读线索，再全扫过滤后的会话记录兜底；读记录用便宜的模型（比如 Sonnet）。见
+- 11/23：每次全扫过滤后的会话记录，不做线索（第一轮检验下来不值）；读记录用便宜的模型
+  （比如 Sonnet）。见[设计](reflection-design.md#为什么不做线索)。
+- 11/23：读哪些会话，由各 workshop 自己认领；怎么认领，第 4 步定。见
   [设计](reflection-design.md#读什么)。
-- 11/23：线索靠 hook 和 Claude Code 的自动记忆，不靠 agent 自觉记；第 3 步量效果。见
-  [设计](reflection-design.md#线索)。
-- 11/23：待办和线索合成每个 session 一份 session 笔记，同一套 hook；放在宿主上、所有
-  workshop 之外，不进 git；30 天没动过的由开工的 hook 删掉，不用人清理。见
-  [设计](reflection-design.md#session-笔记)。
-- 11/23：每条提议直接提 PR 到它所属的 workshop 或策略仓库，在那个 PR 里商量。见
-  [设计](reflection-design.md#产出)。
+- 11/24：读过的不再读：每个 workshop 在宿主上记一个时间点，这之前的消息算读过。见
+  [设计](reflection-design.md#读什么)。
+- 11/23：每个 session 一份 session 笔记，只放待办；放在宿主上、所有 workshop 之外，不进
+  git；30 天没动过的由开工的 hook 删掉。脚本和说明做成策略仓库里的全局 skill，hook 配置先由
+  人手动贴。先全扫一轮，再做它。见[设计](reflection-design.md#session-笔记)。
+- 11/23：每条提议直接提 PR 到它所属的 workshop 或策略仓库，在那个 PR 里商量；对人的观察
+  不单设全局记忆，改写成偏好。见[设计](reflection-design.md#产出)。
+- 11/24：反思提的 PR 都打 `reflection` label；每轮先看以前这些 PR 和审阅意见，已有的、被
+  否掉的教训不再提。见[设计](reflection-design.md#产出)。
 - 11/23：反思在 contained-agent-v2 的容器里由定时器启动，等 v2。见
   [设计](reflection-design.md#在哪跑)。
 - 11/23：不做汇总各项目状态的脚本，也不默认给每个 session（对目标明确的 session 是干扰）；
@@ -60,4 +58,5 @@ agent 写进常驻上下文的东西，相当于给以后所有 agent 下指令�
 ## 文档
 
 - [TODO](TODO.md)：进度。
-- [设计](reflection-design.md)：读什么、线索、session 笔记、产出、在哪跑，以及为什么。
+- [设计](reflection-design.md)：读什么、为什么不做线索、session 笔记、产出、在哪跑。
+- [第一轮全扫](reflection-measure-20261123.md)：11/23，范围、做法、结果、正则检验。
