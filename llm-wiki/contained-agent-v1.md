@@ -15,7 +15,7 @@ sources:
   - https://man.openbsd.org/ssh-add.1
   - https://git-scm.com/docs/git-clone
   - https://code.claude.com/docs/en/interactive-mode
-checked: 2026-11-23
+checked: 2026-11-24
 ---
 
 # contained-agent v1: what works inside the sandbox
@@ -70,7 +70,8 @@ ls /run/user/$(id -u)                # empty: no Shepherd socket
 
 - No central `(ssh-agent ...)` clause for the project: the container has no `openssh`
   and `SSH_AUTH_SOCK` is unset (`contained-agent.scm:1275`, `:1283`). A Paseo worktree
-  without its own central entry inherits the entry of the checkout it was made from
+  without its own central entry inherits the entries of the checkout it was made from,
+  else the main worktree's; an explicit entry, even an empty one, stops the inheritance
   (project-config-guide), so check which one applies before promising anything.
 - Only the central `projects.scm` or host-private `projects.local.scm` may declare the
   clause; the project's own `.guix/contained-agent.scm` cannot, even approved
@@ -98,19 +99,22 @@ ls /run/user/$(id -u)                # empty: no Shepherd socket
   lock the agent out, its known_hosts not trusting the host, then took over that setup.
   The human adds the host key to the central known_hosts source and the destination to
   the clause, then runs `paseo-broker ssh-refresh DIR` on the host (below).
-- Client-side workaround: `ssh -o UserKnownHostsFile=/tmp/known_hosts -o
-  StrictHostKeyChecking=accept-new HOST` stores the key in a private file (*live*,
-  against a public server; the 2026-10-29 session likewise kept two new servers' keys in
-  a file under `/tmp`). It is trust on first use, so have the human check the
-  fingerprint, and it does not widen the project's constrained keys (per the `-h` text
-  above; not tried).
+- Don't work around the snapshot on your own. `ssh -o UserKnownHostsFile=/tmp/known_hosts
+  -o StrictHostKeyChecking=accept-new HOST` does connect (*live*, against a public
+  server; the 2026-10-29 session kept two new servers' keys in a file under `/tmp`), but
+  it is the trust on first use that uraj's design avoids on purpose ("the wrapper never
+  fetches or trusts host keys automatically", ssh-agent-guide). Ask the human first. It
+  also does not make the project's constrained keys usable for that host (per the `-h`
+  text above; not tried).
 - After the human edits the clause, known_hosts or keys: a new session picks up a
   changed policy or known_hosts file by itself; `paseo-broker ssh-refresh DIR` forces a
   reload even if both look unchanged and lets running sessions see it without a
-  restart. If the refresh fails, the agent is stopped and sessions must be reopened ([broker-guide](https://github.com/wenxin-wang/uraj/blob/1e434fd433fb872225f2d20cca9df174ff278d77/docs/paseo/broker-guide.md),
+  restart. If the refresh fails, the agent is stopped: retry the command, then reopen
+  the sessions, since the new agent has a new socket ([broker-guide](https://github.com/wenxin-wang/uraj/blob/1e434fd433fb872225f2d20cca9df174ff278d77/docs/paseo/broker-guide.md),
   "Shared project SSH agents"). Terminal sessions use `contained-agent ssh-start`
   instead, which does not reach the broker's agents. A changed set of mounts never
-  reaches a running session ("Restart sessions to apply the new policy").
+  reaches a running session (project-config-guide: "Restart sessions to apply the new
+  policy").
 
 ## git push and gh
 
@@ -165,10 +169,15 @@ In code (`llm.scm:148-150`) every agent gets these read-only when they exist; a 
 path is skipped without a warning: `~/.agents`, `~/.local/share/agent-policies`,
 `~/.llm-wiki`, `~/src`, `~/.gitconfig.local`, `~/.cache/paseo-tmp`, `~/.paseo/uploads`.
 
+- `~/.llm-memory` is mounted with `share` (`llm.scm:138`), which uraj's
+  agent-specs-guide defines as read-write, although the comment above it and
+  container-guide call it read-only. If it exists, writes there reach every later session
+  of every project.
+
 - Global skills and preferences are symlinks into `~/.local/share/agent-policies`, for
   example `~/.claude/CLAUDE.md` and `~/.claude/skills/*` (*live*), so they resolve only
   because that mount exists.
-- `~/.codex` is not a read-only mount. For Codex it is a session-writable overlay,
+- `~/.codex` is the read-only host directory under a session-only writable overlay,
   dropped on exit, with a few paths persisted to the host (`sessions/`, SQLite state,
   `history.jsonl`, `auth.json`: `contained-agent.scm:1019-1025`). Codex and Pi overlay
   `~/.agents/skills` the same way; Claude Code overlays `~/.claude` (agent-specs-guide).
@@ -181,5 +190,6 @@ path is skipped without a warning: `~/.agents`, `~/.local/share/agent-policies`,
 ## Other limits, covered in uraj's docs
 
 No GPG; root-only host logs (`/var/log/debug`, `secure`) stay unreadable even when the
-project exposes `/var/log`; all of `~/src` is readable, but only the current worktree is
-writable (overview-guide, "What agents cannot do"; container-guide).
+project exposes `/var/log`; all of `~/src` is readable, but by default only the current
+worktree is writable, unless the central entry shares more (overview-guide, "What agents
+cannot do"; container-guide).

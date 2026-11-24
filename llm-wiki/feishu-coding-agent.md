@@ -45,7 +45,7 @@ sources:
   - https://github.com/modelzen/feishu-codex-bridge/blob/f4241961e17046b393323f4f46f948812f0c2194/README.md
   - https://github.com/zarazhangrui/lark-coding-agent-bridge/blob/589868119ce9a0a860aaf4936b5f9bac14e72681/README.md
   - https://www.feishu.cn/content/article/7647408304896953549
-checked: 2026-11-23
+checked: 2026-11-24
 ---
 
 # 飞书里驱动 Claude Code / Codex
@@ -80,7 +80,8 @@ uraj 里 OpenClaw 的部署（单个 Gateway、全部会话进沙箱、经 new-a
 原生 Codex 插件：
 
 - 隐式选中 Codex 的路由只有两类：`https://api.openai.com`（路径 `/` 或 `/v1`，必须 https、
-  不带端口）的 Responses 路由，和 `https://chatgpt.com/backend-api/...` 的 ChatGPT 路由，
+  不带端口）的 Responses 路由，和 `https://chatgpt.com/backend-api/` 下固定几条路径的 ChatGPT
+  路由，
   且没有自写的 provider 请求覆盖。自定义端点（包括 new-api 这类 OpenAI 兼容中转）归
   OpenClaw 自己的运行时。
   [runtimes.md:28-34](https://github.com/openclaw/openclaw/blob/v2026.10.3/docs/providers/openai/runtimes.md#L28-L34)、
@@ -127,15 +128,19 @@ ACP：
   `ANTHROPIC_CUSTOM_HEADERS`，还有 `CLAUDE_CODE_USE_BEDROCK/VERTEX/FOUNDRY`、
   `CLAUDE_CODE_OAUTH_TOKEN`、`OTEL_EXPORTER_OTLP_*` 等。源码注释给的理由：Claude Code 先看这些
   环境变量再看本地登录，继承来的 shell 覆盖不能把 OpenClaw 管理的运行引到别的 provider；
-  Claude 的配置目录照常继承，因为本地登录在那里。
+  Claude 的配置目录照常继承，因为本地登录在那里。删完以后，OpenClaw 会把自己选定的
+  `ANTHROPIC_API_KEY` 或 `CLAUDE_CODE_OAUTH_TOKEN` 再注入进去，所以“不传”只指继承来的环境。
+  这个子进程也可以跑在配对的节点上，不一定在 Gateway 宿主。
   [cli-constants.ts:14-65](https://github.com/openclaw/openclaw/blob/v2026.10.3/extensions/anthropic/cli-constants.ts#L14-L65)、
   [execute.ts:378-384](https://github.com/openclaw/openclaw/blob/v2026.10.3/src/agents/cli-runner/execute.ts#L378-L384)。
 - v2026.11.7：清单同在 cli-constants.ts:19-24，删除逻辑挪到 execution-env.ts:49-83。
 - 文档没有给运维的开关。代码里只有一个环境变量 `OPENCLAW_LIVE_CLI_BACKEND_PRESERVE_ENV` 能
-  让指定名字不被删，名字和用途都是 live 测试
+  让指定名字不被删（OpenClaw 选定了 Claude 认证时，对那几个认证变量不起作用），名字和用途都是
+  live 测试
   （[execute-logging.ts:88](https://github.com/openclaw/openclaw/blob/v2026.10.3/src/agents/cli-runner/execute-logging.ts#L88)），没试过。
-  cli-constants.ts:30 的注释说 Claude 用户设置里的 `env` 块优先级高于子进程环境；
-  能否借 `settings.json` 把 `ANTHROPIC_BASE_URL` 指到中转，没有验证。
+  cli-constants.ts:30 的注释（讲 `CLAUDE_CODE_DISABLE_1M_CONTEXT` 时）说 Claude 用户设置里的
+  `env` 块优先级高于子进程环境；能否借 `settings.json` 把 `ANTHROPIC_BASE_URL` 指到中转，没有
+  验证。
 - 沙箱：文档说这类策略只是对 Claude Code 要跑的命令做参数级检查，"not sandboxed execution by
   OpenClaw"，cwd、PATH、环境和沙箱归 Claude Code
   （[cli-backends.md:285-288](https://github.com/openclaw/openclaw/blob/v2026.10.3/docs/gateway/cli-backends.md#L285-L288)）。
@@ -147,6 +152,8 @@ ACP：
 
 - 飞书走官方 `oapi-sdk-go` 的 WebSocket 长连接
   （[feishu.go:36](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/platform/feishu/feishu.go#L36)），不需要公网入口。
+  配了 `encrypt_key` 就改走 webhook 模式，要公网能访问的 HTTP 入口
+  （[feishu.go:869-883](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/platform/feishu/feishu.go#L869-L883)）。
 - 话题隔离：`thread_isolation` 默认 `false`；打开后群聊里每个话题（root message）一个 agent
   会话，私聊不分话题
   （[feishu.go:4669-4678](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/platform/feishu/feishu.go#L4669-L4678)、
@@ -170,9 +177,9 @@ ACP：
 
 | 项 | 核对结果 | 出处 |
 |---|---|---|
-| `allow_from` 为空 | 成立：空串和 `*` 都放行所有人，启动时只打一条 warn；示例配置把 `"*"` 写成默认；飞书侧用同一函数检查 | [message.go:60-93](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/core/message.go#L60-L93)、[feishu.go:2172](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/platform/feishu/feishu.go#L2172)、[config.example.toml:1107](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/config.example.toml#L1107) |
-| `/mode` 切 yolo | 成立：`/mode` 不在特权命令里（特权的是 shell、show、dir、restart、upgrade、web、diff），通过 `allow_from` 的用户都能切；Claude 的对应档是 `bypassPermissions`。特权命令由 `admin_from` 控制，为空时全部拒绝；按代码 `disabled_commands` 能屏蔽命令，没试过屏蔽 `mode` | [engine.go:1288-1296](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/core/engine.go#L1288-L1296)、[engine.go:1271-1285](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/core/engine.go#L1271-L1285)、[engine.go:1334-1352](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/core/engine.go#L1334-L1352)、[engine.go:7322-7330](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/core/engine.go#L7322-L7330)、[engine.go:10817-10877](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/core/engine.go#L10817-L10877)、[claudecode.go:1026](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/agent/claudecode/claudecode.go#L1026) |
-| 管理 API | 部分成立：默认关闭（`enabled` 默认 `false`）；打开后监听 `:9820`（所有网卡，没有绑定地址的选项），`token` 为空时 `authenticate` 直接放行。注释写 token “required”，代码不强制。`[webhook]`（默认 9111，空 token 即不鉴权）和 `[bridge]` 同样绑 `:port`、默认关闭 | [management.go:206](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/core/management.go#L206)、[management.go:328-331](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/core/management.go#L328-L331)、[config.go:163-196](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/config/config.go#L163-L196)、[webhook.go:68](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/core/webhook.go#L68)、[bridge.go:222-223](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/core/bridge.go#L222-L223) |
+| `allow_from` 为空 | 成立：空串和 `*` 都放行所有人；空串启动时只打一条 warn，`*` 连 warn 都没有；示例配置把 `"*"` 写成默认；飞书侧用同一函数检查 | [message.go:60-93](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/core/message.go#L60-L93)、[feishu.go:2172](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/platform/feishu/feishu.go#L2172)、[config.example.toml:1107](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/config.example.toml#L1107) |
+| `/mode` 切 yolo | 成立：`/mode` 不在特权命令里（特权的是 shell、show、dir、restart、upgrade、web、diff，以及 `/commands addexec`、`/cron addexec`），通过 `allow_from` 的用户都能切；Claude 的对应档是 `bypassPermissions`。特权命令由 `admin_from` 控制，为空时全部拒绝；按代码 `disabled_commands` 能屏蔽命令，没试过屏蔽 `mode` | [engine.go:1288-1296](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/core/engine.go#L1288-L1296)、[engine.go:1271-1285](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/core/engine.go#L1271-L1285)、[engine.go:1334-1352](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/core/engine.go#L1334-L1352)、[engine.go:7322-7330](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/core/engine.go#L7322-L7330)、[engine.go:10817-10877](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/core/engine.go#L10817-L10877)、[claudecode.go:1026](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/agent/claudecode/claudecode.go#L1026) |
+| 管理 API | 部分成立：默认关闭（`enabled` 默认 `false`）；打开后监听 `:9820`（所有网卡，没有绑定地址的选项），`token` 为空时 `authenticate` 直接放行。注释写 token “required”，代码不强制。`[webhook]`（默认 9111，空 token 即不鉴权）和 `[bridge]` 同样绑 `:port`、默认关闭；`[bridge]` 的 token 为空时拒绝启动，除非设了 `insecure = true` | [management.go:206](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/core/management.go#L206)、[management.go:328-331](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/core/management.go#L328-L331)、[config.go:163-196](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/config/config.go#L163-L196)、[webhook.go:68](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/core/webhook.go#L68)、[bridge.go:177-182](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/core/bridge.go#L177-L182)、[bridge.go:222-223](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/core/bridge.go#L222-L223) |
 | 自动检查更新 | 成立，但只查不装：每次启动（参数解析之前）后台先请求 Gitee 上 `cg33/cc-connect` 的最新发布，失败再请求 GitHub，缓存一小时，结果只用在 `printUsage` 的提示里，不自动安装。版本号是 `dev` 或空则跳过；源码默认 `dev`，发布构建靠 ldflags 注入。没有配置项可关。安装靠 `cc-connect update` 或聊天里的 `/upgrade`（特权命令） | [main.go:241](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/cmd/cc-connect/main.go#L241)、[main.go:29](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/cmd/cc-connect/main.go#L29)、[update.go:22-25](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/cmd/cc-connect/update.go#L22-L25)、[update.go:46-56](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/cmd/cc-connect/update.go#L46-L56)、[update.go:92-98](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/cmd/cc-connect/update.go#L92-L98)、[main.go:1672](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/cmd/cc-connect/main.go#L1672) |
 | 运行时改写配置 | 部分成立：`/model`、`/provider`、`/lang` 走文本级原地编辑，保留注释；添加删除 provider、自定义命令、别名、项目设置、管理 API 等走 `saveConfig`，整份配置经 TOML encoder 重写（丢注释），先写同目录临时文件再 rename。启动时还在配置文件同目录建 `.<文件名>.lock`，建不了就退出。所以配置文件和目录要可写 | [config.go:1284-1295](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/config/config.go#L1284-L1295)、[config.go:1377-1382](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/config/config.go#L1377-L1382)、[config.go:1630-1660](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/config/config.go#L1630-L1660)、[instance_lock.go:40-59](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/cmd/cc-connect/instance_lock.go#L40-L59)、[main.go:313-317](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/cmd/cc-connect/main.go#L313-L317) |
 | 许可证 | 成立：仍没有 LICENSE 文件，历史里任何提交的根目录都没有过；GitHub API 的 `license` 为 `null`；README 徽章链到的 `blob/main/LICENSE` 返回 404；README 和 `npm/package.json` 自称 MIT。上游 issue #1938（2026-09-30 开）问这件事，2026-11-23 仍未关 | [仓库根目录](https://github.com/chenhg5/cc-connect/tree/ba299781cb24c8839669cc0d971aff563e06c533)、[API](https://api.github.com/repos/chenhg5/cc-connect)、[README.md:15](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/README.md#L15)、[package.json:23](https://github.com/chenhg5/cc-connect/blob/ba299781cb24c8839669cc0d971aff563e06c533/npm/package.json#L23)、[issue #1938](https://github.com/chenhg5/cc-connect/issues/1938) |

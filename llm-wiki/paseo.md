@@ -23,6 +23,8 @@ sources:
   - https://github.com/getpaseo/paseo/blob/v0.15.4/SECURITY.md#L49-L55
   - https://github.com/getpaseo/paseo/blob/v0.15.4/packages/server/src/server/config.ts#L476-L490
   - https://github.com/getpaseo/paseo/blob/v0.15.4/packages/server/src/server/auth.ts#L81-L85
+  - https://github.com/getpaseo/paseo/blob/v0.15.4/packages/server/src/server/auth.ts#L136-L155
+  - https://github.com/getpaseo/paseo/blob/v0.15.4/packages/server/src/server/agent/providers/opencode/v2/capabilities.ts
   - https://github.com/getpaseo/paseo/blob/v0.15.4/public-docs/mcp.md
   - https://github.com/getpaseo/paseo/blob/v0.15.4/public-docs/orchestration.md
   - https://github.com/getpaseo/paseo/blob/v0.15.4/docs/permissions.md#L32-L55
@@ -33,32 +35,32 @@ sources:
   - https://github.com/getpaseo/paseo/blob/v0.15.4/packages/server/src/server/agent/runtime-mcp-config.ts#L29-L58
   - https://github.com/getpaseo/paseo/blob/v0.15.4/packages/server/src/server/bootstrap.ts#L1692-L1700
   - https://github.com/getpaseo/paseo/blob/v0.15.4/packages/app/src/agent-stream/view.tsx#L1699-L1731
-  - https://github.com/getpaseo/paseo/blob/v0.15.4/packages/app/src/utils/markdown-parser.ts#L3-L18
-  - https://github.com/getpaseo/paseo/blob/v0.15.4/packages/app/src/utils/assistant-markdown-parser.ts#L5
   - https://reactnative.dev/docs/text#selectable
   - https://github.com/wenxin-wang/uraj/blob/1e434fd433fb872225f2d20cca9df174ff278d77/docs/paseo/daemon-guide.md
   - https://github.com/wenxin-wang/uraj/blob/1e434fd433fb872225f2d20cca9df174ff278d77/docs/contained-agent/container-guide.md
   - https://github.com/wenxin-wang/uraj/blob/1e434fd433fb872225f2d20cca9df174ff278d77/docs/projects/261115-contained-agent-v2/paseo-connected-hosts-review-20261115.md
-checked: 2026-11-23
+checked: 2026-11-24
 ---
 
 # Paseo
 
 Paseo (https://github.com/getpaseo/paseo) is the app and daemon the human uses to run
 Claude Code and Codex agents. Checked against source at v0.15.4 (2026-11-10, the
-deployed version) and v0.17.3 (latest release, 2026-11-23 01:46 UTC+8); each fact holds
-in both unless noted. Links below point at the v0.15.4 tag. What uraj does around Paseo
+deployed version) and v0.17.3 (2026-11-23 01:46 UTC+8); each fact holds in both unless
+noted. v0.17.4 followed on 2026-11-24 and does not touch the checked code paths beyond
+small refactors. Links below point at the v0.15.4 tag. What uraj does around Paseo
 (daemon container, broker, mounts) is in uraj's own docs, linked where needed.
 
-## New worktrees start from origin, not local main
+## New worktrees from the app start from origin, not local main
 
 - The app's New workspace picker defaults the base to the **upstream of the project
-  checkout's current branch** (`refs/remotes/origin/main`), "because branching off the
-  local ref silently carries unpushed commits into the new workspace"
+  checkout's current branch** (`refs/remotes/origin/main`; the local branch if it has no
+  upstream), "because branching off the local ref silently carries unpushed commits into
+  the new workspace"
   ([picker code](https://github.com/getpaseo/paseo/blob/v0.15.4/packages/app/src/screens/new-workspace-picker-item.ts#L160-L172),
   [docs](https://github.com/getpaseo/paseo/blob/v0.15.4/docs/development.md#L395-L408),
-  PR 2848, in every release since v0.3.0). Only when local and origin differ does the
-  picker offer a second row "main (local)".
+  PR 2848, in every release since v0.3.0). The picker offers a second row "main (local)"
+  when local and origin differ, or when it can't tell.
 - The daemon then fetches that one branch (15 s timeout, falls back to the cached ref)
   and runs `git worktree add -b <new> --no-track refs/remotes/origin/main`, so the new
   branch has no upstream and its reflog says `Created from refs/remotes/origin/main`
@@ -72,8 +74,8 @@ in both unless noted. Links below point at the v0.15.4 tag. What uraj does aroun
   (`refs/heads/main`, then `refs/remotes/origin/main`)
   ([intent](https://github.com/getpaseo/paseo/blob/v0.15.4/packages/server/src/server/resolve-worktree-creation-intent.ts#L116-L125),
   [default branch](https://github.com/getpaseo/paseo/blob/v0.15.4/packages/server/src/utils/checkout-git.ts#L1601-L1630)).
-  `origin/main` or a `refs/...` name is taken exactly, and only a `refs/remotes/...` base
-  is fetched first.
+  `origin/main` or a `refs/...` name is taken exactly. The fetch happens when the
+  resolved ref is a remote one, so a plain name with no local branch is fetched too.
 - Diagnose a missing commit: `git rev-list --left-right --count main...origin/main` in
   the main checkout and `git reflog` of the worktree branch. Fix: push `main`, or pick
   "main (local)" when creating, or `git merge main` in the worktree (linked worktrees
@@ -82,13 +84,13 @@ in both unless noted. Links below point at the v0.15.4 tag. What uraj does aroun
 ## File paths are passed through, never remapped
 
 - An absolute path in an assistant message (link, inline-code path, markdown image) makes
-  the app ask the daemon to read exactly that path with the filesystem root as base
-  (`file_rpc`); the daemon reads it in its own filesystem, and may read any file its
-  process can read
+  the app ask the daemon to read exactly that path (`file_rpc`; relative paths are taken
+  from the workspace root); the daemon reads it in its own filesystem, and may read any
+  file its process can read
   ([preview-target.ts](https://github.com/getpaseo/paseo/blob/v0.15.4/packages/app/src/file-explorer/preview-target.ts#L60-L108),
   [assistant-image-source.ts](https://github.com/getpaseo/paseo/blob/v0.15.4/packages/app/src/utils/assistant-image-source.ts#L9-L35),
   [SECURITY.md](https://github.com/getpaseo/paseo/blob/v0.15.4/SECURITY.md#L55)).
-  A grep of v0.17.3 for remap or path-mapping code found none.
+  v0.17.3 has no path mapping for file reads either.
 - So a screenshot an agent saves in a `/tmp` that only its own container sees (private
   tmpfs) is "not found" for the daemon and the app. A shared location must have the
   **same absolute path on both sides**; the agent's cwd already works this way (Paseo
@@ -106,9 +108,10 @@ in both unless noted. Links below point at the v0.15.4 tag. What uraj does aroun
 
 - Fork in a new tab or new workspace (the split icon under a reply) does **not** copy
   the provider session. It builds a `<chat-history-summary>` text attachment and puts it
-  in a draft for a fresh agent with the same provider, cwd, mode and model. The summary
-  holds `[User]` and `[Assistant]` messages and one-line tool calls (`[Tool] summary`, at
-  most 200 characters); reasoning is left out, the whole text is capped at 100,000
+  in a draft for a fresh agent with the same provider, mode and model, and the same cwd
+  (a new workspace gets the cwd moved into it). The summary holds `[User]` and
+  `[Assistant]` messages and one-line tool calls (`[<tool name>] <summary>`, the summary
+  at most 200 characters); reasoning is left out, the whole text is capped at 100,000
   characters, and older entries are dropped first
   ([activity-curator.ts](https://github.com/getpaseo/paseo/blob/v0.15.4/packages/server/src/server/agent/activity-curator.ts#L291-L375),
   [use-fork-agent.ts](https://github.com/getpaseo/paseo/blob/v0.15.4/packages/app/src/hooks/use-fork-agent.ts#L92-L190)).
@@ -119,7 +122,9 @@ in both unless noted. Links below point at the v0.15.4 tag. What uraj does aroun
   Codex: `thread/fork` (older threads fork, then roll back); the old thread stays on
   disk, and Codex rollback is chat-only, so file edits remain
   ([code](https://github.com/getpaseo/paseo/blob/v0.15.4/packages/server/src/server/agent/providers/codex/rewind.ts#L44-L112)).
-  OpenCode and ACP providers do not support conversation rewind (v0.15.4 and v0.17.3).
+  OpenCode supports only rewinding conversation and files together, through its own
+  `session.revert`, which is not a fork; ACP providers support no rewind (v0.15.4 and
+  v0.17.3).
 - The daemon writes the Claude fork, so it needs write access to the transcript folder;
   see uraj's [daemon-guide](https://github.com/wenxin-wang/uraj/blob/1e434fd433fb872225f2d20cca9df174ff278d77/docs/paseo/daemon-guide.md).
 
@@ -164,7 +169,13 @@ in both unless noted. Links below point at the v0.15.4 tag. What uraj does aroun
   ([mcp.md](https://github.com/getpaseo/paseo/blob/v0.15.4/public-docs/mcp.md),
   [runtime-mcp-config.ts](https://github.com/getpaseo/paseo/blob/v0.15.4/packages/server/src/server/agent/runtime-mcp-config.ts#L29-L58),
   [bootstrap.ts](https://github.com/getpaseo/paseo/blob/v0.15.4/packages/server/src/server/bootstrap.ts#L1692-L1700)).
-  The caller id is a query parameter; nothing narrows the tools per agent.
+  The caller id is a query parameter that the caller supplies; the per-provider tool
+  policy below is looked up from it, so an agent can step around that policy by sending
+  another id or none (read from code, not run).
+- With no daemon password the token is not checked at all: `/mcp/agents` accepts every
+  request, and the route is served whenever `daemon.mcp.enabled` is on (default `true`),
+  even with injection off
+  ([auth.ts](https://github.com/getpaseo/paseo/blob/v0.15.4/packages/server/src/server/auth.ts#L136-L155)).
 - `create_agent` takes any existing `workspaceId`, so an agent can start a child in
   another project's workspace; `create_workspace` takes a `path`, and an absolute path
   is used as given (no cwd lock outside voice sessions)
@@ -187,10 +198,8 @@ in both unless noted. Links below point at the v0.15.4 tag. What uraj does aroun
   [docs](https://reactnative.dev/docs/text#selectable)). The tool input below it is
   selectable but capped at 200 px height
   ([view.tsx](https://github.com/getpaseo/paseo/blob/v0.15.4/packages/app/src/agent-stream/view.tsx#L1699-L1731)).
-  Plan requests render markdown, but upstream notes plan cards never linkify bare URLs
-  ([markdown-parser.ts](https://github.com/getpaseo/paseo/blob/v0.15.4/packages/app/src/utils/markdown-parser.ts#L3-L18)).
-- Ordinary assistant messages are parsed with `linkify: true`
-  ([assistant-markdown-parser.ts](https://github.com/getpaseo/paseo/blob/v0.15.4/packages/app/src/utils/assistant-markdown-parser.ts#L5)).
-  To give the human a link or a path to copy, put it in a normal message before the
-  request, not in the permission text.
+- Assistant messages and plan cards render through `react-native-enriched-markdown`;
+  whether it turns a bare URL into a link was not checked. To give the human a link or a
+  path to copy, put it in a normal message before the request, not in the permission
+  text.
 - This is app source at v0.15.4 and v0.17.3, not tested on a device.

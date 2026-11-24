@@ -11,17 +11,19 @@ sources:
   - https://codeberg.org/guix/guix/src/commit/b5a4d619c848bd00cbeec9d27d045112636881aa/gnu/services/containers.scm#L329-L347
   - https://codeberg.org/guix/guix/src/commit/b5a4d619c848bd00cbeec9d27d045112636881aa/gnu/services/shepherd.scm#L112-L114
   - https://codeberg.org/guix/guix/src/commit/b5a4d619c848bd00cbeec9d27d045112636881aa/gnu/packages/fonts.scm#L2019-L2044
-  - https://git.savannah.gnu.org/cgit/guile.git/tree/libguile/filesys.c?h=v3.0.9#n1285
+  - https://git.savannah.gnu.org/cgit/guile.git/tree/libguile/filesys.c?h=v3.0.11#n1330
   - https://github.com/sudo-project/sudo/blob/v1.9.17p1/plugins/sudoers/sudoers.c#L468-L473
   - https://github.com/sudo-project/sudo/blob/v1.9.17p1/plugins/sudoers/sudoers.c#L723-L731
   - https://github.com/sudo-project/sudo/blob/v1.9.17p1/plugins/sudoers/gram.y#L506-L508
   - https://github.com/sudo-project/sudo/blob/v1.9.17p1/plugins/sudoers/env.c#L904-L909
   - https://github.com/sudo-project/sudo/blob/v1.9.17p1/docs/sudoers.man.in#L4256
-  - https://github.com/libgit2/libgit2/blob/v1.9.0/src/libgit2/index.c#L3864-L3867
+  - https://github.com/libgit2/libgit2/blob/v1.9.7/src/libgit2/index.c#L3864-L3867
   - https://github.com/containers/podman/blob/v6.1.4/vendor/go.podman.io/common/libnetwork/etchosts/hosts.go#L53-L57
   - https://github.com/containers/podman/blob/v6.1.4/vendor/go.podman.io/common/libnetwork/etchosts/util.go#L11-L15
   - https://github.com/containers/podman/blob/v6.1.4/pkg/rootless/rootless_linux.c#L185-L228
   - https://github.com/containers/podman/blob/v6.1.4/docs/source/markdown/podman-system-migrate.1.md
+  - https://github.com/containers/podman/blob/v6.1.4/docs/source/markdown/podman.1.md
+  - https://github.com/util-linux/util-linux/blob/v2.40.2/sys-utils/unshare.c#L57
   - https://github.com/torvalds/linux/commit/922a6f34c1756d2b0c35d9b2d915b8af19e85965
   - https://github.com/torvalds/linux/blob/v6.19/fs/autofs/root.c#L344-L351
   - https://github.com/torvalds/linux/blob/v6.19/Documentation/filesystems/sharedsubtree.rst
@@ -48,16 +50,20 @@ sources:
   - https://github.com/femtovg/femtovg/blob/v0.25.0/src/error.rs#L47-L50
   - https://github.com/harfbuzz/ttf-parser/blob/v0.25.1/src/lib.rs#L844-L853
   - https://gitlab.freedesktop.org/fontconfig/fontconfig/-/blob/2.17.1/src/fcfreetype.c#L1298-L1302
+  - https://gitlab.freedesktop.org/fontconfig/fontconfig/-/blob/2.17.1/src/fcfreetype.c#L2216
+  - https://github.com/Satty-org/Satty/issues/617
+  - https://github.com/Satty-org/Satty/pull/618
   - https://github.com/wenxin-wang/uraj/blob/1e434fd433fb872225f2d20cca9df174ff278d77/env/dotfiles/desktop/niri/.config/satty/config.toml
   - https://github.com/adileo/squirreldisk/issues/84
-checked: 2026-11-23
+checked: 2026-11-24
 ---
 
 # Guix System and Shepherd pitfalls
 
 Things that cost time on Guix System. Checked against Guix master at commit `b5a4d61`
-(2026-11-23; Shepherd 1.0.9, sudo 1.9.17p1, Guile 3.0.9) and Podman 6.1.4, unless a
-section says otherwise. Behaviour on deployed systems was observed once each.
+(2026-11-23; Shepherd 1.0.9, sudo 1.9.17p1, Guile 3.0.11, libgit2 1.9.7) and Podman
+6.1.4, unless a section says otherwise. Behaviour on deployed systems was observed once
+each.
 
 NFS exports and the on-demand autofs mounts on Guix (direct autofs entries are rejected
 by `automount`, so shares are mounted under `/mnt/storie/` and the old paths are
@@ -87,19 +93,20 @@ permission denied`, and tools that copy `~/.cache/guix` fail with permission den
   `base_hosts_file`), fails. The file is recreated on every activation.
 - With `sudo -E`, HOME stays the caller's: `-E` with the `setenv` privilege (implied
   by a `... ALL` command, which Guix's default `%wheel ALL=(ALL) ALL` is) turns off
-  `env_reset`, and HOME is only reset to the target's with `-H`, `always_set_home` or a
-  login shell. Guix puts its cache in `$XDG_CACHE_HOME/guix`, else `$HOME/.cache/guix`,
-  and channel checkouts under `.../guix/checkouts`. So a `guix pull` or
-  `guix time-machine` run as root with `sudo -E` writes root-owned files into the
-  user's cache. libgit2 (what Guix uses for checkouts) creates the index with mode
+  `env_reset`, and HOME is only reset to the target's with `-H`, `always_set_home`, a
+  login shell, or `-s` with `set_home`. Guix puts its cache in `$XDG_CACHE_HOME/guix`,
+  else `$HOME/.cache/guix`, and channel checkouts under `.../guix/checkouts`. So a
+  `guix pull` or `guix time-machine` run as root with `sudo -E` writes root-owned files
+  into the user's cache. libgit2 (what Guix uses for checkouts) creates the index with mode
   0666 minus umask: 0600 under umask 077, so the user cannot even read it.
 
 **Fix.**
 
 - Do not set a restrictive umask globally. Run reconfigure with a normal one, or
   `umask 022` in the wrapper that calls sudo.
-- Give root its own cache: `sudo -E XDG_CACHE_HOME=/root/.cache ...` or `sudo -E -H ...`
-  (HOME of the target user), or skip `-E`.
+- Give root its own cache: `sudo -E XDG_CACHE_HOME=/root/.cache ...`, or skip `-E`.
+  `sudo -E -H ...` helps only when the caller has no `XDG_CACHE_HOME`, which Guix checks
+  before HOME.
 - Recovery: `sudo chmod 644 /etc/hosts` (or reconfigure again under umask 022; Podman
   needs no restart) and chown back what root wrote, e.g.
   `sudo find ~/.cache/guix -user root -exec chown "$USER": {} +`.
@@ -127,7 +134,10 @@ autofs mount point is there but without the NFS mount.
   namespace is created together with a user namespace (rootless Podman uses
   `clone(CLONE_NEWUSER|CLONE_NEWNS)`, so do bwrap and `unshare -U -m`), shared mounts
   are turned into slaves (`CL_SHARED_TO_SLAVE`), which still receive the host's later
-  mounts. A plain `unshare(CLONE_NEWNS)` keeps them shared (peers).
+  mounts. A plain `unshare(CLONE_NEWNS)` keeps them shared (peers). Tools may then change
+  propagation themselves: bwrap makes everything `MS_SLAVE|MS_REC`, and util-linux
+  `unshare -m` defaults to `--propagation private` (recursive), which cuts the host's
+  later mounts off.
 - Linux 6.19 and later refuse the trigger outright: `autofs_d_automount` returns
   `-EPERM` when the caller's mount namespace is not the daemon's and the autofs mount
   is propagation private (commit 922a6f34c175, absent in 6.18). Before that the path
@@ -141,24 +151,25 @@ autofs mount point is there but without the NFS mount.
   that.
 - A supervisor that creates a mount namespace should mark it `MS_REC | MS_SLAVE`, not
   `MS_PRIVATE`: its own mounts (a fresh `/proc`) stay inside, host mounts and autofs
-  triggers still reach it. Slaving a mount that is not shared does nothing
-  (sharedsubtree.rst), so this only works once `/` is shared.
+  triggers still reach it. Slaving a mount that is not shared leaves it as it was
+  (sharedsubtree.rst), so this only works once the mounts are recursively shared.
 - Cost of a shared `/`: a `mount` or `umount` inside a namespace created with
   `CLONE_NEWNS` and not made private or slave propagates back to the host.
 - uraj's fix:
 [`system/base.scm`](https://github.com/wenxin-wang/uraj/blob/1e434fd433fb872225f2d20cca9df174ff278d77/src/guix/uraj/system/base.scm#L81-L93),
 [`agent-supervisor.c`](https://github.com/wenxin-wang/uraj/blob/1e434fd433fb872225f2d20cca9df174ff278d77/src/c/uraj/paseo/agent-supervisor.c#L84-L88).
 
-**Existing namespaces stay as they were.** Rootless Podman saves its user and mount
-namespaces as nsfs file handles and rejoins them with `open_by_handle_at`
-(`ns_handles`), so while any process (pause process, conmon, a container, the
-`podman system service`) still lives in the old namespace, a restarted Podman rejoins
-it. Podman's own docs say the same for the pause process
-(`podman system migrate`). To pick up the new propagation: stop every container and
-runtime of that user, restart the Podman service, and check that the pause process is
-in a new mount namespace (`readlink /proc/PID/ns/mnt`) whose `/proc/PID/mountinfo`
-line for the share has `master:N`. Killing only the pause process, or only restarting
-the service, was not enough (observed with Podman 6.1.x).
+**Existing namespaces stay as they were.** Rootless Podman keeps its user and mount
+namespaces alive in a pause process, and a restarted Podman rejoins them through
+`pause.pid` or the conmon of a running container (`podman system migrate` docs). Only
+with the experimental `PODMAN_NO_PAUSE_PROCESS` set does it save them as nsfs file handles
+(`ns_handles`) and rejoin with `open_by_handle_at` (`podman.1.md`). Either way, while
+any of those processes lives, the old namespace is reused. To pick up the new
+propagation: stop every container and runtime of that user, restart the Podman service,
+and check that the pause process is in a new mount namespace (`readlink
+/proc/PID/ns/mnt`) whose `/proc/PID/mountinfo` line for the share has `master:N`. Killing
+only the pause process, or only restarting the service, was not enough (observed with
+Podman 6.1.x).
 
 ## `herd restart SERVICE ARG` drops ARG after a reconfigure
 
@@ -169,21 +180,29 @@ Shepherd's built-in `restart` forwards ARGS to `start-service` only for `(eq? re
 but `stop-service` returns `(cons (or replacement service) dependents)`: with a pending
 replacement the object started is not the one stopped, so it is started without ARGS.
 The first restart after a reconfigure silently ignores the args (forwarding args on
-restart exists only since Shepherd 1.0.4, NEWS).
+restart exists only since Shepherd 1.0.4, NEWS). Reproduced on 2026-11-24 with a private
+Shepherd 1.0.9 instance: `herd load` of a new definition, then `herd restart test A B`
+started the replacement with no args.
 
 - Check: `herd status SERVICE` shows whether a replacement is pending (since 1.0.0, NEWS).
-- Workaround: do a restart without args first (installs the replacement), then
-  `herd restart SERVICE ARG`.
+- Workaround: `herd stop SERVICE`, then `herd start SERVICE ARG` (starts the replacement
+  with ARG; reproduced the same way). Or a restart without args first (installs the
+  replacement, but runs it once without args), then `herd restart SERVICE ARG`.
 - Not fixed in Shepherd `main` (1.0.9 plus four commits, 2026-06-22) or `devel`
-  (a848fcf, 2026-11-22, where the same logic moved into `restart-service`). No upstream
-  report found.
+  (a848fcf, 2026-11-23 UTC+8, where the same logic moved into `restart-service`). No
+  upstream report found in Shepherd's or Guix's Codeberg issues, or by web search;
+  debbugs full text could not be searched.
 - uraj defines its own `restart` action that starts `(car (stop-service ...))` with the
   args:
   [`services/shepherd.scm`](https://github.com/wenxin-wang/uraj/blob/1e434fd433fb872225f2d20cca9df174ff278d77/src/guix/uraj/services/shepherd.scm).
   It only takes effect once the new definition is loaded, so the first restart after
   deploying it still drops the args.
 
-## Satty cannot draw Chinese with Noto Sans CJK from Guix
+## Satty up to 0.22.0 cannot draw Chinese with Noto Sans CJK from Guix
+
+Reported upstream as Satty issue 617 and fixed by PR 618 (merged 2026-08-27), which is on
+`main` but in no release yet: the latest, 0.22.0 (2026-08-03), still has the bug. The
+fix uses only the font's default instance (Satty logs a warning saying so).
 
 Satty (screenshot editor) 0.21.1 draws text with femtovg and loads only the fonts named
 in its config ("no proper fallback font handling", README); `[font] fallback` exists
@@ -205,20 +224,23 @@ Working, observed once on 2026-11-04 (not run end to end here):
 - Guix's `font-google-noto-sans-cjk` 2.004 ships only variable fonts: `out` holds
   `NotoSansCJK-VF.otf.ttc` (5 faces, each with 7 named instances), output `otf` the
   per-language variable `.otf`.
-- fontconfig's `FC_INDEX` for a named instance is `(instance + 1) << 16 | face`.
+- fontconfig's `FC_INDEX` for a named instance is `(instance + 1) << 16 | face`
+  (`fcfreetype.c` L2216 builds it, L1298-L1302 decodes it).
   `fc-match -f '%{index}' "Noto Sans CJK SC"` on this package, fontconfig 2.17.1,
   prints `262146` (Regular, face 2); Sarasa Gothic SC prints `1`.
 - Satty 0.21.1 (and 0.22.0, unchanged) passes `font.index` unmasked to femtovg's
   `add_shared_font_with_index`; femtovg calls `ttf_parser::Face::parse(data, 262146)`,
-  which fails with `FaceIndexOutOfBounds` (5 faces), and femtovg prints every
-  `ErrorKind` as "canvas error". So "canvas error" says nothing about the real cause.
+  which fails with `FaceIndexOutOfBounds` (5 faces). femtovg turns that into
+  `FontParseError` and prints every `ErrorKind` as "canvas error", so "canvas error" says
+  nothing about the real cause.
 - Another program hit the same number: SquirrelDisk issue 84 (egui/epaint panic
   `Invalid index 262146 for font collection`, Noto Sans CJK SC on Fedora); installing
   the static Noto package gave index 2. That reporter's explanation (packed
   named-instance index) is a hypothesis; the fontconfig source above confirms the
   packing.
 
-The fix on the Satty side would be masking the index (`& 0xFFFF`); no Satty issue found.
-fontconfig also lists the variable font itself with the plain index (2, `variable=True`),
-but style matching picks the Regular named instance. A static Noto Sans CJK would avoid
-this; Guix has one only for Serif (`font-google-noto-serif-cjk-static`).
+PR 618 masks the index (`& 0xffff`). fontconfig also lists the variable font itself with
+the plain index (2, `variable=True`), but style matching picks the Regular named
+instance. Until a release, use a static font: Guix has a static Noto CJK only for Serif
+(`font-google-noto-serif-cjk-static`); `font-adobe-source-han-sans` (static, the same
+design as Noto Sans CJK) and `font-sarasa-gothic` are others, not tried in Satty.
