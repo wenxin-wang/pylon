@@ -16,7 +16,7 @@
    - 11/23 外部知识 42 条：15 条当时已写进文档（多在 uraj）或 llm-wiki；15 条补进 llm-wiki
      （paseo、contained-agent-v1、guix-pitfalls、claude-code-auto-mode、feishu-coding-agent、
      r8152-mac-reset），对上游核对后大多要修正或收窄；其余 12 条是 uraj 自己的事、一次性的、
-     没法核实的，或不该公开。
+     没法核实的，或不该公开。合入后另一个 agent 对上游再审，又修了 9 处错误（#21）。
 3. session 笔记，只放待办：策略仓库里的全局 skill `session-notes`（说明和 hook 脚本），
    hook 配置由人贴进 `~/.claude/settings.json`。
 4. 自动化：等 contained-agent-v2；定时器启动容器里的反思，定多久一次，定各 workshop 怎么

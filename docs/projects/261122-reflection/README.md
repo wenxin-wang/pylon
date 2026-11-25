@@ -46,6 +46,8 @@ agent 写进常驻上下文的东西，相当于给以后所有 agent 下指令�
   人手动贴。先全扫一轮，再做它。见[设计](reflection-design.md#session-笔记)。
 - 11/23：每条提议直接提 PR 到它所属的 workshop 或策略仓库，在那个 PR 里商量；对人的观察
   不单设全局记忆，改写成偏好。见[设计](reflection-design.md#产出)。
+- 11/24：补 llm-wiki 的 PR 先由另一个 agent 对上游审一轮，再交给人。见
+  [设计](reflection-design.md#产出)。
 - 11/24：反思提的 PR 都打 `reflection` label；每轮先看以前这些 PR 和审阅意见，已有的、被
   否掉的教训不再提。见[设计](reflection-design.md#产出)。
 - 11/23：反思在 contained-agent-v2 的容器里由定时器启动，等 v2。见
