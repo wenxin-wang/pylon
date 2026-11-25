@@ -16,6 +16,10 @@
   索引。现在的 contained-agent 退出时丢掉配置修改，项目没被信任，hook 不加载。
 - 迁 contained-agent-v2 时，要能由定时器启动容器里的 session，跑反思（见
   [reflection](../261122-reflection/README.md) 第 4 步）。
+- 迁 contained-agent-v2 时，可读写地挂载宿主的 `~/.local/state/agents/`，session 笔记
+  才能在容器退出后留下来（见 [reflection](../261122-reflection/README.md) 第 3 步）。
+- 迁 contained-agent-v2 时，调研怎样让 agent 的环境只拿到它该用的秘密。把某一个秘密单独
+  移出环境，一次能做到；但秘密不都天然分出级别，要找通用的办法。
 - 迁 contained-agent-v2 时（或做完之后），让 agent 写的脚本默认用一个有额度的 API key：
   Claude Code 自己的 key 改由 `apiKeyHelper` 读，不放进环境变量，Bash 里只看得到有额度的
   那个；额度用完由人去加。先验证两个 key 同时在时 Claude Code 用哪个，再定变量名；Codex
