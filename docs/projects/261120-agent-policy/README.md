@@ -42,6 +42,11 @@
   见 [docs/skills.md](../../skills.md)。
 - 11/21：全局 skill 也放这里统一管理，包括 workshop skill，不公开。
 - 11/20：在 pylon 里做；uraj 进入维护状态，不再加新功能。
+- 11/26：不给真部署命令加确认。起因是 11/25 一个 session 在人给的条件满足前就部署了线上服务。
+  看过三种做法：每条命令弹确认（`permissions.ask`），太耽误事；每台主机每个 session
+  确认一次，要自己写 hook，而且拦不住同一 session 里先批过的主机；让另一个模型读会话
+  记录判断批准了没有，和 Claude Code 的 auto mode、Codex 的 auto-review 是同一类，人
+  觉得不准。Claude Code 现在用 bypassPermissions。
 
 ## 文档
 
