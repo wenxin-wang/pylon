@@ -8,12 +8,19 @@ one symlink per skill, pointing into a checkout's skills/<name>.
 The preferences come from the policy repo; each tool's global instruction
 file is a symlink to its preferences.md.
 
+A skill that needs Claude Code hooks declares them in its claude-hooks.json;
+they are merged into Claude Code's user settings, every variant of them.
+
 Skills used by one workshop only live in that repo (.claude/skills/,
 .agents/skills/), which the tools read on their own; they are not installed.
 """
 
+import json
 import os
+import re
+import shutil
 import subprocess
+import time
 from pathlib import Path
 
 CHECKOUTS = Path.home() / ".local/share/agent-policies"
@@ -24,6 +31,15 @@ POLICY = "agent-policy"
 TOOL_DIRS = [Path.home() / ".claude/skills", Path.home() / ".agents/skills"]
 # Claude Code and Codex load these files in every session.
 GLOBAL_FILES = [Path.home() / ".claude/CLAUDE.md", Path.home() / ".codex/AGENTS.md"]
+# Claude Code reads user hooks from this file only. The human keeps variants
+# of it as settings.json.* and links settings.json to one of them.
+CLAUDE_SETTINGS = Path.home() / ".claude/settings.json"
+# A settings file is copied here before its hooks change.
+BACKUPS = Path.home() / ".local/state/pylon/settings-backup"
+# A skill's hooks, in the shape of the settings' "hooks": event -> groups.
+HOOKS_FILE = "claude-hooks.json"
+# A hook command that runs code from ~/.claude/skills/<name>/ belongs to that skill.
+HOOK_OWNER = re.compile(r"~/\.claude/skills/([^/\s]+)/")
 
 
 class Error(Exception):
@@ -171,4 +187,142 @@ def preferences_status(checkout, files):
         else:
             state = "(none)"
         lines.append(f"{link}: {state}")
+    return lines
+
+
+def hook_owner(handler):
+    """The skill whose code a hook handler runs, or None."""
+    match = HOOK_OWNER.search(str(handler.get("command", "")))
+    return match.group(1) if match else None
+
+
+def skill_hooks(checkouts, skill_dir):
+    """The hooks declared by each skill linked into skill_dir, and problems.
+
+    A skill may only declare hooks that run its own code.
+    """
+    wanted, problems = {}, []
+    if not skill_dir.is_dir():
+        return wanted, problems
+    for link in sorted(skill_dir.iterdir()):
+        path = link / HOOKS_FILE
+        if not ours(link, checkouts) or not path.is_file():
+            continue
+        try:
+            hooks = json.loads(path.read_text())
+            handlers = [h for groups in hooks.values() for g in groups
+                        for h in g["hooks"]]
+            valid = all(hook_owner(h) == link.name for h in handlers)
+        except (ValueError, AttributeError, KeyError, TypeError):
+            valid = False
+        if valid:
+            wanted[link.name] = hooks
+        else:
+            problems.append(f"{path} is not valid or runs code outside "
+                            f"~/.claude/skills/{link.name}/; skipped")
+    return wanted, problems
+
+
+def merge_hooks(settings, wanted, mine):
+    """settings with the hooks mine() claims dropped and wanted appended."""
+    hooks = {}
+    for event, groups in settings.get("hooks", {}).items():
+        kept = []
+        for group in groups:
+            handlers = [h for h in group.get("hooks", []) if not mine(h)]
+            if handlers or not group.get("hooks"):
+                kept.append({**group, "hooks": handlers})
+        if kept or not groups:
+            hooks[event] = kept
+    for declared in wanted.values():
+        for event, groups in declared.items():
+            hooks.setdefault(event, []).extend(groups)
+    result = dict(settings)
+    if hooks:
+        result["hooks"] = hooks
+    else:
+        result.pop("hooks", None)
+    return result
+
+
+def settings_files(settings):
+    """The real files behind settings and its variants, and problems.
+
+    A file reached through a dangling link is reported, not created.
+    """
+    files, problems = [], []
+    for path in [settings] + sorted(settings.parent.glob(settings.name + ".*")):
+        if path.is_symlink() and not path.exists():
+            problems.append(f"{path} is a dangling link; skipped")
+            continue
+        real = path.resolve()
+        if real not in files:
+            files.append(real)
+    return files, problems
+
+
+def write_settings(path, data, backup_dir):
+    """Copy path into backup_dir, then replace it in one step."""
+    if path.exists():
+        backup = backup_dir / path.relative_to("/")
+        if not backup.exists():
+            backup.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(path, backup)
+    tmp = path.with_name(f".{path.name}.pylon-tmp")
+    try:
+        tmp.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n")
+        if path.exists():
+            shutil.copymode(path, tmp)
+        os.replace(tmp, path)
+    finally:
+        if tmp.exists():
+            tmp.unlink()
+
+
+def sync_hooks(wanted, checkouts, skill_dir, settings, backups):
+    """Make every settings file hold exactly the wanted skill hooks.
+
+    A hook is ours when it runs code under ~/.claude/skills/<name>/ and <name>
+    is our link or gone; other hooks and settings are left alone. Returns the
+    problems found; a file that can't be read or written is skipped.
+    """
+    def mine(handler):
+        name = hook_owner(handler)
+        if name is None:
+            return False
+        entry = skill_dir / name
+        return ours(entry, checkouts) or not (entry.exists() or entry.is_symlink())
+
+    files, problems = settings_files(settings)
+    backup_dir = backups / time.strftime("%Y%m%d-%H%M%S")
+    for path in files:
+        try:
+            old = json.loads(path.read_text()) if path.exists() else {}
+            new = merge_hooks(old, wanted, mine)
+        except (ValueError, AttributeError, TypeError) as e:
+            problems.append(f"{path}: cannot read its hooks ({e}); skipped")
+            continue
+        if new == old:
+            continue
+        try:
+            write_settings(path, new, backup_dir)
+        except OSError as e:
+            snippet = json.dumps({"hooks": new.get("hooks", {})}, indent=2)
+            problems.append(f"{path}: cannot write ({e}); its hooks should be:\n"
+                            f"{snippet}")
+    return problems
+
+
+def hooks_status(checkouts, skill_dir, settings):
+    lines = []
+    files, _ = settings_files(settings)
+    for path in files:
+        try:
+            data = json.loads(path.read_text()) if path.exists() else {}
+            names = sorted({hook_owner(h) for groups in data.get("hooks", {}).values()
+                            for g in groups for h in g.get("hooks", [])} - {None})
+            state = " ".join(names) or "(none)"
+        except (ValueError, AttributeError, TypeError, OSError):
+            state = "cannot read"
+        lines.append(f"{path}: hooks {state}")
     return lines
