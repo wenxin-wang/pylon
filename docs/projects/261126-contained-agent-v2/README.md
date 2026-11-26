@@ -48,14 +48,13 @@ v2 的设计 11/15 到 11/17 在 uraj 里讨论过，做了原型和实测（见
 
 ## 待定
 
-- **一个盒子里放什么。** 人倾向一个盒子只放一个 workshop，限定工作范围；盒子之间经
-  GitHub issue 通信，像写信，延迟高，issue 发出前人审阅。还要定：
-  - 这个 workshop 链接的仓库、策略仓库算不算在盒子里。例如 agent 在 pylon 里工作时常给
-    agent-policy 提 PR，反思也要给策略仓库提 PR。
-  - issue 怎么经人审阅再发出：agent 起草，走审批通道，批准后由盒子外面的程序发；还是
-    人自己发。
-  - workshop skill 的 “Where agents work” 现在写的是“可以改别的 workshop，范围暂不限”，
-    “How agents work together is still open”，定了以后要改它（在 agent-policy 里）。
+- **workshop skill 什么时候改。** 一个盒子一个 workshop、盒子之间写信（见决定）定了以后，
+  workshop skill 的 “Where agents work” 要改：它现在写的是“可以改别的 workshop，范围暂
+  不限”“How agents work together is still open”。建议等 v2 能用了再改，因为在那之前
+  agent 还不在盒子里，改了就和实际不符。
+- **运行中加的仓库要不要人确认。** 盒子里的 agent 用 gh 现场 clone 别的仓库，GitHub App
+  的令牌就得覆盖这些仓库：盒子策略里事先列出能访问哪些仓库，还是 agent 运行中申请、人确认。
+  迁到 agent 的 GitHub 身份那一节时定。
 - **盒子策略在 agent-policy 里怎么写**：每个盒子一个文件还是别的分法，要不要 CI。迁到
   盒子策略那一节时定。
 - uraj 里还开着的几条（盒子用容器还是 microVM、部署接口放不放进本项目、创建 workspace
@@ -69,6 +68,12 @@ v2 的设计 11/15 到 11/17 在 uraj 里讨论过，做了原型和实测（见
   盒子、策略写在 area 文档里、workspace 对应 space 里 project 的决定都作废。
 - 11/26：盒子策略放在策略仓库 agent-policy；agent 的 GitHub 身份用 GitHub App。见
   [agent-policy](../261120-agent-policy/README.md) 的决定。
+- 11/26：一个盒子开始时只放一个 workshop，限定工作范围。别的仓库运行中按需加：盒子里有
+  Paseo 和 gh，一个任务要哪些仓库，人一开始也想不清。agent-policy 要改时，在盒子里现场
+  clone，或者给它提 issue。
+- 11/26：盒子之间经 GitHub issue 通信，像写信，延迟高：agent 起草，人审阅后自己发。
+  发出去发现不妥，就删掉。
+- 11/26：单位盒子的策略（例如能 SSH 到哪些工作主机）也放进 agent-policy。
 - 11/26：设计按节迁，一节一个 PR；uraj 里的记录和 `exp/` 脚本留在 uraj，用固定 commit
   的链接引用。
 

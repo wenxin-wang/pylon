@@ -37,7 +37,8 @@
 - 11/20：偏好和 contained-agent 策略合进同一个私有仓库，分两步：先只放偏好，
   同步用和 skills 一样只跟 `main` 的检出；再加权限策略、agent 自己的 GitHub 身份和批准校验。
 - 11/20：仓库叫 `agent-policy`（`wenxin-wang/agent-policy`，私有，人已建好）。
-  全局只有一个：里面没有任何一方的隐私，只有不想公开的域名、机器之类。
+  全局只有一个：里面没有任何一方的隐私，只有不想公开的域名、机器之类；11/26 定了单位
+  盒子的策略也放这里。
 - 11/20：pylon 的 skills 模块负责同步这个仓库，并把其中的偏好文件链接到
   `~/.claude/CLAUDE.md` 和 `~/.codex/AGENTS.md`。skills 的影响范围因此变大，
   见 [docs/skills.md](../../skills.md)。
