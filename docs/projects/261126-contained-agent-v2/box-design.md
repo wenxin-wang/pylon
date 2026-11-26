@@ -6,10 +6,11 @@
 
 ## 盒子怎么起
 
-盒子由主机上用户级的 `contained-podman` 服务用 rootless Podman 起，rootfs 换成 Guix
-的：一个几乎空的目录，只读挂 `/gnu/store`，软件全部来自一个 Guix profile，不用 Fedora
-镜像。原型和实测见 [box-prototype-design-20261115][box-prototype]：嵌套 Podman 跑得起
-Postgres 这类切换 UID 的镜像，盒子里访问发布的端口是透明的。
+盒子由主机上一个用户级的服务（哪个服务，见 README 的待定）用 rootless Podman 起，
+rootfs 换成 Guix 的：一个几乎空的目录，只读挂 `/gnu/store`，软件全部来自一个 Guix
+profile，不用 Fedora 镜像。原型和实测见 uraj 的
+[box-prototype-design-20261115][box-prototype]：嵌套 Podman 跑得起 Postgres 这类切换
+UID 的镜像，盒子里访问发布的端口是透明的。
 
 为什么不直接用 Guix 容器当盒子：
 
@@ -26,11 +27,12 @@ Postgres 这类切换 UID 的镜像，盒子里访问发布的端口是透明的
   `/gnu/store` 里的文件不能带特权位，所以启动时由盒子里的 root 复制到 tmpfs 再
   `setcap`，不需要主机 root。
 - 盒子的 PID 1 要用会回收孤儿的 init（`podman run --init` 或盒子里的主管进程）：Podman
-  起的 pasta 会 fork 到后台成为孤儿，不回收就留成 zombie，见
+  起的 pasta 会 fork 到后台成为孤儿，不回收就留成 zombie，见 uraj 的
   [pasta-zombie-debug-20261115][zombie-debug]。
-- 盒子里默认有 Podman 和主机的 Guix daemon。agent 在盒子里装包、重新加载 manifest
-  不用申请授权。代价：Guix daemon 在主机上下载，绕过盒子的网络限制；接受这个风险，
-  不给盒子单独做 store。
+- 盒子里有主机的 Guix daemon，agent 在盒子里装包、重新加载 manifest 不用申请授权。
+  代价：Guix daemon 在主机上下载，绕过盒子的网络限制；接受这个风险，不给盒子单独做
+  store。
+- 盒子里默认有没有 Podman，见 README 的待定。
 
 还没做：盒子的 seccomp 基础规则仍从 Fedora 镜像取，要换来源；盒子 rootfs 里的
 `/etc/subuid`、`/etc/passwd` 等要归盒子里的 root，原型里归 agent 自己的 UID。
@@ -44,10 +46,10 @@ Postgres 这类切换 UID 的镜像，盒子里访问发布的端口是透明的
 为什么：
 
 - 默认 pasta 下，盒子连不到主机上只监听回环的服务，包括主机的 Paseo daemon；但主机上
-  监听所有地址的服务经 `169.254.1.2` 能连到，局域网也通（
+  监听所有地址的服务经 `169.254.1.2` 能连到，局域网也通（uraj 的
   [box-network-measure-20261115][network-measure]）。所以只靠 pasta 不够。
 - pasta 本身不能按目的地址过滤，原来以为要换 bridge 加 root 侧接 veth。实测
-  （[grants-measure-20261115][grants-measure]）发现主机用户不用 root 就能进盒子的 netns
+  （uraj 的 [grants-measure-20261115][grants-measure]）发现主机用户不用 root 就能进盒子的 netns
   设 nftables，规则生效后主机端口连不上、公网和 relay 照通，盒子里的 agent 改不了规则。
   所以留在 pasta。
 
