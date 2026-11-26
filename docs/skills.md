@@ -50,21 +50,26 @@ PYTHONPATH=src/python python3 -m unittest discover -s test/python/pylon
     `settings.json` 链到其中一个来切换，所以链接本身不动，只顺着链接改真正的文件。只增删
     这个模块装的 hook：命令里跑的是 `~/.agents/skills/<name>/` 下的代码，而 `<name>` 是这个
     模块的链接，或者已经不存在（skill 删了，hook 跟着删）。别的 hook 和设置都不动。
-    skill 声明的 hook 只能跑它自己目录里的代码，否则跳过并报错。
+    skill 声明的 hook，命令里要出现 `~/.agents/skills/<name>/`，模块靠它认 hook 归哪个 skill；
+    这不算安全检查，人合并来源仓库的 PR 才是那一道。人手动贴进配置、跑这些 skill 代码的
+    hook 也算这个模块的，`update` 会删掉，要加就写进 skill 的 `hooks.json`。
   - 内容有变才写：先把原文件复制到
     `~/.local/state/pylon/settings-backup/<时间>/<原文件的绝对路径>`，再写临时文件、改名替换，
-    中途出错不会留下半个文件。重写后的 JSON 统一 2 格缩进，键的顺序不变。
+    中途出错不会留下半个文件。重写后的 JSON 统一 2 格缩进，键的顺序不变。`<时间>` 目录
+    是 0700，但里面的副本沿用原文件的权限（现在 644）；副本不会自动删。
   - 写不了的文件（只读、在 `/gnu/store` 里）、读不懂的文件、断掉的链接：跳过并报错；写不了
     的会打出它应有的 `"hooks"`，人可以手贴。
 - **每个 session 都会读到什么**：全局 skill 的名字和描述，以及偏好全文。所以来源
   仓库的 `main` 上有什么，所有 agent 都会看到、照着做。来源仓库的改动要经人批准合并。
 - **每个 session 都会跑什么**：skill 声明的 hook。`update` 之后，来源仓库 `main` 上的这些
   脚本在每个 Claude Code session 开工、压缩等时候自动运行，不经过 agent，用人的权限。
-  审批也是那一道：人合并来源仓库的 PR。Claude Code 会自己发现配置文件变了，所以已经开着的
-  session 也会用上新的 hook。
+  审批也是那一道：人合并来源仓库的 PR。Claude Code 文档说会自己发现配置文件变了，已经开着的
+  session 应该也会用上新的 hook，没实测；这里换文件是改名替换 `settings.json` 链接指向的
+  那个文件，文档没说文件监视会不会看到。
 - **网络**：`update` 用 `git` 通过 HTTPS 访问 `github.com`，只读。agent-policy 是私有的，
   靠 `gh` 配好的 git 凭据（`gh auth setup-git`）。
-- **权限和秘密**：没有。不用 sudo，不读秘密。
+- **权限和秘密**：不用 sudo。会读、改上面那些配置文件，里面可能有 `env`（token 之类）；
+  副本留在备份目录里，见上。
 - **坏了会怎样**：所有 agent 新开的 session 同时受影响；已经开着的 session 不受影响，
   hook 除外，见上。
 - **怎么关掉**：`bin/pylon-skills remove` 删掉所有链接和装的 hook；配置文件改坏了，把

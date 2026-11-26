@@ -42,7 +42,8 @@ agent 写进常驻上下文的东西，相当于给以后所有 agent 下指令�
 - 11/24：读过的不再读：每个 workshop 在宿主上记一个时间点，这之前的消息算读过。见
   [设计](reflection-design.md#读什么)。
 - 11/26：每个 session 一份 session 笔记，只放待办；放在宿主上、所有 workshop 之外，不进
-  git；30 天没动过的由开工的 hook 删掉。脚本和说明做成策略仓库里的全局 skill，要跨 harness；
+  git；30 天没动过的由开工的 hook 删掉。脚本和说明做成策略仓库里的全局 skill，要能给 Claude Code
+  以外的工具用；
   hook 配置由 skills 模块写进 Claude Code 的配置。见[设计](reflection-design.md#session-笔记)。
 - 11/23：每条提议直接提 PR 到它所属的 workshop 或策略仓库，在那个 PR 里商量；对人的观察
   不单设全局记忆，改写成偏好。见[设计](reflection-design.md#产出)。

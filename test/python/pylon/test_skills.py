@@ -1,5 +1,6 @@
 import json
 import os
+import stat
 import subprocess
 import tempfile
 import unittest
@@ -223,6 +224,7 @@ class HooksTest(unittest.TestCase):
         before = self.variants[0].read_text()
         self.update()
         [stamp] = self.backups.iterdir()
+        self.assertEqual(stat.S_IMODE(stamp.stat().st_mode), 0o700)
         backup = stamp / self.variants[0].relative_to("/")
         self.assertEqual(backup.read_text(), before)
 

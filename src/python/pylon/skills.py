@@ -271,6 +271,7 @@ def write_settings(path, data, backup_dir):
     if path.exists():
         backup = backup_dir / path.relative_to("/")
         if not backup.exists():
+            backup_dir.mkdir(mode=0o700, parents=True, exist_ok=True)
             backup.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(path, backup)
     tmp = path.with_name(f".{path.name}.pylon-tmp")
