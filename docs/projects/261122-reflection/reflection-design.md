@@ -58,11 +58,12 @@ agent 自己判断，pylon 下几天里只记了 4 条），而是靠 hook：人
 “快做完了”时回来看一遍。hook 管三件事：开工时清掉旧笔记，压缩后把待办打出来，压缩前提醒
 摘要保留还没写进去的待办。
 
-为什么要它：待办现在放在 worktree 的 `tmp/`，压缩后要靠 agent 自己记得去读，worktree
-删掉就没了。
+为什么不放 worktree 的 `tmp/`：压缩后要靠 agent 自己记得去读，worktree 删掉就没了。
 
 放在哪：每个 session 一个目录 `~/.local/state/agents/sessions/<id>/`，在宿主上、所有
 workshop 之外，容器挂进去。一个 session 常常跨好几个仓库，笔记不属于哪个 workshop。
+contained-agent v1 没挂这个目录，笔记写在容器的临时 home 里，退出就没了；11/26 定了不在
+v1 上补，等 v2 挂（见 [uraj-migration](../261119-uraj-migration/TODO.md)）。
 
 不进 git：笔记是零碎的草稿，session 结束就没人再读，进 git 只会多出提交和冲突。
 
