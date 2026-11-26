@@ -11,6 +11,7 @@
 | 人（the human） | 本仓库的主人，审阅并合并 PR。文档里不用“我”指人，也不用“我”指 agent |
 | agent | 写代码和文档的 AI，不论哪个工具、哪个 session |
 | space | 人自己写的笔记本（org mode）。agent 只读，不写。例：garden、sketchpad |
+| area | 人笔记里 PARA 方法的 area：一件长期维护的事务。contained-agent-v2 按 area 给授权 |
 | workshop | 由 agent 推进、人审阅的仓库，按 workshop skill（一个全局 skill）的约定运作，自己的 `AGENTS.md` 写必须时刻成立的规则。有没有代码都算。pylon 是一个 workshop |
 | skill | 给 agent 的一份说明，一个目录，里面有 `SKILL.md` |
 | 全局 skill（global skill） | 所有 session 都能用的 skill，来自一个或多个策略仓库的 `skills/<name>/`，由 skills 模块装给各工具。现在只有 agent-policy 一个 |
@@ -18,7 +19,7 @@
 | llm-wiki | workshop 下的 `llm-wiki/`，放 agent 关心、人不关心的知识和素材 |
 | 反思（reflection） | agent 定期回顾一段时间里的工作，把值得留下的东西整理成 PR 交给人审，由定时器触发 |
 | session 笔记（session notes） | 一个 session 的待办，放在宿主上，不属于哪个 workshop |
-| 策略仓库（policy repo） | 私有的 `agent-policy` 仓库：全局的常驻指令、全局 skill 和每个 workshop 的策略。放数据，以及全局 skill 带的脚本；不是 workshop；格式由 pylon 里读它的代码定义 |
+| 策略仓库（policy repo） | 私有的 `agent-policy` 仓库：全局的常驻指令、全局 skill 和 contained-agent 的权限策略。放数据，以及全局 skill 带的脚本；不是 workshop；格式由 pylon 里读它的代码定义 |
 | 模块表（module table） | `README.md` 里的模块表：有哪些模块、级别、依赖、入口。上限一页。改它要人点头 |
 | 模块（module） | 模块表上登记的一块功能；也是 `docs/<module>.md` 的名字和 PR topic |
 | 级别（level） | 人需要懂一个模块到什么程度：能用、能管、能讲。顺着依赖往下传 |

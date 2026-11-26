@@ -30,9 +30,6 @@ Guile、Guix、Python 四种语言，人已经看不懂了。原因不是缺了�
   - emacs：天天用，可能是能管。
   - 级别顺着依赖传：例如 `container/seccomp.py` 被 contained-agent 用，就是能讲，
     即使 openclaw 也用它。
-- **第一个迁哪个。** 建议 contained-agent-v2：它的设计要在 pylon 里做，没有历史包袱，
-  而且是能讲级，正好用来检验这套流程。代价是 v2 还在设计中，迁移和设计同时进行；另一个选项是
-  先迁一个小的能用级模块（例如 config）试流程，风险小，但学不到什么。
 - **pylon 什么时候成为 Guix channel、怎么和 uraj 互相依赖。** 等第一个模块迁进来再定。
 
 ## 决定
@@ -44,6 +41,7 @@ Guile、Guix、Python 四种语言，人已经看不懂了。原因不是缺了�
 - 11/22：uraj 进入维护，不再加新功能；contained-agent-v2 的设计在 pylon 里做。
 - 11/24：迁一个模块的 PR 在本项目的 TODO 里写明它来自 uraj 的哪个 commit。pylon 的
   git 里没有 uraj 的历史，这一行和模块落在同一个提交里，追溯来源靠它。
+- 11/26：第一个迁 contained-agent-v2，作为 pylon 的下一个项目单独开。
 
 ## 文档
 

@@ -3,7 +3,7 @@
 ## 目标
 
 一个私有的策略仓库管所有 agent 的配置：全局的常驻指令（人的偏好）、全局 skill，
-以及每个 workshop 的策略。明文，agent 能读；
+以及 contained-agent 的权限策略。明文，agent 能读；
 改动由 agent 提 PR，人批准合并后才生效，不用 reconfigure。合并后，人不用再给每个
 工具、每台机器重复说偏好，agent 也能看到自己有什么权限。
 
@@ -26,15 +26,17 @@
 
 ## 待定
 
-- **策略按什么分。** 每个 workshop 一份，还是每个 Paseo workspace 一份（v2 里容器的
-  单位是 workspace，一个 workspace 可以有多个仓库）。第 2 步再定。
-- **策略那一步的细节**（第 2 步再定）：机器人账号、`main` 的 ruleset、同步时校验
-  最新提交来自被批准的 PR、策略由谁读（uraj 的 contained-agent 还是 pylon 里的 v2）。
+- **策略按什么分、什么格式**：跟 contained-agent-v2 一起定。v2 的设计里盒子和授权按
+  area 给（uraj 里 v2 项目 11/16 的决定），所以多半是每个 area 一份。
+- **批准校验的细节**（跟 v2 一起定）：GitHub App 装在哪些仓库、给什么权限；宿主上
+  谁拿私钥换令牌；同步时怎么校验 `main` 上的新提交都来自人合并的 PR。agent-policy
+  是免费账号下的私有仓库，没有分支保护和 ruleset（GitHub 只给 Pro 及以上的私有仓库），
+  所以校验只能放在同步这一步；要分支保护就得升级 Pro。
 
 ## 决定
 
 - 11/20：偏好和 contained-agent 策略合进同一个私有仓库，分两步：先只放偏好，
-  同步用和 skills 一样只跟 `main` 的检出；再加权限策略、机器人账号和批准校验。
+  同步用和 skills 一样只跟 `main` 的检出；再加权限策略、agent 自己的 GitHub 身份和批准校验。
 - 11/20：仓库叫 `agent-policy`（`wenxin-wang/agent-policy`，私有，人已建好）。
   全局只有一个：里面没有任何一方的隐私，只有不想公开的域名、机器之类。
 - 11/20：pylon 的 skills 模块负责同步这个仓库，并把其中的偏好文件链接到
@@ -47,6 +49,9 @@
   确认一次，要自己写 hook，而且拦不住同一 session 里先批过的主机；让另一个模型读会话
   记录判断批准了没有，和 Claude Code 的 auto mode、Codex 的 auto-review 是同一类，人
   觉得不准。Claude Code 现在用 bypassPermissions。
+- 11/26：权限策略由 contained-agent-v2 读，第 2 步跟 v2 一起做，不给 uraj 的 v1 加来源。
+- 11/26：agent 的 GitHub 身份用 GitHub App，不用机器人账号：私钥留在宿主上，agent 只拿
+  1 小时过期的安装令牌；也在 v2 里做。在那之前 agent 用人的 token，能直接推 `main`。
 
 ## 文档
 
