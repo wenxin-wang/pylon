@@ -51,12 +51,14 @@ PYTHONPATH=src/python python3 -m unittest discover -s test/python/pylon
     这个模块装的 hook：命令里跑的是 `~/.agents/skills/<name>/` 下的代码，而 `<name>` 是这个
     模块的链接，或者已经不存在（skill 删了，hook 跟着删）。别的 hook 和设置都不动。
     skill 声明的 hook，命令里要出现 `~/.agents/skills/<name>/`，模块靠它认 hook 归哪个 skill；
-    这不算安全检查，人合并来源仓库的 PR 才是那一道。人手动贴进配置、跑这些 skill 代码的
-    hook 也算这个模块的，`update` 会删掉，要加就写进 skill 的 `hooks.json`。
+    这不算安全检查，人合并来源仓库的 PR 才是那一道。`hooks.json` 读不懂、或者命令里不是
+    自己的路径：跳过并报错，这个 skill 已经装上的 hook 也会删掉。人手动贴进配置、跑这些
+    skill 代码的 hook 也算这个模块的，`update` 会删掉，要加就写进 skill 的 `hooks.json`。
   - 内容有变才写：先把原文件复制到
-    `~/.local/state/pylon/settings-backup/<时间>/<原文件的绝对路径>`，再写临时文件、改名替换，
-    中途出错不会留下半个文件。重写后的 JSON 统一 2 格缩进，键的顺序不变。`<时间>` 目录
-    是 0700，但里面的副本沿用原文件的权限（现在 644）；副本不会自动删。
+    `~/.local/state/pylon/settings-backup/<时间>/<原文件的绝对路径>`，再写临时文件（先建成
+    0600，写完再改成原文件的权限）、改名替换，中途出错不会留下半个文件。重写后的 JSON
+    统一 2 格缩进，键的顺序不变。`<时间>` 目录是 0700，但里面的副本沿用原文件的权限
+    （现在 644）；副本不会自动删。
   - 写不了的文件（只读、在 `/gnu/store` 里）、读不懂的文件、断掉的链接：跳过并报错；写不了
     的会打出它应有的 `"hooks"`，人可以手贴。
 - **每个 session 都会读到什么**：全局 skill 的名字和描述，以及偏好全文。所以来源

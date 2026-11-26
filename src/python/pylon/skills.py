@@ -276,7 +276,11 @@ def write_settings(path, data, backup_dir):
             shutil.copy2(path, backup)
     tmp = path.with_name(f".{path.name}.pylon-tmp")
     try:
-        tmp.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n")
+        # Created 0600: it holds the settings' env before it gets path's mode.
+        tmp.unlink(missing_ok=True)
+        fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        with open(fd, "w") as f:
+            f.write(json.dumps(data, indent=2, ensure_ascii=False) + "\n")
         if path.exists():
             shutil.copymode(path, tmp)
         os.replace(tmp, path)

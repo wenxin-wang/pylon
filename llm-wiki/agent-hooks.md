@@ -8,7 +8,7 @@ sources:
   - https://learn.chatgpt.com/docs/hooks
   - https://www.turboai.dev/docs/codex/hooks
   - https://codex.danielvaughan.com/2026/04/15/codex-cli-hooks-complete-guide-events-policy-patterns/
-checked: 2026-11-23
+checked: 2026-11-26
 ---
 
 # Agent hooks
@@ -30,11 +30,12 @@ checked: 2026-11-23
   `features.codex_hooks`) turns them off.
 - Hooks live in `hooks.json` or inline `[hooks]` in `config.toml`, per layer:
   user `~/.codex/` (`$CODEX_HOME`), system `/etc/codex/`, project `.codex/`, and
-  plugins. Matching hooks from all layers run. `hooks.json` has the same shape as
+  plugins. Matching hooks from all layers run; project layers load only when the
+  project is trusted. `hooks.json` has the same shape as
   Claude Code's settings: `{"hooks": {event: [{"matcher", "hooks": [handler]}]}}`.
 - User and project hooks run only after the human trusts them in `/hooks`; trust is
-  recorded per hook hash, so a changed hook is skipped until trusted again. System
-  and managed hooks are trusted by policy.
+  recorded per hook hash, so a changed hook is skipped until trusted again. Managed
+  hooks (system, MDM, cloud, `requirements.toml`) are trusted by policy.
 - Events: PreModelRequest, PostModelRequest, PreToolUse, PermissionRequest,
   PostToolUse, PreCompact, PostCompact, SessionStart, SessionEnd, SubagentStart,
   SubagentStop, UserPromptSubmit, Stop, Interrupt.

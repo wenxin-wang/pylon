@@ -1,10 +1,12 @@
 import json
 import os
+import shutil
 import stat
 import subprocess
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from pylon import skills
 
@@ -228,6 +230,20 @@ class HooksTest(unittest.TestCase):
         backup = stamp / self.variants[0].relative_to("/")
         self.assertEqual(backup.read_text(), before)
 
+    def test_private_file_stays_private(self):
+        os.chmod(self.variants[0], 0o600)
+        modes = []
+        copymode = shutil.copymode
+
+        def record(src, dst):
+            modes.append(stat.S_IMODE(os.stat(dst).st_mode))
+            copymode(src, dst)
+
+        with mock.patch.object(skills.shutil, "copymode", record):
+            self.update()
+        self.assertEqual(modes[0], 0o600)
+        self.assertEqual(stat.S_IMODE(self.variants[0].stat().st_mode), 0o600)
+
     def test_second_update_writes_nothing(self):
         self.update()
         mtimes = [v.stat().st_mtime_ns for v in self.variants]
@@ -266,6 +282,13 @@ class HooksTest(unittest.TestCase):
         problems = self.update()
         self.assertEqual(len(problems), 1)
         self.assertEqual(self.commands(self.variants[1]), [HOOK])
+
+    def test_bad_hooks_file_removes_installed_hooks(self):
+        self.update()
+        (self.checkout / "skills/notes/hooks.json").write_text("{not json")
+        self.assertEqual(len(self.update()), 1)
+        for variant in self.variants:
+            self.assertEqual(self.commands(variant), [])
 
     def test_unwritable_file_is_skipped(self):
         locked = self.tmp / "locked"
