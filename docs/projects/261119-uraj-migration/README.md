@@ -38,10 +38,10 @@ Guile、Guix、Python 四种语言，人已经看不懂了。原因不是缺了�
 - 11/19：理解分三级（能用、能管、能讲），级别顺着依赖往下传；共用代码不复制。
 - 11/19：主力语言 C/C++、Python；Guile 只用在 Guix 必须的地方，保持能看懂；
   新语言要人点头。
-- 11/22：uraj 进入维护，不再加新功能；contained-agent-v2 的设计在 pylon 里做。
+- 11/26：uraj 当作归档，除非必要不再往里加东西；contained-agent-v2 的设计在 pylon 里做。
 - 11/24：迁一个模块的 PR 在本项目的 TODO 里写明它来自 uraj 的哪个 commit。pylon 的
   git 里没有 uraj 的历史，这一行和模块落在同一个提交里，追溯来源靠它。
-- 11/26：第一个迁 contained-agent-v2，作为 pylon 的下一个项目单独开。
+- 11/26：第一个迁 contained-agent-v2，作为单独的项目，见 [contained-agent-v2](../261126-contained-agent-v2/README.md)。
 
 ## 文档
 

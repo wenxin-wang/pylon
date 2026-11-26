@@ -42,3 +42,10 @@
 | pylon | 本仓库，公开的 workshop |
 | uraj | `wenxin-wang/uraj`，pylon 的前身，模块逐个迁到 pylon 后退役 |
 | garden | `wenxin-wang/garden`，人的公开笔记和主页（原名 pylon），一个 space |
+
+## contained-agent-v2
+
+| 术语 | 含义 |
+|---|---|
+| 盒子（box） | agent 工作的地方：一个长期存在的容器，coding agent 和它用的 Podman 都在里面，每个盒子对应一件事 |
+| 盒子管理服务（box manager） | 主机上用户级的服务，起停盒子，在运行中给盒子加、撤授权（挂载、网络规则、设备、凭据） |
