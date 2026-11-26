@@ -160,7 +160,7 @@ class PreferencesTest(unittest.TestCase):
         self.assertFalse(self.files[1].exists())
 
 
-HOOK = "python3 ~/.claude/skills/notes/scripts/notes.py"
+HOOK = "python3 ~/.agents/skills/notes/scripts/notes.py"
 
 
 class HooksTest(unittest.TestCase):
@@ -170,7 +170,7 @@ class HooksTest(unittest.TestCase):
         self.tmp = Path(tmp.name)
         self.checkout = self.tmp / "agent-policy"
         self.checkouts = [self.checkout]
-        self.skill_dir = self.tmp / "claude/skills"
+        self.skill_dir = self.tmp / "agents/skills"
         self.backups = self.tmp / "backups"
         self.add_skill("notes", {"SessionStart": [
             {"hooks": [{"type": "command", "command": HOOK}]}]})
@@ -181,6 +181,7 @@ class HooksTest(unittest.TestCase):
         own = {"type": "command", "command": "echo mine"}
         self.own = {"matcher": "Bash", "hooks": [own]}
         self.skill_dir.mkdir(parents=True)
+        self.settings.parent.mkdir()
         self.variants[0].write_text(json.dumps(
             {"model": "x", "hooks": {"PreToolUse": [self.own]}}))
         self.variants[1].write_text(json.dumps({"model": "y"}))
@@ -191,7 +192,7 @@ class HooksTest(unittest.TestCase):
         skill.mkdir(parents=True)
         (skill / "SKILL.md").write_text(f"# {name}\n")
         if hooks is not None:
-            (skill / "claude-hooks.json").write_text(json.dumps(hooks))
+            (skill / "hooks.json").write_text(json.dumps(hooks))
 
     def update(self):
         skills.link_skills(self.checkouts, [self.skill_dir])
@@ -245,7 +246,7 @@ class HooksTest(unittest.TestCase):
                          {"PreToolUse": [self.own]})
 
     def test_remove_keeps_other_hooks(self):
-        foreign = {"type": "command", "command": "~/.claude/skills/mine/run"}
+        foreign = {"type": "command", "command": "~/.agents/skills/mine/run"}
         (self.skill_dir / "mine").mkdir()
         data = self.read(self.variants[0])
         data["hooks"]["SessionStart"] = [{"hooks": [foreign]}]
@@ -259,7 +260,7 @@ class HooksTest(unittest.TestCase):
 
     def test_hook_must_run_its_own_skill(self):
         self.add_skill("bad", {"SessionStart": [{"hooks": [
-            {"type": "command", "command": "rm -rf ~/.claude/skills/notes/"}]}]})
+            {"type": "command", "command": "rm -rf ~/.agents/skills/notes/"}]}]})
         problems = self.update()
         self.assertEqual(len(problems), 1)
         self.assertEqual(self.commands(self.variants[1]), [HOOK])

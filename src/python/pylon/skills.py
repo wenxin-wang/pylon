@@ -8,8 +8,9 @@ one symlink per skill, pointing into a checkout's skills/<name>.
 The preferences come from the policy repo; each tool's global instruction
 file is a symlink to its preferences.md.
 
-A skill that needs Claude Code hooks declares them in its claude-hooks.json;
-they are merged into Claude Code's user settings, every variant of them.
+A skill that needs hooks declares them in its hooks.json; they are merged
+into Claude Code's user settings, every variant of them. Codex is not served
+yet.
 
 Skills used by one workshop only live in that repo (.claude/skills/,
 .agents/skills/), which the tools read on their own; they are not installed.
@@ -37,9 +38,13 @@ CLAUDE_SETTINGS = Path.home() / ".claude/settings.json"
 # A settings file is copied here before its hooks change.
 BACKUPS = Path.home() / ".local/state/pylon/settings-backup"
 # A skill's hooks, in the shape of the settings' "hooks": event -> groups.
-HOOKS_FILE = "claude-hooks.json"
-# A hook command that runs code from ~/.claude/skills/<name>/ belongs to that skill.
-HOOK_OWNER = re.compile(r"~/\.claude/skills/([^/\s]+)/")
+# Codex's hooks.json has the same shape under its "hooks" key.
+HOOKS_FILE = "hooks.json"
+# Hook commands run code through this tool dir, which both tools have, so a
+# skill's hooks need not change when Codex is served too.
+HOOK_DIR = TOOL_DIRS[1]
+# A hook command that runs code from ~/.agents/skills/<name>/ belongs to that skill.
+HOOK_OWNER = re.compile(r"~/\.agents/skills/([^/\s]+)/")
 
 
 class Error(Exception):
@@ -219,7 +224,7 @@ def skill_hooks(checkouts, skill_dir):
             wanted[link.name] = hooks
         else:
             problems.append(f"{path} is not valid or runs code outside "
-                            f"~/.claude/skills/{link.name}/; skipped")
+                            f"~/.agents/skills/{link.name}/; skipped")
     return wanted, problems
 
 
@@ -282,7 +287,7 @@ def write_settings(path, data, backup_dir):
 def sync_hooks(wanted, checkouts, skill_dir, settings, backups):
     """Make every settings file hold exactly the wanted skill hooks.
 
-    A hook is ours when it runs code under ~/.claude/skills/<name>/ and <name>
+    A hook is ours when it runs code under ~/.agents/skills/<name>/ and <name>
     is our link or gone; other hooks and settings are left alone. Returns the
     problems found; a file that can't be read or written is skipped.
     """

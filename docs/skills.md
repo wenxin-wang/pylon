@@ -6,9 +6,12 @@
   每个来源有一份只跟 `main` 的检出，所以人在自己的工作副本里切分支，不会改变 agent
   读到的 skill。来源都是策略仓库，现在只有一个：agent-policy；来源列表在
   `src/python/pylon/skills.py` 的 `SOURCES`。
-- **hook**：全局 skill 要 Claude Code 在开工、压缩等时候跑它的脚本，就在自己目录里放一个
-  `claude-hooks.json`，格式和 Claude Code 配置里的 `"hooks"` 一样。这个模块把它合并进
-  `~/.claude/settings.json`：用户级的 hook 只能写在这个文件里。Codex 还没接。
+- **hook**：全局 skill 要工具在开工、压缩等时候跑它的脚本，就在自己目录里放一个
+  `hooks.json`，格式和 Claude Code 配置里的 `"hooks"` 一样，Codex 的 `hooks.json` 也是这个
+  格式。命令通过 `~/.agents/skills/<name>/` 跑脚本，两个工具都有这个链接。这个模块把它合并进
+  `~/.claude/settings.json`：用户级的 hook 只能写在这个文件里。Codex 还没接：它要人在
+  `/hooks` 里逐个信任、hook 一改就要重新信任，而且现在唯一要 hook 的 session-notes 有一半
+  （压缩前提醒）在 Codex 里不起作用。
 - **偏好**：策略仓库里的 `preferences.md`，链接成各工具的全局说明文件，每个 session
   都会加载。见 [agent-policy](projects/261120-agent-policy/README.md)。
 - **项目 skill** 不归这个模块管：只在一个仓库里用的 skill 放在那个仓库的
@@ -45,7 +48,7 @@ PYTHONPATH=src/python python3 -m unittest discover -s test/python/pylon
     `preferences.md`。已有的文件不覆盖，跳过并报错；`preferences.md` 删掉后链接也删掉。
   - Claude Code 的配置：`~/.claude/settings.json`，和旁边所有 `settings.json.*` 变体。人用
     `settings.json` 链到其中一个来切换，所以链接本身不动，只顺着链接改真正的文件。只增删
-    这个模块装的 hook：命令里跑的是 `~/.claude/skills/<name>/` 下的代码，而 `<name>` 是这个
+    这个模块装的 hook：命令里跑的是 `~/.agents/skills/<name>/` 下的代码，而 `<name>` 是这个
     模块的链接，或者已经不存在（skill 删了，hook 跟着删）。别的 hook 和设置都不动。
     skill 声明的 hook 只能跑它自己目录里的代码，否则跳过并报错。
   - 内容有变才写：先把原文件复制到

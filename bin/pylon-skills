@@ -16,7 +16,7 @@ def main():
     args = parser.parse_args()
     checkouts = [skills.CHECKOUTS / name for name in skills.SOURCES]
     policy = skills.CHECKOUTS / skills.POLICY
-    skill_dir = skills.TOOL_DIRS[0]
+    skill_dir = skills.HOOK_DIR
     hook_args = (checkouts, skill_dir, skills.CLAUDE_SETTINGS)
     problems = []
     try:
