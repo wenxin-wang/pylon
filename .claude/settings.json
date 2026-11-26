@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "f=~/.claude/skills/workshop/scripts/llm_wiki_index.py; if [ -f \"$f\" ]; then python3 \"$f\"; else echo \"llm-wiki: index script not found at $f; install the workshop skill\"; fi"
+            "command": "f=~/.agents/skills/workshop/scripts/llm_wiki_index.py; if [ -f \"$f\" ]; then python3 \"$f\"; else echo \"llm-wiki: index script not found at $f; install the workshop skill\"; fi"
           }
         ]
       }
