@@ -5,9 +5,10 @@ sources:
   - https://code.claude.com/docs/en/hooks
   - https://github.com/anthropics/claude-code/issues/16538
   - https://learn.chatgpt.com/docs/config-file/config-reference
+  - https://learn.chatgpt.com/docs/hooks
   - https://www.turboai.dev/docs/codex/hooks
   - https://codex.danielvaughan.com/2026/04/15/codex-cli-hooks-complete-guide-events-policy-patterns/
-checked: 2026-11-23
+checked: 2026-11-26
 ---
 
 # Agent hooks
@@ -25,8 +26,16 @@ checked: 2026-11-23
 
 ## Codex CLI
 
-- Feature flag `features.hooks` (old name `features.codex_hooks`); hooks in
-  `hooks.json` or inline `[hooks]` in `config.toml`.
+- Hooks are on by default; `features.hooks = false` (old name
+  `features.codex_hooks`) turns them off.
+- Hooks live in `hooks.json` or inline `[hooks]` in `config.toml`, per layer:
+  user `~/.codex/` (`$CODEX_HOME`), system `/etc/codex/`, project `.codex/`, and
+  plugins. Matching hooks from all layers run; project layers load only when the
+  project is trusted. `hooks.json` has the same shape as
+  Claude Code's settings: `{"hooks": {event: [{"matcher", "hooks": [handler]}]}}`.
+- User and project hooks run only after the human trusts them in `/hooks`; trust is
+  recorded per hook hash, so a changed hook is skipped until trusted again. Managed
+  hooks (system, MDM, cloud, `requirements.toml`) are trusted by policy.
 - Events: PreModelRequest, PostModelRequest, PreToolUse, PermissionRequest,
   PostToolUse, PreCompact, PostCompact, SessionStart, SessionEnd, SubagentStart,
   SubagentStop, UserPromptSubmit, Stop, Interrupt.

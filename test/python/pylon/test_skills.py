@@ -1,7 +1,12 @@
+import json
+import os
+import shutil
+import stat
 import subprocess
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from pylon import skills
 
@@ -156,6 +161,160 @@ class PreferencesTest(unittest.TestCase):
         skills.remove_preferences(self.checkout, self.files)
         self.assertTrue(self.files[0].is_file())
         self.assertFalse(self.files[1].exists())
+
+
+HOOK = "python3 ~/.agents/skills/notes/scripts/notes.py"
+
+
+class HooksTest(unittest.TestCase):
+    def setUp(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        self.tmp = Path(tmp.name)
+        self.checkout = self.tmp / "agent-policy"
+        self.checkouts = [self.checkout]
+        self.skill_dir = self.tmp / "agents/skills"
+        self.backups = self.tmp / "backups"
+        self.add_skill("notes", {"SessionStart": [
+            {"hooks": [{"type": "command", "command": HOOK}]}]})
+        # settings.json links to one of its variants, as on the human's hosts.
+        self.settings = self.tmp / "claude/settings.json"
+        self.variants = [self.tmp / "claude/settings.json.a",
+                         self.tmp / "claude/settings.json.b"]
+        own = {"type": "command", "command": "echo mine"}
+        self.own = {"matcher": "Bash", "hooks": [own]}
+        self.skill_dir.mkdir(parents=True)
+        self.settings.parent.mkdir()
+        self.variants[0].write_text(json.dumps(
+            {"model": "x", "hooks": {"PreToolUse": [self.own]}}))
+        self.variants[1].write_text(json.dumps({"model": "y"}))
+        self.settings.symlink_to(self.variants[0].name)
+
+    def add_skill(self, name, hooks):
+        skill = self.checkout / "skills" / name
+        skill.mkdir(parents=True)
+        (skill / "SKILL.md").write_text(f"# {name}\n")
+        if hooks is not None:
+            (skill / "hooks.json").write_text(json.dumps(hooks))
+
+    def update(self):
+        skills.link_skills(self.checkouts, [self.skill_dir])
+        wanted, problems = skills.skill_hooks(self.checkouts, self.skill_dir)
+        return problems + self.sync(wanted)
+
+    def sync(self, wanted):
+        return skills.sync_hooks(wanted, self.checkouts, self.skill_dir,
+                                 self.settings, self.backups)
+
+    def read(self, path):
+        return json.loads(path.read_text())
+
+    def commands(self, path, event="SessionStart"):
+        groups = self.read(path).get("hooks", {}).get(event, [])
+        return [h["command"] for g in groups for h in g["hooks"]]
+
+    def test_installs_into_every_variant(self):
+        self.assertEqual(self.update(), [])
+        for variant in self.variants:
+            self.assertEqual(self.commands(variant), [HOOK])
+        self.assertEqual(os.readlink(self.settings), "settings.json.a")
+        data = self.read(self.variants[0])
+        self.assertEqual(data["model"], "x")
+        self.assertEqual(data["hooks"]["PreToolUse"], [self.own])
+
+    def test_backs_up_before_writing(self):
+        before = self.variants[0].read_text()
+        self.update()
+        [stamp] = self.backups.iterdir()
+        self.assertEqual(stat.S_IMODE(stamp.stat().st_mode), 0o700)
+        backup = stamp / self.variants[0].relative_to("/")
+        self.assertEqual(backup.read_text(), before)
+
+    def test_private_file_stays_private(self):
+        os.chmod(self.variants[0], 0o600)
+        modes = []
+        copymode = shutil.copymode
+
+        def record(src, dst):
+            modes.append(stat.S_IMODE(os.stat(dst).st_mode))
+            copymode(src, dst)
+
+        with mock.patch.object(skills.shutil, "copymode", record):
+            self.update()
+        self.assertEqual(modes[0], 0o600)
+        self.assertEqual(stat.S_IMODE(self.variants[0].stat().st_mode), 0o600)
+
+    def test_second_update_writes_nothing(self):
+        self.update()
+        mtimes = [v.stat().st_mtime_ns for v in self.variants]
+        stamps = list(self.backups.iterdir())
+        self.assertEqual(self.update(), [])
+        self.assertEqual([v.stat().st_mtime_ns for v in self.variants], mtimes)
+        self.assertEqual(list(self.backups.iterdir()), stamps)
+
+    def test_removed_skill_loses_its_hooks(self):
+        self.update()
+        for f in (self.checkout / "skills/notes").iterdir():
+            f.unlink()
+        (self.checkout / "skills/notes").rmdir()
+        self.assertEqual(self.update(), [])
+        self.assertEqual(self.commands(self.variants[1]), [])
+        self.assertNotIn("hooks", self.read(self.variants[1]))
+        self.assertEqual(self.read(self.variants[0])["hooks"],
+                         {"PreToolUse": [self.own]})
+
+    def test_remove_keeps_other_hooks(self):
+        foreign = {"type": "command", "command": "~/.agents/skills/mine/run"}
+        (self.skill_dir / "mine").mkdir()
+        data = self.read(self.variants[0])
+        data["hooks"]["SessionStart"] = [{"hooks": [foreign]}]
+        self.variants[0].write_text(json.dumps(data))
+        self.update()
+        skills.remove_links(self.checkouts, [self.skill_dir])
+        self.assertEqual(self.sync({}), [])
+        self.assertEqual(self.commands(self.variants[0]), [foreign["command"]])
+        self.assertEqual(self.read(self.variants[0])["hooks"]["PreToolUse"],
+                         [self.own])
+
+    def test_hook_must_run_its_own_skill(self):
+        self.add_skill("bad", {"SessionStart": [{"hooks": [
+            {"type": "command", "command": "rm -rf ~/.agents/skills/notes/"}]}]})
+        problems = self.update()
+        self.assertEqual(len(problems), 1)
+        self.assertEqual(self.commands(self.variants[1]), [HOOK])
+
+    def test_bad_hooks_file_removes_installed_hooks(self):
+        self.update()
+        (self.checkout / "skills/notes/hooks.json").write_text("{not json")
+        self.assertEqual(len(self.update()), 1)
+        for variant in self.variants:
+            self.assertEqual(self.commands(variant), [])
+
+    def test_unwritable_file_is_skipped(self):
+        locked = self.tmp / "locked"
+        locked.mkdir()
+        (locked / "settings.json").write_text("{}")
+        os.chmod(locked, 0o555)
+        self.addCleanup(os.chmod, locked, 0o755)
+        (self.tmp / "claude/settings.json.c").symlink_to(locked / "settings.json")
+        problems = self.update()
+        self.assertEqual(len(problems), 1)
+        self.assertIn(HOOK, problems[0])
+        self.assertEqual((locked / "settings.json").read_text(), "{}")
+        self.assertEqual(self.commands(self.variants[1]), [HOOK])
+
+    def test_broken_files_are_left_alone(self):
+        self.variants[1].write_text("{not json")
+        (self.tmp / "claude/settings.json.c").symlink_to("missing")
+        problems = self.update()
+        self.assertEqual(len(problems), 2)
+        self.assertEqual(self.variants[1].read_text(), "{not json")
+        self.assertEqual(self.commands(self.variants[0]), [HOOK])
+
+    def test_status_names_the_skills(self):
+        self.update()
+        lines = skills.hooks_status(self.checkouts, self.skill_dir, self.settings)
+        self.assertEqual(lines, [f"{v.resolve()}: hooks notes" for v in self.variants])
 
 
 if __name__ == "__main__":

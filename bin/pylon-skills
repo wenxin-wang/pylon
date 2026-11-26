@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Install global agent skills and the human's preferences. See docs/skills.md."""
+"""Install global agent skills, their hooks and the human's preferences. See docs/skills.md."""
 
 import argparse
 import sys
@@ -16,6 +16,8 @@ def main():
     args = parser.parse_args()
     checkouts = [skills.CHECKOUTS / name for name in skills.SOURCES]
     policy = skills.CHECKOUTS / skills.POLICY
+    skill_dir = skills.HOOK_DIR
+    hook_args = (checkouts, skill_dir, skills.CLAUDE_SETTINGS)
     problems = []
     try:
         if args.command == "update":
@@ -23,11 +25,16 @@ def main():
                 skills.update_checkout(skills.CHECKOUTS / name, remote)
             problems += skills.link_skills(checkouts, skills.TOOL_DIRS)
             problems += skills.link_preferences(policy, skills.GLOBAL_FILES)
+            wanted, found = skills.skill_hooks(checkouts, skill_dir)
+            problems += found
+            problems += skills.sync_hooks(wanted, *hook_args, skills.BACKUPS)
         elif args.command == "remove":
             skills.remove_links(checkouts, skills.TOOL_DIRS)
             skills.remove_preferences(policy, skills.GLOBAL_FILES)
+            problems += skills.sync_hooks({}, *hook_args, skills.BACKUPS)
         for line in (skills.status(checkouts, skills.TOOL_DIRS)
-                     + skills.preferences_status(policy, skills.GLOBAL_FILES)):
+                     + skills.preferences_status(policy, skills.GLOBAL_FILES)
+                     + skills.hooks_status(*hook_args)):
             print(line)
     except skills.Error as e:
         print(e, file=sys.stderr)

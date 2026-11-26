@@ -74,9 +74,10 @@ contained-agent-v2 再接，和 llm-wiki 的 hook 一样。
 
 代码放在策略仓库里，做成全局 skill `session-notes`：`SKILL.md` 写 agent 怎么用笔记，hook
 脚本放在它的 `scripts/` 下，和 llm-wiki 的索引脚本一样。skills 模块会把它装好，路径固定、
-只跟 `main`；pylon 没有只跟 `main` 的检出，hook 找不到一个固定的脚本路径。hook 配置先由人
-手动贴进 `~/.claude/settings.json`；要自动写，再交给 skills 模块，那会扩大它的影响范围，
-到时再问人。
+只跟 `main`；pylon 没有只跟 `main` 的检出，hook 找不到一个固定的脚本路径。skill 在
+`hooks.json` 里写明它要的 hook，skills 模块把它写进 `~/.claude/settings.json`：用户级
+的 hook 只能放在这个文件里，人又有好几个配置变体，手贴容易漏。代价是 skills 模块从只建链接
+变成改人的配置，见 [skills](../../skills.md#影响范围)。
 
 以后笔记也可能被当成 agent 之间传话的地方。那很像之前作废的信箱设计，到时要防止又做复杂。
 
