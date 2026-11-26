@@ -1,8 +1,8 @@
 # agent-policy 进度
 
-状态：进行中。
+状态：挂起：第 2 步跟 contained-agent-v2 一起做，见 [uraj-migration](../261119-uraj-migration/README.md)。
 
 当前：第 2 步。
 
 1. ~~偏好~~ 已完成：私有仓库里放 `preferences.md`（agent-policy PR #1）；skills 模块同步它并链接到各工具的全局说明文件（pylon PR #5）。
-2. 每个 workshop 的策略：先定按什么分和格式，再做机器人账号、ruleset、带批准校验的同步，策略内容迁进来。
+2. 权限策略：跟 contained-agent-v2 一起做。定按什么分和格式，agent 用 GitHub App 身份，同步时校验批准，策略内容迁进来。
