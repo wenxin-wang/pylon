@@ -58,6 +58,44 @@ UID 的镜像，盒子里访问发布的端口是透明的。
 嵌套容器经盒子里的 pasta 出网是否同样受这些规则约束（按理是）。正式实现对 TCP 用
 `reject with tcp reset`，让程序立刻失败，而不是等超时。
 
+## 文件怎么进盒子
+
+- 仓库默认在盒子里 clone（11/27）：盒子开始时的那个 workshop 在建盒子时 clone，运行中
+  加的仓库由盒子里的 agent 用 gh 现场 clone，两者是同一种方式。
+- 超大的、要用自己的工具管理的仓库（例如一组 monorepo）另想办法，接入时再定，默认的
+  clone 不套用到它们身上。候选之一是 reflink 拷贝主机上的 checkout：uraj 实测拷 uraj
+  用 0.04 s、btrfs 上新占用为 0，拷完第一次 `git status` 要 1 s 左右（stat 缓存失效），
+  大仓库没测（uraj 的 [box-network-measure-20261115][network-measure]）。
+- 盒子里的 `.git` 可写。主机不在盒子里的仓库上运行 git，盒子和外界只经远端 push、fetch
+  交换。
+- 路径沿用主机的 layout：仓库放在和主机相同的绝对路径，HOME 也是同一路径。HOME 是合成
+  的，只放声明过的东西。
+- worktree 用盒子里 Paseo 建的（11/27），一个 session 一个；删盒子时一起删。
+
+为什么：
+
+- 默认 clone，不默认 reflink：只有一种进盒子的方式；盒子不依赖主机上的 checkout，主机
+  本地的 `out/`、`tmp/`、`.git/config` 不会带进去，`box-manager` 也不用读主机上的仓库。
+  代价：主机上没 push 的提交和没提交的改动带不进去，要先 push；私有仓库要等 agent 的
+  GitHub 身份就位才能 clone，不过盒子要 push 本来就要这个身份。
+- 用 Paseo 的 worktree，少维护一套逻辑和代码。uraj 原来定的是 agent 自己建、不放在
+  Paseo 的 worktree 根目录下，理由没有记下来；推测是当时还在比较路线 A，daemon 留在
+  主机上，用它建 worktree 就成了主机在盒子的仓库上跑 git。路线 C 下盒子 daemon 的
+  worktree 根目录在盒子里，这条理由不成立了。代价：worktree 在盒子 daemon 的
+  `$PASEO_HOME` 下面，重建盒子要连它一起保留；`$PASEO_HOME` 本来就要保留 `server-id`。
+  以后换掉 Paseo 时再重新考虑。
+
+### 共享路径
+
+有的目录不进盒子的仓库副本，直接把主机上的原目录挂到盒子里的同一路径，例如
+traj-record 的 `instances`、`out`：
+
+- 共享路径是盒子策略里的一类授权，写在 agent-policy 里。仓库里可以放一份默认清单，但
+  只是建议。
+- 下面不能有 `.git`，挂载前检查。
+- 运行中追加，走和其他运行中授权一样的挂载方式和确认。
+- 多个盒子挂同一份时，要按 session 分子目录。
+
 [uraj-v2]: https://github.com/wenxin-wang/uraj/blob/1e434fd433fb872225f2d20cca9df174ff278d77/docs/projects/261115-contained-agent-v2/README.md
 [box-prototype]: https://github.com/wenxin-wang/uraj/blob/1e434fd433fb872225f2d20cca9df174ff278d77/docs/projects/261115-contained-agent-v2/box-prototype-design-20261115.md
 [zombie-debug]: https://github.com/wenxin-wang/uraj/blob/1e434fd433fb872225f2d20cca9df174ff278d77/docs/projects/261115-contained-agent-v2/pasta-zombie-debug-20261115.md
