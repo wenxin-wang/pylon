@@ -13,8 +13,9 @@ sources:
   - https://github.com/getpaseo/paseo/blob/v0.15.4/packages/app/src/utils/assistant-image-source.ts#L9-L35
   - https://github.com/getpaseo/paseo/blob/v0.15.4/packages/server/src/server/agent/providers/provider-image-output.ts#L31-L48
   - https://github.com/getpaseo/paseo/blob/v0.15.4/packages/server/src/server/agent/providers/codex-app-server-agent.ts#L3288-L3291
-  - https://github.com/getpaseo/paseo/blob/v0.15.4/packages/app/src/hooks/use-fork-agent.ts#L92-L190
-  - https://github.com/getpaseo/paseo/blob/v0.15.4/packages/server/src/server/agent/activity-curator.ts#L291-L375
+  - https://github.com/getpaseo/paseo/blob/v0.17.6/packages/app/src/hooks/use-fork-agent.ts#L93-L193
+  - https://github.com/getpaseo/paseo/blob/v0.17.6/packages/server/src/server/agent/activity-curator.ts#L239-L388
+  - https://github.com/getpaseo/paseo/blob/v0.17.6/packages/server/src/server/agent/prompt-attachments.ts#L7-L38
   - https://github.com/getpaseo/paseo/blob/v0.15.4/packages/server/src/server/agent/providers/claude/rewind.ts#L123-L140
   - https://github.com/getpaseo/paseo/blob/v0.15.4/packages/server/src/server/agent/providers/codex/rewind.ts#L44-L112
   - https://github.com/getpaseo/paseo/blob/v0.15.4/CHANGELOG.md#L198-L213
@@ -39,7 +40,7 @@ sources:
   - https://github.com/wenxin-wang/uraj/blob/1e434fd433fb872225f2d20cca9df174ff278d77/docs/paseo/daemon-guide.md
   - https://github.com/wenxin-wang/uraj/blob/1e434fd433fb872225f2d20cca9df174ff278d77/docs/contained-agent/container-guide.md
   - https://github.com/wenxin-wang/uraj/blob/1e434fd433fb872225f2d20cca9df174ff278d77/docs/projects/261115-contained-agent-v2/paseo-connected-hosts-review-20261115.md
-checked: 2026-11-24
+checked: 2026-11-27
 ---
 
 # Paseo
@@ -48,7 +49,8 @@ Paseo (https://github.com/getpaseo/paseo) is the app and daemon the human uses t
 Claude Code and Codex agents. Checked against source at v0.15.4 (2026-11-10, the
 deployed version) and v0.17.3 (2026-11-23 01:46 UTC+8); each fact holds in both unless
 noted. v0.17.4 followed on 2026-11-24 and does not touch the checked code paths beyond
-small refactors. Links below point at the v0.15.4 tag. What uraj does around Paseo
+small refactors. Links below point at the v0.15.4 tag, except the fork section,
+rechecked at v0.17.6 (2026-11-27). What uraj does around Paseo
 (daemon container, broker, mounts) is in uraj's own docs, linked where needed.
 
 ## New worktrees from the app start from origin, not local main
@@ -107,14 +109,32 @@ small refactors. Links below point at the v0.15.4 tag. What uraj does around Pas
 ## "Fork" is a text summary; Rewind forks the session
 
 - Fork in a new tab or new workspace (the split icon under a reply) does **not** copy
-  the provider session. It builds a `<chat-history-summary>` text attachment and puts it
-  in a draft for a fresh agent with the same provider, mode and model, and the same cwd
-  (a new workspace gets the cwd moved into it). The summary holds `[User]` and
-  `[Assistant]` messages and one-line tool calls (`[<tool name>] <summary>`, the summary
-  at most 200 characters); reasoning is left out, the whole text is capped at 100,000
-  characters, and older entries are dropped first
-  ([activity-curator.ts](https://github.com/getpaseo/paseo/blob/v0.15.4/packages/server/src/server/agent/activity-curator.ts#L291-L375),
-  [use-fork-agent.ts](https://github.com/getpaseo/paseo/blob/v0.15.4/packages/app/src/hooks/use-fork-agent.ts#L92-L190)).
+  the provider session. The app asks the daemon for a `<chat-history-summary>` text
+  attachment and puts it in a draft for a fresh agent with the same provider, mode,
+  model, thinking option and cwd (a new workspace gets the cwd moved into it)
+  ([use-fork-agent.ts](https://github.com/getpaseo/paseo/blob/v0.17.6/packages/app/src/hooks/use-fork-agent.ts#L93-L193)).
+- How the summary is built (v0.17.6,
+  [activity-curator.ts](https://github.com/getpaseo/paseo/blob/v0.17.6/packages/server/src/server/agent/activity-curator.ts#L239-L388)):
+  - It takes the timeline up to the chosen reply, or up to now when forked from a
+    running turn; a tool call that spans the cut is copied as still running.
+  - Only three kinds go in, one line each: `[User] <text>`, `[Assistant] <text>` (the
+    visible reply, in full), and tool calls as `[<tool name>] <summary>` (the summary,
+    usually the command, at most 200 characters). Tool output, reasoning, todos,
+    errors and compactions are left out.
+  - An English header wraps it: `Chat history from a previous Paseo agent.`, then
+    `Source agent: <title>` and `Source directory: <cwd>`.
+  - The whole text is capped at 100,000 characters: the oldest entries are dropped and
+    `[Earlier chat history omitted]` is put first; if even the newest entry does not
+    fit, its middle is cut to `[Message truncated]`.
+- When the human sends the draft, the summary and the typed text go into the **same
+  first user message**, summary first
+  ([prompt-attachments.ts](https://github.com/getpaseo/paseo/blob/v0.17.6/packages/server/src/server/agent/prompt-attachments.ts#L7-L38)).
+  The new agent starts a new Claude Code session (new session id, SessionStart hooks
+  and CLAUDE.md run again; seen in a transcript on 2026-11-27). It sees which commands
+  ran but not their results, and its earlier replies only as quoted text inside a
+  user message, not as its own turns. One effect: an agent forked from a Chinese
+  session that slips into English has no Chinese turns of its own to pull it back,
+  and may stay in English for the rest of the session (seen 2026-11-27).
 - Rewind (conversation or both, at a user message) is the real fork, and it keeps the
   **same Paseo agent**, rebinding it to the fork. Claude: the Agent SDK `forkSession`
   with `upToMessageId` writes a new transcript beside the old one
