@@ -96,6 +96,9 @@ v2 的设计 11/15 到 11/17 在 uraj 里讨论过，做了原型和实测（见
   仍能在主机上开终端、跑 git（在 app 里随便打开一个主机目录就行），经 relay 配对的 app
   等于拿到主机上人的 shell。代价：沿用 v1 的容器服务。维护嫌麻烦时可以改成不关，代价是
   app 和 daemon 自身的缺陷都直通主机。
+- 11/27：仓库默认在盒子里 clone，超大的、要用自己的工具管理的仓库另想办法；worktree 用
+  盒子里 Paseo 建的。推翻 uraj 11/15 的 reflink 拷贝和“不放 Paseo 的 worktree 根目录”，
+  见 [box-design](box-design.md) 的“文件怎么进盒子”。
 
 ## 文档
 
