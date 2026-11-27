@@ -1,6 +1,6 @@
 # agent-policy 进度
 
-状态：挂起：第 2 步跟 contained-agent-v2 一起做，见 [uraj-migration](../261119-uraj-migration/README.md)。
+状态：挂起：第 2 步跟 contained-agent-v2 一起做，见 [contained-agent-v2](../261126-contained-agent-v2/README.md)。
 
 当前：第 2 步。
 

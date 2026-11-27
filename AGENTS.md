@@ -22,6 +22,8 @@ disagree, this file wins.
 - Projects (status in each `TODO.md`):
   - [agent-policy](docs/projects/261120-agent-policy/README.md): a private repo for
     agents' standing instructions and permissions.
+  - [contained-agent-v2](docs/projects/261126-contained-agent-v2/README.md): agents work
+    in long-lived boxes with Podman inside, one box per piece of work.
   - [reflection](docs/projects/261122-reflection/README.md): agents review past work on
     a timer and turn lessons into PRs for the human.
   - [uraj-migration](docs/projects/261119-uraj-migration/README.md): moving modules
