@@ -55,16 +55,15 @@ v2 的设计 11/15 到 11/17 在 uraj 里讨论过，做了原型和实测（见
 - **运行中加的仓库要不要人确认。** 盒子里的 agent 用 gh 现场 clone 别的仓库，GitHub App
   的令牌就得覆盖这些仓库：盒子策略里事先列出能访问哪些仓库，还是 agent 运行中申请、人确认。
   迁到 agent 的 GitHub 身份那一节时定。
-- **盒子由哪个主机服务起。** uraj 的原型借用了 v1 的 `contained-podman`：一个用户级
-  Shepherd 服务，跑一个长期的 rootless `podman system service`，v1 的 session 经它的
-  socket 起 Podman 运行时。之所以要它，是因为 Paseo broker 的 user namespace 里用不了
-  subordinate ID，会话结束时 PID namespace 还会杀掉从会话里起的容器，所以只能由 broker
-  外面的主机服务来起。v2 里起盒子、运行中改授权的本来就是盒子管理服务，也在 broker 外面。
-  - A（建议）：不要单独的 Podman 服务，盒子管理服务自己调 rootless `podman` 起盒子，
-    服务叫 `box-manager`。少一个服务和一个 socket。代价：实测时挂载的入口是“主机服务的
-    rootless user namespace”，换成盒子管理服务自己调 `podman` 后应该是同一个 namespace
-    （rootless Podman 的所有容器共用一个），但没测。
-  - B：保留一个 Podman API 服务，盒子管理服务经 socket 用它。代价：多一个服务，名字也要改。
+- **v1 退役后，主机的 Paseo daemon 还关不关在容器里。** v1 把它关进 Guix 容器，是因为它
+  能读写项目目录和凭据。退役后它不起 agent、不放项目，只经 unix socket 连各盒子的
+  daemon；登记盒子是盒子管理服务调 `paseo host add`，daemon 不用反过来找盒子管理服务。
+  但它仍能在主机上开终端、跑 git（在 app 里随便打开一个主机目录就行），经 relay 配对的
+  app 等于拿到主机上人的 shell。
+  - A：继续关着，只挂 `~/.paseo` 和放盒子 socket 的目录。代价：沿用 v1 的容器服务，多
+    维护一个挂载。
+  - B：不关，用户级 Shepherd 服务直接跑。代价：app 和 daemon 自身的缺陷都直通主机。
+  - 过渡期 v1 还要它在容器里，所以到 v1 退役时再定。
 - **盒子策略在 agent-policy 里怎么写**：每个盒子一个文件还是别的分法，要不要 CI。迁到
   盒子策略那一节时定。
 - uraj 里还开着的几条（盒子用容器还是 microVM、部署接口放不放进本项目、创建 workspace
@@ -89,6 +88,17 @@ v2 的设计 11/15 到 11/17 在 uraj 里讨论过，做了原型和实测（见
 - 11/27：每个盒子默认有 Podman，agent 测试方便，也只有一种盒子要测。代价：每个盒子都有
   一段 subordinate ID、放宽的 seccomp（允许 `mount`、`unshare`、`setns` 等）和
   `/dev/fuse`，agent 能在盒子里建 user namespace，碰到的内核接口更多。
+- 11/27：盒子由盒子管理服务自己调 rootless `podman` 起，服务叫 `box-manager`，不再要
+  单独的 Podman 服务（uraj 原型借用的是 v1 的 `contained-podman`：一个跑
+  `podman system service` 的用户级 Shepherd 服务，v1 要它是因为 Paseo broker 的
+  user namespace 里用不了 subordinate ID）。少一个服务和一个 socket。没测过：运行中加
+  挂载时进入的 user namespace，换成 `box-manager` 自己调 `podman` 后应该还是同一个
+  （rootless Podman 的容器共用一个）。
+- 11/27：盒子里的 session 不经 Paseo broker（v1 里主机 daemon 经它在主机上用
+  contained-agent 起 agent）：盒子里的 daemon 直接起 agent，盒子本身就是沙箱。broker
+  在 v2 稳定后和 v1 一起退役，不迁进 pylon；它的共用 SSH agent 在迁 SSH 那一节时另定。
+- 11/27：v1 退役后不留 host 层（agent 直接跑在主机上的那一档）：主机的 Paseo daemon 不配
+  provider，只连各盒子。以后有要主机权限的需求，起一个带特权的盒子；现在还没有这种需求。
 
 ## 文档
 

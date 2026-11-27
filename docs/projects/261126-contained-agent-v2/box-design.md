@@ -6,9 +6,9 @@
 
 ## 盒子怎么起
 
-盒子由主机上一个用户级的服务（哪个服务，见 README 的待定）用 rootless Podman 起，
-rootfs 换成 Guix 的：一个几乎空的目录，只读挂 `/gnu/store`，软件全部来自一个 Guix
-profile，不用 Fedora 镜像。原型和实测见 uraj 的
+盒子由盒子管理服务 `box-manager` 直接调 rootless Podman 起（11/27），rootfs 换成
+Guix 的：一个几乎空的目录，只读挂 `/gnu/store`，软件全部来自一个 Guix profile，不用
+Fedora 镜像。原型和实测见 uraj 的
 [box-prototype-design-20261115][box-prototype]：嵌套 Podman 跑得起 Postgres 这类切换
 UID 的镜像，盒子里访问发布的端口是透明的。
 
