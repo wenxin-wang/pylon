@@ -96,8 +96,39 @@ traj-record 的 `instances`、`out`：
 - 运行中追加，走和其他运行中授权一样的挂载方式和确认。
 - 多个盒子挂同一份时，要按 session 分子目录。
 
+## 访问盒子里的服务
+
+- 按需转发：agent 要让主机访问盒子里的某个端口时，请盒子管理服务开一个转发，接到主机的
+  `127.0.0.1:<端口>`。端口号尽量和盒子里相同，冲突时另分一个。
+- 只开在主机回环上，不算授权，agent 可以自己开，不用确认。
+- 做法（11/27）：能用 pesto 就用 pesto，不行就用 socat。
+  - pesto：passt 带的客户端，能在运行中给 pasta 增删端口转发。`box-manager` 起盒子时给
+    盒子的 pasta 传 `-c <控制 socket>`，开转发就是 `pesto -A -t 127.0.0.1/<端口>`，
+    关掉用 `-D`。盒子里和主机上都不用多跑进程。
+  - socat：盒子里用 socat 把端口转成 `/run/box/` 下的 unix socket，和路线 C 暴露
+    `paseo.sock` 一样；`box-manager` 在主机上把它接到回环端口。代价：每个转发在盒子里有
+    一个 socat 进程，`box-manager` 要为每个端口跑一个回环 TCP 到 unix socket 的转接。
+- 以后再做：按 `*.localhost` 分发 HTTP 的反向代理；从别的机器访问。
+
+为什么：
+
+- 建盒子时用 `-p` 发布、或者 pasta 的 `-t auto`，都不采用：运行中加不了，多个盒子的端口
+  会冲突。
+- pesto 从 passt 2026_05_07 起有（[Fedora 的更新说明][fedora-passt]、
+  [pesto(1)][pesto-man]）。主机系统固定的 Guix（uraj 的 `env/guix/channels-lock.scm`，
+  10/21 的提交）里 passt 还是 2024_12_11，没有 pesto；Guix 上游 10/24 升到了
+  2026_10_02。`box-manager` 用的 Podman 和 passt 可以来自另一个 channel 版本的 profile，
+  不用等主机系统升级。
+
+还没测：Podman 的 `--network pasta:...` 能不能把 `-c` 传给 pasta。Podman 自己用 pesto
+的地方是 rootless bridge 下的实验选项 `rootless_port_forwarder`
+（[podman#28478][podman-pesto]），不是 pasta 模式。第 3 步做原型时测；测不通就用 socat。
+
 [uraj-v2]: https://github.com/wenxin-wang/uraj/blob/1e434fd433fb872225f2d20cca9df174ff278d77/docs/projects/261115-contained-agent-v2/README.md
 [box-prototype]: https://github.com/wenxin-wang/uraj/blob/1e434fd433fb872225f2d20cca9df174ff278d77/docs/projects/261115-contained-agent-v2/box-prototype-design-20261115.md
 [zombie-debug]: https://github.com/wenxin-wang/uraj/blob/1e434fd433fb872225f2d20cca9df174ff278d77/docs/projects/261115-contained-agent-v2/pasta-zombie-debug-20261115.md
 [network-measure]: https://github.com/wenxin-wang/uraj/blob/1e434fd433fb872225f2d20cca9df174ff278d77/docs/projects/261115-contained-agent-v2/box-network-measure-20261115.md
 [grants-measure]: https://github.com/wenxin-wang/uraj/blob/1e434fd433fb872225f2d20cca9df174ff278d77/docs/projects/261115-contained-agent-v2/grants-measure-20261115.md
+[fedora-passt]: https://bodhi.fedoraproject.org/updates/FEDORA-2026-a9cb0876bc
+[pesto-man]: https://www.mankier.com/1/pesto
+[podman-pesto]: https://github.com/podman-container-tools/podman/pull/28478

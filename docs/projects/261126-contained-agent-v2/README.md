@@ -99,6 +99,8 @@ v2 的设计 11/15 到 11/17 在 uraj 里讨论过，做了原型和实测（见
 - 11/27：仓库默认在盒子里 clone，超大的、要用自己的工具管理的仓库另想办法；worktree 用
   盒子里 Paseo 建的。推翻 uraj 11/15 的 reflink 拷贝和“不放 Paseo 的 worktree 根目录”，
   见 [box-design](box-design.md) 的“文件怎么进盒子”。
+- 11/27：盒子里的服务按需转发到主机回环，能用 pesto 就用 pesto，不行就用 socat；见
+  [box-design](box-design.md) 的“访问盒子里的服务”。
 
 ## 文档
 
