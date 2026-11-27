@@ -32,7 +32,8 @@ UID 的镜像，盒子里访问发布的端口是透明的。
 - 盒子里有主机的 Guix daemon，agent 在盒子里装包、重新加载 manifest 不用申请授权。
   代价：Guix daemon 在主机上下载，绕过盒子的网络限制；接受这个风险，不给盒子单独做
   store。
-- 盒子里默认有没有 Podman，见 README 的待定。
+- 每个盒子默认有 Podman（11/27）：盒子有一段 subordinate ID、放宽的 seccomp 和
+  `/dev/fuse`。
 
 还没做：盒子的 seccomp 基础规则仍从 Fedora 镜像取，要换来源；盒子 rootfs 里的
 `/etc/subuid`、`/etc/passwd` 等要归盒子里的 root，原型里归 agent 自己的 UID。

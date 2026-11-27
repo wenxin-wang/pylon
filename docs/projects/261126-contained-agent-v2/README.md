@@ -65,14 +65,6 @@ v2 的设计 11/15 到 11/17 在 uraj 里讨论过，做了原型和实测（见
     rootless user namespace”，换成盒子管理服务自己调 `podman` 后应该是同一个 namespace
     （rootless Podman 的所有容器共用一个），但没测。
   - B：保留一个 Podman API 服务，盒子管理服务经 socket 用它。代价：多一个服务，名字也要改。
-- **盒子里默认要不要有 Podman。** 嵌套 Podman 要盒子有一段 subordinate ID、放宽
-  seccomp（允许 `mount`、`unshare`、`setns` 等）和 `/dev/fuse`，agent 能在盒子里建
-  user namespace，碰到的内核接口更多。
-  - A：默认有。代价：每个盒子都放宽这些；好处是 agent 看到的总是同一台开发机，只有一种
-    盒子要测。
-  - B（建议）：盒子策略里一个开关，要用 Podman 的盒子才打开；其余盒子用默认 seccomp、
-    不给 subordinate ID。代价：多一个策略键，两种启动参数都要测。pylon 这类只写代码、
-    文档的 workshop 用不到 Podman。
 - **盒子策略在 agent-policy 里怎么写**：每个盒子一个文件还是别的分法，要不要 CI。迁到
   盒子策略那一节时定。
 - uraj 里还开着的几条（盒子用容器还是 microVM、部署接口放不放进本项目、创建 workspace
@@ -94,6 +86,9 @@ v2 的设计 11/15 到 11/17 在 uraj 里讨论过，做了原型和实测（见
 - 11/26：单位盒子的策略（例如能 SSH 到哪些工作主机）也放进 agent-policy。
 - 11/26：设计按节迁，一节一个 PR；uraj 里的记录和 `exp/` 脚本留在 uraj，用固定 commit
   的链接引用。
+- 11/27：每个盒子默认有 Podman，agent 测试方便，也只有一种盒子要测。代价：每个盒子都有
+  一段 subordinate ID、放宽的 seccomp（允许 `mount`、`unshare`、`setns` 等）和
+  `/dev/fuse`，agent 能在盒子里建 user namespace，碰到的内核接口更多。
 
 ## 文档
 
