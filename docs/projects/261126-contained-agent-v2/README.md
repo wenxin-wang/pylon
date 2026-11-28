@@ -67,8 +67,12 @@ v2 的设计 11/15 到 11/17 在 uraj 里讨论过，做了原型和实测（见
 - 11/26：agent 的 GitHub 身份用 GitHub App，见
   [agent-policy](../261120-agent-policy/README.md) 的决定。
 - 11/28：盒子策略放在 agent-policy，一个盒子一个 TOML 文件；新提交在主机上生效前由
-  `pylon-skills update` 查批准和格式，agent-policy 的 CI 跑同一份校验。见
+  `pylon-skills update` 查批准和格式，每台主机上的定时器每分钟触发一次；agent-policy 的
+  CI 跑同一份校验。见
   [box-design](box-design.md) 的“盒子策略”。
+- 11/28：运行中加、撤授权只走改盒子策略的 PR；生效前检查通过后由 `box-manager` 对运行中的
+  盒子对账；撤销收不回的文件描述符只报告，重不重建盒子由人定。见
+  [box-design](box-design.md) 的“运行中改授权”。
 - 11/26：一个盒子开始时只放一个 workshop，限定工作范围。别的仓库运行中按需加：盒子里有
   Paseo 和 gh，一个任务要哪些仓库，人一开始也想不清。agent-policy 要改时，在盒子里现场
   clone，或者给它提 issue。
@@ -83,9 +87,8 @@ v2 的设计 11/15 到 11/17 在 uraj 里讨论过，做了原型和实测（见
 - 11/27：盒子由盒子管理服务自己调 rootless `podman` 起，服务叫 `box-manager`，不再要
   单独的 Podman 服务（uraj 原型借用的是 v1 的 `contained-podman`：一个跑
   `podman system service` 的用户级 Shepherd 服务，v1 要它是因为 Paseo broker 的
-  user namespace 里用不了 subordinate ID）。少一个服务和一个 socket。没测过：运行中加
-  挂载时进入的 user namespace，换成 `box-manager` 自己调 `podman` 后应该还是同一个
-  （rootless Podman 的容器共用一个）。
+  user namespace 里用不了 subordinate ID）。少一个服务和一个 socket。没测过的一处见
+  [box-design](box-design.md) 的“运行中改授权”。
 - 11/27：盒子里的 session 不经 Paseo broker（v1 里主机 daemon 经它在主机上用
   contained-agent 起 agent）：盒子里的 daemon 直接起 agent，盒子本身就是沙箱。broker
   在 v2 稳定后和 v1 一起退役，不迁进 pylon；它的共用 SSH agent 在迁 SSH 那一节时另定。

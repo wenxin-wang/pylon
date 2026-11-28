@@ -93,7 +93,7 @@ traj-record 的 `instances`、`out`：
 - 共享路径是盒子策略里的一类授权，写在 agent-policy 里。仓库里可以放一份默认清单，但
   只是建议。
 - 下面不能有 `.git`，挂载前检查。
-- 运行中追加，走和其他运行中授权一样的挂载方式和确认。
+- 运行中追加，和其他授权一样改盒子策略，见“运行中改授权”。
 - 多个盒子挂同一份时，要按 session 分子目录。
 
 ## 访问盒子里的服务
@@ -144,7 +144,12 @@ agent-policy 的新提交要过两道检查才在主机上生效。做在 `bin/p
    列出这段时间里 `main` 的每次变动（`before`、`after`、操作者、类型），要首尾相接覆盖
    整段，操作者都是仓库主人。
 3. 查格式：用盒子策略的校验检查 `origin/main` 上的 `boxes/`。
-4. 两道都过才快进，并打出哪些盒子的策略变了；有一道不过，就保留上一版并报错。
+4. 两道都过才快进，打出哪些盒子的策略变了，再让 `box-manager` 对运行中的盒子对账（见
+   “运行中改授权”）；有一道不过，就保留上一版并报错。
+
+触发（11/28）：每台主机上一个 Shepherd 定时器，每分钟用 `git ls-remote` 查一次 `main` 的
+提交号，变了才跑完整的 `update`；没变就只让 `box-manager` 对账，它发现提交没变就什么都不做。
+连不上网只记一行日志，下一分钟再试，网络恢复后自动补上。
 
 `box-manager` 只读这份检出，不读人的工作副本（里面可能有没合并的改动）。它读策略时再校验
 一遍兜底：某个文件不合格，只拒绝那个盒子新的授权操作，已经生效的不动。
@@ -171,14 +176,24 @@ agent-policy 里另有一个 CI workflow：checkout 公开的 pylon，跑同一�
   App 的 bot，都会被拦下。
 - 格式也在每台主机上查，不只靠 CI：写错的策略到不了主机，上一版保留着，盒子不会突然
   用不了。
+- 定时查，不用推送：定时器本身没有任何权限，检查都在 `update` 里，所以怎么触发都不影响
+  安全，选最简单的。GitHub webhook 要主机能被访问到；经 Paseo relay 叫醒主机上的监听程序
+  能做，但要写 relay 客户端、借用 Paseo 的公共 relay，断网时发来的消息还会丢，最后仍要定时
+  查兜底。self-hosted runner 不行：同仓库的 PR 也会在 runner 上跑 PR 分支里的 workflow，
+  等于让 agent 用人的权限在主机上执行代码。
 
 代价：
 
 - pylon 要先支持新的键，策略才能用；CI 用 pylon `main` 上的版本，主机上用本机装的那份。
 - skills 模块要调用盒子策略的校验代码，这段代码至少是“能管”级；`box-manager` 大概率是
-  “能讲”级，所以实际不抬级别。skills 模块多调一个 GitHub API，做的时候更新它的影响范围。
+  “能讲”级，所以实际不抬级别。skills 模块多调一个 GitHub API，`update` 还会改运行中盒子的
+  授权，做的时候更新它的影响范围。
 - agent 的 PR 能改 CI workflow，让检查永远通过，只能靠人读 diff 看出来；主机上的检查跑的
   是本机的 pylon，不受影响。
+- 合并就是唯一的关口：人不再自己跑 `update`，偏好、skill、hook 和盒子策略合并后一分钟内
+  就到了所有主机上。
+- 检查失败只记在日志里，有了通知通道才会推给人。
+- 每台主机的 Guix Home 要加一个定时服务。
 - 没核实：activity 记录保留多久，文档没写。查不到时，人可以在检出里手动快进来放行。
 
 以后：
@@ -188,6 +203,45 @@ agent-policy 里另有一个 CI workflow：checkout 公开的 pylon，跑同一�
   批准通过后顺带跑 agent-policy 里的检查脚本。
 - 同一流程以后可以接主机上的自动部署（Guix、agent-policy）：拉 `main`、查批准、跑检查，
   最后一步从快进检出换成部署。
+
+## 运行中改授权
+
+- 盒子运行中加、撤授权，只有一条路：改盒子策略的 PR，人合并（11/28）。不另设请求和确认
+  卡片。
+- 生效：生效前检查通过、快进之后，`pylon-skills update` 让 `box-manager` 拿新策略和每个
+  运行中的盒子对账，缺的加上，多的撤掉（11/28）。`box-manager` 没在跑就跳过；没运行的盒子
+  下次启动时按当时的策略起。
+- 做法（uraj 11/15 定）：`box-manager` 以普通用户身份完成，不用 root。
+  - 挂载：先进 rootless Podman 的 user 和 mount namespace（这里看得到主机路径），用
+    `open_tree(OPEN_TREE_CLONE | AT_RECURSIVE)` 克隆主机目录，再进盒子的 user 和 mount
+    namespace，`move_mount` 挂到目标路径；撤销用 `umount2(MNT_DETACH)`。
+  - 网络：进盒子的 netns 改 nftables。
+  - 凭据：走 socket，每次调用时查当前策略，策略一变就生效，不用对账。
+- 撤销（11/28）：卸载、删规则立刻做，但已经打开的文件描述符收不回。`box-manager` 报告哪个
+  盒子撤了什么、要彻底收回得重建盒子；重不重建、什么时候重建，由人定。
+- 要 root 的操作（sudo、部署）不归 `box-manager`，交给另一个能以 root 执行的服务；pylon 里
+  还没有设计。
+
+为什么：
+
+- 只走 PR：策略在 agent-policy，人合并 PR 就是批准，再加一张卡片是重复的。
+- 由生效前检查的最后一步触发对账：主机上“拉 `main`、查、生效”是同一个流程，以后接自动
+  部署也是在这一步加东西。
+- 不自动重建盒子：重建会打断盒子里正在跑的 agent。
+- 不用 root 就够：uraj 实测（[grants-measure-20261115][grants-measure]），主机用户在
+  运行中的盒子里改 nftables、增减挂载都成功；盒子里的 agent 没有特权，`nft`、卸载挂载、
+  自己 bind mount 都失败，进不了盒子的 netns。
+
+代价：
+
+- 慢：要等 PR 合并，再等最多一分钟的定时器。临时用一下的授权要提两个 PR，一个加、一个撤。
+  以后有了审批通道，可以再加限时的临时授权。
+- skills 模块要知道 `box-manager`。
+- 撤销收不干净，直到重建盒子。设备也一样，迁“设备”一节时细说。
+
+还没测：uraj 实测时盒子由 `contained-podman` 起，进的是它的 user namespace；改成
+`box-manager` 自己调 Podman 后，入口换成 rootless Podman 自己的 user namespace，按理是
+同一个，第 3 步做原型时测。
 
 [uraj-v2]: https://github.com/wenxin-wang/uraj/blob/1e434fd433fb872225f2d20cca9df174ff278d77/docs/projects/261115-contained-agent-v2/README.md
 [box-prototype]: https://github.com/wenxin-wang/uraj/blob/1e434fd433fb872225f2d20cca9df174ff278d77/docs/projects/261115-contained-agent-v2/box-prototype-design-20261115.md
