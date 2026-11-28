@@ -26,11 +26,8 @@
 
 ## 待定
 
-- **策略按什么分、什么格式**：跟 contained-agent-v2 一起定。
-- **批准校验的细节**（跟 v2 一起定）：GitHub App 装在哪些仓库、给什么权限；宿主上
-  谁拿私钥换令牌；同步时怎么校验 `main` 上的新提交都来自人合并的 PR。agent-policy
-  是免费账号下的私有仓库，没有分支保护和 ruleset（GitHub 只给 Pro 及以上的私有仓库），
-  所以校验只能放在同步这一步；要分支保护就得升级 Pro。
+- **GitHub App 的细节**（跟 v2 的“agent 的 GitHub 身份”一节一起定）：App 装在哪些仓库、
+  给什么权限；宿主上谁拿私钥换令牌。
 
 ## 决定
 
@@ -50,6 +47,8 @@
   记录判断批准了没有，和 Claude Code 的 auto mode、Codex 的 auto-review 是同一类，人
   觉得不准。Claude Code 现在用 bypassPermissions。
 - 11/26：权限策略由 contained-agent-v2 读，第 2 步跟 v2 一起做，不给 uraj 的 v1 加来源。
+- 11/28：盒子策略的分法、格式和生效前的批准校验见 contained-agent-v2 的
+  [box-design](../261126-contained-agent-v2/box-design.md)“盒子策略”一节。
 - 11/26：agent 的 GitHub 身份用 GitHub App，不用机器人账号：私钥留在宿主上，agent 只拿
   1 小时过期的安装令牌；也在 v2 里做。在那之前 agent 用人的 token，能直接推 `main`。
 

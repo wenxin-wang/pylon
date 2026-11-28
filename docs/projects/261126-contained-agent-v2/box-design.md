@@ -124,6 +124,71 @@ traj-record 的 `instances`、`out`：
 的地方是 rootless bridge 下的实验选项 `rootless_port_forwarder`
 （[podman#28478][podman-pesto]），不是 pasta 模式。第 3 步做原型时测；测不通就用 socat。
 
+## 盒子策略
+
+- 放在 agent-policy 的 `boxes/<盒子名>.toml`，一个盒子一个文件（11/28）。没有文件的盒子
+  只有默认授权。
+- 写的是这个盒子的授权：SSH 目标、GitHub 令牌的范围、设备、网络放行、共享路径等，具体
+  的键迁到各节时定。设备只写 `gpu` 这类名字，实际路径由 `box-manager` 在主机上查。暂不做
+  共用授权，每个盒子把授权直接写在自己的文件里，真要复用时再加一种共用文件。
+- 格式是 TOML，用 Python 标准库的 `tomllib` 读。严格校验：未知的键、类型不对都报错。
+  校验代码在 pylon，主机上和 CI 里用的是同一份。
+
+### 生效前检查
+
+agent-policy 的新提交要过两道检查才在主机上生效。做在 `bin/pylon-skills update` 里，
+它本来就在维护 agent-policy 那份只跟 `main` 的检出：
+
+1. fetch 之后，取本地检出到 `origin/main` 之间的提交。
+2. 查批准：用 GitHub 的 repository activity API（`GET /repos/{owner}/{repo}/activity`）
+   列出这段时间里 `main` 的每次变动（`before`、`after`、操作者、类型），要首尾相接覆盖
+   整段，操作者都是仓库主人。
+3. 查格式：用盒子策略的校验检查 `origin/main` 上的 `boxes/`。
+4. 两道都过才快进，并打出哪些盒子的策略变了；有一道不过，就保留上一版并报错。
+
+`box-manager` 只读这份检出，不读人的工作副本（里面可能有没合并的改动）。它读策略时再校验
+一遍兜底：某个文件不合格，只拒绝那个盒子新的授权操作，已经生效的不动。
+
+agent-policy 里另有一个 CI workflow：checkout 公开的 pylon，跑同一份校验，PR 上显示
+✓ 或 ✗。它拦不住合并，人看到 ✗ 就不合。
+
+批准这一道等 agent 换成 GitHub App 身份后才有用：在那之前 agent 用人的 token，操作者
+永远是人。所以和“agent 的 GitHub 身份”一节一起做。
+
+为什么：
+
+- 一个盒子一个文件：PR 的 diff 看文件名就知道动的是哪个盒子，`boxes/` 目录本身就是所有
+  盒子权限的汇总，不用另外生成。
+- TOML：标准库能读，不加依赖，也不用手写解析器；能写注释，`no` 这类字符串不会被当成布尔
+  值。JSON 不能写注释；YAML 标准库里没有。
+- 校验在 pylon，不在 agent-policy：策略里每个键都要 `box-manager` 去执行，加一个新授权，
+  pylon 本来就要先改；只有一份规则，CI、主机上的检查和 `box-manager` 才不会对不上。
+- 检查放进 `pylon-skills update`，不另写一个同步程序：偏好和 skill 带的 hook 也用人的
+  权限跑，本来就该过同一道检查。
+- 用 activity API：agent-policy 是免费账号下的私有仓库，用不了 ruleset 和分支保护（11/28
+  读 ruleset 接口，GitHub 回答要升级 Pro）；activity API 在这个仓库上能用（11/27 试过，
+  最近 5 次都是人的 `pr_merge`）。App 合并 PR、直接推 `main`、force push，操作者都是
+  App 的 bot，都会被拦下。
+- 格式也在每台主机上查，不只靠 CI：写错的策略到不了主机，上一版保留着，盒子不会突然
+  用不了。
+
+代价：
+
+- pylon 要先支持新的键，策略才能用；CI 用 pylon `main` 上的版本，主机上用本机装的那份。
+- skills 模块要调用盒子策略的校验代码，这段代码至少是“能管”级；`box-manager` 大概率是
+  “能讲”级，所以实际不抬级别。skills 模块多调一个 GitHub API，做的时候更新它的影响范围。
+- agent 的 PR 能改 CI workflow，让检查永远通过，只能靠人读 diff 看出来；主机上的检查跑的
+  是本机的 pylon，不受影响。
+- 没核实：activity 记录保留多久，文档没写。查不到时，人可以在检出里手动快进来放行。
+
+以后：
+
+- 生效时推送通知，等有了通知通道再做。
+- 有 pylon 不读、只属于 agent-policy 的检查（例如偏好或 skill 的写法）时，让 `update` 在
+  批准通过后顺带跑 agent-policy 里的检查脚本。
+- 同一流程以后可以接主机上的自动部署（Guix、agent-policy）：拉 `main`、查批准、跑检查，
+  最后一步从快进检出换成部署。
+
 [uraj-v2]: https://github.com/wenxin-wang/uraj/blob/1e434fd433fb872225f2d20cca9df174ff278d77/docs/projects/261115-contained-agent-v2/README.md
 [box-prototype]: https://github.com/wenxin-wang/uraj/blob/1e434fd433fb872225f2d20cca9df174ff278d77/docs/projects/261115-contained-agent-v2/box-prototype-design-20261115.md
 [zombie-debug]: https://github.com/wenxin-wang/uraj/blob/1e434fd433fb872225f2d20cca9df174ff278d77/docs/projects/261115-contained-agent-v2/pasta-zombie-debug-20261115.md

@@ -55,8 +55,6 @@ v2 的设计 11/15 到 11/17 在 uraj 里讨论过，做了原型和实测（见
 - **运行中加的仓库要不要人确认。** 盒子里的 agent 用 gh 现场 clone 别的仓库，GitHub App
   的令牌就得覆盖这些仓库：盒子策略里事先列出能访问哪些仓库，还是 agent 运行中申请、人确认。
   迁到 agent 的 GitHub 身份那一节时定。
-- **盒子策略在 agent-policy 里怎么写**：每个盒子一个文件还是别的分法，要不要 CI。迁到
-  盒子策略那一节时定。
 - uraj 里还开着的几条（盒子用容器还是 microVM、部署接口放不放进本项目、创建 workspace
   的卡片和上游 Paseo 的修改），迁到相应的节时搬过来。
 
@@ -66,8 +64,11 @@ v2 的设计 11/15 到 11/17 在 uraj 里讨论过，做了原型和实测（见
   [box-design](box-design.md)，没迁的暂见 uraj 的 [v2 README][uraj-v2]。
 - 11/26：盒子是独立的概念，和 space、area 无关，每个盒子对应一件事；11/16 按 area 分
   盒子、策略写在 area 文档里、workspace 对应 space 里 project 的决定都作废。
-- 11/26：盒子策略放在策略仓库 agent-policy；agent 的 GitHub 身份用 GitHub App。见
+- 11/26：agent 的 GitHub 身份用 GitHub App，见
   [agent-policy](../261120-agent-policy/README.md) 的决定。
+- 11/28：盒子策略放在 agent-policy，一个盒子一个 TOML 文件；新提交在主机上生效前由
+  `pylon-skills update` 查批准和格式，agent-policy 的 CI 跑同一份校验。见
+  [box-design](box-design.md) 的“盒子策略”。
 - 11/26：一个盒子开始时只放一个 workshop，限定工作范围。别的仓库运行中按需加：盒子里有
   Paseo 和 gh，一个任务要哪些仓库，人一开始也想不清。agent-policy 要改时，在盒子里现场
   clone，或者给它提 issue。
